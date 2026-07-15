@@ -1,0 +1,507 @@
+<section class="content-header">
+    <h1 style="font-size: 30px;">Site Attendance Upload</h1>
+    <hr style="margin-top: 8px;margin-bottom: -2px;">
+</section>
+
+<section class="content">
+    <div class="col-md-12">
+        <div class=" ">
+            <div class="">
+                <?php
+                ?>
+                <form class="form-horizontal" method="post" action="" id="attendanceuploadfilter" enctype="multipart/form-data">
+
+                    <div class="form-group">
+
+                        <div class="col-md-4">
+                            <label class="col-sm-3" for="filterby_site">Site</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="filterby_site" name="filterby_site" class="form-control" onchange="filterAttendanceupload(this);" style="width: 100%;">
+                                    <option value="">All</option>
+                                    <?php
+                                    if ($arr_sites) {
+                                        foreach ($arr_sites as $key => $value) { ?>
+                                            <option value="<?php echo $value['id']; ?>"><?php echo $value['text']; ?></option>
+                                    <?php }
+                                    } ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="month" class="col-sm-3">Month</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="filterby_month" name="filterby_month" class="form-control" onchange="filterAttendanceupload(this);">
+                                    <option value="">All</option>
+                                    <?php
+                                    for ($i = -1; $i < 11; $i++) {
+                                        echo '<option value="' . date('Y-m', strtotime("-$i month", strtotime(date('M-Y')))) . '">' . date('M-Y', strtotime("-$i month", strtotime(date('M-Y')))) . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="col-sm-3" for="filterby_shift">Shift</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="filterby_shift" name="filterby_shift" class="form-control js-example-basic-single" value="0" onchange="filterAttendanceupload(this);">
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+
+                        <div class="col-md-4">
+                            <label class="col-sm-3" for="filterby_branch">Branch</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="filterby_branch" name="filterby_branch" class="form-control" onchange="filterAttendanceupload(this);filterEmployee();">
+                                    <option value="">All</option>
+                                    <?php foreach ($arr_branches as $key => $value) { ?>
+                                        <option value="<?php echo $value['Units']['branch_code']; ?>"><?php echo $value['Units']['branch_name']; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="col-sm-3" for="filterby_employee">Employee</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="filterby_employee" name="filterby_employee" class="form-control" onchange="filterAttendanceupload(this);">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="col-sm-3" for="filterby_designation">Designation</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="filterby_designation" name="filterby_designation" class="form-control" onchange="filterAttendanceupload(this);">
+                                    <option value="">Select</option>
+                                    <?php foreach ($arr_designations as $key => $value) { ?>
+                                        <option value="<?php echo $value['designation']['id']; ?>"><?php echo $value['designation']['desig_name']; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <!--  The below codes are hided because there is no excel upload using -->
+                        <div class="col-md-4" style="display: none;">
+                            <div class="col-md-3">
+                                <b>Upload File</b>
+                            </div>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-8">
+                                <label style="font-weight: normal;" for="file-upload" class="custom-file-upload">
+                                    Click Here to Browse File
+                                </label>
+                                <input id="file-upload" name='attdatacsv' type="file" style="display:none;">
+                            </div>
+                        </div>
+
+                        <div class="col-md-2" style="display: none;"> <!-- style="padding-left: 76px;margin-top: -3px;" -->
+                            <span> <!-- class=" " style="margin-top: -10px;margin-left: -18px;" -->
+                                <span data-toggle="tooltip" data-placement="auto" title="Download the excel format with selected criterias. add the data then upload it.">
+                                    <button type="button" id="btn-uploadattdata1" class="btn btn-danger btn-sm " onclick="downloadEmployeeCTCForm();"><i class="fa fa-download" aria-hidden="true"></i></button>
+                                </span>
+                            </span>
+                        </div>
+
+                        <div class="col-md-2" style="display: none;"> <!-- style="padding-left: 59px;" -->
+                            <span> <!-- class=" " -->
+                                <span data-toggle="tooltip" data-placement="auto" title="Upload the downloaded excel file">
+                                    <button type="button" onclick="uploadEmployeeCTC();" id="btn-uploadattdata" class="btn btn-success btn-sm "><i class="fa fa-upload" aria-hidden="true"></i></button>
+                                </span>
+                            </span>
+                        </div>
+                        <!--  Excel upload ends here -->
+
+
+                    </div>
+                </form>
+            </div>
+        </div><!--/.direct-chat -->
+
+
+        <div class="box box-primary ">
+            <div class="box-body">
+                <br>
+                <table id="att_table" class="table table-bordered table-hover">
+                    <tbody>
+                    </tbody>
+                </table>
+            </div><!-- /.box-body -->
+            <!--/.direct-chat -->
+        </div><!-- /.col -->
+    </div><!-- /.col -->
+</section>
+<script>
+    $('#file-upload').change(function() {
+        var i = $(this).prev('label').clone();
+        var file = $('#file-upload')[0].files[0].name;
+        $(this).prev('label').text(file);
+    });
+    
+    // Excel download not not using in this form
+    //corected by sruthi 07/09/16 here starts
+    // function downloadEmployeeCTCForm() {
+    //     var ctcuploadtype = 3;
+    //     var filterby_branch = $('#attendanceuploadfilter #filterby_branch').val();
+    //     var filterby_month_date = $('#attendanceuploadfilter #filterby_month').val();
+    //     var filterby_site = $('#attendanceuploadfilter #filterby_site').val();
+    //     var filterby_shift = $('#attendanceuploadfilter #filterby_shift').val();
+
+    //     if (filterby_site == '') {
+    //         alert("Please Choose a Site");
+    //         return false;
+    //     }
+    //     if (filterby_shift == '') {
+    //         alert("Please Choose a Shift");
+    //         return false;
+    //     }
+    //     if (filterby_month_date == '') {
+    //         alert("Please Choose a Month");
+    //         return false;
+    //     }
+    //     if (filterby_branch == '') {
+    //         alert("Please Choose a Branch");
+    //         return false;
+    //     }
+
+    //     if (ctcuploadtype == 3) {
+    //         window.open('<?php echo $this->webroot; ?>SiteAttendanceUpload/downloadsiteattendanceformat/' + ctcuploadtype + '/' + filterby_branch + '/' + filterby_month_date + '/' + filterby_site + '/' + filterby_shift);
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+    function filterEmployee() {
+        var branch = $('#attendanceuploadfilter #filterby_branch').val();
+
+        $("#attendanceuploadfilter #filterby_employee").select2({
+            //closeOnSelect:false,
+            // dropdownParent: $('body #modalForm'),
+            placeholder: "All",
+            allowClear: true,
+            ajax: {
+                url: livesite + "SiteAttendanceUpload/employeefilter/" + branch + "/" + 0 + "/",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term, // search term
+                        page: params.page
+                    };
+                },
+                processResults: function(data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.items,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                }
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            }
+        });
+
+        // $.ajax({
+        //     url: livesite + "SiteAttendanceUpload/employeefilter/" + branch,
+        //     dataType: 'json',
+        //     delay: 250,
+        //     success: function(data) {
+        //         if (data.items) {
+        //             let string = '<option value="">Select</option>';
+        //             data.items.forEach(function(val) {
+        //                 string += '<option value="' + val.id + '">' + val.text + '</option>';
+        //             });
+        //             $("#attendanceuploadfilter #filterby_employee").html(string);
+        //         }
+        //     }
+        // });
+    }
+
+
+    function find_shiftpolicy() {
+        var filterby_site = $('#attendanceuploadfilter #filterby_site').val();
+        var filterby_month = $('#attendanceuploadfilter #filterby_month').val();
+        var filterby_designation = $('#attendanceuploadfilter #filterby_designation').val();
+        filterby_site = (filterby_site) ? filterby_site : '0';
+        filterby_month = (filterby_month) ? filterby_month : '0';
+        filterby_designation = (filterby_designation) ? filterby_designation : '0';
+
+        $("#filterby_shift").select2({
+            //closeOnSelect:false,
+            placeholder: "All",
+            allowClear: true,
+            ajax: {
+                url: livesite + "SiteAttendanceUpload/get_shift/" + filterby_month + "/" + filterby_site + "/" + filterby_designation,
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term, // search term
+                        page: params.page
+                    };
+                },
+                processResults: function(data, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    params.page = params.page || 1;
+
+                    return {
+                        results: data.items,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                }
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            }
+        });
+    }
+    //here ends
+    function filterAttendanceupload(obj) {
+        var branch = $('#attendanceuploadfilter #filterby_branch').val();
+        var month = $('#attendanceuploadfilter #filterby_month').val();
+        var filterby_site = $('#attendanceuploadfilter #filterby_site').val();
+        var filterby_shift = $('#attendanceuploadfilter #filterby_shift').val();
+        var filterby_designation = $('#attendanceuploadfilter #filterby_designation').val();
+        var filterby_employee = $('#attendanceuploadfilter #filterby_employee').val();
+
+        find_shiftpolicy();
+
+        $('#att_table').datagrid('load', {
+            branch: branch,
+            month: month,
+            filterby_site: filterby_site,
+            filterby_shift: filterby_shift,
+            filterby_designation: filterby_designation,
+            filterby_employee: filterby_employee
+        });
+
+    }
+
+    // function uploadEmployeeCTC() {
+    //     //added by megha on 15_06_19 file upload file exists checking
+    //     if (document.getElementById("file-upload").files.length == 0) {
+    //         alert("No files selected");
+    //         return false;
+    //     }
+    //     //end here
+    //     var form = $('#attendanceuploadfilter');
+    //     var fileSelect = document.getElementById('file-upload');
+    //     var ctcuploadtype = 3;
+
+    //     // The rest of the code will go here...
+    //     var files = fileSelect.files;
+    //     // Create a new FormData object.
+    //     var formData = new FormData();
+    //     // Loop through each of the selected files.
+
+    //     for (var i = 0; i < files.length; i++) {
+    //         var file = files[i];
+    //         // Add the file to the request.
+    //         formData.append('empctc[]', file, file.name);
+    //     }
+
+    //     // Set up the request.
+    //     var xhr = new XMLHttpRequest();
+    //     $('#btn-uploadattdata').html('<li class="fa fa-spin fa-spinner"></li>  Uploading Attendance please wait ...  ');
+    //     // Open the connection.
+    //     xhr.open('POST', livesite + 'SiteAttendanceUpload/uploadandsaveempctc/' + ctcuploadtype, true);
+
+    //     // Set up a handler for when the request finishes.
+    //     xhr.onload = function() {
+    //         if (xhr.status === 200) {
+    //             $('#file-upload').val("");
+    //             // File(s) uploaded.
+    //             var response = JSON.parse(xhr.responseText);
+    //             if (response.success) {
+    //                 $.notify(response.msg, {
+    //                     type: 'success',
+    //                     allow_dismiss: false
+    //                 });
+    //                 $('#btn-uploadattdata').html('<i class="fa fa-upload" aria-hidden="true"></i>');
+    //                 $('#att_table').datagrid('load');
+    //             } else {
+    //                 $.notify(response.msg, {
+    //                     type: 'error',
+    //                     allow_dismiss: false
+    //                 });
+    //                 $('#btn-uploadattdata').html('<i class="fa fa-upload" aria-hidden="true"></i>');
+    //             }
+    //         } else {
+    //             alert("Employee Attendance  import failed, please check informations given or try again.");
+    //         }
+    //     };
+
+    //     // Send the Data.
+    //     xhr.send(formData);
+    // }
+
+    jQuery(document).ready(function() {
+
+        $("#filterby_designation").select2();
+
+        var branch = $('#attendanceuploadfilter #filterby_branch').val();
+        var month = $('#attendanceuploadfilter #filterby_month').val();
+        var filterby_site = $('#attendanceuploadfilter #filterby_site').val();
+        var filterby_shift = $('#attendanceuploadfilter #filterby_shift').val();
+        var filterby_designation = $('#attendanceuploadfilter #filterby_designation').val();
+        var filterby_employee = $('#attendanceuploadfilter #filterby_employee').val();
+
+        $('#att_table').datagrid({
+            url: livesite + "SiteAttendanceUpload/load_site_data",
+            pagination: true,
+            singleSelect: true,
+            rownumbers: true,
+            queryParams: {
+                month: month,
+                filterby_site: filterby_site,
+                filterby_shift: filterby_shift,
+                filterby_designation: filterby_designation,
+                filterby_employee: filterby_employee,
+                branch: branch
+            },
+            toolbar: [{
+                    text: 'New',
+                    iconCls: 'icon-add',
+                    handler: function() {
+                        showModalForm(livesite + 'SiteAttendanceUpload/form')
+                        // + branch + " / " +month + " / " +filterby_site + " / " +filterby_shift
+                    }
+                }
+
+                //                 , '-',{
+                //                   iconCls: 'icon-edit',
+                //                 text: 'Edit',
+                //                  handler: function () {
+                //                    var row = $('#att_table').datagrid('getSelected');
+                //                  if (row) {
+                //
+                //                    showModalForm(livesite + 'SiteAttendanceUpload/form?emp_attendance_upload_pkey=' + row.emp_attendance_upload_pkey)
+                //                } else {
+                //                   alert("Please select a record to edit")
+                //                }
+                //                 }
+                //                }
+
+
+                // , '-', {
+                //     iconCls: 'icon-remove',
+                //     text: 'Remove',
+                //     handler: function() {
+                //         var rows = $('#att_table').datagrid('getSelections');
+
+                //         if (rows != '') {
+                //             var str_ids = "";
+                //             for (var i = 0; i < rows.length; i++) {
+                //                 var data = rows[i];
+                //                 if (str_ids == "") {
+                //                     str_ids += data.emp_attendance_upload_pkey;
+                //                 } else {
+                //                     str_ids += "," + data.emp_attendance_upload_pkey;
+                //                 }
+                //             }
+                //             if (confirm("Are you sure want to delete ")) {
+
+                //                 $.ajax({
+                //                     url: livesite + "SiteAttendanceUpload/deleteattendance",
+                //                     data: {
+                //                         emp_attendance_upload_pkeys: str_ids
+                //                     },
+                //                     success: function(response) {
+
+                //                         var response = $.parseJSON(response);
+                //                         if (response.msg) {
+                //                             $.notify(response.msg, {
+                //                                 type: 'success',
+                //                                 allow_dismiss: true
+
+                //                             });
+                //                         }
+
+
+                //                         reloadTable('att_table');
+                //                     }
+                //                 });
+
+                //             }
+
+                //         } else {
+                //             alert("Please choose any record to delete.")
+                //         }
+                //     }
+                // }
+            ],
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            columns: [
+                [
+                    {
+                        field: 'EmpName',
+                        title: 'Employee Name',
+                        width: "18%"
+                    },
+                    {
+                        field: 'site_name',
+                        title: 'Site',
+                        width: "14%"
+                    },
+                    {
+                        field: 'day_time_desc',
+                        title: 'Shift',
+                        width: "15%"
+                    },
+                    {
+                        field: 'desig_name',
+                        title: 'Designation',
+                        width: "14%"
+                    },
+                    {
+                        field: 'att_date',
+                        title: 'Date',
+                        width: "10%"
+                    },
+                    {
+                        field: 'in_time',
+                        title: 'In Time',
+                        width: "14%"
+                    },
+                    {
+                        field: 'out_time',
+                        title: 'Out Time',
+                        width: "14%"
+                    },
+                ]
+            ]
+        });
+    });
+</script>
+<style>
+    .custom-file-upload {
+        border: 1px solid #0d0c0c52;
+        border-radius: 4px;
+        display: inline-block;
+        padding: 4px 12px;
+        cursor: pointer;
+        width: 100%;
+        height: 30px;
+        text-align: center;
+    }
+</style>

@@ -1,0 +1,246 @@
+<?php if( $mode== '' ){?>
+<div class="modal-body" >
+ <h2 style="font-weight: bold;text-align: center;"><?php echo "Attendance Regularisation  - ".$fromdate." - "  .$todate?></h2>
+            <?php
+                    if (count( $arr_lateoutdata_for_template ) == 0){
+                        echo "<h3>No data available with the selected criteria.</h3>";
+                    } else{
+              $i = 0;
+                foreach ( $arr_lateoutdata_for_template  as $value) {
+
+                    if (count($value) !== 0) {
+
+                        $i += 1;
+                        
+                         if(!empty($value['summary']))
+                        {
+                        
+                        ?>
+                     <div style="overflow-y: auto;">
+                         <div class="row">
+        <div class="col-md-12">
+                        <fieldset> 
+
+                             <?php
+                                if($cr== 'Units')
+                                {
+                                ?>
+                               <legend><?php  ?><?php echo isset($value['summary']['0']['ed']['branch']) ? $value['summary']['0']['ed']['branch'] : '    (No Datas Found Under This Branch)'; ?>  </legend>
+                                <?php
+                                }
+                                else
+                                {
+                              $empstatus = (isset($value['summary']['0']['ed']['status'])) && $value['summary']['0']['ed']['status'] =="2" ? '  (Resigned)':'';
+                                    ?>
+                              
+                                    <legend><?php  ?> <?php echo isset($value['summary']['0']['ed']['EmpName']) ? $value['summary']['0']['ed']['EmpName']:'    (No Datas Found Under This Employees)'; ?>  </legend>
+                                <?php
+                                    }
+                                ?>
+
+                        </fieldset>
+
+                        <br>
+
+                <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                              <th>Sl No</th>
+                                <th style="width:100px;">Employee ID</th>
+                                <th style="width:100px;">Company ID</th>
+                                <th style="width:100px;">Employee Name</th>
+                                 <th style="width:50px;">Joining Date</th>
+                                <th style="width:50px;">Branch</th>
+                                <th style="width:100px;">Department</th>
+                                <th style="width:650px;">Designation</th>
+                                <th>Termination Date</th>
+                                <th>Attendance Date</th>
+                                <!-- <th>Attendance Date</th> -->
+                                <th>Time</th>
+                                <th style="width:100px;">Direction</th>
+                                <th style="width:100px;">Created Date</th>
+                                <th style="width:650px;">Remark</th>
+                                <th style="width:650px;">Approved / Rejected By</th>
+                                <th style="width:650px;">Approved / Rejected Person Remarks</th>
+                                <th style="width:100px;">Approved / Rejected Date</th>
+                                <th style="width:50px;">Status</th>
+                               </tr>
+                            </thead>
+                            <tbody>
+                                <?php $arr_data  = $value['summary'];?> 
+                                <?php if(count($arr_data)>=0){ ?>
+                                    <?php
+                                    $i = 0;
+                                    foreach($arr_data as $val){
+                                        // $date=$val['earlyout']['LogDate'];
+                                        // $dateatt = date("d-m-Y", strtotime($date));
+                                         ?>
+
+                                        <tr> 
+                                            <?php $i += 1; ?>
+                                            <td><?php echo $i;?></td>
+                                           <td style="width:80px;"><?php echo $val['employee_regularaization']['empid']; ?></td>
+                                          
+                                           <td style="width:80px;"><?php echo $val['ed']['employee_id']; ?></td>
+                                            <td style="width:100px;"><?php echo $val['ed']['EmpName'];?></td>
+                                            
+                                            <td style="width:100px;"><?php echo $val['ed']['joining_date'];?></td>
+                                            <td style="width:50px;"><?php echo $val['ed']['branch'];?></td>
+                                            <td style="width:650px;"><?php echo $val['ed']['department']; ?></td>
+                                            <td style="width:50px;"><?php echo $val['ed']['designation']; ?></td>
+                                           
+                                            <td style="width:50px;"><?php echo $val['edd']['last_approved_working_date'];?></td>
+                                             <td style="width:50px;"><?php echo $val['employee_regularaization']['att_date'];?></td>
+
+
+                                             <td style="width:100px;"><?php echo $val['employee_regularaization']['LOGTIME'];?></td>
+                                            <td style="width:50px;"><?php echo $val['employee_regularaization']['C1'];?></td>
+                                            <td style="width:650px;"><?php echo $val['employee_regularaization']['created_date'];?></td>
+                                            <td style="width:50px;"><?php echo $val['employee_regularaization']['C3']; ?></td>
+                                           
+                                            <td style="width:50px;"><?php if($val['employee_regularaization']['remarks'] == 'Approved By Admin' || $val['employee_regularaization']['remarks'] == 'Rejected By Admin'){ echo 'Admin'; }else{ echo $val['0']['person'];}?></td>
+                                             <td style="width:50px;"><?php echo $val['employee_regularaization']['remarks'];?></td>
+                                             <td style="width:50px;"><?php if($val['employee_regularaization']['updated_date'] != '0000-00-00 00:00:00' && $val['employee_regularaization']['approved'] != 'P'){echo $val['employee_regularaization']['updated_date'];}?></td>
+                                              <td style="width:50px;"><?php  switch ($val['employee_regularaization']['approved']) {
+                            case "P":
+                                $status = 'Pending';
+                              break;
+                            case "A":
+                                $status = 'Approved';
+                              break;
+                            case "R":
+                                $status = 'Rejected';
+                              break;
+                           
+                          } echo $status;?></td>
+                                             
+                                         </tr>
+
+
+                                    <?php } ?>
+                                
+                                   
+                            </tbody>
+                        </table>
+        </div>
+                         </div>
+                     </div>
+                <?php }else{
+                        echo "No employees found under this Criteria"; 
+                   }}}} ?> <!-- /.box-body -->
+        </div>
+                <?php  } } else{?>
+ <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+        .row {
+            height: 32px;
+        }
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+        table {
+            border: 1px solid #f4f4f4;
+            width: 80%;
+            max-width: 80%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        td, th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border: 1px solid #B2B2B2;
+        }
+    </style>
+<!--   <div style="font-weight: bold">Attendance Check In Out Report </div>-->
+<?php
+echo $this->element('reportadminheader',array(
+'title'=>'Early Out Duration'));
+?>
+                   <?php $i=0; foreach ( $arr_lateoutdata_for_template  as $value){
+                   
+                   $i += 1; 
+//                 debug($value);
+                  ?>
+<div>
+                <?php 
+                if(isset($value['summary']['0']['earlyout']['EmpName']))
+                {?>
+                       <!--  <h4 style="font-weight: bold;margin-top: 20px;">Early In of <?php  echo isset($value['summary']['0']['earlyout']['EmpName']) ? $value['summary']['0']['earlyout']['EmpName'] : '' ; ?> <?php  echo isset($value['summary']['0']['ed']['status']) && $value['summary']['0']['ed']['status']=="2" ? '(Resigned)':'' ;?></h4> -->
+
+                    <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Sl No</th>
+                                <th style="width:100px;">Employee ID</th>
+                                <th style="width:100px;">User ID</th>
+                                <th style="width:100px;">Employee Name</th>
+                                <th style="width:50px;">Branch</th>
+                                <th style="width:100px;">Department</th>
+                                <th style="width:650px;">Designation</th>
+                                <th>Termination Date</th>
+                                <th>Attendance Date</th>
+                                <!-- <th>Attendance Date</th> -->
+                                <th>Time</th>
+                                <th style="width:100px;">Direction</th>
+                                <th style="width:100px;">Duration</th>
+                                <th style="width:650px;">Remark</th>
+                                <th style="width:650px;">Approved / Rejected By</th>
+                                <th style="width:650px;">Approved / Rejected Person Remarks</th>
+                                <th style="width:100px;">Approved / Rejected Date</th>
+                                <th style="width:50px;">Status</th>
+                                <!--Added by megha device id on 20/07/19-->
+                                
+                            </tr>
+                               
+                            </thead>
+                            <tbody>
+                                <?php $arr_data  = $value['summary'];?> 
+                                <?php if(count($arr_data)>=0){ ?>
+                                    <?php
+                                    $i = 0;
+                                    foreach($arr_data as $val){
+                                        $date=$val['earlyout']['LogDate'];
+                                        $dateatt = date("d-m-Y", strtotime($date)); ?>
+
+                                        <tr> 
+                                            <?php $i += 1; ?>
+                                            <td><?php echo $i;?></td>
+                                           <td style="width:80px;"><?php echo  $val['ed']['emp_id'];?></td>
+                                           <td style="width:80px;"><?php echo $val['ed']['employee_id'];?></td>
+                                            <td style="width:100px;"><?php echo $val['earlyout']['EmpName'];?></td>
+                                            
+                                            <td style="width:100px;"><?php echo $val['br']['branch_name'];?></td>
+                                            <td style="width:50px;"><?php echo $val['ed']['department']; ?></td>
+                                            <td style="width:650px;"><?php echo $val['ed']['designation']; ?></td>
+                                            <td style="width:50px;"><?php echo $val['edd']['last_approved_working_date']; ?></td>
+                                           
+                                            <td style="width:50px;"><?php echo $val['0']['outsum']; ?></td>
+                                           
+                                        </tr>
+
+
+                                    <?php } ?>
+                                
+                                   
+                            </tbody>
+                        </table>
+                    
+                <?php }else{echo "No employees found under this Criteria"; 
+                } }?> <!-- /.box-body -->
+               </div>
+                <?php  } } ?>

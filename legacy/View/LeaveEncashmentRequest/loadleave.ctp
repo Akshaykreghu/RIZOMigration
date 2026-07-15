@@ -1,0 +1,87 @@
+<?php
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+if(!empty($arr_leaves)){
+?>
+<!-- <h3>My Applied Leave Encashment Requests</h3> -->
+<div class="box box-body">
+    <div class="col-md-12">
+        <table class="table table-bordered">
+            <th>Sl No</th>
+            <th>Leave Type</th>
+            <th>Encash Limit</th>
+            <th>Available Days</th>
+            <th>Requested Days</th>
+            <th>Approved Days</th>
+            <th>Approved Date</th>
+            <th>Reason</th>
+            <!-- <th>Status</th> -->
+<!--            <th>Cancel</th>-->
+            
+                <?php $si = 1; foreach($arr_leaves as $items) { 
+                    
+?>
+            <tr>
+                <td><?php echo $si++; ?></td>
+                <td><?php echo $items['SalaryHeadItems']['item']; ?></td>
+                <td><?php echo $items['LeaveEncashmentMaster']['encash_days']; ?></td>
+                <td><?php echo $items['LeaveEncashmentMaster']['available_days']; ?></td>
+                <td><?php echo $items['LeaveEncashmentMaster']['requested_days']; ?></td>
+                <td><?php echo isset($items['LeaveEncashmentMaster']['approved_days'])?$items['LeaveEncashmentMaster']['approved_days']:'Not Approved'; ?></td>
+                <td><?php echo $items['LeaveEncashmentMaster']['approved_date']; ?></td>
+				<?php if($items['LeaveEncashmentMaster']['is_approved'] == 'Y' && $items['LeaveEncashmentMaster']['approved_by'] == '0'){
+					$remarks = "Approved by Admin";
+				}else{ $remarks = $items['LeaveEncashmentMaster']['remarks'];
+				}					?>
+                <td><?php echo $remarks; ?></td>
+               <!--  <td><?php echo $items['LeaveEncashmentMaster']['is_approved']; ?></td> -->
+              <!--  <td><input onclick="cancel_leave(this,<?php echo $items['LeaveEncashmentMaster']['leave_encashment_master_pkey']; ?>);" type="button" class="btn btn-primary" <?php if($items['LeaveEncashmentMaster']['is_approved'] == 'Y'){ echo 'disabled="disabled"'; echo 'value="Cannot Modify"'; }else{ echo 'value="Cancel"'; } ?> ></td>-->
+                </tr>
+                <?php 
+                }
+                ?>
+            
+        </table>
+    </div>
+</div>
+<?php
+}
+else{
+    ?>
+<h3>You are not requested any Encashment</h3>
+<?php
+}
+?>
+<script>
+    function cancel_leave(s,leave_encashment_master_pkey){
+        var r=confirm("Do You Want  To Remove The Selected Item")
+                                                    if(r==true){
+        $.ajax({
+                    url:livesite+'LeaveEncashmentRequest/cancel_leave',
+                    type:"POST",
+                    data:{leave_encashment_master_pkey:leave_encashment_master_pkey},
+                    success: function(resp){
+
+                        if(resp == true){
+                            $(s).val('Leave Cancelled').attr('disabled','disabled');
+                        }
+//                        else{
+//                            
+//                        }
+                        
+                    }
+                });
+            }
+            else
+            {
+                
+            }
+    }    
+    jQuery(document).ready(function() {
+        
+    });
+</script>

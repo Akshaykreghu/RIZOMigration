@@ -1,0 +1,35 @@
+<div class="table-responsive">
+    <table class="table no-margin" id="empmisspunches">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Missed punch count</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($results as $key => $empmisspunch) { ?>
+                <tr>
+                    <td><?php echo $empmisspunch[0]['fullname']; ?></td>
+                    <td><?php echo $empmisspunch[0]["misscount"]; ?> </td>
+                    <td><button type="button" onclick="viewEmployeeMissPunches(<?php echo $empmisspunch['ed']['emp_id']; ?>);" class="btn btn-linkedin">View/Edit</button></td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+</div><!-- /.table-responsive -->
+<script>
+    $(document).ready(function () {
+        
+    var empmisspunchestable = $('#empmisspunches').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "order": [[ 1, "desc" ]],
+            "autoWidth": false
+        });
+    });
+    
+</script>

@@ -1,0 +1,332 @@
+<form id="lpForm" action="<?php echo $this->webroot; ?>LeavePolicy/savepolicy" method="post">
+    
+    <div class="modal-body">
+        <legend>Add Leave Types</legend>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input id="LEAVEPOLICY_GROUP_ID" name="LEAVEPOLICY_GROUP_ID" type="hidden"  value="<?php echo $data["LEAVEPOLICY_GROUP_ID"]; ?>" >
+
+                    <input id="LEAVEPOLICYID" name="LEAVEPOLICYID" type="hidden"  value="<?php echo $data["LEAVEPOLICYID"]; ?>" >
+                    <label>Leave Type</label>
+
+                    <select name="salary_head_item_fkey" class="form-control input-md" required="" >
+                        <option>[--Select--]</option>
+                        <?php
+                        foreach ($policygroup as $key => $value) {
+                            $selected = "";
+                            if ($data['salary_head_item_fkey'] == $value['id']) {
+                                $selected = 'selected="selected"';
+                            }
+                            ?>
+
+                            <option <?php echo $selected; ?> value="<?php echo $value['id']; ?>"><?php echo $value['label']; ?></option>
+                        <?php }
+                        ?>
+                    </select>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Available Duration</label>
+
+                    <select name="leave_policy_type" id="leave_policy_type" onchange="change_leave_type();" class="form-control input-md" required="" >
+                        <option <?php echo (isset($data['leave_policy_type']) && $data['leave_policy_type'] == 'Y')?'selected="selected"':''; ?> value="Y">Yearly</option>
+                        <option <?php echo (isset($data['leave_policy_type']) && $data['leave_policy_type'] == 'M')?'selected="selected"':''; ?> value="M">Monthly</option>
+						<option <?php echo (isset($data['leave_policy_type']) && $data['leave_policy_type'] == 'P')?'selected="selected"':''; ?> value="P">Present Days</option>
+                    </select>
+
+                </div>
+            </div>
+            <div style="padding: 14px ; " class="form-group col-md-12" id="checkContainer">
+<!--//edited by megha on 29_05_19 sandwitch leave option display on montlhy list-->
+                <div class="col-md-4" id="sandwitchContainer">
+                <?php
+                $checked = '';
+                if ($data['IS_SANDWICH'] != null && $data['IS_SANDWICH'] == "Y")
+                    $checked = 'checked="checked"';
+                ?>
+                  <input type="checkbox" <?php echo $checked; ?> value="Y" id="IS_SANDWICH" name="IS_SANDWICH"> Sandwich Leave
+                </div>
+                <div class="col-md-4" id="leave_encashContainer">
+                    <?php
+                    $checked = '';
+                    if ($data['is_leave_encash'] != null && $data['is_leave_encash'] == "Y")
+                        $checked = 'checked="checked"';
+                    ?>
+                    <input type="checkbox" <?php echo $checked; ?> value="Y"  id="is_leave_encash" name="is_leave_encash"> Allow Encashment
+                    
+                </div>
+                <div class="col-md-4" id="NEGETIVEContainer">
+
+                    <?php
+                    $checked = '';
+                    if ($data['ALLOW_NEGETIVE'] != null && $data['ALLOW_NEGETIVE'] == "Y")
+                        $checked = 'checked="checked"';
+                    ?>
+
+                    <input type="checkbox" <?php echo $checked; ?> value="Y" name="ALLOW_NEGETIVE" id="ALLOW_NEGETIVE"> Allow Negative Balance
+                </div>
+<?php if($company_code == 'MBCT' || $company_code == 'DEMO') { ?>
+                <div class="col-md-4" id="ExceptionsContainer">
+
+                    <?php
+                    $checkedexp = ''; 
+                    $exp = isset($data['exceptions'])?$data['exceptions']:'N';
+                    if ($exp == "Y"){
+                        $checkedexp = 'checked="checked"';
+                    }
+                    ?>
+
+                    <input type="checkbox" <?php echo $checkedexp; ?> value="Y" name="exceptions" id="Exceptions"> Exceptions
+                </div>
+<?php } ?>
+<!--//edited by megha on 29_05_19 sandwitch leave option display on montlhy list-->
+                </div>
+            <div class="form-group col-md-12">
+                <div class="row">
+				<div class="col-xs-6" id="encahsment_container1">
+                        <label id="encash_label">Leave Encashment Limit </label> <input type="number" class="form-control" name="leave_encash_limit" id="encahsmentlimit" value="<?php echo isset($data["leave_encash_limit"]) ? $data["leave_encash_limit"] : ''; ?>"> 
+                    </div>
+                    <div class="col-xs-6" id="encahsment_container">
+                        
+                        <label> Encashment Components </label>
+                        <select name="leave_encashment_component" class="form-control" id="Otc" style="display: inline-block">
+                            <option value="">--Select--</option>
+                            <?php
+                            foreach ($components as $key => $value) {
+                                $selected = ($data['leave_encashment_component'] == $value['salary_head_items']['salary_head_item_pkey']) ? 'selected="selected"' : '';
+                                echo '<option value="' . $value['salary_head_items']['salary_head_item_pkey'] . '" ' . $selected . '>' . $value['salary_head_items']['item'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                        
+                    </div>
+                    <div class="col-xs-6" id="yearContainer">
+                        <label id="yearLabel">Year Limit </label>  
+                        <label id="yearLabel1">Present days for one leave </label> 					
+						<input type="number" step="any"  class="form-control" name="alloted_leave_forthe_year" value="<?php echo $data["alloted_leave_forthe_year"]; ?>">
+						<!-- title="Defines how many presant days for a leave"-->
+                    </div>
+                    <div class="col-xs-6" id="monthballimit">
+                        <label>Monthly Limit </label>      <input type="number" step="any" class="form-control" name="alloted_leave_forthe_month" value="<?php echo $data["alloted_leave_forthe_month"]; ?>">
+                    </div>
+					
+<!--                    <div class="col-md-4">
+                    <label>Applicable To</label>
+                    <select name="APPLICABLE_TO" class="form-control input-md" required="" >
+                        <?php
+                       // foreach ($applicableTo as $key => $value) {
+                            $selected = "";
+                            if ($data['APPLICABLE_TO'] == $value['id']) {
+                                $selected = 'selected="selected"';
+                            }
+                            ?>
+
+                            <option <?php echo $selected; ?> value="<?php echo $value['id']; ?>"><?php echo $value['label']; ?></option>
+                        <?php //}
+                        ?>
+
+                    </select>
+                </div>-->
+                    <div class="col-xs-6">
+                        <label>Carry Forward Limit </label> <input type="number" step="any" class="form-control" name="CARRY_FORWARD_LIMIT" value="<?php echo $data["CARRY_FORWARD_LIMIT"]; ?>">
+                    </div>
+                    
+                </div>
+
+            </div>
+            <br>
+            
+            <div class="form-group col-md-12">
+                <!-- Max min leave added by Arul P Das on 18_11_21 -->
+                <div class="row" id="min_max_leave_container">
+                    <div class="col-xs-4">
+                        <label id="min_leave_label">Min. Leave </label> <input type="number" class="form-control" name="minimum_leave" id="minimum_leave" value="<?php echo isset($data["minimum_leave"]) ? $data["minimum_leave"] : ''; ?>"> 
+                    </div>
+                    <div class="col-xs-4">
+                        <label id="max_leave_label">Max. Leave </label> <input type="number" class="form-control" name="maximum_leave" id="maximum_leave" value="<?php echo isset($data["maximum_leave"]) ? $data["maximum_leave"] : ''; ?>">
+                    </div>
+                    <div class="col-xs-4">
+                        <label id="min_service_label">Min. Service (Month) </label> <input type="number" class="form-control" name="minimum_service" id="minimum_service" value="<?php echo isset($data["minimum_service"]) ? $data["minimum_service"] : ''; ?>">
+                    </div>
+                </div>
+                <!-- Max min leave ends here -->
+            </div>
+            <br>
+            <div class="form-group" style="padding:3px 0 5px 14px; ">
+                <div class="row">
+                    
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <label>Description</label>
+                    <textarea name="REMARKS" class="form-control input-md" required="" ><?php echo $data["REMARKS"]; ?></textarea> 
+                </div>	
+            </div>
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
+<script type="text/javascript">
+    function change_leave_type(){
+       if($('#leave_policy_type').val() == 'M'){
+           //$('#checkContainer').hide();
+           //edited by megha on 29_05_19 sandwitch leave option display on montlhy list
+           $('#checkContainer').show();
+           $('#sandwitchContainer').show();
+           $('#NEGETIVEContainer').hide();
+           $('#leave_encashContainer').hide();
+           //edited by megha on 29_05_19 sandwitch leave option display on montlhy list
+           $('#encahsment_container').hide();
+           $('#encahsment_container1').hide();
+           $('[name="alloted_leave_forthe_year"]').val('0');
+           $('[name="alloted_leave_forthe_year"]').attr("required",false);
+           $('[name="alloted_leave_forthe_month"]').attr("required",true);
+           $('#monthballimit').show();
+           $('#yearContainer').hide();
+		   $('#yearLabel').show();
+		   $('#yearLabel1').hide();
+          // $('#IS_SANDWICH').prop('checked', false); 
+           $('#ALLOW_NEGETIVE').prop('checked', false); 
+           $('#is_leave_encash').prop('checked', false);
+           $('#encahsmentlimit').hide(); //.val('');
+           $('#encash_label').hide();
+           $('#encahsment_container').css("display", "none");
+       }
+	   else if($('#leave_policy_type').val() == 'Y'){
+           $('#checkContainer').show();
+           //edited by megha on 29_05_19 sandwitch leave option display on montlhy list
+           $('#NEGETIVEContainer').show();
+           $('#leave_encashContainer').show();
+		   $('#encahsment_container').hide();
+           $('#encahsment_container1').hide();
+           //edited by megha on 29_05_19 sandwitch leave option display on montlhy list
+           $('#monthballimit').hide();
+		   $('#yearLabel').show();
+		   $('#yearLabel1').hide();
+           $('[name="alloted_leave_forthe_month"]').val('0');
+           $('[name="alloted_leave_forthe_month"]').attr("required",false);
+           $('[name="alloted_leave_forthe_year"]').attr("required",true);
+           $('#is_leave_encash').show();
+           $('#yearContainer').show();
+       } 
+	   else{
+           //edited by megha on 29_05_19 sandwitch leave option display on montlhy list
+           $('#checkContainer').show();
+           $('#sandwitchContainer').hide();
+           $('#NEGETIVEContainer').hide();
+           $('#leave_encashContainer').show();
+           $('#encahsment_container').hide();
+           $('#encahsment_container1').hide();
+           //$('[name="alloted_leave_forthe_year"]').val('0');
+		   //$('[name="alloted_leave_forthe_month"]').val('0');
+           $('[name="alloted_leave_forthe_year"]').attr("required",true);
+           $('[name="alloted_leave_forthe_month"]').attr("required",true);
+           $('#monthballimit').show();
+           $('#yearContainer').show();
+		   $('#yearLabel').hide();
+		   $('#yearLabel1').show();
+          // $('#IS_SANDWICH').prop('checked', false); 
+           $('#ALLOW_NEGETIVE').prop('checked', false); 
+           $('#is_leave_encash').prop('checked', false);
+           $('#encahsmentlimit').hide(); //.val('');
+           $('#encash_label').hide();
+           $('#encahsment_container').css("display", "none");
+	   }
+    }
+
+    $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            change_leave_type();
+            <?php 
+            $exp = isset($data['exceptions'])?$data['exceptions']:'N';
+                    if ($exp == "Y"){ ?>
+                    $('#min_max_leave_container').show();
+                    
+            <?php } else{ ?>
+                 $('#min_max_leave_container').hide();
+            <?php } ?>
+<?php if (isset($data['is_leave_encash']) and $data['is_leave_encash'] == "Y") { ?>
+            $('#encash_label').show();
+            $('#encahsmentlimit').show();
+            $('#encahsment_container').css("display", "block");
+			$('#encahsment_container1').css("display", "block");
+            $('#is_leave_encash').prop("checked", true);
+<?php
+} else {
+    ?>
+            $('#encahsmentlimit').hide();
+            $('#encash_label').hide();
+            $('#encahsment_container').css("display", "none");
+			$('#encahsment_container1').css("display", "none");
+            $('#is_leave_encash').prop("checked", false);
+<?php } ?>
+
+
+        $('#is_leave_encash').click(function () {
+            if ($(this).prop("checked") == true) {
+                $('#encahsmentlimit').show();
+                $('#encash_label').show();
+                $('#encahsment_container').css("display", "block");
+		$('#encahsment_container1').css("display", "block");
+                
+            } else if ($(this).prop("checked") == false) {
+                $('#encahsmentlimit').hide().val('');
+                $('#encash_label').hide();
+                $('#encahsment_container').css("display", "none");
+				$('#encahsment_container1').css("display", "none");
+            }
+        });
+
+        $('#Exceptions').click(function () {
+            if ($(this).prop("checked") == true) {
+                $('#min_leave_label').show();
+                $('#max_leave_label').show();
+                $('#min_service_label').show();
+                $('#min_max_leave_container').css("display", "block");
+               // $('#NEGETIVEContainer').hide();
+                $('#ALLOW_NEGETIVE').prop('checked', true);
+                //$('#NEGETIVEContainer').show();
+            } else if ($(this).prop("checked") == false) {
+                $('#min_leave_label').hide().val('');
+                $('#max_leave_label').hide();
+                $('#min_service_label').hide();
+                $('#min_max_leave_container').css("display", "none");
+                $('#ALLOW_NEGETIVE').prop('checked', false);
+            }
+        });
+        $('#ALLOW_NEGETIVE').click(function () {
+            if ($(this).prop("checked") == false) {
+                $('#Exceptions').prop('checked', false);
+                $('#min_leave_label').hide().val('');
+                $('#max_leave_label').hide();
+                $('#min_service_label').hide();
+                $('#min_max_leave_container').css("display", "none");
+            }
+        });
+        $('#lpForm').parsley();
+        var options = {
+            success: function (responseText, statusText, xhr, $form) {
+                closeSmallModalForm('leavepolicytable');
+            }
+        };
+
+        // bind to the form's submit event 
+        $('#lpForm').submit(function () {
+            // inside event callbacks 'this' is the DOM element so we first 
+            // wrap it in a jQuery object and then invoke ajaxSubmit 
+            $(this).ajaxSubmit(options);
+
+            // !!! Important !!! 
+            // always return false to prevent standard browser submit and page navigation 
+            return false;
+        });
+    });
+</script>

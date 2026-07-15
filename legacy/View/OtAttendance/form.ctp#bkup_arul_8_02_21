@@ -1,0 +1,80 @@
+<style>
+    .form-group{
+     padding-top: 23px;   
+    }
+</style>
+   
+<div class="modal-body">
+    <h4 class="modal-title">Edit Duration</h4>  
+                                 
+                                 
+                                 
+                                 
+                                 
+                                 
+        <form  id="Otattendance" action="<?php echo $this->webroot; ?>OtAttendance/save" method="POST">
+             <input type="hidden" value="<?php echo $month; ?>" id="month" name="month"/>
+             <input type="hidden" value="<?php echo $emp; ?>" id="emp" name="emp"/>
+         <div class="form-group" style="line-height: 2">
+            <label for="in_amt" class="col-sm-4 control-label">Duration In Hrs</label>
+            <div class="col-sm-8">
+                <label for="in_amt" id="hours" class="col-sm-4 control-label" style="padding-left: 6px;"><?php echo round(($duration/60),2); ?></label>
+            </div>
+        </div>    
+        <div class="form-group" style="line-height: 2">
+            <label for="in_amt" class="col-sm-4 control-label">Duration In Mins<span class="star">*</span></label>
+            <div class="col-sm-8">
+                <input type="text" required="required"     class="form-control" value="<?php echo $duration; ?>" name="duration" id="duration" onchange="roundtohour(this);">
+            </div>
+        </div>
+        <div class="form-group" style="line-height: 2">
+            <label for="remarks" class="col-sm-4 control-label">Remarks</label>
+            <div class="col-sm-8">
+                <textarea name="remarks" class="form-control"  id="remarks" ></textarea>
+            </div>
+        </div> 
+                                 
+        <div class="modal-footer" style="padding-top: 40px;">
+            <button type="submit" class="btn btn-primary">Save and Approve</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                     
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    function roundtohour(duration)
+    {
+        var duration = $('#duration').val() / 60;
+        var hours = Math.round(duration * 100) / 100;
+        document.getElementById("hours").innerHTML = hours;
+    }
+$(document).ready(function() { 
+	//$("#pincode").inputmask("999");
+        var month = $('#month').val();
+        var emp = $('#emp').val();
+  $('#Otattendance').parsley();
+    var options = { 
+      success:function(responseText, statusText, xhr, $form){
+	closeModal('att_table');
+        $.notify("Attendance Updated Successfully",{
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+        $('#load').load(livesite+'OtAttendance/Approved/'+month,function() { $('#loader').hide(); });
+}
+    }; 
+ 
+    // bind to the form's submit event 
+    $('#Otattendance').submit(function() {
+        $(this).ajaxSubmit(options);         
+        return false;
+    });
+       
+    
+  
+         }); 
+</script>
+                       
+                      
+              
+          

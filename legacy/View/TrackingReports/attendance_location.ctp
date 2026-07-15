@@ -1,0 +1,334 @@
+<style>
+    
+    .table , td, th,tr {
+        border-style: solid;
+        border-color: #d4d4de;
+   
+
+    }
+    .modal-content {
+        width: 125%   !important;
+
+    }
+
+</style>
+
+<?php    ?>
+<?php if ($mode == '') { ?>
+<div class="modal-body" style="overflow-y:auto; padding-left:3%; padding-right:3%; padding-bottom:3%;">
+ 
+<div class="row">
+            <?php $data = $arr_leavepolicydetails_for_template['data'];
+            if(empty($data)){?>
+         
+                <div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+        There is no data available</div>
+           <?php } else{?>
+            <!--<div id="map" style="width: 100%; height: 800px;"></div>-->
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    
+
+                    <div class="box-body">
+                                    <fieldset>
+                                        
+                                        
+                                        <div class="row" style="padding-right: 20px;padding-left: 11px;">
+                                            <div class="col-md-12">
+                                                 <legend style="text-align: center; ">Attendance - Location Report - <?php echo $report_month; ?></legend>
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <b>Employee Name </b> 
+                                                    </div>
+                                                    <div class="col-md-1">:</div>
+                                                    <div class="col-md-3">
+                                                        <?php echo isset($empinfo['0']['employee_info']['EmpName']) ? $empinfo['0']['employee_info']['EmpName'] : '';?>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <b>Employee ID </b>
+                                                    </div>
+                                                    <div class="col-md-1">:</div>
+                                                    <div class="col-md-3">
+                                                        <?php echo isset($empinfo['0']['employee_info']['employee_id']) ? $empinfo['0']['employee_info']['employee_id'] : '';?>
+                                                    </div>
+                                                </div>
+                                                 <div class="row" style="padding-top: 10px;">
+                                                    <div class="col-md-2">
+                                                        <b>Designation</b>
+                                                    </div>
+                                                    <div class="col-md-1">:</div>
+                                                    <div class="col-md-3">
+                                                        <?php echo isset($empinfo['0']['employee_info']['designation']) ? $empinfo['0']['employee_info']['designation'] : '';?>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <b>Department</b>
+                                                    </div>
+                                                    <div class="col-md-1">:</div>
+                                                    <div class="col-md-3">
+                                                        <?php echo isset($empinfo['0']['employee_info']['department']) ? $empinfo['0']['employee_info']['department'] : '';?>
+                                                    </div>
+                                                </div>
+                                                 <div class="row" style="padding-top: 10px;">
+                                                    <div class="col-md-2">
+                                                        <b>Branch</b>  
+                                                    </div>
+                                                    <div class="col-md-1">:</div>
+                                                    <div class="col-md-3">
+                                                        <?php echo isset($empinfo['0']['employee_info']['branch']) ? $empinfo['0']['employee_info']['branch'] : '';?>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <b>Joining Date</b>
+                                                    </div>
+                                                    <div class="col-md-1">:</div>
+                                                    <div class="col-md-3">
+                                                        <?php echo isset($empinfo['0']['employee_info']['joining_date']) ? $empinfo['0']['employee_info']['joining_date'] : '';?>
+                                                    </div>
+                                                </div>
+                                                 <hr style="margin-bottom: -8px;">
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </fieldset>
+                        
+                                    <br>
+                                    <fieldset style="padding-right: 20px;padding-left: 20px;">
+
+                                        <div class="inflow">
+                                            <div class="fixed">
+                                                <div class="table-responsive">
+                                                    <table class="table no-margin" >
+                                                        <thead>
+                                                            
+                                                            <tr>
+                                                                <th>Sl No</th>
+                                                                <th>Date</th>
+                                                                <th>Time</th>
+                                                                <th>In/Out</th>
+                                                                <th>Location</th>
+                                                                <!--<th>Duration</th>-->
+<!--                                                                <th>Check-In</th>
+                                                                <th>Check-Out</th>
+                                                                <th>Duration</th>-->
+                                                                
+                                                                
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <?php $count = (count($data));  ?>
+                                                            <?php foreach ($data as $val){?>
+                                                        
+                                                   
+                                                            <tr>
+                                                                <td><?php echo $val[0]; ?></td>
+                                                                <td><?php echo $val[1]; ?></td>
+                                                                <td><?php echo $val[2]; ?></td>
+                                                                <td><?php echo $val[3]; ?></td>
+                                                                <td><?php echo $val[4]; ?></td>
+                                                                
+                                                                 <?php $date = $val[1];?>
+                                                                  
+                                                            </tr>
+                                                                     <?php
+                                                                    $counts = array_count_values(
+                                                                    array_column($data, 1)
+                                                                    );
+                                                            if($val[3] == 'out'){
+                                                                
+                                                                if($date == $val[1] && $counts[$date] == $val[0]){?>
+                                                            
+                                                            <tr >
+                                                                <th colspan="4"> Duration
+                                                                    
+                                                                </th>
+                                                                <td ><b><?php echo $val[5]; ?></b></td>
+                                                               
+                                                                
+                                                            </tr>
+                                                                <?php }  }
+                                                                else{ 
+                                                                    if($val[5] == ''){
+                                                                        if($date == $val[1] && $counts[$date] == $val[0]){?>
+                                                                    <tr >
+                                                                <th colspan="4"> Duration
+                                                                    
+                                                                </th>
+                                                                <td ><b><?php echo '0'; ?></b></td>
+                                                               
+                                                                
+                                                            </tr>
+                                                                        <?php   } }  }
+?>
+                                                          
+                                                       <?php      //if($val[0] == $count){?>
+<!--                                                            <tr >
+                                                                <th colspan="4"> Duration
+                                                                    
+                                                                </th>
+                                                                <td ><b><?php //echo $val[5]; ?></b></td>
+                                                               
+                                                                
+                                                            </tr>-->
+                                                            <?php //  }?>
+                                                           
+                                                            <?php  }?>
+                                                            
+                                                        </tbody>
+                                                    </table>
+                                                </div> 
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <br>
+
+   
+                </div>
+            </div>
+           <?php } ?>
+        </div>   
+<?php }else{ ?>
+ <style type="text/css">
+    body {
+        line-height: 2em;
+    }
+    .block-container {
+        width: 95%;
+        padding: 20px;
+        border: #000000 solid thin;
+    }
+    .sub-head {
+        border-bottom: #000000 solid thin;
+    }
+    .row {
+        height: 32px;
+    }
+    .col-md-4 {
+        width: 33.33%;
+        float: left;
+    }
+    table {
+        border: 1px solid #f4f4f4;
+        width: 80%;
+        max-width: 80%;
+        margin-bottom: 20px;
+        background-color: transparent;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+    td, th {
+        text-align: left;
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border: 1px solid #B2B2B2;
+    }
+   .bor{
+        border-bottom: 0px solid white ;
+        border-right: 0px solid white ; 
+        border-left: 0px solid white ; 
+        border-top: 0px solid white ; 
+    }
+</style>
+  <?php $data = $arr_leavepolicydetails_for_template['data'];
+            if(empty($data)){?>
+         
+                <div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+        There is no data available</div>
+           <?php } else{?>
+           <h4>Attendance - Location Report - <?php echo $report_month; ?></h4>
+             <h2 style="text-align:center; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];//$this->session->read('company_code'); ?></h2>
+             <hr>
+<table class="table" style=" border: 0px;">
+                        <tr style=" border: 0px; ">
+                            <td style=" border: 0px"><b>Employee Name  </b></td><td style=" border: 0px"></td>
+                                 <td style=" border: 0px;">:&nbsp;&nbsp;<?php echo isset($empinfo['0']['employee_info']['EmpName']) ? $empinfo['0']['employee_info']['EmpName'] : '';?></td><td style=" border: 0px"></td><td style=" border: 0px"></td>
+                                <td style=" border: 0px"><b>Employee ID </b></td><td style=" border: 0px"></td>
+                                 <td style=" border: 0px">:&nbsp;&nbsp;<?php echo isset($empinfo['0']['employee_info']['employee_id']) ? $empinfo['0']['employee_info']['employee_id'] : '';?></td>
+						</tr>
+						<tr style=" border: 0px">	
+                                 <td style=" border: 0px"><b>Designation  </b> </td><td style=" border: 0px"></td>
+                                  <td style=" border: 0px">:&nbsp;&nbsp;<?php echo isset($empinfo['0']['employee_info']['designation']) ? $empinfo['0']['employee_info']['designation'] : '';?><  </td><td style=" border: 0px"></td><td style=" border: 0px"></td>
+                                <td style=" border: 0px"><b>Department   </b></td><td style=" border: 0px"></td>
+                                <td style=" border: 0px">:&nbsp;&nbsp; <?php echo isset($empinfo['0']['employee_info']['department']) ? $empinfo['0']['employee_info']['department'] : '';?>  </td>
+
+                        </tr>
+        <tr style=" border: 0px">	
+                                 <td style=" border: 0px"><b>Branch</b>  </td><td style=" border: 0px"></td>
+                                  <td style=" border: 0px">:&nbsp;&nbsp; <?php echo isset($empinfo['0']['employee_info']['branch']) ? $empinfo['0']['employee_info']['branch'] : '';?> </td><td style=" border: 0px"></td><td style=" border: 0px"></td>
+                                <td style=" border: 0px"><b>Joining Date </b></td><td style=" border: 0px"></td>
+                                 <td style=" border: 0px">:&nbsp;&nbsp;<?php echo isset($empinfo['0']['employee_info']['joining_date']) ? $empinfo['0']['employee_info']['joining_date'] : '';?> </td>
+
+                        </tr>
+            
+                        </table>
+<hr>
+<table class="table" align="center" style="padding-top: 20px;">
+               
+    <thead>
+        
+        <tr>
+                                                               <th>Sl No</th>
+                                                                <th>Date</th>
+                                                                <th>Time</th>
+                                                                <th>In/Out</th>
+                                                                <th>Location</th>
+                                                                
+                                                                
+                                                            </tr>
+    </thead>       
+     <tbody>
+                                                            <?php $count = (count($data));    ?>
+                                                            <?php foreach ($data as $val){
+                                                                    
+?>
+                                                        
+                                                            <?php 
+                                                            if($val[0] != 1){
+                                                                if($date != $val[1]){?>
+                                                            <tr >
+                                                                <th colspan="4"> Duration
+                                                                    
+                                                                </th>
+                                                                <td ><b><?php echo $val[5]; ?></b></td>
+                                                               
+                                                                
+                                                            </tr>
+                                                            <?php   }}?>
+                                                            <tr>
+                                                                <td><?php echo $val[0]; ?></td>
+                                                                <td><?php echo $val[1]; ?></td>
+                                                                <td><?php echo $val[2]; ?></td>
+                                                                <td><?php echo $val[3]; ?></td>
+                                                                <td><?php echo $val[4]; ?></td>
+                                                                
+                                                                 <?php $date = $val[1];?>
+                                                                  
+                                                            </tr>
+                                                           <?php
+                                                            if($val[0] == $count){?>
+                                                            <tr >
+                                                                <th colspan="4"> Duration
+                                                                    
+                                                                </th>
+                                                                <td ><b><?php echo $val[5]; ?></b></td>
+                                                               
+                                                                
+                                                            </tr>
+                                                            <?php   }?>
+                                                           
+                                                            <?php  }?>
+                                                            
+                                                        </tbody>
+</table>
+  <page_footer>
+
+        <div style="width: 100%; text-align: right">
+            page [[page_cu]]/[[page_nb]]
+        </div>
+        <div style="width: 100%; text-align: left">
+            Downloaded By  <?php echo $user_name; ?> <?php echo date("l,F j, Y"); ?> 
+        </div>
+    </page_footer>
+    <?php
+} }?>

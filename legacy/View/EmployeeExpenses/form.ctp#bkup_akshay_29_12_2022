@@ -1,0 +1,395 @@
+<script>
+    //    jQuery.validator.setDefaults({
+    //  debug: true,
+    //  success: "valid"
+    //});
+    //       $( "#emp_expance" ).validate({
+    //  rules: {
+    //    expenses_amount: {
+    //      required: true,
+    //      number: true
+    //    }
+    //  }
+    //});
+    $.validate({
+        form: '#emp_expance'
+    });
+    var options = {
+        success: function(resp) {
+            $('#modalForm').modal('hide');
+            $('#att_table').datagrid('reload');
+            $('#myleaverequeststable').datagrid('reload');
+            $.notify($.parseJSON(resp).msg, {
+                type: 'success',
+                allow_dismiss: false
+            });
+        } // post-submit callback
+    };
+
+
+    $('#emp_expance').on('submit', function(event) {
+        event.preventDefault();
+        if ($('#affected_date').val() == "") {
+            alert('Please choose date');
+            return false;
+        }
+        $("#btn-submit").html('<li class="fa fa-spinner fa-spin"></li> saving...');
+        $("#btn-submit").prop("disabled", true);
+        setTimeout(
+            function() {
+                if ($("#check").val() == 0) {
+                    if (confirm(" Do You Want  To Save The Form")) {
+                        $('#emp_expance').ajaxSubmit(options)
+                    } else {
+                        $("#btn-submit").html("Save");
+                        $("#btn-submit").prop("disabled", false);
+                    }
+                }
+            }, 2000
+        );
+    });
+</script>
+<div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title"> Employee Expenses</h4>
+        </div>
+        <div class="modal-body">
+            <!-- Form starts -->
+            <form class="form-horizontal" id="emp_expance" action="<?php echo $this->webroot; ?>EmployeeExpenses/employeeloansave" method="POST">
+                <div class="modal-body">
+                    <?php
+                    if (isset($arr_employees)) {
+                    ?>
+                        <div class="form-group">
+                            <div class="col-md-10">
+                                <label for="in_date" class="col-sm-4 control-label">Choose Employee<span class="star">*</span></label>
+                                <div class="col-md-7">
+                                    <!--Employee Company ID added by ***ARUL P DAS on 20/12/2019-->
+                                    <select id="emp_id" class="form-control" name="emp_fkey" onchange="findextingsalary();" required="required" style="width: 230px;">
+                                        <option value="">[--Select--]</option>
+                                        <?php
+                                        foreach ($arr_employees as $value) {
+                                            $selected = ($data['emp_fkey'] == $value['emp_details']['emp_pkey']) ? 'selected="selected"' : '';
+                                            echo '<option value="' . $value['emp_details']['emp_pkey'] . '" ' . $selected . '>' . $value['emp_details']['first_name'] . ' ' . $value['emp_details']['last_name'] . ' - ' . $value['emp_proff']['emp_company_id'] . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    <?php
+                    } else {
+                    ?>
+                        <input type="hidden" id="emp_id" name="emp_fkey" value="<?php echo $cur_emp_key; ?>">
+                    <?php
+                    }
+                    ?>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_time" class="col-sm-4 control-label">Expense Type<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" value="" name="expense_type" id="expense_type" style="background:white;" placeholder="Enter Expense Type" required="required">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_time" class="col-sm-4 control-label">Expense Date<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input type="hidden" value="0" id="check" name="check">
+                                <input type="text" class="form-control" value="" name="affected_month" id="affected_date" readonly="readonly" style="background:white;" placeholder="Select Date" required="required">
+                                <!--onchange="//findextingsalary();"-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-4 control-label">Expense Amount<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input type="number" required="required" class="form-control" value="<?php echo $data['expenses_amount'] ?>" name="expenses_amount" id="expenses_amount" onblur="findamount();">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-4 control-label">Image</label>
+                            <div class="col-md-7">
+                                <!--                                <input type="text"  class="form-control" value="<?php // echo $data['remarks']       
+                                                                                                                    ?>" name="image" id="image">-->
+                                <input type="file" class="form-control file" id="image" name="image">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-4 control-label">Purpose</label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" value="<?php //echo $data['remarks']       
+                                                                                ?>" name="purpose" id="purpose" placeholder="Enter a Purpose">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-4 control-label">Vendor</label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" value="<?php //echo $data['remarks']       
+                                                                                ?>" name="vendor" id="vendor" placeholder="Enter Vendor Name">
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                    if (isset($auth_employees)) {
+                    ?>
+                        <div class="form-group">
+                            <div class="col-md-10">
+                                <label for="in_date" class="col-sm-4 control-label">Authorized By<span class="star">*</span></label>
+                                <div class="col-md-7">
+                                    <!--Employee Company ID added by ***ARUL P DAS on 20/12/2019-->
+                                    <select id="auth_emp_id" class="form-control" name="authorized_by" required="required" style="width: 230px;">
+                                        <option value="">[--Select--]</option>
+                                        <?php
+                                        foreach ($auth_employees as $value) {
+                                            $selected = ($data['emp_fkey'] == $value['emp_details']['emp_pkey']) ? 'selected="selected"' : '';
+                                            echo '<option value="' . $value['emp_details']['emp_pkey'] . '" ' . $selected . '>' . $value['emp_details']['first_name'] . ' ' . $value['emp_details']['last_name'] . ' - ' . $value['emp_proff']['emp_company_id'] . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    <?php
+                    }
+
+
+                    if (isset($apr_employees)) {
+                    ?>
+                        <div class="form-group">
+                            <div class="col-md-10">
+                                <label for="in_date" class="col-sm-4 control-label">Approved By<span class="star">*</span></label>
+                                <div class="col-md-7">
+                                    <!--Employee Company ID added by ***ARUL P DAS on 20/12/2019-->
+                                    <select id="apr_emp_id" class="form-control" name="approved_by" required="required" style="width: 230px;">
+                                        <option value="">[--Select--]</option>
+                                        <?php
+                                        foreach ($apr_employees as $value) {
+                                            $selected = ($data['emp_fkey'] == $value['emp_details']['emp_pkey']) ? 'selected="selected"' : '';
+                                            echo '<option value="' . $value['emp_details']['emp_pkey'] . '" ' . $selected . '>' . $value['emp_details']['first_name'] . ' ' . $value['emp_details']['last_name'] . ' - ' . $value['emp_proff']['emp_company_id'] . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    <?php
+                    }
+                    ?>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-4 control-label">Remark</label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" value="<?php echo $data['remarks'] ?>" name="remarks" id="remarks" placeholder="Enter Remarks">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" required="required" class="form-control" value="<?php echo $data['emp_expenses_pkey'] ?>" name="emp_expenses_pkey">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        <button type="submit" name="btn-submit" id="btn-submit" class="btn btn-success">Save</button>
+
+                    </div>
+
+
+
+                </div>
+
+
+
+            </form>
+            <!-- Tax Head Detail Form -->
+
+
+
+
+
+            <!-- form ends-->
+        </div>
+
+    </div>
+
+</div>
+<script type="text/javascript">
+    <?php
+    if (isset($arr_employees)) {
+    ?>
+        $('#emp_id').select2(); //This is to search employee name or company id. By ***ARUL P DAS on 20/12/2019
+    <?php
+    } else {
+    ?>
+        $('#auth_emp_id').select2();
+        $('#apr_emp_id').select2();
+    <?php
+    }
+    ?>
+
+    function checkdate() {
+        var value = $('#expenses_amount').val();
+        if (value < 1) {
+            //alert('please enter a valid number');
+            $('#expenses_amount').val('');
+        }
+    }
+    $("#emp_id").change(function() {
+        $("#expenses_amount").val('');
+        $("#remarks").val('');
+        $('#expense_type').val('');
+        $('#image').val('');
+        $('#purpose').val('');
+        $('#vendor').val('');
+        $('#auth_emp_id').val('');
+        $('#apr_emp_id').val('');
+    });
+    //salary  slip check    
+    function findextingsalary() {
+        //  alert('hi');
+        var aff_date = $('#affected_date').val();
+        var emp_id = $('#emp_id').val();
+        // alert(emp_id);
+        //alert(month);
+        var url = '<?php echo $this->webroot; ?>EmployeeExpenses/salarycheck';
+        //value passiing ajax   
+        $.ajax({
+            // alert('hi');
+            url: url,
+            type: 'post',
+            data: {
+                date: aff_date,
+                emp_id: emp_id,
+                //                     //   active:active
+            },
+            //success time hide                     
+            success: function(resp) {
+                //alert(resp);
+                var json_obj = $.parseJSON(resp);
+
+                if (json_obj.rows.length > 0) {
+                    $.notify(json_obj.msg, {
+                        type: 'danger',
+                        allow_dismiss: false,
+                        z_index: '1400'
+                    });
+                    //                    alert(json_obj.msg);
+                    $("#btn-submit").hide();
+                    $("#check").val(1);
+                    //$("#btn-submit").hide();
+                    //$('#btn-submit').attr(hide);
+                    $("#expenses_amount").val('');
+                    $('#expenses_amount').attr('readonly', true);
+                    $("#remarks").val('');
+                    $('#remarks').attr('readonly', true);
+                    $('#expense_type').attr('readonly', true);
+                    $('#expense_type').val('');
+                    $('#image').attr('readonly', true);
+                    $('#image').val('');
+                    $('#purpose').attr('readonly', true);
+                    $('#purpose').val('');
+                    $('#vendor').attr('readonly', true);
+                    $('#vendor').val('');
+                    $('#auth_emp_id').attr('readonly', true);
+                    $('#auth_emp_id').val('');
+                    $('#apr_emp_id').attr('readonly', true);
+                    $('#apr_emp_id').val('');
+                }
+                //unhide                  
+                else {
+                    // $.notify("BOOM!", "error");
+                    $("#btn-submit").show();
+                    $("#btn-submit").prop("disabled", false);
+                    $("#check").val(0);
+                    //$("#expenses_amount").val('');
+                    $('#expenses_amount').attr('readonly', false);
+                    $('#remarks').attr('readonly', false);
+                    $('#expense_type').attr('readonly', false);
+                    $('#image').attr('readonly', false);
+                    $('#purpose').attr('readonly', false);
+                    $('#vendor').attr('readonly', false);
+                    $('#auth_emp_id').attr('readonly', false);
+                    $('#apr_emp_id').attr('readonly', false);
+                }
+            }
+        });
+    }
+    //validation form amount
+    function findamount() {
+        var rate = $('#expenses_amount').val();
+        //number format
+        ///^[1-9][0-9\.]{0,15}$/
+        ///^\d+$/
+        if (rate.match(/^[1-9][0-9\.]{0,15}$/)) {
+            if (rate < 1) {
+                alert('Please Enter A Valid Amount')
+                $("#expenses_amount").val('');
+            }
+        } else {
+            $("#expenses_amount").val('');
+            // alert('hi');
+        }
+
+    }
+
+    $(document).ready(function() {
+        //$("#pincode").inputmask("999");
+        $('#attendanceuploadtable').parsley();
+        var options = {
+            success: function(responseText, statusText, xhr, $form) {
+                alert("Attendance Uploaded Successfully");
+                closeModal('att_table');
+            }
+        };
+
+        // bind to the form's submit event 
+        $('#attendanceuploadtable').submit(function() {
+            $(this).ajaxSubmit(options);
+            return false;
+        });
+
+        //        $('#affected_date').datepicker().on('changeDate', function() {
+        //            findextingsalary();
+        //        });
+
+        $('#affected_date').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            //            onSelect: function (selected) {
+            //                var esdt = new Date(selected);
+            //                var selectedenddate = $("#out_date").val();
+            //                var ecdt = new Date(selectedenddate);
+            //                if (esdt > ecdt) {
+            //                    alert('Expected In Date Should Be Less Than Expected Out Date');
+            //                    $("#in_date").val('');
+            //                }
+            //
+            //            }
+        }).on('changeDate', function() {
+            findextingsalary();
+        });
+
+        $('#out_time').datepicker({
+            format: 'yyyy-mm-dd',
+            onSelect: function(selected) {
+                var ecdt = new Date(selected);
+                var selectedstartdate = $("#in_date").val();
+                var esdt = new Date(selectedstartdate);
+                if (esdt > ecdt) {
+                    alert('Expected Out Date Should Be Greater Than Expected In Date');
+                    $("#out_date").val('');
+                }
+
+            }
+        })
+        $("#out_date").inputmask("yyyy-mm-dd");
+    });
+</script>

@@ -1,0 +1,311 @@
+<style>
+    div.inflow {
+
+    }
+    div.positioner {position: absolute; right: 0;} /*may not be needed: see below*/
+    div.fixed {
+        overflow: auto;
+
+    }
+    /*tr td.fix{
+        position:fixed;
+    }*/
+    
+    
+</style>
+<?php if ($mode == '') { ?>
+    <div class="modal-body">
+        
+        <?php $data = $arr_leavepolicydetails_for_template['data'];
+            if(empty($data)){?>
+         
+                <div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+        There is no data available</div>
+           <?php } else{?>
+            
+            <div class="col-md-12">
+                <div class="box ">
+                    
+
+                    <div class="box-body">
+                                    <fieldset>
+                                        
+                                        
+                                        <div class="row" style="padding-right: 20px;padding-left: 11px;">
+                                            <div class="col-md-12">
+                                                 <legend style="text-align: center; ">Customer Visits Report - <?php echo $report_month; ?></legend>
+<!--                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <b>Employee Name </b> 
+                                                    </div>
+                                                    <div class="col-md-1">:</div>
+                                                    <div class="col-md-3">
+                                                        <?php echo isset($empinfo['0']['employee_info']['EmpName']) ? $empinfo['0']['employee_info']['EmpName'] : '';?>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <b>Employee ID </b>
+                                                    </div>
+                                                    <div class="col-md-1">:</div>
+                                                    <div class="col-md-3">
+                                                        <?php echo isset($empinfo['0']['employee_info']['employee_id']) ? $empinfo['0']['employee_info']['employee_id'] : '';?>
+                                                    </div>
+                                                </div>-->
+<!--                                                 <div class="row" style="padding-top: 10px;">
+                                                    <div class="col-md-2">
+                                                        <b>Designation</b>
+                                                    </div>
+                                                    <div class="col-md-1">:</div>
+                                                    <div class="col-md-3">
+                                                        <?php echo isset($empinfo['0']['employee_info']['designation']) ? $empinfo['0']['employee_info']['designation'] : '';?>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <b>Department</b>
+                                                    </div>
+                                                    <div class="col-md-1">:</div>
+                                                    <div class="col-md-3">
+                                                        <?php echo isset($empinfo['0']['employee_info']['department']) ? $empinfo['0']['employee_info']['department'] : '';?>
+                                                    </div>
+                                                </div>-->
+<!--                                                 <div class="row" style="padding-top: 10px;">
+                                                    <div class="col-md-2">
+                                                        <b>Branch</b>  
+                                                    </div>
+                                                    <div class="col-md-1">:</div>
+                                                    <div class="col-md-3">
+                                                        <?php echo isset($empinfo['0']['employee_info']['branch']) ? $empinfo['0']['employee_info']['branch'] : '';?>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <b>Joining Date</b>
+                                                    </div>
+                                                    <div class="col-md-1">:</div>
+                                                    <div class="col-md-3">
+                                                        <?php echo isset($empinfo['0']['employee_info']['joining_date']) ? $empinfo['0']['employee_info']['joining_date'] : '';?>
+                                                    </div>
+                                                </div>-->
+<!--                                                 <hr style="    margin-bottom: -8px;">-->
+                                                </div>
+                                            </div>
+
+
+                                    </fieldset>
+                        
+                                    <br>
+                                    <fieldset>
+
+                                        <div class="inflow">
+                                            <div class="fixed">
+                                                <div class="table-responsive">
+                                                    <table class="table no-margin" id="todayattandence">
+                                                        <thead>
+                                                            
+                                                            <tr>
+                                                                <th>Sl. No</th>
+                                                                <th>Customer Name</th>
+                                                                <th>Employee ID</th>
+                                                                <th>Employee Name</th>
+                                                                <th>Branch</th>
+                                                                <th>Purpose</th>
+                                                                <th>Location</th>
+                                                                <th>Check-In</th>
+                                                                <th>Check-Out</th>
+                                                                <th>Duration</th>
+                                                                
+                                                                
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <?php $data = $arr_leavepolicydetails_for_template['data']; ?>
+                                                            <?php foreach ($data as $val){ ?>
+                                                            <tr>
+                                                                <td><?php echo $val[0]; ?></td>
+                                                                <td><?php echo $val[1]; ?></td>
+                                                                <td><?php echo $val[7]; ?></td>
+                                                                <td><?php echo $val[8]; ?></td>
+                                                                 <td><?php echo $val[9]; ?></td>
+                                                                <td><?php echo $val[2]; ?></td>
+                                                                <td><?php echo $val[3]; ?></td>
+                                                                <td><?php echo $val[4]; ?></td>
+                                                                <td><?php echo $val[5]; ?></td>
+                                                                 <td><?php echo $val[6]; ?></td>
+                                                                  <!--<td><?php echo $val[7]; ?></td>-->
+                                                            </tr>
+                                                            <?php $empname =  $val[7];
+                                                                  $empid =  $val[8];
+                                                                  $desig = $val[9];
+                                                                  $dep =$val[10];
+                                                                  $branch =$val[11];?>
+                                                            <?php } ?>
+                                                            
+                                                        </tbody>
+                                                    </table>
+                                                </div> 
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <br>
+                                    
+     <!-- /.box-body -->
+                </div>
+            </div>
+        </div>
+        <?php } ?>
+    </div>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';  ?>
+        
+    <script>
+        $(document).ready(function () {
+             
+        $('#todayattandence').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            dom: 'Bfrtip',
+            buttons: [
+                {extend: "excel", className: "buttonsToHide"},
+{extend: "pdf", className: "buttonsToHide"},
+{extend: "print", className: "buttonsToHide"}
+            ],
+            "info": true,
+            "autoWidth": false,
+            "initComplete": function () {
+                //actions
+            },
+//             "createdRow": function ( row, data, index ) {
+//                if ( data[5].replace(/[\$,]/g, '') * 1 > 150000 ) {
+//                    $('td', row).eq(5).addClass('highlight');
+//                }
+//            },
+            "scrollCollapse": true,
+        });
+        
+        
+        $('.buttons-print').ready(function(){
+            $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn').css("display", "none");
+        });
+        $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn').css("display", "none");
+        $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn').css("display", "none");
+    });
+    </script>
+<?php } else{?>
+    <style type="text/css">
+    body {
+        line-height: 2em;
+    }
+    .block-container {
+        width: 95%;
+        padding: 20px;
+        border: #000000 solid thin;
+    }
+    .sub-head {
+        border-bottom: #000000 solid thin;
+    }
+    .row {
+        height: 32px;
+    }
+    .col-md-4 {
+        width: 33.33%;
+        float: left;
+    }
+    table {
+        border: 1px solid #f4f4f4;
+        width: 80%;
+        max-width: 80%;
+        margin-bottom: 20px;
+        background-color: transparent;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+    td, th {
+        text-align: left;
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border: 1px solid #B2B2B2;
+    }
+   .bor{
+        border-bottom: 0px solid white ;
+        border-right: 0px solid white ; 
+        border-left: 0px solid white ; 
+        border-top: 0px solid white ; 
+    }
+</style>
+  
+<?php $data = $arr_leavepolicydetails_for_template['data'];
+            if(empty($data)){?>
+         
+                <div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+        There is no data available</div>
+           <?php } else{?>
+           <h4>Customer Visits Report - <?php echo $report_month; ?></h4>
+             <h2 style="text-align:center; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];//$this->session->read('company_code'); ?></h2>
+             <hr>
+<table class="table" style=" border: 0px;">
+                        <tr style=" border: 0px; ">
+                            <td style=" border: 0px"><b>Employee Name  </b></td><td style=" border: 0px"></td>
+                                 <td style=" border: 0px;">:&nbsp;&nbsp;<?php echo isset($empinfo['0']['employee_info']['EmpName']) ? $empinfo['0']['employee_info']['EmpName'] : '';?></td><td style=" border: 0px"></td><td style=" border: 0px"></td>
+                                <td style=" border: 0px"><b>Employee ID </b></td><td style=" border: 0px"></td>
+                                <td style=" border: 0px">: &nbsp;&nbsp;<?php echo isset($empinfo['0']['employee_info']['employee_id']) ? $empinfo['0']['employee_info']['employee_id'] : '';?></td>
+						</tr>
+						<tr style=" border: 0px">	
+                                 <td style=" border: 0px"><b>Designation  </b> </td><td style=" border: 0px"></td>
+                                  <td style=" border: 0px">:&nbsp;&nbsp;<?php echo isset($empinfo['0']['employee_info']['designation']) ? $empinfo['0']['employee_info']['designation'] : '';?> </td><td style=" border: 0px"></td><td style=" border: 0px"></td>
+                                <td style=" border: 0px"><b>Department   </b></td><td style=" border: 0px"></td>
+                                <td style=" border: 0px">:&nbsp;&nbsp; <?php echo isset($empinfo['0']['employee_info']['department']) ? $empinfo['0']['employee_info']['department'] : '';?>  </td>
+
+                        </tr>
+        <tr style=" border: 0px">	
+                                 <td style=" border: 0px"><b>Branch</b>  </td><td style=" border: 0px"></td>
+                                  <td style=" border: 0px">:&nbsp;&nbsp; <?php echo isset($empinfo['0']['employee_info']['branch']) ? $empinfo['0']['employee_info']['branch'] : '';?> </td><td style=" border: 0px"></td><td style=" border: 0px"></td>
+                                <td style=" border: 0px"><b>Joining Date </b></td><td style=" border: 0px"></td>
+                                 <td style=" border: 0px">:&nbsp;&nbsp;<?php echo isset($empinfo['0']['employee_info']['joining_date']) ? $empinfo['0']['employee_info']['joining_date'] : '';?> </td>
+
+                        </tr>
+            
+                        </table>
+<hr>
+<table class="table" align="center" style="padding-top: 20px;">
+               
+    <thead>
+        
+        <tr>
+                                                                <th>Sl. No</th>
+                                                                <th>Customer Name</th>
+                                                                <th>Purpose</th>
+                                                                <th>Location</th>
+                                                                <th>Check-In</th>
+                                                                <th>Check-Out</th>
+                                                                <th>Duration</th>
+                                                                
+                                                                
+                                                            </tr>
+    </thead>       
+     <tbody>
+                                                            <?php $data = $arr_leavepolicydetails_for_template['data']; ?>
+                                                            <?php foreach ($data as $val){ ?>
+                                                            <tr>
+                                                                <td><?php echo $val[0]; ?></td>
+                                                                <td><?php echo $val[1]; ?></td>
+                                                                <td><?php echo $val[2]; ?></td>
+                                                                <td><?php echo $val[3]; ?></td>
+                                                                <td><?php echo $val[4]; ?></td>
+                                                                <td><?php echo $val[5]; ?></td>
+                                                                 <td><?php echo $val[6]; ?></td>
+                                                                  <!--<td><?php echo $val[7]; ?></td>-->
+                                                            </tr>
+                                                           
+                                                            <?php } ?>
+                                                            
+                                                        </tbody>
+</table>
+  <page_footer>
+
+        <div style="width: 100%; text-align: right">
+            page [[page_cu]]/[[page_nb]]
+        </div>
+        <div style="width: 100%; text-align: left">
+            Downloaded By  <?php echo $user_name; ?> <?php echo date("l,F j, Y"); ?> 
+        </div>
+    </page_footer>
+    <?php
+} }?>

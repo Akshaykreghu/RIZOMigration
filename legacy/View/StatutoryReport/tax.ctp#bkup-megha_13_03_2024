@@ -1,0 +1,963 @@
+<style>
+    .scroll {
+        overflow-x: scroll;
+    }
+
+    .centre{
+        text-align: center;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    legend {
+        border-bottom: none;
+    }
+</style>
+
+<?php if ($mode == '') { ?>
+    <div class="modal-body" style="overflow-y:initial; padding-right:3%; padding-bottom:3%;">
+        <h2 align="center" style="font-size: 18px;"><b><?php echo "Tax Detailed - " . $mname . "  "  . $year ?> </b></h2>
+        <h3 style="font-weight: bold;text-align: center;font-size: 15px;"><?php echo "(Report Run by " . $user_id . " at " . $date_time . ")" ?></h3>
+        <div class="row">
+            <div class="col-md-12">
+                <div class=" ">
+                    <?php 
+                    if (count($arr_salary_for_template) == 0) { ?>
+                        <div style="font-size: 16px;text-align:left; ">
+                            No data available under the selected criteria</div>
+                        <?php } else { 
+                        $inc_count = isset($arr_taxheadfields['Income']['tax_heads']) ? count($arr_taxheadfields['Income']['tax_heads']) : 0;
+                        $ded_count = isset($arr_taxheadfields['Deductions']['tax_heads']) ? count($arr_taxheadfields['Deductions']['tax_heads']) : 0;
+
+                        if (isset($needBranchWiseReport) && $needBranchWiseReport == 1) {
+                           foreach ($arr_salary_for_template as $value) {
+                              if (count($value) !== 0) {
+                                    if (!empty($value[0]['summary'])) { ?>
+                                        <div class="box-body">
+                                            <fieldset>
+                                                <?php
+                                                if ($cr == 'Units') {
+                                                ?>
+                                                    <legend><?php echo $value[0]['summary']['ei']['branch'];?> </legend>
+                                                <?php
+                                                } 
+                                                ?>
+                                            </fieldset>
+                                            <fieldset class="scroll">
+                                                <table class="table table-bordered ">
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="10">Employee Details</th>
+                                                            <th colspan="7">Tax Calculation</th>
+                                                            <th colspan="<?php echo $inc_count+1; ?>">Tax Head - Income</th>
+                                                            <th colspan="<?php echo $ded_count +1; ?>">Tax Head - Deductions</th>
+                                                            <th colspan="7">Income Tax Slab -New Regime</th>
+                                                            <th colspan="7">Tax Rate - New Regime</th>
+                                                            <th colspan="5">Income Tax Slab - Old Regime</th>
+                                                            <th colspan="5">Tax Rate - Old Regime</th>
+                                                            <th colspan="7">Tax Details</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Sl No</th>
+                                                            <th>Employee ID</th>
+                                                            <th>Company ID</th>
+                                                            <th>Employee Name</th>
+                                                            <th>Branch</th>
+                                                            <th>Department</th>
+                                                            <th>Designation</th>
+                                                            <th>Termination Date</th>
+                                                            <th>Month</th>
+                                                              <th>Opted By</th>
+                                                            <th>Monthly Salary</th>
+                                                            <th>Availed Salary</th>
+                                                            <th>Availed Salary Yearly</th>
+<!--                                                            <th>HRA Exemption</th>-->
+                                                            <th>Deductions</th>
+                                                            <th>Taxable Income From Salary</th>
+                                                            <th>Standard Deduction</th>
+                                                            <th>Total Taxable Income</th>
+                                                            <?php
+                                                            // Tax heads - income
+                                                            foreach ($arr_taxheadfields['Income']['tax_heads'] as $heads) {
+                                                            ?>
+                                                                <th><?php echo $heads['tax_name']; ?></th>
+                                                            <?php }?>
+                                                            <th>Taxable Income From Other Sources</th>
+                                                         
+                                                            <?php
+                                                            foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $heads) {?>
+                                                                <th><?php echo $heads['tax_name']; ?></th>
+                                                            <?php }?>
+                                                            <th>Investments & Other Deductions</th>
+                                                            <?php
+                                                            $arr_total = array();
+                                                            for ($index = 0; $index < (40 + count($arr_taxheadfields['Income']['tax_heads']) + count($arr_taxheadfields['Deductions']['tax_heads'])); $index++) {
+                                                                $arr_total[$index] = 0;
+                                                            } 
+                                                            ?>
+                                                            
+                                                            <!-- Income Tax Slab -New Regime -->
+                                                            <th>Up to Rs.3,00,000</th>
+                                                            <th>Above Rs.3,00,000 - Rs.6,00,000</th>
+                                                            <th>Above Rs.6,00,000 - Rs.9,00,000</th>
+                                                            <th>Above Rs.9,00,000 - Rs.12,00,000</th>
+                                                            <th>Above Rs.12,00,000 - Rs.15,00,000</th>
+                                                            <th>Above Rs.15,00,000</th>
+                                                            <th>Total Income</th>
+
+                                                            <!-- Tax Rate - New Regime -->
+                                                            <th>Up to Rs.3,00,000 (Nil)</th>
+                                                            <th>Above Rs.3 lakh - Rs.6 lakh 5%</th>
+                                                            <th>Above Rs.6 lakh - Rs.9 lakh 10%</th>
+                                                            <th>Above Rs.9 lakh - Rs.12 lakh 15%</th>
+                                                            <th>Above Rs.12 lakh - Rs.15 lakh 20%</th>
+                                                            <th>Above Rs.15 lakh 30%</th>
+                                                            <th>Total Tax</th>
+
+                                                            <!-- Income Tax Slab - Old Regime -->
+                                                            <th>Up to Rs.2,50,000</th>
+                                                            <th>Above Rs.2,50,00c 0 - Rs.5,00,000</th>
+                                                            <th>Above Rs.5,00,000 - Rs.10,00,000</th>
+                                                            <th>Above Rs.10,00,000</th>
+                                                            <th>Total Income</th>
+
+                                                            <!-- Tax Rate - Old Regime -->
+                                                            <th>Up to Rs.2,50,000 (Nil)</th>
+                                                            <th>Above Rs.2.5 lakh - Rs.5 lakh - 5%</th>
+                                                            <th>Above Rs.5 lakh - Rs.10 lakh - 20%</th>
+                                                            <th>Above Rs.10 lakh - 30%</th>
+                                                            <th>Total Tax</th>
+
+                                                            <th>Cess</th>
+                                                            <th>Surcharge</th>
+                                                            <th>Rebate</th>
+                                                            <th>Total</th>
+                                                            <th>Tax Deducted</th>
+                                                            <th>Balance Tax</th>
+                                                            <th>Monthly Tax</th>
+                                                        </tr>
+
+                                                    </thead>
+
+                                                    <tbody>
+                                                        <?php $arr_daata = $value;
+                                                        if (empty($arr_daata))  
+                                                            continue;
+                                                        if (count($arr_daata) >= 0) {
+                                                            $j = 1;
+                                                            foreach ($arr_daata as $employee => $val) {
+                                                                $totalincome =  $val['summary']['tax_computation_report']['Total_Income'];
+                                                                ?>
+                                                                <tr>
+                                                                    <td class="centre"><?php echo $j;  ?></td>
+                                                                    <td class="centre"><?php echo $val['summary']['ei']['emp_id']; ?></td>
+                                                                    <td class="centre"><?php echo $val['summary']['ei']['employee_id']; ?></td>
+                                                                    <td class="centre"><?php $empstatus = (isset($val['summary']['ei']['emp_status'])) && $val['summary']['ei']['emp_status'] == "2" ? '  (Resigned)' : '';
+                                                                        echo $val['summary']['ei']['EmpName'] . $empstatus; ?></td>
+                                                                    <td class="centre"><?php echo $val['summary']['ei']['branch']; ?></td>
+                                                                    <td class="centre"><?php echo $val['summary']['ei']['department']; ?></td>
+                                                                    <td class="centre"><?php echo $val['summary']['ei']['designation']; ?></td>
+                                                                    <td class="centre"><?php echo $val['summary']['te']['last_approved_working_date']; ?></td>
+                                                                    <td class="centre"><?php echo $from; ?></td>
+                                                                     <td> <?php  if($val['summary']['tax_computation_report']['regime']=='NEW'){
+                                                                                     $regime= 'New Regime';
+                                                                                     $hraexemption = 0;
+                                                                                     $investment = 0;
+                                                                                     $deductions = 0;
+                                                                            }
+                                                                              if($val['summary']['tax_computation_report']['regime']=='OLD'){
+                                                                                 $regime= 'Old Regime';
+                                                                                 $deductions = isset($val['summary']['tax_computation_report']['Availed_Salary_Yearly'])?$val['summary']['tax_computation_report']['Availed_Salary_Yearly'] - $val['summary']['tax_computation_report']['Taxable_Income_from_Salary']:0;
+                                                                                 //$hraexemption = isset($val['tax_computation_report']['Hra_exemption'])?$val['tax_computation_report']['Hra_exemption']:0;
+                                                                                 $investment = isset($val['summary']['tax_computation_report']['Investments_Other_Deductions']) ? $val['summary']['tax_computation_report']['Investments_Other_Deductions'] : 0;
+                                                                                 
+                                                                              } echo $regime;?></td>
+                                                                    <?php $deduction_invest = isset($val['summary']['tax_computation_report']['Investments_Other_Deductions']) ? $val['summary']['tax_computation_report']['Investments_Other_Deductions'] : 0;  
+                                                                    $deduction_std = isset($val['summary']['tax_computation_report']['Standard_deduction']) ? $val['summary']['tax_computation_report']['Standard_deduction'] : 0;
+                                                                            $deductiontotal = $deduction_invest + $deduction_std; ?>
+                                                                    <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Monthly_Salary']) ? $val['summary']['tax_computation_report']['Monthly_Salary'] : 0; ?></td>
+                                                                    <?php $arr_total[0] += isset($val['summary']['tax_computation_report']['Monthly_Salary']) ? $val['summary']['tax_computation_report']['Monthly_Salary'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Availed_Salary']) ? $val['summary']['tax_computation_report']['Availed_Salary'] : 0; ?></td>
+                                                                    <?php $arr_total[1] += isset($val['summary']['tax_computation_report']['Availed_Salary']) ? $val['summary']['tax_computation_report']['Availed_Salary'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Availed_Salary_Yearly']) ? $val['summary']['tax_computation_report']['Availed_Salary_Yearly'] : 0; ?></td>
+                                                                    <?php $arr_total[2] += isset($val['summary']['tax_computation_report']['Availed_Salary_Yearly']) ? $val['summary']['tax_computation_report']['Availed_Salary_Yearly'] : 0; ?>
+<!--                                                                    <td class="centre"><?php //echo $hraexemption; ?></td>-->
+                                                                    <?php //$arr_total[3] += $hraexemption; ?>
+                                                                    <td class="centre"><?php echo $deductions; ?></td>
+                                                                    <?php $arr_total[3] += $deductions;  ?>
+                                                                    <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Taxable_Income_from_Salary']) ? $val['summary']['tax_computation_report']['Taxable_Income_from_Salary'] : 0; ?></td>
+                                                                    <?php $arr_total[4] += isset($val['summary']['tax_computation_report']['Taxable_Income_from_Salary']) ? $val['summary']['tax_computation_report']['Taxable_Income_from_Salary'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Standard_deduction']) ? $val['summary']['tax_computation_report']['Standard_deduction'] : 0; ?></td>
+                                                                    <?php $arr_total[5] += isset($val['summary']['tax_computation_report']['Standard_deduction']) ? $val['summary']['tax_computation_report']['Standard_deduction'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Total_Taxable_Income']) ? $val['summary']['tax_computation_report']['Total_Taxable_Income'] : 0; ?></td>
+                                                                    <?php $arr_total[6] += isset($val['summary']['tax_computation_report']['Total_Taxable_Income']) ? $val['summary']['tax_computation_report']['Total_Taxable_Income'] : 0; ?>
+                                                                    <!-- income -->
+                                                                    <?php
+                                                                    $arr_tax = array();
+                                                                    $i=0;
+                                                                     foreach ($arr_taxheadfields['Income']['tax_heads'] as $key1 => $heads) {
+                                                                         $i++;
+                                                                         $arr_tax[$i] = 0;
+                                                                        foreach ($val['summary']['tax'] as $key => $tax) {
+                                                                            if($heads['tax_heads_pkey']==$key){
+                                                                                $arr_tax[$i] = isset($tax['tax_value']) ? $tax['tax_value'] : 0;
+                                                                            } 
+                                                                        }
+                                                                     }
+
+                                                                    $k = 7;
+                                                                    foreach ($arr_tax as $ar_tax) { ?>
+                                                                        <td class="centre"><?php echo isset($ar_tax) ? $ar_tax : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($ar_tax) ? $ar_tax : 0;
+                                                                        } ?>
+
+                                                                         <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Taxable_Income_from_Other_Sources']) ? $val['summary']['tax_computation_report']['Taxable_Income_from_Other_Sources'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Taxable_Income_from_Other_Sources']) ? $val['summary']['tax_computation_report']['Taxable_Income_from_Other_Sources'] : 0; ?>
+                                                                    <?php
+                                                              // deductions
+                                                                    $arr_tax_ded = array();
+                                                                    $i=0;
+                                                                    foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $key1 => $heads) {
+                                                                         $i++;
+                                                                        $arr_tax_ded[$i] = 0;
+                                                                        foreach ($val['summary']['tax'] as $key => $tax) {
+                                                                            if($heads['tax_heads_pkey']==$key){
+                                                                                $arr_tax_ded[$i] = isset($tax['tax_value']) ? $tax['tax_value'] : 0;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    foreach ($arr_tax_ded as $ar_tax) {
+                                                                           if($val['summary']['tax_computation_report']['regime']=='NEW'){ ?>
+                                                                            
+                                                                        <td class="centre"><?php echo 0; ?></td>
+                                                                        <?php $arr_total[$k++] += 0;
+                                                                           }else{ ?>
+                                                                        <td class="centre"><?php echo isset($ar_tax) ? $ar_tax : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($ar_tax) ? $ar_tax : 0;
+                                                                           }
+                                                                   }
+                                                                    ?>  
+                                                                     <td class="centre"><?php echo $investment; ?></td>
+                                                                    <?php $arr_total[$k++] += $investment; ?>
+
+                                                                    <?php
+                                                                    if ($val['summary']['tax_computation_report']['regime'] == 'NEW') { 
+                                                                    if($val['summary']['tax_computation_report']['Total_Income'] > 300000) {
+                                                                            $above_first_slab = 300000;
+                                                                        }else{
+                                                                          $above_first_slab = $val['summary']['tax_computation_report']['Total_Income'];  
+                                                                        } ?>
+                                                                        <td class="centre"><?php echo isset($above_first_slab) ? $above_first_slab : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($above_first_slab) ? $above_first_slab : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_Secnd_income']) ? $val['summary']['tax_computation_report']['Above_Secnd_income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Above_Secnd_income']) ? $val['summary']['tax_computation_report']['Above_Secnd_income'] : 0; ?>
+
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_third_income']) ? $val['summary']['tax_computation_report']['Above_third_income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Above_third_income']) ? $val['summary']['tax_computation_report']['Above_third_income'] : 0; ?>
+
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_fourth_income']) ? $val['summary']['tax_computation_report']['Above_fourth_income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Above_fourth_income']) ? $val['summary']['tax_computation_report']['Above_fourth_income'] : 0; ?>
+
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_fifth_income']) ? $val['summary']['tax_computation_report']['Above_fifth_income'] : 0; ?></td>
+
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Above_fifth_income']) ? $val['summary']['tax_computation_report']['Above_fifth_income'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_sixth_income']) ? $val['summary']['tax_computation_report']['Above_sixth_income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Above_sixth_income']) ? $val['summary']['tax_computation_report']['Above_sixth_income'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Total_Income']) ? $val['summary']['tax_computation_report']['Total_Income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Total_Income']) ? $val['summary']['tax_computation_report']['Total_Income'] : 0; ?>
+                                                                        
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_first_slab']) ? $val['summary']['tax_computation_report']['Above_first_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Above_first_slab']) ? $val['summary']['tax_computation_report']['Above_first_slab'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_second_slab']) ? $val['summary']['tax_computation_report']['Above_second_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Above_second_slab']) ? $val['summary']['tax_computation_report']['Above_second_slab'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_third_slab']) ? $val['summary']['tax_computation_report']['Above_third_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] +=  isset($val['summary']['tax_computation_report']['Above_third_slab']) ? $val['summary']['tax_computation_report']['Above_third_slab'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_fourth_slab']) ? $val['summary']['tax_computation_report']['Above_fourth_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Above_fourth_slab']) ? $val['summary']['tax_computation_report']['Above_fourth_slab'] : 0;  ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_fifth_slab']) ? $val['summary']['tax_computation_report']['Above_fifth_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] +=  isset($val['summary']['tax_computation_report']['Above_fifth_slab']) ? $val['summary']['tax_computation_report']['Above_fifth_slab'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_sixth_slab']) ? $val['summary']['tax_computation_report']['Above_sixth_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Above_sixth_slab']) ? $val['summary']['tax_computation_report']['Above_sixth_slab'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Total_Tax']) ? $val['summary']['tax_computation_report']['Total_Tax'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Total_Tax']) ? $val['summary']['tax_computation_report']['Total_Tax'] : 0; ?>
+                                                                        
+ 
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+
+                                                                    <?php } else { ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+
+                                                                        <?php  if($val['summary']['tax_computation_report']['Total_Income'] > 250000) {
+                                                                            $above_first_slab = 250000;
+                                                                            $TotalIncome = $val['summary']['tax_computation_report']['Total_Income'] + 250000;
+                                                                        }else{
+                                                                          $above_first_slab =  $TotalIncome = $val['summary']['tax_computation_report']['Total_Income'];  
+                                                                        } ?>
+                                                                        <td class="centre"><?php echo isset($above_first_slab) ? $above_first_slab : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($above_first_slab) ? $above_first_slab : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_first_income']) ? $val['summary']['tax_computation_report']['Above_first_income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Above_first_income']) ? $val['summary']['tax_computation_report']['Above_first_income'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_Secnd_income']) ? $val['summary']['tax_computation_report']['Above_Secnd_income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Above_Secnd_income']) ? $val['summary']['tax_computation_report']['Above_Secnd_income'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_third_income']) ? $val['summary']['tax_computation_report']['Above_third_income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Above_third_income']) ? $val['summary']['tax_computation_report']['Above_third_income'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($TotalIncome) ? $TotalIncome : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($TotalIncome) ? $TotalIncome : 0; ?>
+                                                                        <td class="centre"><?php echo 0; ?></td>
+                                                                        <?php $arr_total[$k++] += 0;  ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_first_slab']) ? $val['summary']['tax_computation_report']['Above_first_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Above_first_slab']) ? $val['summary']['tax_computation_report']['Above_first_slab'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_second_slab']) ? $val['summary']['tax_computation_report']['Above_second_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Above_second_slab']) ? $val['summary']['tax_computation_report']['Above_second_slab'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Above_third_slab']) ? $val['summary']['tax_computation_report']['Above_third_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Above_third_slab']) ? $val['summary']['tax_computation_report']['Above_third_slab'] : 0;  ?>
+                                                                        <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Total_Tax']) ? $val['summary']['tax_computation_report']['Total_Tax'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Total_Tax']) ? $val['summary']['tax_computation_report']['Total_Tax'] : 0; ?>
+                                                                        <?php } ?>
+                                                                    <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Cess']) ? $val['summary']['tax_computation_report']['Cess'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Cess']) ? $val['summary']['tax_computation_report']['Cess'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Surcharge']) ? $val['summary']['tax_computation_report']['Surcharge'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Surcharge']) ? $val['summary']['tax_computation_report']['Surcharge'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Rebate']) ? $val['summary']['tax_computation_report']['Rebate'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Rebate']) ? $val['summary']['tax_computation_report']['Rebate'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Total']) ? $val['summary']['tax_computation_report']['Total'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Total']) ? $val['summary']['tax_computation_report']['Total'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Tax_Deducted']) ? $val['summary']['tax_computation_report']['Tax_Deducted'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Tax_Deducted']) ? $val['summary']['tax_computation_report']['Tax_Deducted'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Balance_Tax']) ? $val['summary']['tax_computation_report']['Balance_Tax'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Balance_Tax']) ? $val['summary']['tax_computation_report']['Balance_Tax'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['summary']['tax_computation_report']['Monthly_Tax']) ? $val['summary']['tax_computation_report']['Monthly_Tax'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['summary']['tax_computation_report']['Monthly_Tax']) ? $val['summary']['tax_computation_report']['Monthly_Tax'] : 0;?>
+                                                                  
+                                                                </tr>
+                                                            <?php   $j++; } 
+                                                             } else { ?>
+                                                                <tr>
+                                                                    <td>No data found under this criteria</td>
+                                                                </tr>
+                                                            <?php } ?>
+                                                            <tr>
+                                                                <th colspan="10">TOTAL</th>
+                                                                <?php 
+                                                                foreach ($arr_total as $totem) { ?>
+                                                                <th><?php echo round($totem); ?></th>
+                                                                <?php } ?>
+                                                            </tr>
+                                                    </tbody>
+                                                </table>
+                                                </fieldset>
+                                        </div>
+                                 <?php   }
+                              }
+                        }                           
+                        } else {  
+                            $i = 0;
+                            foreach ($arr_salary_for_template as $value) {
+                                if (count($value) !== 0) {
+                                    $i += 1;
+                                    if (!empty($value['summary'])) {  ?>
+                                        <div class="box-body">
+                                            <fieldset>
+                                                <?php
+                                                if ($cr == 'Units') {
+                                                ?>
+                                                    <legend><?php echo $value['summary'][0]['ei']['branch']; ?> </legend>
+                                                <?php
+                                                } else {
+                                                    $empstatus = (isset($value['summary'][0]['ei']['emp_status'])) && $value['summary'][0]['ei']['emp_status'] == "2" ? '  (Resigned)' : '';
+                                                ?>
+                                                    <legend><?php echo $value['summary'][0]['ei']['EmpName'] . "" . $empstatus;?> </legend>
+                                                <?php
+                                                }
+                                                ?>
+                                            </fieldset>
+                                            <fieldset class="scroll">
+                                                <table class="table table-bordered ">
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="10">Employee Details</th>
+                                                            <th colspan="7">Tax Calculation</th>
+                                                            <th colspan="<?php echo $inc_count+1; ?>">Tax Head - Income</th>
+                                                            <th colspan="<?php echo $ded_count +1; ?>">Tax Head - Deductions</th>
+                                                            <th colspan="7">Income Tax Slab -New Regime</th>
+                                                            <th colspan="7">Tax Rate - New Regime</th>
+                                                            <th colspan="5">Income Tax Slab - Old Regime</th>
+                                                            <th colspan="5">Tax Rate - Old Regime</th>
+                                                            <th colspan="7">Tax Details</th>
+                                                        </tr>
+                                                         <tr>
+                                                            <th>Sl No</th>
+                                                            <th>Employee ID</th>
+                                                            <th>Company ID</th>
+                                                            <th>Employee Name</th>
+                                                            <th>Branch</th>
+                                                            <th>Department</th>
+                                                            <th>Designation</th>
+                                                            <th>Termination Date</th>
+                                                            <th>Month</th>
+                                                            <th>Opted By</th>
+                                                            <th>Monthly Salary</th>
+                                                            <th>Availed Salary</th>
+                                                            <th>Availed Salary Yearly</th>
+<!--                                                            <th>HRA Exemption</th>-->
+                                                            <th>Deductions</th>
+                                                            <th>Taxable Income From Salary</th>
+                                                            <th>Standard deduction</th>
+                                                            <th>Total Taxable Income</th>
+                                                            <?php
+                                                            // Tax heads - income
+                                                            foreach ($arr_taxheadfields['Income']['tax_heads'] as $heads) {
+                                                            ?>
+                                                                <th><?php echo $heads['tax_name']; ?></th>
+                                                            <?php }?>
+                                                            <th>Taxable income from other sources</th>
+                                                           
+                                                            <?php
+                                                            foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $heads) {?>
+                                                                <th><?php echo $heads['tax_name']; ?></th>
+                                                            <?php }?>
+                                                            <th>Investments & Other Deductions</th>
+                                                            <?php
+                                                            $arr_total = array();
+                                                            for ($index = 0; $index < (40 + count($arr_taxheadfields['Income']['tax_heads']) + count($arr_taxheadfields['Deductions']['tax_heads'])); $index++) {
+                                                                $arr_total[$index] = 0;
+                                                            } 
+                                                            ?>
+                                                            
+                                                           
+                                                            <!-- Income Tax Slab -New Regime -->
+                                                            <th>Up to Rs.3,00,000</th>
+                                                            <th>Above Rs.3,00,000 - Rs.6,00,000</th>
+                                                            <th>Above Rs.6,00,000 - Rs.9,00,000</th>
+                                                            <th>Above Rs.9,00,000 - Rs.12,00,000</th>
+                                                            <th>Above Rs.12,00,000 - Rs.15,00,000</th>
+                                                            <th>Above Rs.15,00,000</th>
+                                                            <th>Total Income</th>
+
+                                                            <!-- Tax Rate - New Regime -->
+                                                            <th>Up to Rs.3,00,000 (Nil)</th>
+                                                            <th>Above Rs.3 lakh - Rs.6 lakh 5%</th>
+                                                            <th>Above Rs.6 lakh - Rs.9 lakh 10%</th>
+                                                            <th>Above Rs.9 lakh - Rs.12 lakh 15%</th>
+                                                            <th>Above Rs.12 lakh - Rs.15 lakh 20%</th>
+                                                            <th>Above Rs.15 lakh 30%</th>
+                                                            <th>Total Tax</th>
+
+                                                            <!-- Income Tax Slab - Old Regime -->
+                                                            <th>Up to Rs.2,50,000</th>
+                                                            <th>Above Rs.2,50,000 - Rs.5,00,000</th>
+                                                            <th>Above Rs.5,00,000 - Rs.10,00,000</th>
+                                                            <th>Above Rs.10,00,000</th>
+                                                            <th>Total Income</th>
+
+                                                            <!-- Tax Rate - Old Regime -->
+                                                            <th>Up to Rs.2,50,000 (Nil)</th>
+                                                            <th>Above Rs.2.5 lakh - Rs.5 lakh - 5%</th>
+                                                            <th>Above Rs.5 lakh - Rs.10 lakh - 20%</th>
+                                                            <th>Above Rs.10 lakh - 30%</th>
+                                                            <th>Total Tax</th>
+
+                                                            <th>Cess</th>
+                                                            <th>Surcharge</th>
+                                                            <th>Rebate</th>
+                                                            <th>Total</th>
+                                                            <th>Tax Deducted</th>
+                                                            <th>Balance Tax</th>
+                                                            <th>Monthly Tax</th>
+                                                        </tr>
+
+                                                    </thead>
+
+                                                    <tbody>
+
+                                                        <?php $arr_data = $value; ?>
+
+                                                        <?php $arr_daata = $value['summary'];
+                                                        $employees = $value;
+                                                        if (empty($arr_daata))                        continue;
+                                                        if (count($arr_data) >= 0) {
+                                                            $i = 0;
+
+                                                        ?>
+                                                            <?php
+                                                            $arr_e = $employees['summary'];
+                                                            foreach ($arr_e as $employee => $val) {
+                                                                $totalincome =  $val['tax_computation_report']['Total_Income'];
+                                                                ?>
+                                                                <tr>
+                                                                    <?php $i = $i + 1; ?>
+                                                                    <td><?php echo $i;  ?></td>
+                                                                    <td><?php echo $val['ei']['emp_id']; ?></td>
+                                                                    <td><?php echo $val['ei']['employee_id']; ?></td>
+                                                                    <td><?php echo $val['ei']['EmpName']; ?></td>
+                                                                    <td><?php echo $val['ei']['branch']; ?></td>
+                                                                    <td><?php echo $val['ei']['department']; ?></td>
+                                                                    <td><?php echo $val['ei']['designation']; ?></td>
+                                                                    <td><?php echo $val['te']['last_approved_working_date']; ?></td>
+                                                                    <td><?php echo $from; ?></td>
+                                                                    <td> <?php if($val['tax_computation_report']['regime']=='NEW'){
+                                                                                     $regime= 'New Regime';
+                                                                                     $hraexemption = 0;
+                                                                                     $investment = 0;
+                                                                                     $deductions = 0;
+                                                                            }
+                                                                              if($val['tax_computation_report']['regime']=='OLD'){
+                                                                                 $regime= 'Old Regime';
+                                                                                  $deductions = isset($val['tax_computation_report']['Availed_Salary_Yearly'])?$val['tax_computation_report']['Availed_Salary_Yearly'] - $val['tax_computation_report']['Taxable_Income_from_Salary']:0;
+                                                                                  $hraexemption = isset($val['tax_computation_report']['Hra_exemption'])?$val['tax_computation_report']['Hra_exemption']:0;
+                                                                                  $investment = isset($val['tax_computation_report']['Investments_Other_Deductions']) ? $val['tax_computation_report']['Investments_Other_Deductions'] : 0;
+                                                                             
+                                                                                 } echo $regime; ?></td>
+                                                                     <?php $deduction_invest = isset($val['tax_computation_report']['Investments_Other_Deductions']) ? $val['tax_computation_report']['Investments_Other_Deductions'] : 0;  
+                                                                    $deduction_std = isset($val['tax_computation_report']['Standard_deduction']) ? $val['tax_computation_report']['Standard_deduction'] : 0;
+                                                                            $deductiontotal = $deduction_invest + $deduction_std; ?>
+                                                                    <td class="centre"><?php echo isset($val['tax_computation_report']['Monthly_Salary']) ? $val['tax_computation_report']['Monthly_Salary'] : 0; ?></td>
+                                                                    <?php $arr_total[0] += isset($val['tax_computation_report']['Monthly_Salary']) ? $val['tax_computation_report']['Monthly_Salary'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['tax_computation_report']['Availed_Salary']) ? round($val['tax_computation_report']['Availed_Salary']) : 0; ?></td>
+                                                                    <?php $arr_total[1] += isset($val['tax_computation_report']['Availed_Salary']) ? $val['tax_computation_report']['Availed_Salary'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['tax_computation_report']['Availed_Salary_Yearly']) ? round($val['tax_computation_report']['Availed_Salary_Yearly']) : 0; ?></td>
+                                                                    <?php $arr_total[2] += isset($val['tax_computation_report']['Availed_Salary_Yearly']) ? $val['tax_computation_report']['Availed_Salary_Yearly'] : 0; ?>
+<!--                                                                    <td class="centre"><?php //echo $hraexemption; ?></td>-->
+                                                                    <?php //$arr_total[3] += $hraexemption; ?>
+                                                                    <td class="centre"><?php echo $deductions; ?></td>
+                                                                    <?php $arr_total[3] += $deductions;  ?>
+                                                                    <td class="centre"><?php echo isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? $val['tax_computation_report']['Taxable_Income_from_Salary'] : 0; ?></td>
+                                                                    <?php $arr_total[4] += isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? $val['tax_computation_report']['Taxable_Income_from_Salary'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['tax_computation_report']['Standard_deduction']) ? $val['tax_computation_report']['Standard_deduction'] : 0; ?></td>
+                                                                    <?php $arr_total[5] += isset($val['tax_computation_report']['Standard_deduction']) ? $val['tax_computation_report']['Standard_deduction'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['tax_computation_report']['Total_Taxable_Income']) ? $val['tax_computation_report']['Total_Taxable_Income'] : 0; ?></td>
+                                                                    <?php $arr_total[6] += isset($val['tax_computation_report']['Total_Taxable_Income']) ? $val['tax_computation_report']['Total_Taxable_Income'] : 0; ?>
+                                                                    <!-- income -->
+                                                                    <?php
+                                                                    $arr_tax = array();
+                                                                    $i=0;
+                                                                     foreach ($arr_taxheadfields['Income']['tax_heads'] as $key1 => $heads) {
+                                                                         $i++;
+                                                                         $arr_tax[$i] = 0;
+                                                                        foreach ($val['tax'] as $key => $tax) {
+                                                                            if($heads['tax_heads_pkey']==$key){
+                                                                                $arr_tax[$i] = isset($tax['tax_value']) ? $tax['tax_value'] : 0;
+                                                                            }
+                                                                        }
+                                                                     }  
+                                                                    $k = 7;
+                                                                    foreach ($arr_tax as $ar_tax) { ?>
+                                                                        <td class="centre"><?php echo isset($ar_tax) ? $ar_tax : 0; ?></td>
+                                                                    <?php $arr_total[$k] += isset($ar_tax) ? $ar_tax : 0;
+                                                                        $k++;  } ?>
+                                                                 <td class="centre"><?php echo isset($val['tax_computation_report']['Taxable_Income_from_Other_Sources']) ? $val['tax_computation_report']['Taxable_Income_from_Other_Sources'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['tax_computation_report']['Taxable_Income_from_Other_Sources']) ? $val['tax_computation_report']['Taxable_Income_from_Other_Sources'] : 0; ?>
+                                                                      
+
+
+                                                            <?php  // deductions
+                                                                    $arr_tax_ded = array();
+                                                                    $i=0;
+                                                                    foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $key1 => $heads) {
+                                                                        $i++;
+                                                                        $arr_tax_ded[$i] = 0;
+                                                                        foreach ($val['tax'] as $key => $tax) {
+                                                                            if($heads['tax_heads_pkey']==$key){
+                                                                                $arr_tax_ded[$i] = isset($tax['tax_value']) ? $tax['tax_value'] : 0;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                       
+                                                                    foreach ($arr_tax_ded as $ar_tax) { 
+                                                                            if($val['tax_computation_report']['regime']=='NEW'){ ?>
+                                                                            
+                                                                        <td class="centre"><?php echo 0; ?></td>
+                                                                        <?php $arr_total[$k++] += 0;
+                                                                           }else{ ?>
+                                                                        <td class="centre"><?php echo isset($ar_tax) ? $ar_tax : 0; ?></td>
+                                                                        <?php $arr_total[$k] += isset($ar_tax) ? $ar_tax : 0;
+                                                                         $k++;
+                                                                           }
+                                                                       
+
+                                                                        ?>
+
+                                                                    <?php } 
+                                                                    ?>  
+                                                                    <td class="centre"><?php echo $investment; ?></td>
+                                                                    <?php $arr_total[$k++] += $investment; ?>
+                                                                    <?php
+                                                                    if ($val['tax_computation_report']['regime'] == 'NEW') { 
+                                                                    if($val['tax_computation_report']['Total_Income'] > 300000) {
+                                                                            $above_first_slab = 300000;
+                                                                        }else{
+                                                                          $above_first_slab = $val['tax_computation_report']['Total_Income'];  
+                                                                        }  ?>
+                                                                        <td class="centre"><?php echo isset($above_first_slab) ? $above_first_slab : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($above_first_slab) ? $above_first_slab : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_Secnd_income']) ? $val['tax_computation_report']['Above_Secnd_income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Above_Secnd_income']) ? $val['tax_computation_report']['Above_Secnd_income'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_third_income']) ? $val['tax_computation_report']['Above_third_income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Above_third_income']) ? $val['tax_computation_report']['Above_third_income'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_fourth_income']) ? $val['tax_computation_report']['Above_fourth_income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Above_fourth_income']) ? $val['tax_computation_report']['Above_fourth_income'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_fifth_income']) ? $val['tax_computation_report']['Above_fifth_income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Above_fifth_income']) ? $val['tax_computation_report']['Above_fifth_income'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_sixth_income']) ? $val['tax_computation_report']['Above_sixth_income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Above_sixth_income']) ? $val['tax_computation_report']['Above_sixth_income'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? $val['tax_computation_report']['Taxable_Income_from_Salary'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? $val['tax_computation_report']['Taxable_Income_from_Salary'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_first_slab']) ? $val['tax_computation_report']['Above_first_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Above_first_slab']) ? $val['tax_computation_report']['Above_first_slab'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_second_slab']) ? $val['tax_computation_report']['Above_second_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Above_second_slab']) ? $val['tax_computation_report']['Above_second_slab'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_third_slab']) ? $val['tax_computation_report']['Above_third_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Above_third_slab']) ? $val['tax_computation_report']['Above_third_slab'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_fourth_slab']) ? $val['tax_computation_report']['Above_fourth_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Above_fourth_slab']) ? $val['tax_computation_report']['Above_fourth_slab'] : 0;  ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_fifth_slab']) ? $val['tax_computation_report']['Above_fifth_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] +=  isset($val['tax_computation_report']['Above_fifth_slab']) ? $val['tax_computation_report']['Above_fifth_slab'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_sixth_slab']) ? $val['tax_computation_report']['Above_sixth_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Above_sixth_slab']) ? $val['tax_computation_report']['Above_sixth_slab'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Total_Tax']) ? $val['tax_computation_report']['Total_Tax'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Total_Tax']) ? $val['tax_computation_report']['Total_Tax'] : 0; ?>
+                                                                        
+ 
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+
+
+                                                                    <?php } else { ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+                                                                        <td class="centre">0</td><?php $arr_total[$k++] += 0; ?>
+
+                                                                       
+                                                                        <?php  if($val['tax_computation_report']['Total_Income'] > 250000) {
+                                                                            $above_first_slab = 250000;
+                                                                            $TotalIncome = $val['tax_computation_report']['Total_Income'] + 250000;
+                                                                        }else{
+                                                                          $above_first_slab = $TotalIncome = $val['tax_computation_report']['Total_Income'];  
+                                                                        }  ?>
+                                                                        <td class="centre"><?php echo isset($above_first_slab) ? $above_first_slab : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($above_first_slab) ? $above_first_slab : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_first_income']) ? $val['tax_computation_report']['Above_first_income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Above_first_income']) ? $val['tax_computation_report']['Above_first_income'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_Secnd_income']) ? $val['tax_computation_report']['Above_Secnd_income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Above_Secnd_income']) ? $val['tax_computation_report']['Above_Secnd_income'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_third_income']) ? $val['tax_computation_report']['Above_third_income'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Above_third_income']) ? $val['tax_computation_report']['Above_third_income'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($TotalIncome) ? $TotalIncome: 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($TotalIncome) ? $TotalIncome : 0; ?>
+                                                                        <td class="centre"><?php echo 0; ?></td>
+                                                                        <?php $arr_total[$k++] += 0;  ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_first_slab']) ? $val['tax_computation_report']['Above_first_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Above_first_slab']) ? $val['tax_computation_report']['Above_first_slab'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_second_slab']) ? $val['tax_computation_report']['Above_second_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Above_second_slab']) ? $val['tax_computation_report']['Above_second_slab'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Above_third_slab']) ? $val['tax_computation_report']['Above_third_slab'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] +=  isset($val['tax_computation_report']['Above_third_slab']) ? $val['tax_computation_report']['Above_third_slab'] : 0; ?>
+                                                                        <td class="centre"><?php echo isset($val['tax_computation_report']['Total_Tax']) ? $val['tax_computation_report']['Total_Tax'] : 0; ?></td>
+                                                                        <?php $arr_total[$k++] += isset($val['tax_computation_report']['Total_Tax']) ? $val['tax_computation_report']['Total_Tax'] : 0; ?>
+                                                                        <?php } ?>
+                                                                    <td class="centre"><?php echo isset($val['tax_computation_report']['Cess']) ? $val['tax_computation_report']['Cess'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['tax_computation_report']['Cess']) ? $val['tax_computation_report']['Cess'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['tax_computation_report']['Surcharge']) ? $val['tax_computation_report']['Surcharge'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['tax_computation_report']['Surcharge']) ? $val['tax_computation_report']['Surcharge'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['tax_computation_report']['Rebate']) ? $val['tax_computation_report']['Rebate'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['tax_computation_report']['Rebate']) ? $val['tax_computation_report']['Rebate'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['tax_computation_report']['Total']) ? $val['tax_computation_report']['Total'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['tax_computation_report']['Total']) ? $val['tax_computation_report']['Total'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['tax_computation_report']['Tax_Deducted']) ? $val['tax_computation_report']['Tax_Deducted'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['tax_computation_report']['Tax_Deducted']) ? $val['tax_computation_report']['Tax_Deducted'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['tax_computation_report']['Balance_Tax']) ? $val['tax_computation_report']['Balance_Tax'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['tax_computation_report']['Balance_Tax'])? $val['tax_computation_report']['Balance_Tax'] : 0; ?>
+                                                                    <td class="centre"><?php echo isset($val['tax_computation_report']['Monthly_Tax']) ? $val['tax_computation_report']['Monthly_Tax'] : 0; ?></td>
+                                                                    <?php $arr_total[$k++] += isset($val['tax_computation_report']['Monthly_Tax']) ? $val['tax_computation_report']['Monthly_Tax'] : 0;
+                                                                      }
+                                                                     } else { ?>
+                                                                <tr>
+                                                                    <td>No data found under this criteria</td>
+                                                                </tr>
+                                                            <?php } ?>
+                                                             <tr>
+                                                                <th colspan="10">TOTAL</th>
+                                                                <?php //array_pop($arr_total);
+                                                                foreach ($arr_total as $totem) { ?>
+                                                                <th><?php echo round($totem); ?></th>
+                                                                <?php } ?>
+                                                            </tr>
+                                                    </tbody>
+                                                </table>
+                                            </fieldset>
+                                            <br>
+                                        </div>
+                                <?php }
+                                } ?> <!-- /.box-body -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+                       <?php }
+                        }
+                    }
+                } else { ?>
+<?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';  
+?>
+<style type="text/css">
+    body {
+        line-height: 2em;
+    }
+
+    .block-container {
+        width: 95%;
+        padding: 20px;
+        border: #000000 solid thin;
+    }
+
+    .sub-head {
+        border-bottom: #000000 solid thin;
+    }
+
+    .row {
+        height: 32px;
+    }
+
+    .col-md-4 {
+        width: 33.33%;
+        float: left;
+    }
+
+    table {
+        border: 2px solid #f4f4f4;
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+        background-color: transparent;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+
+    td,
+    th {
+        text-align: left;
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        font-size: 9px;
+        border: 1px solid #B2B2B2;
+    }
+</style>
+
+
+<?php
+                    $i = 0;
+                    foreach ($arr_salary_for_template as $value) {
+                        if (count($value) !== 0) {
+                            $i += 1;
+?>
+        <?php
+                            echo $this->element('reportadminheader', array(
+                                'title' => 'EPF '
+                            ));
+        ?>
+
+
+        <h3 style="text-align: left;padding-bottom: 0px;padding-top: 10px;"> <?php echo isset($value['0']['employee_info']['branch']) ? " EPF Report of - " . $value['0']['employee_info']['branch'] : ''; ?>
+        </h3>
+
+
+        <hr>
+
+        <br>
+
+
+
+        <table class="table">
+            <thead>
+
+                <tr>
+                    <th colspan="5">PF report for the month of jan/2022</th>
+                    <th colspan="2">Employer PF No.</th>
+                </tr>
+
+                <tr>
+                    <th>SI No</th>
+                    <th>UAN</th>
+                    <th>Name of Member</th>
+                    <th colspan="2">Employee Contribution</th>
+                    <th colspan="2">Employer Contribution</th>
+                </tr>
+
+                <tr>
+                    <th rowspan=""></th>
+                    <th></th>
+                    <th></th>
+                    <th>PF Earnings</th>
+                    <th> Contribution EPF</th>
+                    <th>EPF Difference</th>
+                    <th>Pension Fund 8.33%</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php $arr_data = $value; ?>
+                <?php
+                            if (count($arr_data) >= 0) {
+                                $i = 0;
+                                $sum = 0;
+                                $gross = 0;
+                                $pf_salary = 0;
+                                $split1 = 0;
+                                $split2 = 0;
+                                $split3 = 0;
+                                $split4 = 0;
+                ?>
+                    <?php foreach ($arr_data as $val) { ?>
+                        <?php if ($val['0']['EPF'] == 0)
+                                        continue;
+                        ?>
+                        <tr>
+                            <?php $i = $i + 1;
+                                    //$sum += $val['0']['balance_qty']; 
+                            ?>
+                            <td><?php
+                                    echo $i;
+                                    //                                                    $PO_Status = $val['po']['grn_status'];
+                                    //                                                    $string_po = '';
+                                    //                                                    switch ($PO_Status){
+                                    //                                                        case "0": $string_po = "GRN Received";
+                                    //                                                            break;
+                                    //                                                        case "1": $string_po = "PO Ordered";
+                                    //                                                            break;
+                                    //                                                        case "2": $string_po = "Finalised";
+                                    //                                                            break;
+                                    //                                                        default : $string_po = "PO";
+                                    //                                                            break;
+                                    //                                                    }
+                                ?></td>
+                            <td style="width:60px;"><?php echo $val['employee_info']['EmpName']; ?></td>
+                            <td><?php echo $val['employee_info']['employee_id']; ?></td>
+                            <td><?php echo $val['employee_info']['joining_date']; ?></td>
+                            <td style="width:60px;"><?php echo $val['employee_info']['branch']; ?></td>
+                            <td style="width:50px;"><?php echo $val['employee_info']['department']; ?></td>
+                            <!--<td><?php echo $val['employee_info']['designation']; ?></td>-->
+                            <td><?php echo round($val['0']['SALARY'], 2); ?></td>
+                            <td><?php echo $val['emp_details']['pf']; ?></td>
+                            <!--<td><?php echo round($val['0']['EPF'], 2); ?></td>-->
+                            <?php if ($month >= '2020-05' && $month <= '2020-07') { ?>
+                                <td><?php echo round($val['0']['EPF'] * 100 / 10, 2);
+                                        $sal = round($val['0']['EPF'] * 100 / 10, 2); ?></td>
+                            <?php } else { ?>
+                                <td><?php echo round($val['0']['EPF'] * 100 / 12, 2);
+                                        $sal = round($val['0']['EPF'] * 100 / 12, 2); ?></td>
+                            <?php } ?>
+                            <td><?php echo round($val['0']['SALARY'], 2) - round($val['0']['EPF'], 2); ?></td>
+                            <?php
+                                    $gross += round($val['0']['SALARY'], 2);
+                                    $pf_salary += $sal;
+                                    $split1 += round($sal * 8.33 / 100, 2);
+                                    if ($month >= '2020-05' && $month <= '2020-07') {
+                                        $split2 += round($sal * 1.67 / 100, 2);
+                                        $split3 += round($sal * 10 / 100, 2);
+                                    } else {
+                                        $split2 += round($sal * 3.67 / 100, 2);
+                                        $split3 += round($sal * 12 / 100, 2);
+                                    }
+                                    $split4 += round($sal * .5 / 100, 2);
+                            ?>
+                            <?php if ($month >= '2020-05' && $month <= '2020-07') { ?>
+                                <td><?php echo round($sal * 10 / 100, 2); ?></td>
+                            <?php } else { ?>
+                                <td><?php echo round($sal * 12 / 100, 2); ?></td>
+                            <?php } ?>
+                            <td><?php echo round($sal * 8.33 / 100, 2); ?></td>
+                            <?php if ($month >= '2020-05' && $month <= '2020-07') { ?>
+                                <td><?php echo round($sal * 1.67 / 100, 2); ?></td>
+                            <?php } else { ?>
+                                <td><?php echo round($sal * 3.67 / 100, 2); ?></td>
+                            <?php } ?>
+                            <td><?php echo round($sal * .5 / 100, 2); ?></td>
+                            <td><?php echo round($sal * .5 / 100, 2); ?></td>
+                        </tr>
+
+
+
+
+
+                    <?php } ?>
+                    <tr>
+                        <th colspan="6">Total</th>
+
+                        <th><?php echo $gross; ?></th>
+                        <td></td>
+                        <th><?php echo $pf_salary; ?></th>
+                        <th><?php // echo $pf_salary;  
+                            ?></th>
+                        <th><?php echo $split3; ?></th>
+                        <th><?php echo $split1; ?></th>
+                        <th><?php echo $split2; ?></th>
+                        <th><?php echo $split4; ?></th>
+                        <th><?php echo $split4; ?></th>
+                    </tr>
+                <?php } else { ?>
+                    <tr>
+                        <td colspan="4">No Orders found under this data</td>
+                    </tr>
+                <?php } ?>
+
+
+            </tbody>
+        </table>
+
+
+        <br>
+
+
+<?php }
+                    } ?> <!-- /.box-body -->
+
+<?php } ?>

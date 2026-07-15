@@ -1,0 +1,1297 @@
+<?php
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+?>
+<style>
+    table.dataTable {
+        width: 100%;
+        margin: 0 auto;
+        clear: both;
+        border-collapse: separate;
+        border-spacing: 0
+    }
+
+    table.dataTable thead th,
+    table.dataTable tfoot th {
+        font-weight: bold
+    }
+
+    table.dataTable thead th,
+    table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #111
+    }
+
+    table.dataTable thead th:active,
+    table.dataTable thead td:active {
+        outline: none
+    }
+
+    table.dataTable tfoot th,
+    table.dataTable tfoot td {
+        padding: 10px 18px 6px 18px;
+        border-top: 1px solid #111
+    }
+
+    table.dataTable thead .sorting,
+    table.dataTable thead .sorting_asc,
+    table.dataTable thead .sorting_desc {
+        cursor: pointer;
+        *cursor: hand
+    }
+
+    table.dataTable thead .sorting,
+    table.dataTable thead .sorting_asc,
+    table.dataTable thead .sorting_desc,
+    table.dataTable thead .sorting_asc_disabled,
+    table.dataTable thead .sorting_desc_disabled {
+        background-repeat: no-repeat;
+        background-position: center right
+    }
+
+    table.dataTable thead .sorting {
+        background-image: url("../images/sort_both.png")
+    }
+
+    table.dataTable thead .sorting_asc {
+        background-image: url("../images/sort_asc.png")
+    }
+
+    table.dataTable thead .sorting_desc {
+        background-image: url("../images/sort_desc.png")
+    }
+
+    table.dataTable thead .sorting_asc_disabled {
+        background-image: url("../images/sort_asc_disabled.png")
+    }
+
+    table.dataTable thead .sorting_desc_disabled {
+        background-image: url("../images/sort_desc_disabled.png")
+    }
+
+    table.dataTable tbody tr {
+        background-color: #ffffff
+    }
+
+    table.dataTable tbody tr.selected {
+        background-color: #B0BED9
+    }
+
+    table.dataTable tbody th,
+    table.dataTable tbody td {
+        padding: 8px 7px
+    }
+
+    table.dataTable.row-border tbody th,
+    table.dataTable.row-border tbody td,
+    table.dataTable.display tbody th,
+    table.dataTable.display tbody td {
+        border-top: 1px solid #ddd
+    }
+
+    table.dataTable.row-border tbody tr:first-child th,
+    table.dataTable.row-border tbody tr:first-child td,
+    table.dataTable.display tbody tr:first-child th,
+    table.dataTable.display tbody tr:first-child td {
+        border-top: none
+    }
+
+    table.dataTable.cell-border tbody th,
+    table.dataTable.cell-border tbody td {
+        border-top: 1px solid #ddd;
+        border-right: 1px solid #ddd
+    }
+
+    table.dataTable.cell-border tbody tr th:first-child,
+    table.dataTable.cell-border tbody tr td:first-child {
+        border-left: 1px solid #ddd
+    }
+
+    table.dataTable.cell-border tbody tr:first-child th,
+    table.dataTable.cell-border tbody tr:first-child td {
+        border-top: none
+    }
+
+    table.dataTable.stripe tbody tr.odd,
+    table.dataTable.display tbody tr.odd {
+        background-color: #f9f9f9
+    }
+
+    table.dataTable.stripe tbody tr.odd.selected,
+    table.dataTable.display tbody tr.odd.selected {
+        background-color: #acbad4
+    }
+
+    table.dataTable.hover tbody tr:hover,
+    table.dataTable.display tbody tr:hover {
+        background-color: #f6f6f6
+    }
+
+    table.dataTable.hover tbody tr:hover.selected,
+    table.dataTable.display tbody tr:hover.selected {
+        background-color: #aab7d1
+    }
+
+    table.dataTable.order-column tbody tr>.sorting_1,
+    table.dataTable.order-column tbody tr>.sorting_2,
+    table.dataTable.order-column tbody tr>.sorting_3,
+    table.dataTable.display tbody tr>.sorting_1,
+    table.dataTable.display tbody tr>.sorting_2,
+    table.dataTable.display tbody tr>.sorting_3 {
+        background-color: #fafafa
+    }
+
+    table.dataTable.order-column tbody tr.selected>.sorting_1,
+    table.dataTable.order-column tbody tr.selected>.sorting_2,
+    table.dataTable.order-column tbody tr.selected>.sorting_3,
+    table.dataTable.display tbody tr.selected>.sorting_1,
+    table.dataTable.display tbody tr.selected>.sorting_2,
+    table.dataTable.display tbody tr.selected>.sorting_3 {
+        background-color: #acbad5
+    }
+
+    table.dataTable.display tbody tr.odd>.sorting_1,
+    table.dataTable.order-column.stripe tbody tr.odd>.sorting_1 {
+        background-color: #f1f1f1
+    }
+
+    table.dataTable.display tbody tr.odd>.sorting_2,
+    table.dataTable.order-column.stripe tbody tr.odd>.sorting_2 {
+        background-color: #f3f3f3
+    }
+
+    table.dataTable.display tbody tr.odd>.sorting_3,
+    table.dataTable.order-column.stripe tbody tr.odd>.sorting_3 {
+        background-color: whitesmoke
+    }
+
+    table.dataTable.display tbody tr.odd.selected>.sorting_1,
+    table.dataTable.order-column.stripe tbody tr.odd.selected>.sorting_1 {
+        background-color: #a6b4cd
+    }
+
+    table.dataTable.display tbody tr.odd.selected>.sorting_2,
+    table.dataTable.order-column.stripe tbody tr.odd.selected>.sorting_2 {
+        background-color: #a8b5cf
+    }
+
+    table.dataTable.display tbody tr.odd.selected>.sorting_3,
+    table.dataTable.order-column.stripe tbody tr.odd.selected>.sorting_3 {
+        background-color: #a9b7d1
+    }
+
+    table.dataTable.display tbody tr.even>.sorting_1,
+    table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
+        background-color: #fafafa
+    }
+
+    table.dataTable.display tbody tr.even>.sorting_2,
+    table.dataTable.order-column.stripe tbody tr.even>.sorting_2 {
+        background-color: #fcfcfc
+    }
+
+    table.dataTable.display tbody tr.even>.sorting_3,
+    table.dataTable.order-column.stripe tbody tr.even>.sorting_3 {
+        background-color: #fefefe
+    }
+
+    table.dataTable.display tbody tr.even.selected>.sorting_1,
+    table.dataTable.order-column.stripe tbody tr.even.selected>.sorting_1 {
+        background-color: #acbad5
+    }
+
+    table.dataTable.display tbody tr.even.selected>.sorting_2,
+    table.dataTable.order-column.stripe tbody tr.even.selected>.sorting_2 {
+        background-color: #aebcd6
+    }
+
+    table.dataTable.display tbody tr.even.selected>.sorting_3,
+    table.dataTable.order-column.stripe tbody tr.even.selected>.sorting_3 {
+        background-color: #afbdd8
+    }
+
+    table.dataTable.display tbody tr:hover>.sorting_1,
+    table.dataTable.order-column.hover tbody tr:hover>.sorting_1 {
+        background-color: #eaeaea
+    }
+
+    table.dataTable.display tbody tr:hover>.sorting_2,
+    table.dataTable.order-column.hover tbody tr:hover>.sorting_2 {
+        background-color: #ececec
+    }
+
+    table.dataTable.display tbody tr:hover>.sorting_3,
+    table.dataTable.order-column.hover tbody tr:hover>.sorting_3 {
+        background-color: #efefef
+    }
+
+    table.dataTable.display tbody tr:hover.selected>.sorting_1,
+    table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_1 {
+        background-color: #a2aec7
+    }
+
+    table.dataTable.display tbody tr:hover.selected>.sorting_2,
+    table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_2 {
+        background-color: #a3b0c9
+    }
+
+    table.dataTable.display tbody tr:hover.selected>.sorting_3,
+    table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_3 {
+        background-color: #a5b2cb
+    }
+
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #111
+    }
+
+    table.dataTable.nowrap th,
+    table.dataTable.nowrap td {
+        white-space: nowrap
+    }
+
+    table.dataTable.compact thead th,
+    table.dataTable.compact thead td {
+        padding: 4px 17px 4px 4px
+    }
+
+    table.dataTable.compact tfoot th,
+    table.dataTable.compact tfoot td {
+        padding: 4px
+    }
+
+    table.dataTable.compact tbody th,
+    table.dataTable.compact tbody td {
+        padding: 4px
+    }
+
+    table.dataTable th.dt-left,
+    table.dataTable td.dt-left {
+        text-align: left
+    }
+
+    table.dataTable th.dt-center,
+    table.dataTable td.dt-center,
+    table.dataTable td.dataTables_empty {
+        text-align: center
+    }
+
+    table.dataTable th.dt-right,
+    table.dataTable td.dt-right {
+        text-align: right
+    }
+
+    table.dataTable th.dt-justify,
+    table.dataTable td.dt-justify {
+        text-align: justify
+    }
+
+    table.dataTable th.dt-nowrap,
+    table.dataTable td.dt-nowrap {
+        white-space: nowrap
+    }
+
+    table.dataTable thead th.dt-head-left,
+    table.dataTable thead td.dt-head-left,
+    table.dataTable tfoot th.dt-head-left,
+    table.dataTable tfoot td.dt-head-left {
+        text-align: left
+    }
+
+    table.dataTable thead th.dt-head-center,
+    table.dataTable thead td.dt-head-center,
+    table.dataTable tfoot th.dt-head-center,
+    table.dataTable tfoot td.dt-head-center {
+        text-align: center
+    }
+
+    table.dataTable thead th.dt-head-right,
+    table.dataTable thead td.dt-head-right,
+    table.dataTable tfoot th.dt-head-right,
+    table.dataTable tfoot td.dt-head-right {
+        text-align: right
+    }
+
+    table.dataTable thead th.dt-head-justify,
+    table.dataTable thead td.dt-head-justify,
+    table.dataTable tfoot th.dt-head-justify,
+    table.dataTable tfoot td.dt-head-justify {
+        text-align: justify
+    }
+
+    table.dataTable thead th.dt-head-nowrap,
+    table.dataTable thead td.dt-head-nowrap,
+    table.dataTable tfoot th.dt-head-nowrap,
+    table.dataTable tfoot td.dt-head-nowrap {
+        white-space: nowrap
+    }
+
+    table.dataTable tbody th.dt-body-left,
+    table.dataTable tbody td.dt-body-left {
+        text-align: left
+    }
+
+    table.dataTable tbody th.dt-body-center,
+    table.dataTable tbody td.dt-body-center {
+        text-align: center
+    }
+
+    table.dataTable tbody th.dt-body-right,
+    table.dataTable tbody td.dt-body-right {
+        text-align: right
+    }
+
+    table.dataTable tbody th.dt-body-justify,
+    table.dataTable tbody td.dt-body-justify {
+        text-align: justify
+    }
+
+    table.dataTable tbody th.dt-body-nowrap,
+    table.dataTable tbody td.dt-body-nowrap {
+        white-space: nowrap
+    }
+
+    table.dataTable,
+    table.dataTable th,
+    table.dataTable td {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        box-sizing: content-box
+    }
+
+    .dataTables_wrapper {
+        position: relative;
+        clear: both;
+        *zoom: 1;
+        zoom: 1
+    }
+
+    .dataTables_wrapper .dataTables_length {
+        float: left
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        float: right;
+        text-align: right
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        margin-left: 0.5em
+    }
+
+    .dataTables_wrapper .dataTables_info {
+        clear: both;
+        float: left;
+        padding-top: 0.755em
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: right;
+        text-align: right;
+        padding-top: 0.25em
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        box-sizing: border-box;
+        display: inline-block;
+        min-width: 1.5em;
+        padding: 0.5em 1em;
+        margin-left: 2px;
+        text-align: center;
+        text-decoration: none !important;
+        cursor: pointer;
+        *cursor: hand;
+        color: #333 !important;
+        border: 1px solid transparent;
+        border-radius: 2px
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        color: #333 !important;
+        border: 1px solid #979797;
+        background-color: white;
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fff), color-stop(100%, #dcdcdc));
+        background: -webkit-linear-gradient(top, #fff 0%, #dcdcdc 100%);
+        background: -moz-linear-gradient(top, #fff 0%, #dcdcdc 100%);
+        background: -ms-linear-gradient(top, #fff 0%, #dcdcdc 100%);
+        background: -o-linear-gradient(top, #fff 0%, #dcdcdc 100%);
+        background: linear-gradient(to bottom, #fff 0%, #dcdcdc 100%)
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+        cursor: default;
+        color: #666 !important;
+        border: 1px solid transparent;
+        background: transparent;
+        box-shadow: none
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: white !important;
+        border: 1px solid #111;
+        background-color: #585858;
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #585858), color-stop(100%, #111));
+        background: -webkit-linear-gradient(top, #585858 0%, #111 100%);
+        background: -moz-linear-gradient(top, #585858 0%, #111 100%);
+        background: -ms-linear-gradient(top, #585858 0%, #111 100%);
+        background: -o-linear-gradient(top, #585858 0%, #111 100%);
+        background: linear-gradient(to bottom, #585858 0%, #111 100%)
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:active {
+        outline: none;
+        background-color: #2b2b2b;
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #2b2b2b), color-stop(100%, #0c0c0c));
+        background: -webkit-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);
+        background: -moz-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);
+        background: -ms-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);
+        background: -o-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);
+        background: linear-gradient(to bottom, #2b2b2b 0%, #0c0c0c 100%);
+        box-shadow: inset 0 0 3px #111
+    }
+
+    .dataTables_wrapper .dataTables_paginate .ellipsis {
+        padding: 0 1em
+    }
+
+    .dataTables_wrapper .dataTables_processing {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 40px;
+        margin-left: -50%;
+        margin-top: -25px;
+        padding-top: 20px;
+        text-align: center;
+        font-size: 1.2em;
+        background-color: white;
+        background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(25%, rgba(255, 255, 255, 0.9)), color-stop(75%, rgba(255, 255, 255, 0.9)), color-stop(100%, rgba(255, 255, 255, 0)));
+        background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 25%, rgba(255, 255, 255, 0.9) 75%, rgba(255, 255, 255, 0) 100%);
+        background: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 25%, rgba(255, 255, 255, 0.9) 75%, rgba(255, 255, 255, 0) 100%);
+        background: -ms-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 25%, rgba(255, 255, 255, 0.9) 75%, rgba(255, 255, 255, 0) 100%);
+        background: -o-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 25%, rgba(255, 255, 255, 0.9) 75%, rgba(255, 255, 255, 0) 100%);
+        background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 25%, rgba(255, 255, 255, 0.9) 75%, rgba(255, 255, 255, 0) 100%)
+    }
+
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_processing,
+    .dataTables_wrapper .dataTables_paginate {
+        color: #333
+    }
+
+    .dataTables_wrapper .dataTables_scroll {
+        clear: both
+    }
+
+    .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody {
+        *margin-top: -1px;
+        -webkit-overflow-scrolling: touch
+    }
+
+    .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody th,
+    .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody td {
+        vertical-align: middle
+    }
+
+    .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody th>div.dataTables_sizing,
+    .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody td>div.dataTables_sizing {
+        height: 0;
+        overflow: hidden;
+        margin: 0 !important;
+        padding: 0 !important
+    }
+
+    .dataTables_wrapper.no-footer .dataTables_scrollBody {
+        border-bottom: 1px solid #111
+    }
+
+    .dataTables_wrapper.no-footer div.dataTables_scrollHead table,
+    .dataTables_wrapper.no-footer div.dataTables_scrollBody table {
+        border-bottom: none
+    }
+
+    .dataTables_wrapper:after {
+        visibility: hidden;
+        display: block;
+        content: "";
+        clear: both;
+        height: 0
+    }
+
+    @media screen and (max-width: 767px) {
+
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate {
+            float: none;
+            text-align: center
+        }
+
+        .dataTables_wrapper .dataTables_paginate {
+            margin-top: 0.5em
+        }
+    }
+
+    @media screen and (max-width: 640px) {
+
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter {
+            float: none;
+            text-align: center
+        }
+
+        .dataTables_wrapper .dataTables_filter {
+            margin-top: 0.5em
+        }
+    }
+</style>
+<style>
+    th,
+    td {
+        width: 42px !important;
+        text-align: center !important;
+    }
+
+    td.details-control {
+        background: url('https://login.mypayrollmaster.online/files/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('https://login.mypayrollmaster.online/files/details_close.png') no-repeat center center;
+    }
+</style>
+
+<script>
+    function showLargeModalForm1(url) {
+        var container = $("#modalDetailForm12 #modaldetails-content12");
+
+
+        container.load(url, function() {
+            $("#modalDetailForm12").modal('show')
+        });
+    }
+
+    function format(emp_pkey) {
+        return "hi";
+
+    }
+
+    $(document).ready(function() {
+
+
+
+
+        $('#tabset0').pwstabs({
+            effect: 'scale ', // You can change effects of your tabs container: scale / slideleft / slideright / slidetop / slidedown / none
+            defaultTab: <?php echo (isset($tab) ? json_encode($tab) : 1); ?>, // The tab we want to be opened by default
+            containerWidth: '100%', // Set custom container width if not set then 100% is used
+            containerHeight: '100%',
+            tabsPosition: 'horizontal', // Tabs position: horizontal / vertical
+            horizontalPosition: 'top', // Tabs horizontal position: top / bottom
+            verticalPosition: 'left', // Tabs vertical position: left / right
+            responsive: true, // Make tabs container responsive: true / false - boolean
+            theme: 'pws_theme_dark_violet / pws_theme_dark_green',
+            rtl: false // Right to left support: true/ false
+        });
+
+
+
+        var selected = [];
+
+        $('#example tbody').on('click', 'tr', function() {
+            var id = this.id;
+            var isValidId = /^[a-zA-Z0-9_-]+$/.test(id);
+            if (isValidId) { //Edited by Akshay on 22-3-2024
+                var index = $.inArray(id, selected);
+
+                if (index === -1) {
+                    selected.push(id);
+                } else {
+                    selected.splice(index, 1);
+                }
+
+                $(this).toggleClass('selected');
+                //Edited by Akshay on 22-3-2024
+                // Update checkbox state based on selected rows
+                var allRowsSelected = selected1.length === $('#example tbody tr').length;
+                $('#selectAllCheckbox2').prop('checked', allRowsSelected);
+            }
+
+        });
+
+
+
+        var table = $('#example').DataTable({
+            /*"columns": [
+                {
+                    "className":      'details-control',
+                    "orderable":      false,
+                    "data":           null,
+                    "defaultContent": ''
+                }
+            ],*/
+            "paging": true,
+            "deferRender": true,
+            "pageNumber": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "lengthMenu": [
+                [12, 24, 50, -1],
+                [12, 24, 50, "All"]
+            ],
+            "order": [
+                [1, 'asc']
+            ],
+            "rowCallback": function(row, data) {
+                if ($.inArray(data.DT_RowId, selected) !== -1) {
+                    $(row).addClass('selected');
+                }
+            }
+        });
+        $('#example tbody').on('click', 'td.details-control', function() {
+            var emp_pkey = $(this).data('emppkey');
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                var month = $('#filterby_month').val();
+                showLargeModalForm1(livesite + 'OtAttendance/subtable/' + emp_pkey + '/' + month)
+            }
+        });
+
+
+
+
+        var selected1 = [];
+
+        $('#example1 tbody').on('click', 'tr', function() {
+            var id = this.id;
+            var isValidId = /^[a-zA-Z0-9_-]+$/.test(id);
+            if (isValidId) { //Edited by Akshay on 22-3-2024
+                var index = $.inArray(id, selected1);
+
+                if (index === -1) {
+                    selected1.push(id);
+                } else {
+                    selected1.splice(index, 1);
+                }
+                $(this).toggleClass('selected');
+
+                // Update checkbox state based on selected rows
+                var allRowsSelected = selected1.length === $('#example1 tbody tr').length;
+                $('#selectAllCheckbox1').prop('checked', allRowsSelected);
+            }
+        });
+
+
+        $('#button').click(function() {
+
+            var months = $('#filterby_month').val();
+            var month = $('#filterby_month').val() + '-01';
+            //Edited by Akshay on 5-4-2024
+            var empPkey = $('#emp_fkey').val() || 0;
+            var branch = $('#filterby_branch').val() || '0';
+            console.log('selected1', selected1.length);
+            if (selected1.length === 0) {
+                $.notify("Please select a row", {
+                    type: 'danger',
+                    allow_dismiss: false
+                });
+            } else
+                $.ajax({
+                    url: livesite + 'OtAttendance/counting/' + months + '/' + selected1,
+                    success: function(response) {
+                        var response = $.parseJSON(response);
+                        row = response.count;
+                        if (row > 0) {
+                            alert("Attendance for the month is not verified. Verify attendance before OT approval");
+
+                        } else {
+                            $.ajax({
+                                url: livesite + 'OtAttendance/approves/' + selected1 + '/' + month,
+                                success: function(resp) {
+
+                                    $.notify("Approved Attendance of Selected Employees", {
+                                        type: 'success',
+                                        allow_dismiss: false
+                                    });
+                                    $('#load').load(livesite + 'OtAttendance/Approved/' + month + '/' + empPkey + '/' + 1 + '/' + branch, function() { //Edited by Akshay on 25-7-2024
+                                        $('#loader').hide();
+                                        console.log('data-pws-tab="tab3"');
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+
+        });
+        var table1 = $('#example1').DataTable({
+
+            "paging": true,
+            "deferRender": true,
+            "pageNumber": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "lengthMenu": [
+                [12, 24, 50, -1],
+                [12, 24, 50, "All"]
+            ],
+            "order": [
+                [1, 'asc']
+            ],
+            "rowCallback": function(row, data) {
+                if ($.inArray(data.DT_RowId, selected1) !== -1) {
+                    $(row).addClass('selected');
+                }
+            }
+        });
+
+        // Add event listener for opening and closing details
+        $('#example1 tbody').on('click', 'td.details-control', function() {
+            var emp_pkey = $(this).data('emppkey');
+            var tr = $(this).closest('tr');
+            var row = table1.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                var month = $('#filterby_month').val();
+
+                showLargeModalForm1(livesite + 'OtAttendance/subtable/' + emp_pkey + '/' + month)
+
+            }
+        });
+        $('#example1 tbody').on('click', 'td.details-text', function() {
+            console.log('This', this);
+            var emp = $(this).data('emppkey');
+            var site_fkey = $('#emp_fkey').val();
+            var emp_pkey = $(this).data('total_duration');
+            var allData = $(this).data();
+            console.log('allData', allData);
+            var month = $(this).data('month');
+            showModalForm(livesite + 'OtAttendance/form/' + emp + '/' + emp_pkey + '/' + month)
+        });
+
+
+        var selected2 = [];
+
+        $('#example2 tbody').on('click', 'tr', function() {
+            var id = this.id;
+            var isValidId = /^[a-zA-Z0-9_-]+$/.test(id);
+            if (isValidId) { //Edited by Akshay on 22-3-2024
+                var index = $.inArray(id, selected2);
+
+                if (index === -1) {
+                    selected.push(id);
+                } else {
+                    selected.splice(index, 1);
+                }
+
+                $(this).toggleClass('selected');
+                //Edited by Akshay on 22-3-2024
+                // Update checkbox state based on selected rows
+                var allRowsSelected = selected.length === $('#example2 tbody tr').length;
+                $('#selectAllCheckbox3').prop('checked', allRowsSelected);
+            }
+
+        });
+
+
+
+        var table2 = $('#example2').DataTable({
+            /*"columns": [
+                {
+                    "className":      'details-control',
+                    "orderable":      false,
+                    "data":           null,
+                    "defaultContent": ''
+                }
+            ],*/
+            "paging": true,
+            "deferRender": true,
+            "pageNumber": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "lengthMenu": [
+                [12, 24, 50, -1],
+                [12, 24, 50, "All"]
+            ],
+            "order": [
+                [1, 'asc']
+            ],
+            "rowCallback": function(row, data) {
+                if ($.inArray(data.DT_RowId, selected2) !== -1) {
+                    $(row).addClass('selected');
+                }
+            }
+        });
+        $('#example2 tbody').on('click', 'td.details-control', function() {
+            var emp_pkey = $(this).data('emppkey');
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                var month = $('#filterby_month').val();
+                showLargeModalForm1(livesite + 'OtAttendance/subtable/' + emp_pkey + '/' + month)
+            }
+        });
+        //Edited by Akshay on 22-3-2024
+        $('#remove-button').click(function() {
+            // Array to store details of selected rows
+            var selectedRows = [];
+            var month = $('#filterby_month').val() + '-01';
+            var empPkey = $('#emp_fkey').val() || 0;
+            var branch = $('#filterby_branch').val() || '0';
+            // Iterate over each selected row
+            $('#example tbody tr.selected').each(function() {
+                // Extract data from the selected row
+                var rowData = {
+                    name: $(this).find('td:eq(1)').text(),
+                    totalDuration: $(this).find('td:eq(2)').text(),
+                    approvedDuration: $(this).find('td:eq(3)').text(),
+                    remarks: $(this).find('td:eq(4)').text(),
+                    pkey: $(this).find('td.details-control').data('pkey')
+                };
+                // Push extracted data into the array
+                selectedRows.push(rowData);
+            });
+
+            if (selectedRows.length === 0) {
+                $.notify('Please selecte a row.', {
+                    type: 'danger',
+                    allow_dismiss: false
+                });
+            } else {
+                var pkeys = selectedRows.map(function(row) {
+                    return row.pkey;
+                })
+                console.log('Pkeys', pkeys);
+                $.ajax({
+                    type: 'POST',
+                    url: livesite + 'OtAttendance/remove',
+                    data: {
+                        pkeys: pkeys,
+                        month: month //Edited by Akshay on 2-4-2024
+                    }, // Send pkeys array as POST data
+                    success: function(response) {
+                        var data = JSON.parse(response);
+                        var message = true;
+                        console.log('Response', typeof data.success);
+                        console.log('Message', data.message);
+                        if (data.message.length > 0) {
+                            message = confirm(data.message[0]);
+                        }
+                        if ((message || !message) && data.success === true) {
+                            // Handle success response here
+                            $.notify("Removed the employees", {
+                                type: 'success',
+                                allow_dismiss: false
+                            });
+                            $('#load').load(livesite + 'OtAttendance/Approved/' + month + '/' + empPkey + '/' + 2 + '/' + branch, function() { //Edited by Akshay on 25-7-2024
+                                $('#loader').hide();
+                                console.log('data-pws-tab="tab4"');
+                            });
+                        }
+
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error
+                        console.error('Error sending pkeys:', error);
+                    }
+                });
+            }
+
+            // Do whatever you want with the selectedRows array
+            console.log('Selected Rows', selectedRows);
+        });
+        $('#remove-button1').click(function() {
+            // Array to store details of selected rows
+            var selectedRows = [];
+            var month = $('#filterby_month').val() + '-01';
+            //Edited by Akshay on 12-8-2024
+            var empPkey = $('#emp_fkey').val() || 0;
+            var branch = $('#filterby_branch').val() || '0';
+            //End
+            // Iterate over each selected row
+            $('#example2 tbody tr.selected').each(function() {
+                // Extract data from the selected row
+                var rowData = {
+                    name: $(this).find('td:eq(1)').text(),
+                    totalDuration: $(this).find('td:eq(2)').text(),
+                    approvedDuration: $(this).find('td:eq(3)').text(),
+                    overtimeRate: $(this).find('td:eq(4)').text(),
+                    overtimeAmount: $(this).find('td:eq(5)').text(),
+                    remarks: $(this).find('td:eq(6)').text(),
+                    pkey: $(this).find('td.details-control').data('pkey')
+                };
+                // Push extracted data into the array
+                selectedRows.push(rowData);
+            });
+
+            if (selectedRows.length === 0) {
+                $.notify('Please selecte a row.', {
+                    type: 'danger',
+                    allow_dismiss: false
+                });
+            } else {
+                var pkeys = selectedRows.map(function(row) {
+                    return row.pkey;
+                })
+                console.log('Pkeys', pkeys);
+                $.ajax({
+                    type: 'POST',
+                    url: livesite + 'OtAttendance/removenew',
+                    data: {
+                        pkeys: pkeys,
+                        month: month //Edited by Akshay on 2-4-2024
+                    }, // Send pkeys array as POST data
+                    success: function(response) {
+                        var data = JSON.parse(response);
+                        var message = true;
+                        console.log('Response', typeof data.success);
+                        console.log('Message', data.message);
+                        if (data.message.length > 0) {
+                            message = confirm(data.message[0]);
+                        }
+                        if ((message || !message) && data.success === true) {
+                            // Handle success response here
+                            $.notify("Removed the employees", {
+                                type: 'success',
+                                allow_dismiss: false
+                            });
+                            $('#load').load(livesite + 'OtAttendance/Approved/' + month + '/' + empPkey + '/' + 3 + '/' + branch, function() { //Edited by Akshay on 25-7-2024
+                                $('#loader').hide();
+                                console.log('data-pws-tab="tab5"');
+                            });
+                        }
+
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error
+                        console.error('Error sending pkeys:', error);
+                    }
+                });
+            }
+
+            // Do whatever you want with the selectedRows array
+            console.log('Selected Rows', selectedRows);
+        });
+        //Edited by Akshay on 22-3-2024
+        // Add a change event handler to the checkbox
+        $('#selectAllCheckbox1').on('change', function() {
+            var isChecked = $(this).prop('checked');
+            selected1 = [];
+            $('#example1 tbody tr').each(function() {
+                var id = this.id;
+                var index = $.inArray(id, selected1);
+
+                if (isChecked && index === -1) {
+                    selected1.push(id);
+                }
+                $(this).toggleClass('selected', isChecked);
+                console.log('selected1', selected1);
+            });
+        });
+
+        $('#selectAllCheckbox2').on('change', function() {
+            var isChecked = $(this).prop('checked');
+            allSelected = [];
+            $('#example tbody tr').each(function() {
+                var id = this.id;
+                var index = $.inArray(id, allSelected);
+
+                if (isChecked && index === -1) {
+                    allSelected.push(id);
+                }
+                $(this).toggleClass('selected', isChecked);
+            });
+        });
+        $('#selectAllCheckbox3').on('change', function() {
+            var isChecked = $(this).prop('checked');
+            allSelected = [];
+            $('#example2 tbody tr').each(function() {
+                var id = this.id;
+                var index = $.inArray(id, allSelected);
+
+                if (isChecked && index === -1) {
+                    allSelected.push(id);
+                }
+                $(this).toggleClass('selected', isChecked);
+            });
+        });
+
+    });
+</script>
+<section class="content">
+
+
+    <div class="tabset0" id="tabset0" style="min-height:550px;">
+        <div data-pws-tab="tab1" data-pws-tab-name="Not Approved" data-pws-tab-icon="fa-spinner fa-spin">
+            <button class="btn bg-purple btn-flat margin" id="button">Approve Selected</button>
+            <table id="example1" class="table table-bordered display" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th style="text-align:center; padding-right:20px;"><input type="checkbox" id="selectAllCheckbox1"></th>
+                        <th>Name</th>
+                        <th>Total Duration (In Hrs.)</th>
+                        <th>Set Duration (In Hrs.)</th>
+                        <th>Set Duration (In Mins.)</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <?php
+                    $i = 0;
+                    foreach ($attendancesnotverified as $val) {
+                        $i += 1;
+                        //edited by megha on 30_07_2019 removed zero value amounts
+                        if ($val['emp_ot_master']['total_duration'] > 0) {
+                    ?>
+                            <tr id="<?php echo $val['emp_ot_master']['emp_fkey']; ?>">
+                                <td class="details-control" data-emppkey="<?php echo $val['emp_ot_master']['emp_fkey']; ?>" data-pkey="<?php echo $val['emp_ot_master']['emp_ot_master_pkey']; ?>"></td>
+                                <td style="text-align:left;"><?php echo $val['emp_ot_master']['emp_name']; ?></td>
+                                <td><?php echo round(($val['emp_ot_master']['total_duration'] / 60), 2); ?></td>
+                                <td><?php if ($val['emp_ot_master']['set_duration'] == NULL) {
+                                        echo round(($val['emp_ot_master']['total_duration'] / 60), 2);
+                                    } else {
+                                        echo round(($val['emp_ot_master']['set_duration'] / 60), 2);
+                                    } ?></td>
+                                <td class="details-text" data-total_duration="<?php if ($val['emp_ot_master']['set_duration'] == NULL) {
+                                                                                    echo $val['emp_ot_master']['total_duration'];
+                                                                                } else {
+                                                                                    echo $val['emp_ot_master']['set_duration'];
+                                                                                } ?>" data-month="<?php echo $val['emp_ot_master']['month']; ?>" data-emppkey="<?php echo $val['emp_ot_master']['emp_fkey']; ?>"><?php if ($val['emp_ot_master']['set_duration'] == NULL) {
+                                                                                                                                                                                                                        echo $val['emp_ot_master']['total_duration'];
+                                                                                                                                                                                                                    } else {
+                                                                                                                                                                                                                        echo $val['emp_ot_master']['set_duration'];
+                                                                                                                                                                                                                    } ?>&nbsp;&nbsp;<span class="fa fa-pencil" style="color:blue;"></span></td>
+                                <td class="details-remarks" data-total_duration="<?php echo $val['emp_ot_master']['remarks']; ?>" data-month="<?php echo $val['emp_ot_master']['month']; ?>" data-emppkey="<?php echo $val['emp_ot_master']['emp_fkey']; ?>"><?php echo $val['emp_ot_master']['remarks']; ?>&nbsp;&nbsp;</td>
+                            </tr>
+
+                    <?php
+                        }
+                    }
+                    ?>
+                </tbody>
+
+            </table>
+        </div>
+        <div data-pws-tab="tab2" data-pws-tab-name="Approved Overtime" data-pws-tab-icon="fa-spinner fa-spin">
+            <!--edited by sinsiya on 12-07-2024-->
+            <?php if ($company_code == 'GEDE' || $company_code == 'HRBL') { ?>
+
+                <button class="btn btn-success btn-flat margin" id="process-button" onclick="showProcessedOvertime()">Process Overtime</button>
+            <?PHP } ?>
+            <button class="btn btn-danger btn-flat margin" id="remove-button">Remove</button>
+            <table id="example" class="table table-bordered display" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th style="text-align:center; padding-right:20px;"><input type="checkbox" id="selectAllCheckbox2"></th>
+                        <th>Name</th>
+                        <th>Total Duration(In Hrs.)</th>
+                        <!--            <th>Remarks</th>
+            <th>Approved</th>-->
+                        <th>Approved Duration(In Hrs.)</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <?php
+                    $i = 0;
+                    if (isset($attendancesverified))
+                        foreach ($attendancesverified as $val) {
+                            $i += 1;
+                            //edited by megha on 30_07_2019 removed zero value amounts
+                            if ($val['emp_ot_master']['total_duration'] > 0) {
+                    ?>
+                            <tr id="<?php echo $val['emp_ot_master']['emp_fkey']; ?>">
+                                <td class="details-control" data-emppkey="<?php echo $val['emp_ot_master']['emp_fkey']; ?>" data-pkey="<?php echo $val['emp_ot_master']['emp_ot_master_pkey']; ?>"></td>
+                                <td style="text-align:left;"><?php echo $val['emp_ot_master']['emp_name']; ?></td>
+                                <td><?php echo round(($val['emp_ot_master']['total_duration'] / 60), 2); ?></td>
+                                <!--        <td><?php echo $val['emp_ot_master']['remarks']; ?></td>
+        <td><?php echo $val['emp_ot_master']['is_verified']; ?></td>-->
+                                <td data-total_duration="<?php if ($val['emp_ot_master']['set_duration'] == NULL) {
+                                                                echo round(($val['emp_ot_master']['total_duration'] / 60), 2);
+                                                            } else {
+                                                                echo round(($val['emp_ot_master']['set_duration'] / 60), 2);
+                                                            } ?>" data-month="<?php echo $val['emp_ot_master']['month']; ?>" data-emppkey="<?php echo $val['emp_ot_master']['emp_fkey']; ?>"><?php if ($val['emp_ot_master']['set_duration'] == NULL) {
+                                                                                                                                                                                                    echo round(($val['emp_ot_master']['total_duration'] / 60), 2);
+                                                                                                                                                                                                } else {
+                                                                                                                                                                                                    echo round(($val['emp_ot_master']['set_duration'] / 60), 2);
+                                                                                                                                                                                                } ?></td>
+                                <td><?php echo $val['emp_ot_master']['remarks']; ?></td>
+                            </tr>
+
+                    <?php
+                            }
+                        }
+                    ?>
+                </tbody>
+
+            </table>
+        </div>
+        <?php if ($company_code == 'GEDE' || $company_code == 'HRBL') { ?>
+            <div data-pws-tab="tab3" data-pws-tab-name="Processed Overtime" data-pws-tab-icon="fa-spinner fa-spin">
+                <!--<button class="btn btn-success btn-flat margin" id="process-button" onclick="">Approve</button>-->
+                <button class="btn btn-danger btn-flat margin" id="remove-button1">Remove</button>
+                <table id="example2" class="table table-bordered display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center; padding-right:20px;"><input type="checkbox" id="selectAllCheckbox3"></th>
+                            <th>Name</th>
+                            <th>Total Duration(In Hrs.)</th>
+                            <th>Approved Duration(In Hrs.)</th>
+                            <th>Overtime Rate</th>
+                            <th>Overtime Amount</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <?php
+                        $i = 0;
+                        foreach ($attendanceprocessed as $val) {
+                            $i += 1;
+                            //edited by megha on 30_07_2019 removed zero value amounts
+                            if ($val['emp_ot_master']['total_duration'] > 0) {
+                        ?>
+                                <tr id="<?php echo $val['emp_ot_master']['emp_fkey']; ?>">
+                                    <td class="details-control" data-emppkey="<?php echo $val['emp_ot_master']['emp_fkey']; ?>" data-pkey="<?php echo $val['emp_ot_master']['emp_ot_master_pkey']; ?>"></td>
+                                    <td style="text-align:left;"><?php echo $val['emp_ot_master']['emp_name']; ?></td>
+                                    <td><?php echo round(($val['emp_ot_master']['total_duration'] / 60), 2); ?></td>
+                                    <!--        <td><?php echo $val['emp_ot_master']['remarks']; ?></td>
+        <td><?php echo $val['emp_ot_master']['is_verified']; ?></td>-->
+                                    <td data-total_duration="<?php if ($val['emp_ot_master']['set_duration'] == NULL) {
+                                                                    echo round(($val['emp_ot_master']['total_duration'] / 60), 2);
+                                                                } else {
+                                                                    echo round(($val['emp_ot_master']['set_duration'] / 60), 2);
+                                                                } ?>" data-month="<?php echo $val['emp_ot_master']['month']; ?>" data-emppkey="<?php echo $val['emp_ot_master']['emp_fkey']; ?>"><?php if ($val['emp_ot_master']['set_duration'] == NULL) {
+                                                                                                                                                                                                        echo round(($val['emp_ot_master']['total_duration'] / 60), 2);
+                                                                                                                                                                                                    } else {
+                                                                                                                                                                                                        echo round(($val['emp_ot_master']['set_duration'] / 60), 2);
+                                                                                                                                                                                                    } ?></td>
+
+                                    <td><?php echo isset($val['emp_ot_process']['ot_rate']) ? $val['emp_ot_process']['ot_rate'] : 0; ?></td>
+                                    <td><?php echo isset($val['emp_ot_process']['ot_amount']) ? $val['emp_ot_process']['ot_amount'] : 0; ?></td>
+
+                                    <td><?php echo $val['emp_ot_master']['remarks']; ?></td>
+                                </tr>
+
+                        <?php
+                            }
+                        }
+                        ?>
+                    </tbody>
+
+                </table>
+            </div>
+        <?PHP } ?>
+    </div>
+    <!--edited by sinsiya on 12-07-2024-->
+
+
+
+
+</section>
+<div id="modalDetailForm12" class="modal fade">
+    <div class="modal-dialog modal-lg" style="width:80%;">
+        <div class="modal-content" id="modaldetails-content12" style="overflow: scroll;">
+
+        </div>
+    </div>
+</div>
+<script>
+    function showProcessedOvertime() {
+        // Initialize the selectedRows array
+        var selectedRows = [];
+        var month = $('#filterby_month').val() + '-01';
+        //Edited by Akshay on 12-8-2024
+        var empPkey = $('#emp_fkey').val() || 0;
+        var branch = $('#filterby_branch').val() || '0';
+        //End
+        // Loop through selected rows and extract data
+        $('#example tbody tr.selected').each(function() {
+            var rowData = {
+                name: $(this).find('td:eq(1)').text(),
+                totalDuration: $(this).find('td:eq(2)').text(),
+                approvedDuration: $(this).find('td:eq(3)').text(),
+                remarks: $(this).find('td:eq(4)').text(),
+                pkey: $(this).find('td.details-control').data('pkey')
+            };
+            // Push extracted data into the array
+            selectedRows.push(rowData);
+        });
+
+        // Check if any rows are selected
+        if (selectedRows.length === 0) {
+            $.notify('Please select a row.', {
+                type: 'danger',
+                allow_dismiss: false
+            });
+        } else {
+            // Extract pkeys from selected rows
+            var pkeys = selectedRows.map(function(row) {
+                return row.pkey;
+            });
+            console.log('Pkeys', pkeys);
+            console.log(month);
+            // Make an AJAX POST request
+            $.ajax({
+                type: "POST",
+                data: {
+                    pkeys: pkeys,
+                    month: month
+                }, // Send pkeys array as POST data
+                url: livesite + "OtAttendance/otprocess/", // replace with your controller action URL
+
+                success: function(data) {
+                    // $('#processedOvertimeContainer').html(data);
+                    //Edited by Akshay on 30-7-2024
+                    $.notify("Processed Overtime", {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                    //End
+                    // Re-initialize the DataTable if necessary
+                    $('#load').load(livesite + 'OtAttendance/process/' + month + '/' + empPkey + '/' + 2 + '/' + branch, function() { //Edited by Akshay on 26-7-2024
+                        $('#loader').hide();
+                    }); // Remove 'active' class from all tabs
+
+                },
+                error: function(xhr, status, error) {
+                    console.log("Error: " + error);
+                }
+            });
+        }
+    }
+</script>

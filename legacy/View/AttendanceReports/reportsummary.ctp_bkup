@@ -1,0 +1,306 @@
+<style>
+div.inflow {
+
+}
+div.positioner {position: absolute; right: 0;} /*may not be needed: see below*/
+div.fixed {
+overflow: auto;
+
+}
+/*tr td.fix{
+    position:fixed;
+}*/
+</style>
+<?php if ($mode == '') { ?>
+    <div class="modal-body">
+        <legend>Employee attendance summary report</legend>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box ">
+                    <?php
+                    $i = 0;
+                    foreach ($arr_leavepolicydetails_for_template as $value) {
+                        $i += 1;
+                        if(!empty($value['summary']))
+                        {
+                        ?>
+                        
+                        <div class="box-body">
+                            <fieldset>
+                                <?php
+                                if($criteria == "Units")
+                                {
+                                ?>
+                                <legend>Attedance Summary of  <?php echo isset($value['summary']['0']['Branch']['branch_name']) ? $value['summary']['0']['Branch']['branch_name'] : '    (No Datas Found Under This Branch)'; ?>  </legend>
+                                <?php
+                                }
+                                else
+                                {
+                                    ?>
+                                
+                                    <legend>Attedance Summary of  <?php echo isset($value['summary']['0']['Info']['EmpName']) ? $value['summary']['0']['Info']['EmpName'] : '    (No Datas Found Under This Employees)'; ?>  </legend>
+                                <?php
+                                    }
+                                ?>
+                                <!--       <div class="row">
+                                           <div class="col-md-4">
+                                               Present Days : <?php // echo $val['AttendanceRegister']['days_present'];  ?>
+                                           </div>
+                                           <div class="col-md-4">
+                                               Leave days : <?php // echo $val['AttendanceRegister']['days_leave'];  ?>
+                                           </div>
+                                           <div class="col-md-4">
+                                               Holidays : <?php // echo $val['AttendanceRegister']['days_holidays'];  ?>
+                                           </div>
+                                       </div> -->
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                    </div>
+                                </div>
+
+
+                            </fieldset>
+                            <br>
+                            <fieldset>
+
+                                <div class="inflow">
+                                        <div class="fixed">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>SL No</th>
+                                            <th>Employee ID</th>
+                                            <th>Employee Name</th>
+                                            <th>Designation</th>
+                                            <th>Date Of Joining</th>
+                                            <th>Department</th>
+                                            <th>Branch</th>
+                                        <!--    <th>LEAVEPOLICY_GROUP_NAME</th> -->
+
+                                            <th>Present Days</th>
+                                            <th>Leave Days</th>
+                                            <th>Holidays</th>
+                                            <?php
+                                            foreach ($arr_dates as $key => $date) {
+                                                ?>
+                                                <th><?php echo $date; ?></th>
+                                                <?php
+                                            }
+                                            ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $arr_data = $value['summary']; ?>
+        <?php if (count($arr_data) >= 0) { ?>
+            <?php
+            $k=1;
+            foreach ($arr_data as $val) { ?>
+                                                <tr> 
+                                                    <td><?php echo $k;?></td>
+                                                    <td><?php echo $val['Info']['employee_id']; ?></td>
+                                                    <td><?php echo $val['Info']['EmpName']; ?></td>
+                                                    <td><?php echo $val['Info']['designation']; ?></td>
+                                                    <td><?php echo $val['Info']['joining_date']; ?></td>
+                                                    <td><?php echo $val['Info']['department']; ?></td>
+                                                    <td><?php echo $val['Info']['branch']; ?></td>
+                                                    <td><?php echo $val['AttendanceRegister']['days_present']; ?></td>
+                                                    <td> <?php echo $val['AttendanceRegister']['days_leave']; ?></td>
+                                                    <td> <?php echo $val['AttendanceRegister']['days_holidays']; ?></td>
+
+                                                    <?php
+                                                    foreach ($arr_dates as $key => $date) {
+                                                        ?>       
+                                                        <td> 
+                                                            <?php
+                                                            $newIndex = 'FIELD' . ($key + 1);
+                                                            echo $val['AttendanceRegister'][$newIndex];
+                                                            ?></td>                                          
+                                                <?php } ?>
+                                                </tr>
+            <?php 
+            $k++;
+                                                    } ?>
+        <?php } else { ?>
+                                            <tr>
+                                                <td colspan="4">No employees found under this shift</td>
+                                            </tr>  
+        <?php } ?>
+                                    </tbody>
+                                </table>
+                                        </div>
+                                </div>
+                            </fieldset>
+                            <br>
+                            <!-- <fieldset>
+                                 <legend>Employee List</legend>
+                                 <table class="table table-bordered">
+                                     <thead>
+                                       <tr>
+                                           <th>Name</th>
+                                           <th>Designation</th>
+                                           <th>Branch</th>
+                                       </tr>
+                                     </thead>
+                                     <tbody>
+                            <?php $arr_data = $value['employees']; ?>
+        <?php if (count($arr_data) >= 0) { ?>
+            <?php foreach ($arr_data as $val) { ?>
+                                                         <tr> 
+                                                             <td><?php echo $val['EmployeeDetails']['first_name'] . ' ' . $val['EmployeeDetails']['last_name']; ?></td>
+                                                             <td><?php echo $val['EmployeeProfessionalDetails']['designation']; ?></td>
+                                                             <td><?php echo $val['Units']['branch_name']; ?></td>
+                                                         </tr>
+            <?php } ?>
+        <?php } else { ?>
+                                                     <tr>
+                                                         <td colspan="4">No employees found under this shift</td>
+                                                     </tr>  
+        <?php } ?>
+                                     </tbody>
+                                 </table>
+                             </fieldset> -->
+                        </div>
+    <?php }
+    } ?> <!-- /.box-body -->
+                </div>
+            </div>
+        </div>    
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-12" align="right">
+                    <a href="#" class="btn btn-default" onclick="downloadReport('Attendance', 'pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                    <a href="#" class="btn btn-default" onclick="downloadReport('Attendance', 'excel');"><i class="icon-file"></i>Download As Excel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php } else { ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';  ?>
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+        .row {
+            height: 32px;
+        }
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+        table {
+            border: 1px solid #f4f4f4;
+            width: 100%;
+            max-width: 100%;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        td, th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border: 1px solid #B2B2B2;
+        }
+    </style>
+    <?php
+    echo $this->element('reportadminheader', array(
+        'title' => 'Summary Attendance Employees Report'));
+    ?>
+    <?php
+    $i = 0;
+    foreach ($arr_leavepolicydetails_for_template as $value) {
+        $i += 1;
+        if(!empty($value['summary']))
+                        {
+        ?>
+        <?php
+                                if($criteria == "Units")
+                                {
+                                ?>
+                                <h3>Attedance Summary of  <?php echo isset($value['summary']['0']['Branch']['branch_name']) ? $value['summary']['0']['Branch']['branch_name'] : '    (No Datas Found Under This Branch)'; ?>  </h3>
+                                <?php
+                                }
+                                else
+                                {
+                                    ?>
+                                
+                                    <h3>Attedance Summary of  <?php echo isset($value['summary']['0']['Info']['EmpName']) ? $value['summary']['0']['Info']['EmpName'] : '    (No Datas Found Under This Employees)'; ?>  </h3>
+                                <?php
+                                    }
+                                ?><br>
+        <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>SL No</th>
+                                            <th>Employee ID</th>
+                                            <th>Employee Name</th>
+                                            <th>Designation</th>
+                                            <th>Date Of Joining</th>
+                                            <th>Department</th>
+                                            <th>Branch</th>
+                                        <!--    <th>LEAVEPOLICY_GROUP_NAME</th> -->
+
+                                            <th>Present Days</th>
+                                            <th>Leave Days</th>
+                                            <th>Holidays</th>
+                                            <?php
+                                            foreach ($arr_dates as $key => $date) {
+                                                ?>
+                                                <th><?php echo $date; ?></th>
+                                                <?php
+                                            }
+                                            ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $arr_data = $value['summary']; ?>
+        <?php if (count($arr_data) >= 0) { ?>
+            <?php
+            $k=1;
+            foreach ($arr_data as $val) { ?>
+                                                <tr> 
+                                                    <td><?php echo $k;?></td>
+                                                    <td><?php echo $val['Info']['employee_id']; ?></td>
+                                                    <td><?php echo $val['Info']['EmpName']; ?></td>
+                                                    <td><?php echo $val['Info']['designation']; ?></td>
+                                                    <td><?php echo $val['Info']['joining_date']; ?></td>
+                                                    <td><?php echo $val['Info']['department']; ?></td>
+                                                    <td><?php echo $val['Info']['branch']; ?></td>
+                                                    <td><?php echo $val['AttendanceRegister']['days_present']; ?></td>
+                                                    <td> <?php echo $val['AttendanceRegister']['days_leave']; ?></td>
+                                                    <td> <?php echo $val['AttendanceRegister']['days_holidays']; ?></td>
+
+                                                    <?php
+                                                    foreach ($arr_dates as $key => $date) {
+                                                        ?>       
+                                                        <td> 
+                                                            <?php
+                                                            $newIndex = 'FIELD' . ($key + 1);
+                                                            echo $val['AttendanceRegister'][$newIndex];
+                                                            ?></td>                                          
+                                                <?php } ?>
+                                                </tr>
+            <?php 
+            $k++;
+                                                    } ?>
+        <?php } else { ?>
+                                            <tr>
+                                                <td colspan="4">No employees found under this shift</td>
+                                            </tr>  
+        <?php } ?>
+                                    </tbody>
+                                </table>
+    <?php } ?>        
+
+<?php }
+} ?>

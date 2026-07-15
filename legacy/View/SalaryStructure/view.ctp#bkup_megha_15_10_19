@@ -1,0 +1,187 @@
+<?php $arr = array('(', ')', ' ', '&'); ?>
+<form id="spView" action="" method="post">
+    <input type="hidden" id="view_structure_id" value="<?php echo isset($salaryLoadItems['structure_id']) ? $salaryLoadItems['structure_id'] : 0 ?>" />
+    <?php if(isset($salaryLoadItems['structure_id'])){ ?>
+    <div class="modal-header">
+        <button type="button" class="btn btn-default" onclick="showSalaryStructureForm();">Edit</button>
+    </div>
+    <?php } ?>
+    <div class="modal-body">
+        <fieldset>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label> Structure Name : <?php echo isset($salaryLoadItems['structure_name']) ? $salaryLoadItems['structure_name'] : '' ?></label>
+                </div>
+                <div class="col-sm-6">
+                    <label> Structure defined : <?php echo (isset($salaryLoadItems['defined_structure_for']) && $salaryLoadItems['defined_structure_for'] == 1) ? "Monthly" :"" ?></label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <?php 
+                        $procode = '';
+                        if(isset($salaryLoadItems['prorate_code']) && $salaryLoadItems['prorate_code'] == 1){
+                            $procode = 'Calendar';
+                        }else if(isset($salaryLoadItems['prorate_code']) && $salaryLoadItems['prorate_code'] == 2){
+                            $procode = 'Working days';
+                        }else if(isset($salaryLoadItems['prorate_code']) && $salaryLoadItems['prorate_code'] == 3){
+                            $procode = 'Fixed days';
+                        }
+                    ?>
+                    <label> Procode : <?php echo $procode; ?></label>
+                </div>
+                <div class="col-sm-6">
+                    <label> Procode description : <?php echo isset($salaryLoadItems['prorate_desc']) ? $salaryLoadItems['prorate_desc'] : 'Calendar days' ?></label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+					<?php 
+						if(isset($salaryLoadItems['defined_structure_for']) && $salaryLoadItems['defined_structure_for'] == 1){
+							$defined_structure_for = 'Monthly CTC';
+						}else if(isset($salaryLoadItems['defined_structure_for']) && $salaryLoadItems['defined_structure_for'] == 2){
+							$defined_structure_for = 'Annual CTC';
+						}else if(isset($salaryLoadItems['defined_structure_for']) && $salaryLoadItems['defined_structure_for'] == 3){
+							$defined_structure_for = 'Bi Monthly CTC';
+						}else if(isset($salaryLoadItems['defined_structure_for']) && $salaryLoadItems['defined_structure_for'] == 4){
+							$defined_structure_for = 'Daily CTC';
+						}else{
+							$defined_structure_for = 'CTC';
+						}
+					?>
+                    <label for="structure_eg_amt" id="label-ctc"> <?php echo $defined_structure_for; ?> : <?php echo isset($salaryLoadItems['structure_eg_amt']) ? $salaryLoadItems['structure_eg_amt'] : '' ?></label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label> Effective start date : <?php echo isset($salaryLoadItems['startdate_effective']) ? $salaryLoadItems['startdate_effective'] : '' ?></label>
+                </div>
+                <div class="col-sm-6">
+                    <label> Effective end date : <?php echo isset($salaryLoadItems['enddate_effective']) ? $salaryLoadItems['enddate_effective'] : '' ?></label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <label> Remaining amount for applied formula : 0</label>
+                </div>
+            </div>
+        </fieldset>
+        <!--div class="row border"-->
+        <br>
+        <hr>
+        <fieldset>
+            <legend>
+                <div class="row">
+                    <div class="col-sm-12 col-lg-5 col-md-5">
+                        <label>Head</label>
+                    </div>
+                    <div class="col-sm-12 col-lg-7 col-md-7">
+                        <div class="col-sm-12 col-lg-4 col-md-4">
+                            <label>Value</label>
+                        </div>
+                        <div class="col-sm-12 col-lg-8 col-md-8">
+                            <label>Formulae</label>
+                        </div>
+                    </div>
+                </div>
+            </legend>
+        </fieldset>
+        <?php
+        $i = 1;
+        foreach ($salaryHeadItems as $key => $value) {
+            ?>
+            <!--div class="col-sm-12 col-lg-12">
+                <h3><label><?php echo $key; ?></label></h3-->
+            <fieldset>
+                <legend><?php echo $key; ?></legend>
+                <?php foreach ($value as $salkey => $salvalue) { 
+                    $disabled = "";
+                        //if ($salvalue['item_type'] == 'limit')
+                        if ($salvalue['item_type'] == 'fixed')
+                            $disabled = "readonly";
+                        
+                        //if($salvalue['item_type'] === 'na' || $salvalue['item_type'] === 'leave')
+                        if($salvalue['item_type'] != 'formula' && $salvalue['item_type'] != 'limit')
+                            $showFormula = false;
+                        else
+                            $showFormula = true;
+                        
+                        if($salvalue['item_type'] == 'limit'){
+                            //On 26 July 2016
+                            //$default_value = isset($salvalue['item_value'])?$salvalue['item_value']:'';
+                            $default_value = 0;
+                        }else{
+                            $default_value = 0;
+                        }
+                        ?>
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-5 col-md-5">
+                            <label><?php echo trim($salvalue['item_name']); ?> - (<?php echo isset($salvalue['item_type']) ? $salvalue['item_type'] : ''; ?><?php echo (isset($salvalue['occurance']) && $salvalue['occurance'] != '') ? '-' . $salvalue['occurance'] : ''; ?>) <?php echo ($salvalue['item_value'] != '') ? ' - ' . $salvalue['item_value'] : ''; ?></label>
+                        </div>
+                        
+                        <div class="col-sm-12 col-lg-7 col-md-7">
+                            <div class="col-sm-12 col-lg-4 col-md-4">
+                                <?php if ($disabled != '') { ?>
+                                    <label><?php echo (isset($salvalue['item_value']) && $salvalue['item_value'] != '')?$salvalue['item_value']:0; ?></label>
+                                <?php } else {
+                                	//Added by developer on 04 Dec 2017
+                                	//Starts
+                                	$structure_det_value = isset($salvalue['det'][0]['structure_det_value']) ? $salvalue['det'][0]['structure_det_value'] : $default_value;
+                                	$structure_det_depends = isset($salvalue['det'][0]['structure_det_depends']) ? $salvalue['det'][0]['structure_det_depends'] : $default_value;
+                                	$structure_det_operator = isset($salvalue['det'][0]['structure_det_operator']) ? $salvalue['det'][0]['structure_det_operator'] : "";        
+                                	if($structure_det_operator == "limit_wg") {
+                                		$value_to_display = max($structure_det_value, $structure_det_depends);
+                                	}else if($structure_det_operator == "limit_wl") {
+                                		$value_to_display = min($structure_det_value, $structure_det_depends);
+                                	}else{
+                                		$value_to_display = $structure_det_value;
+                                	}
+                                ?>
+                                    <label><?php echo $value_to_display; ?></label>
+                                <?php 
+                                } 
+                                //Ends 
+                                ?>
+                                
+                                
+                            </div>
+                            <div class="col-sm-12 col-lg-8 col-md-8">
+                                <label id="equation_disp_<?php echo $i; ?>" class ="cal_disp" for="<?php echo str_replace($arr, '_', $salvalue['item_pkey'] . "_" . trim($salvalue['item_name'])); ?>"><?php echo isset($salvalue['det'][0]) ? $salvalue['det'][0]['structure_formula'] : ""; ?></label>
+                            </div>
+                        </div>
+                    </div>                    
+                    <?php if ($salvalue['item_type'] == 'limit') { ?>
+                    <?php 
+                        $limit_mode = '';
+                        if(isset($salvalue['det'][0]['structure_det_operator']) && $salvalue['det'][0]['structure_det_operator'] == 'limit_wl'){
+                            $limit_mode = 'Which is lesser';
+                        }else if(isset($salvalue['det'][0]['structure_det_operator']) && $salvalue['det'][0]['structure_det_operator'] == 'limit_wg'){
+                            $limit_mode = 'Which is greater';
+                        }
+                    ?>
+                        <div class="row">
+                            <div class="col-sm-4 col-sm-push-5 col-lg-4 col-lg-push-5 col-md-4 col-md-push-5">
+                                <?php echo $limit_mode; ?>
+                            </div>
+                        </div>
+                    <?php } ?>
+                    <hr>
+                    <?php
+                    $i++;
+                }
+                ?>
+                <!--/div-->
+            </fieldset>
+        <?php } ?>
+        <input type="hidden" name="item_count" value="<?php echo $i; ?>" />
+        <!--/div-->
+    </div>
+</form>
+<script>
+function showSalaryStructureForm(){
+    var structure_id = $('#view_structure_id').val();
+    $("#shiftContainer").load(livesite + 'SalaryStructure/form/' + structure_id, function() {
+        //displayMonthysalary();
+    });    
+}
+</script>

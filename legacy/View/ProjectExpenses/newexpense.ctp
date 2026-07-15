@@ -1,0 +1,972 @@
+<?php //if($company_code == 'ZWLK' || $company_code == 'DEMO'){ 
+   // $bal = $arr_balance;
+     //  }else{
+    //$bal = isset($data['0']['emp_expense']['balance'])?$data['0']['emp_expense']['balance']:'';
+      // } ?>
+<form class="form-horizontal" style="padding-left:1px; padding-right:8px ; border:1px;margin-bottom:20px;" id="form-user-master" method="post" action="<?php echo $this->webroot; ?>ProjectExpenses/save" >
+<h1 class="page-header">Create New Expense</h1>
+    <div class="col-md-12 bg-success" style="height:auto;"> 
+        
+            <h4 style="padding-left:20px;">Add Project Details</h4>
+
+  <div class="divider"></div>
+        <div class="">
+            <div class="form-group">
+                <div class="col-md-4">
+                    <label  class="col-md-6 control-label" >Request ID<label style="color:red;">*</label></label>
+                    <div class="col-md-6">
+                        <input id="expense_id" name="expense_id" value="<?php echo isset($data['0']['emp_expense']['expense_id']) ? $data['0']['emp_expense']['expense_id'] : mt_rand(); ?>" type="text"  class="form-control input-md" required="required" readonly="readonly">
+                    </div>
+                </div>
+            
+          
+                        <div class="col-md-4">
+                            <label for="in_date" class="col-sm-6 control-label">Project Name<label style="color:red;">*</label></label>
+                            <div class="col-md-6">
+                                 <select id="vendor" class="form-control js-example-basic-single" name="vendor" style="width: 160px;" required="required">
+                                </select>
+<!--                                <select id="vendor" name="vendor" class="form-control" required="required">
+                                    <option value="">[--Select--]</option>
+                                    <?php
+                                   // foreach ($vendor_list as $list) {
+                                    //    foreach ($list as $l) {
+                                            ?>
+                                            <option value="<?php echo $l["site_pkey"] ?>"><?php echo $l["site_name"].'-'.$l["site_id"] ?></option>
+                                            <?php
+                                     //   }
+                                 //   }
+                                    ?>
+                                </select>-->
+                            </div> 
+                        </div>
+                        <div class="col-md-4">
+                            <label for="beneficiary" class="col-sm-6 control-label">Beneficiary</label>
+                            <div class="col-md-6">
+                                 <select id="beneficiary" class="form-control js-example-basic-single" name="beneficiary" style="width: 160px;" >
+                                </select>
+<!--                                <select id="beneficiary" name="beneficiary" class="form-control" >
+                                    <option value="">[--Select--]</option>
+                                    <?php
+                                   // foreach ($beneficiary as $ben) {
+                                            ?>
+                                            <option value="<?php echo $ben["beneficiary"]["contact_id"] ?>"><?php echo $ben["beneficiary"]["company_name"]; ?></option>
+                                            <?php
+                                 //   }
+                                    ?>
+                                </select>-->
+                            </div> 
+                        </div>
+                
+<!--                <div class="col-md-3">
+                    <label style="text-align:left;" class="col-md-6 control-label" >Date<label style="color:red;">*</label></label>
+                    <div class="col-md-6">
+                        <input id="expense_date" placeholder="select date" readonly="readonly" style="background:white;" name="expense_date" value="<?php echo isset($data['0']['emp_expense']['expense_date']) ? $data['0']['emp_expense']['expense_date'] : ''; ?>" type="text"  class="form-control input-md" required="required">
+                    </div> 
+                </div>-->
+            </div>
+            <div class="form-group">
+                
+<!--                <div class="col-md-3">
+                            <label for="purpose" class="col-sm-6 control-label">Purpose</label>
+                            <div class="col-md-6">
+                                <input type="text"  class="form-control" value="<?php //echo $data['remarks']?>" name="purpose" id="purpose" placeholder="Enter a Purpose">
+                            </div> 
+                </div>-->
+                
+                <div class="col-md-4">
+                            <label for="gst_bill_no" class="col-sm-6 control-label">GST Bill No.</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" value="<?php echo isset($data['0']['emp_expense_details']['gst_bill_no'])?$data['0']['emp_expense_details']['gst_bill_no']:'';?>" name="gst_bill_no" id="gst_bill_no" onchange="gst_status();">
+                            </div> 
+                        </div>
+                        <div class="col-md-4">
+                            <label for="gst_bill_status" class="col-sm-6 control-label">GST Bill Status</label>
+                            <div class="col-md-6">
+                                <select id="gst_bill_status"  class="form-control" name="gst_bill_status">
+                               <option value="">[--Select--]</option>
+                               <?php $status = isset($data[0]['emp_expense_details']['gst_bill_status']) ? $data[0]['emp_expense_details']['gst_bill_status']: ''; ?>
+                               <?php $arr_status = array('Completed', 'Pending','Composition','Not Applicable');
+                               foreach ($arr_status as $value) { ?>
+                                <?php
+                                if ($value == $status) {
+                                    $selected = 'selected="selected"';
+                                } else {
+                                    $selected = '';
+                                }
+                                ?>
+                                <option <?php echo $selected; ?> value="<?php echo $value; ?>"><?php echo $value; ?></option>
+                               <?php } ?>
+                              </select> 
+                            </div> 
+                        </div>
+                <div class="col-md-4">
+                    <label style="text-align:left;" class="col-md-6 control-label" >Expense Date<label style="color:red;">*</label></label>
+                    <div class="col-md-6">
+                        <input id="expense_date" placeholder="select date" readonly="readonly" style="background:white;" name="expense_date" value="<?php echo isset($data['0']['emp_expense']['expense_date']) ? $data['0']['emp_expense']['expense_date'] : ''; ?>" type="text"  class="form-control input-md" required="required">
+                    </div> 
+                </div>
+                    
+                   </div>
+           
+             <div class="form-group">
+                 <?php if ($user_group == 1) { ?>
+                   <div class="col-md-4">
+                                <label for="in_date" class="col-sm-6 control-label">Choose Employee</label>
+                               <div class="col-md-6">
+                                   <select id="emp_fkey" class="form-control js-example-basic-single" name="emp_fkey" style="width: 160px;" onchange="advance();">
+                                </select>  
+<!--                                    <select id="emp_fkey" class="form-control" name="emp_fkey">
+                                        <option value="">[--Select--]</option>
+                                        <?php 
+//                                        foreach ($arr_employees as $value) {
+//                                            $selected = ($data['emp_fkey'] == $value['emp_details']['emp_pkey']) ? 'selected="selected"' : '';
+//                                            echo '<option value="' . $value['emp_details']['emp_pkey'] . '" ' . $selected . '>' . $value['emp_details']['first_name'] . ' ' . $value['emp_details']['last_name'] . ' - ' . $value['emp_proff']['emp_company_id'] . '</option>';
+//                                        }
+                                        ?>
+                                    </select> -->
+                                </div>
+                            </div>
+                     <?php } ?> 
+                 <div class="col-md-4">
+                    <label class="col-md-6 control-label" >Remarks</label>
+                    <div class="col-md-6">
+                        <input type="text"  class="form-control" value="<?php //echo  isset($data['0']['emp_expense']['remarks'])?$data['0']['emp_expense']['remarks']:''; ?>" name="remarks" id="remarks" placeholder="Enter Remarks">
+                    </div> 
+                </div>
+                <?php if ($user_group == 2) { ?>
+                <div class="col-md-4">
+                     <label for="in_date" class="col-sm-6 control-label">Approved By<span class="star">*</span></label>
+                    <div class="col-md-6">
+                        <select id="authorized_by" class="form-control js-example-basic-single" name="authorized_by" style="width: 160px;" required="required" >
+                                </select>
+<!--                       <select id="authorized_by" class="form-control" name="authorized_by" required="required" >
+                                        <option value="">[--Select--]</option>
+                                        <?php
+                                        //    foreach ($apr_employees as $value) {
+                                          //  $selected = ($data['authorized_by'] == $value['emp_details']['emp_pkey']) ? 'selected="selected"' : '';
+                                        //    echo '<option value="' . $value['emp_details']['emp_pkey'] . '" ' . $selected . '>' . $value['emp_details']['first_name'] . ' ' . $value['emp_details']['last_name'] . ' - ' . $value['emp_proff']['emp_company_id'] . '</option>';
+                                       // }  
+                                        ?>
+                                    </select> -->
+                    </div> 
+                </div>
+                  <?php } ?>    
+                 <div class="col-md-4">
+                    <label style="text-align:left;" class="col-md-6 control-label" >Bill Date</label>
+                    <div class="col-md-6">
+                        <input id="emp_expense_date" placeholder="select date" readonly="readonly" style="background:white;" name="emp_expense_date" value="<?php echo isset($data['0']['emp_expense_details']['exp_date']) ? $data['0']['emp_expense_details']['exp_date'] : ''; ?>" type="text"  class="form-control input-md">
+                    </div> 
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    
+
+
+    <div class="spacer-20"></div>
+
+
+<input id="headkey" type="hidden" name="headkey" value="">
+                  
+    <div class="col-md-12 bg-success" style="height:auto;">
+
+        <h4 style="padding-left:20px;">Add Expense Details</h4>
+        <div class="divider"></div>
+        <div class="form-group">
+                        <div class="col-md-4">
+                            <label for="in_time" class="col-sm-6 control-label">Expense Name<span class="star">*</span></label>
+                            <div class="col-md-6">
+                                   <select id="expense_type" class="form-control js-example-basic-single" required="required" name="expense_type" style="width: 160px;" onchange="filterCategory(this);">
+                                </select>
+                                <!--<input type="text"  class="form-control" value="" name="expense_type" id="expense_type" style="background:white;" placeholder="Enter Expense Type"  required="required">-->
+                                <!--<input type="text" class="form-control" name="expense_type" id="expense_type" style="background:white;" placeholder="Enter Expense Type"  required="required" list="team_list">-->
+<!--                                <select id="expense_type" name="expense_type" class="form-control" required="required" onchange="filterCategory(this);">
+                                    <option value="">[--Select--]</option>
+                                    <?php
+                                    //foreach ($expense_type as $type) {
+                                     //   foreach ($type as $t) {
+                                            ?>
+                                            <option value="<?php echo $t['expense_type_pkey']; ?>,<?php echo $t['expense_head_fkey']; ?>"><?php echo $t["expense_type_name"]; ?></option>
+                                            <?php
+                                     //   }
+                                  //  }
+                                    ?>
+                                </select>-->
+                            </div> 
+                        </div>
+                        <div class="col-md-4">
+                            <label for="category" class="col-sm-6 control-label">Category</label>
+                            <div class="col-md-6">
+                                  <select id="category" class="form-control js-example-basic-single" name="category">
+                                  </select>
+                            </div> 
+                        </div>
+                        <div class="col-md-4">
+                            <label for="expense_amount" class="col-sm-6 control-label">Expense Amount<span class="star">*</span></label>
+                            <div class="col-md-6">
+                                <input type="number" step="0.01"  required="required" onchange="add();" class="form-control" value="<?php echo isset($data['0']['emp_expense_details']['exp_amount'])?$data['0']['emp_expense_details']['exp_amount']:'';?>" name="expense_amount" id="expense_amount">
+                            </div> 
+                        </div>
+<!--                        <div class="col-md-3">
+                            <label for="exp_date" class="col-sm-6 control-label">Expense Date<span class="star">*</span></label>
+                            <div class="col-md-6">
+                                <input type="text"  class="form-control"  value="<?php echo isset($data['0']['emp_expense_details']['exp_date'])?$data['0']['emp_expense_details']['exp_date']:'';?>" name="exp_date" id="exp_date" readonly="readonly" style="background:white;" placeholder="Select Date" required="required">onchange="//findextingsalary();"
+                            </div> 
+                        </div>-->
+                        
+                    </div>
+                    <div class="form-group">
+                       
+                         <div class="col-md-4">
+                            <label for="cgst" class="col-sm-6 control-label">CGST</label>
+                            <div class="col-md-6">
+                                <input type="number" step="0.00001"  class="form-control" onchange="add();" value="<?php echo isset($data['0']['emp_expense_details']['cgst'])?$data['0']['emp_expense_details']['cgst']:'';?>" name="cgst" id="cgst" >
+                            </div> 
+                        </div>
+                        <div class="col-md-4">
+                            <label for="sgst" class="col-sm-6 control-label">SGST</label>
+                            <div class="col-md-6">
+                                <input type="number" step="0.00001" readonly="readonly" class="form-control" onchange="add();" value="<?php echo isset($data['0']['emp_expense_details']['sgst'])?$data['0']['emp_expense_details']['sgst']:'';?>" name="sgst" id="sgst">
+                            </div> 
+                        </div>
+                        <div class="col-md-4">
+                            <label for="igst" class="col-sm-6 control-label">IGST</label>
+                            <div class="col-md-6">
+                                <input type="number" step="0.00001" min="0" class="form-control" onchange="add();" value="<?php echo isset($data['0']['emp_expense_details']['igst'])?$data['0']['emp_expense_details']['igst']:'';?>" name="igst" id="igst">
+                            </div> 
+                        </div>
+                        
+                         
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            <label for="total" class="col-sm-6 control-label">Total</label>
+                            <div class="col-md-6">
+                                <input type="number" step="0.01" class="form-control" readonly="readonly" value="<?php echo isset($data['0']['emp_expense_details']['total'])?$data['0']['emp_expense_details']['total']:'';?>" name="total" id="total">
+                            </div> 
+                        </div>
+                        <div class="col-md-4">
+                            <label for="related_party" class="col-sm-6 control-label">Related Party</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" value="<?php echo isset($data['0']['emp_expense_details']['related_party'])?$data['0']['emp_expense_details']['related_party']:'';?>" name="related_party" id="related_party">
+                            </div> 
+                        </div>
+                       <div class="col-md-4">
+                            <label for="image" class="col-sm-6 control-label">Image</label>
+                            <div class="col-md-6">
+<!--                                <input type="text"  class="form-control" value="<?php // echo $data['remarks']?>" name="image" id="image">-->
+                                <input type="file" class="form-control file"  id="image" name="image" >
+                            </div> 
+                      </div>
+                      </div>
+        <div class="form-group">
+           <div class="col-md-4">
+                            <label for="payment" class="col-sm-6 control-label">Payment</label>
+                            <div class="col-md-6">
+                                <input type="number" step="0.001"  onchange="get_balance();" min="0" class="form-control" value="<?php echo isset($data['0']['emp_expense_details']['payment'])?$data['0']['emp_expense_details']['payment']:'';?>" name="exp_payment" id="exp_payment">
+                            </div> 
+                        </div>
+                        <div class="col-md-4">
+                            <label for="balance" class="col-sm-6 control-label">Balance</label>
+                            <div class="col-md-6">
+                                <input type="number" step="0.01" min="0" readonly="readonly" class="form-control" value="<?php echo isset($data['0']['emp_expense_details']['balance'])?$data['0']['emp_expense_details']['balance']:'';?>" name="exp_balance" id="exp_balance">
+                            </div> 
+                        </div> 
+        </div>
+        <div class="col-md-2  pull-right">
+                <input type="hidden" name="emp_expenses_total" id="emp_expenses_total" value="">
+                <input type="hidden" name="emp_expenses_pkey" id="emp_expenses_pkey" value="">
+                <button type="submit" id="btn-submit" class="btn btn-primary pull-right "  style="margin-right:15px;width: 145px;"><li class="fa fa-arrow-down"></li> Add to List</button>
+          </div>
+        <div class="spacer-20"></div>
+        <div id="table_appnd" class="" style="text-align: center; ">
+
+            </div>
+         <h4 style="padding-left:20px;">Add Payment Details</h4>
+        <div class="divider"></div>
+         <div class="form-group">
+<!--                <div class="col-md-3">
+                            <label for="exp_total" class="col-sm-6 control-label">Total Expense</label>
+                            <div class="col-md-6">
+                                <input type="number" step="0.01"  onchange="minus();" class="form-control" value="<?php echo isset($data['0']['emp_expense']['expenses_amount'])?$data['0']['emp_expense']['expenses_amount']:'';?>" name="exp_total" id="exp_total">
+                            </div> 
+                        </div>-->
+                        <div class="col-md-4">
+                            <label for="payment" class="col-sm-6 control-label">Payment</label>
+                            <div class="col-md-6">
+                                <input type="number" step="0.001"  onchange="minus(); check();"  readonly="readonly" min="0" class="form-control" value="<?php echo isset($data['0']['emp_expense']['payment'])?$data['0']['emp_expense']['payment']:'';?>" name="payment" id="payment">
+                            </div> 
+                        </div>
+                        <div class="col-md-4">
+                            <label for="balance" class="col-sm-6 control-label">Balance</label>
+                            <div class="col-md-6">
+                                <input type="number" step="0.01" min="0" readonly="readonly" class="form-control" value="<?php //echo $bal;?>" name="balance" id="balance" >
+                            </div> 
+                        </div>
+                        <div class="col-md-4">
+                            <label for="payment_status" class="col-sm-6 control-label">Payment Status</label>
+                            <div class="col-md-6">
+                                <select id="payment_status"  class="form-control" name="payment_status" readonly="readonly" >
+<!--                               <option value="">[--Select--]</option>-->
+                               <?php $status = isset($data[0]['emp_expense_details']['payment_status']) ? $data[0]['emp_expense_details']['payment_status']: ''; ?>
+                               <?php $arr_status = array('Pending','Completed');
+                               foreach ($arr_status as $value) { ?>
+                                <?php
+                                if ($value == $status) {
+                                    $selected = 'selected="selected"';
+                                } else {
+                                    $selected = '';
+                                }
+                                ?>
+                                <option <?php echo $selected; ?> value="<?php echo $value; ?>" ><?php echo $value; ?></option>
+                               <?php } ?>
+                              </select>
+                               </div> 
+                        </div>
+                
+            </div>
+            <div class="modal-footer">
+<!--               <div class="divider"></div>-->
+       <div class="">
+            
+            <div id="dispatch">
+                <input type="button" id="submit_mr" onclick="requestsubmit();" value="Submit Request" class="btn btn-primary pull-right">
+                <input type="button" id="btn-remove" value="Cancel" class="btn btn-danger" style="margin-right: 20px;">
+            </div>
+            <div class="spacer-20"></div>
+        </div >
+            </div>
+        </div>
+        
+
+          
+</form>
+<br>
+<!--<div id="dispatch">
+                <input type="button" id="requestsubmit" onclick="requestsubmit();" value="Submit Request" class="btn btn-primary pull-right" style="width: 145px;margin-right: 40px;">
+                <input type="button" id="btn-remove" value="Remove" class="btn btn-danger" style="width:140px;">
+            </div>-->
+<script>
+    function listProjects(){
+          $("#vendor").select2(
+                {
+                    placeholder: "Select",
+                    allowClear: true,
+                    ajax: {
+                        url: livesite + "ProjectExpenses/prolist/",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        }
+                    },
+                    escapeMarkup: function (markup)
+                    {
+                        return markup;
+                    }
+                });
+      }
+      function listExpenses(){
+          $("#expense_type").select2(
+                {
+                    placeholder: "Select",
+                    allowClear: true,
+                    ajax: {
+                        url: livesite + "ProjectExpenses/explist/",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        }
+                    },
+                    escapeMarkup: function (markup)
+                    {
+                        return markup;
+                    }
+                });
+      }
+      function listApprovals(){
+          $("#authorized_by").select2(
+                {
+                    placeholder: "Select",
+                    allowClear: true,
+                    ajax: {
+                        url: livesite + "ProjectExpenses/aprlist/",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        }
+                    },
+                    escapeMarkup: function (markup)
+                    {
+                        return markup;
+                    }
+                });
+      }
+      function listBeneficiaries(){
+          $("#beneficiary").select2(
+                {
+                    placeholder: "Select",
+                    allowClear: true,
+                    ajax: {
+                        url: livesite + "ProjectExpenses/benlist/",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        }
+                    },
+                    escapeMarkup: function (markup)
+                    {
+                        return markup;
+                    }
+                });
+      }
+      function listEmployees(){
+          $("#emp_fkey").select2(
+                {
+                    placeholder: "Select",
+                    allowClear: true,
+                    ajax: {
+                        url: livesite + "ProjectExpenses/emplist/",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        }
+                    },
+                    escapeMarkup: function (markup)
+                    {
+                        return markup;
+                    }
+                });
+      }
+    function gst_status(){
+        var bill = $("#gst_bill_no").val();
+        if(bill != ''){
+           $("#gst_bill_status").val('Completed'); 
+           //$("#gst_bill_status").prop("disabled",true);
+        }else{
+           $("#gst_bill_status").val('');
+           //$("#gst_bill_status").prop("disabled",false);  
+        }
+    }
+    function add(){
+         var amt = parseFloat($('#expense_amount').val());
+         var sgst = parseFloat($('#cgst').val());
+         var cgst = parseFloat($('#cgst').val());
+         var igst = parseFloat($('#igst').val());
+         //console.log(cgst);
+         if(amt> 0 && sgst > 0 ){
+         var total = amt + sgst + cgst;
+         $("#igst").val('');
+         $("#sgst").val(sgst);
+         //console.log(cgst);
+         }else 
+         if (amt> 0 && igst > 0){
+           var total = amt + igst; 
+           $("#sgst").val('');
+           $("#cgst").val('');
+           $("#igst").val(igst);
+         }else if (amt> 0 ){
+           var total = amt; 
+           $("#sgst").val('');
+         }else{
+          // var total = 0;   
+         }
+         total = parseInt(Math.round(total));
+         $("#total").val(total);
+         $("#exp_balance").val(total);
+         minus();
+
+    }
+    //         var head = $("#headkey").val();
+//         var comp = // echo $company_code; 
+//         if(comp === 'ZWLK' || comp === 'DEMO'){ 
+//             if(head == 1 || head == 4){
+//                 minus_adv();
+//             }else{
+//              minus();   
+//             }
+//         }
+    function minus_adv(){
+         var bal = $("#balance").val();
+         var total = parseFloat($('#emp_expenses_total').val());
+        // var payment = parseFloat($('#payment').val());
+         if(total> bal){
+         alert("Insufficient advance amount.");
+         }else {
+          var bal = bal - total;  
+          $("#payment_status").val("Completed");
+         }
+         $("#balance").val(bal);
+    }
+     function minus(){
+     $("#balance").val('');
+         var total = parseFloat($('#emp_expenses_total').val());
+         var payment = parseFloat($('#payment').val());
+         if(total> 0 && payment > 0){
+         var balance = total - payment;
+         }else if(total> 0){
+          var balance = total;   
+         }
+        // balance = parseFloat(balance);
+         $("#balance").val(balance);
+         if(balance > 0){
+          $("#payment_status").val("Pending");   
+         }else{ 
+          $("#payment_status").val("Completed");    
+         }
+    }
+     function check(){
+         var total = parseFloat($('#emp_expenses_total').val());
+         var payment = parseFloat($('#payment').val());
+       if(payment > total){
+           $("#payment").val('');
+           minus();
+           alert("Payment amount is greater than total amount!!!");
+           
+     } 
+    }
+    function get_balance(){
+         $("#exp_balance").val('');
+         var total = parseFloat($('#total').val());
+         var payment = parseFloat($('#exp_payment').val());
+         console.log(payment);
+         console.log(total);
+         if(total> 0 && payment > 0){
+         var balance = total - payment;
+         }else if(total> 0){
+          var balance = total;   
+         }
+        // balance = parseFloat(balance);
+        if(balance < 0){
+            alert("Payment is greater than balance");
+        }else{
+         $("#exp_balance").val(balance);
+        }
+//         if(balance > 0){
+//          $("#payment_status").val("Pending");   
+//         }else{
+//          $("#payment_status").val("Completed");    
+//         }
+    }
+    function requestsubmit(){
+        var pid = $("#emp_expenses_pkey").val();
+        var total = $("#emp_expenses_total").val();
+        var payment = $("#payment").val();
+     
+        if(payment < 0){
+           payment = 0; 
+        }
+        if(balance =='0'){
+           balance = 0; 
+        }
+      
+        var balance = $("#balance").val();
+        var payment_status = $("#payment_status").val();
+        if($('#table_appnd').find('table').length){
+            if(confirm("Are you sure to submit  Project Expense? ")){
+               $.ajax({
+            url: livesite+ 'ProjectExpenses/submit/' + total +'/'+balance+'/'+pid+'/'+payment_status+'/'+payment,
+            success: function (response) {
+                 $.notify('Success', {
+                        type: 'success',
+                        allow_dismiss: true
+                    });
+
+            }
+        });
+          refresh();
+            $('#att_table').datagrid('load'); 
+            $('#myleaverequeststable').datagrid('load'); 
+            
+            } 
+        }else{
+            alert("Please add items to submit the request.");
+        }
+        
+    }
+    function removedaata(index, id) {
+         if (id) {
+            var r = confirm("Do You Want To Remove The Selected Item?");
+            if (r == true) {
+                var pid = $("#emp_expenses_pkey").val();
+                $.ajax({
+                    url: livesite+'ProjectExpenses/deleteorder/' + id,
+                    success: function (resp) {
+                        loadtable(pid, 1);
+                        var total = $.parseJSON(resp).total;
+                        console.log(total);
+                        $("#emp_expenses_total").val(total);
+                       // $('#expense_type').val('');
+                        $("#expense_type").select2({ allowClear: true }); 
+                        $("#category").select2({ allowClear: true }); 
+                        listExpenses();
+                        $.notify($.parseJSON(resp).msg, {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                        minus();
+                    }
+                });
+            } else
+            {
+                alert("cancelled");
+            }
+        }
+
+
+    }
+    $(document).ready(function () {
+        listEmployees();
+        listExpenses();
+        listBeneficiaries();
+        listProjects();
+        listApprovals();
+        advance(0);
+    $('#expense_date').datepicker({ 
+            format: 'yyyy-mm-dd',       
+            autoclose: true,
+            //startDate: '+1d',
+        
+        });
+    $('#exp_date').datepicker({ 
+            format: 'yyyy-mm-dd',       
+            autoclose: true,
+           // startDate: '+1d',
+        
+        });
+    $('#emp_expense_date').datepicker({ 
+            format: 'yyyy-mm-dd',       
+            autoclose: true,
+            //startDate: '+1d',
+        
+        });
+        });
+         $('#form-user-master').on('submit', function (event) {
+            event.preventDefault();
+            if($('#vendor').val() == ''){
+                if ($("#vendor").next(".validation").length == 0) // only add if not added
+                 {
+                $('#vendor').parent().append("<div class='validation' style='color:red;'>Please select project name </div>");
+                
+                 }
+                 return false;
+            }else{
+                $("#vendor").next(".validation").hide();
+            }
+            if($('#expense_date').val() == ''){
+                if ($("#expense_date").next(".validation").length == 0) // only add if not added
+                 {
+                $('#expense_date').parent().append("<div class='validation' style='color:red;'>Please select expense date. </div>");
+                
+                 }
+                 return false;
+            }else{
+                $("#expense_date").next(".validation").hide();
+            }
+//            if($('#emp_fkey').val() == ''){
+//                if ($("#emp_fkey").next(".validation").length == 0) // only add if not added
+//                 {
+//                $('#emp_fkey').parent().append("<div class='validation' style='color:red;'>Please select employee. </div>");
+//                
+//                 }
+//                 return false;
+//            }else{
+//                $("#emp_fkey").next(".validation").hide();
+//            }
+
+             if($('#expense_type').val() == '' || $('#expense_type').val() == null){
+                if ($("#expense_type").next(".validation").length == 0) // only add if not added
+                 {
+                $('#expense_type').parent().append("<div class='validation' style='color:red;'>Please select expense type.. </div>");
+                
+                 }
+                 return false;
+            }else{
+                $("#expense_type").next(".validation").hide();
+            }
+            if($('#expense_amount').val() == ''){
+                if ($("#expense_amount").next(".validation").length == 0) // only add if not added
+                 {
+                $('#expense_amount').parent().append("<div class='validation' style='color:red;'>Please enter expense amount. </div>");
+                
+                 }
+                 return false;
+            }else{
+                $("#expense_amount").next(".validation").hide();
+            }
+            if($('#exp_date').val() == ''){
+                if ($("#exp_date").next(".validation").length == 0) // only add if not added
+                 {
+                $('#exp_date').parent().append("<div class='validation' style='color:red;'>Please select a date. </div>");
+                
+                 }
+                 return false;
+            }else{
+                $("#exp_date").next(".validation").hide();
+            }
+//            if($('#payment').val() == ''){
+//                if ($("#payment").next(".validation").length == 0) // only add if not added
+//                 {
+//                $('#payment').parent().append("<div class='validation' style='color:red;'>Please enter payment amount. </div>");
+//                
+//                 }
+//                 return false;
+//            }else{
+//                $("#payment").next(".validation").hide();
+//            }
+//            if($('#payment_status').val() == ''){
+//                if ($("#payment_status").next(".validation").length == 0) // only add if not added
+//                 {
+//                $('#payment_status').parent().append("<div class='validation' style='color:red;'>Please select payment status. </div>");
+//                
+//                 }
+//                 return false;
+//            }else{
+//                $("#payment_status").next(".validation").hide();
+//            }
+            $('#form-user-master').ajaxSubmit({
+                success: function (resp) {
+                    var pid = $.parseJSON(resp).pk;
+                    var total = $.parseJSON(resp).total;
+                    var payment = $.parseJSON(resp).payment;
+                    $("#emp_expenses_pkey").val(pid);
+                    $("#emp_expenses_total").val(total);
+                    $("#payment").val(payment);
+                    
+                    loadtable(pid, 1);
+                    minus();
+                    refresh_item();
+                    $("#category").select2({ allowClear: true }); 
+                     //added by megha on 14/08/2019 store disable for select multiple items
+                    //$('#store_code').prop('disabled', true);
+                    //$('#mr_date').prop('disabled', true);
+                    //$('#remarks').prop('disabled', true);
+                    $.notify('Success: Auto saving data <li class="fa fa-spinner fa-spin"></li>', {
+                        type: 'success',
+                        allow_dismiss: true
+                    });
+                }
+
+            });
+
+        });
+        function  loadtable(pid, rowindex) {
+        $("#table_appnd").html('<li style="    font-size: -webkit-xxx-large;" class="fa fa-spinner fa-spin"></li><br>Loading Data....');
+        $.ajax({
+            url: livesite+ 'ProjectExpenses/loadtable/' + pid + '/' + rowindex,
+            success: function (response) {
+                //alert(response);
+                var data = response;
+                var div_data = '';
+                div_data += "<div>" + data + "</div>"
+                $("#table_appnd").html(div_data).promise().done(function(){
+                    
+                });
+            }
+        });
+
+    }
+   function  advance() {
+       var pkey = $("#emp_fkey").val(); 
+        $.ajax({
+            url: livesite+ 'ProjectExpenses/advanceamount/' + pkey ,
+            success: function (response) {
+               // alert(response);
+                $("#balance").val(response);
+            }
+        });
+
+    }
+    function refresh() {
+//        var r = confirm("Do you want to refresh? ")
+//            if (r == true) {
+        $("#emp_expenses_pkey").val('');
+        $("#form-user-master").find('input:text, input:password, input:file, select, textarea,hidden,search').val('');
+        $("#form-user-master").find('input:radio, input:checkbox').removeAttr('checked').removeAttr('selected');
+        $("#table_appnd").html('');
+        $('#dispatch').hide();
+        $('#btn-refresh').fadeOut();
+        $('#newreqeuest').html('');
+        $('#att_table').datagrid('load');
+        $("#category").select2({ allowClear: true }); 
+//            }
+    }
+ function refresh_item() {
+        //$("#emp_fkey").val('');
+        $("#expense_type").val('');
+        $("#category").val('');
+        //$("#exp_date").val('');
+        $("#expense_amount").val('');
+        $("#cgst").val('');
+        $("#sgst").val('');
+        $("#igst").val('');
+        $("#total").val('');
+//        $("#gst_bill_no").val('');
+//        $("#gst_bill_status").val('');
+        $("#exp_payment").val('');
+        $("#exp_balance").val('');
+//        $("#payment_status").val('');
+        $("#related_party").val('');
+        $("#image").val('');
+        
+    }
+    $("#btn-remove").click(function () {
+        var id = $("#emp_expenses_pkey").val();
+       // if (id) {
+            var r = confirm("Do You Want To Remove The Project Expense Request?")
+            if (r == true) {
+
+
+                var pid = $("#emp_expenses_pkey").val();
+                $.ajax({
+                    url: livesite+'ProjectExpenses/deleteordermaster/' + id,
+                    success: function (resp) {
+                        refresh();
+                        $.notify($.parseJSON(resp).msg, {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                    }
+                });
+            } else
+            {
+                alert("cancelled");
+            }
+//         }else{
+//            alert("No Expense for remove!!!");
+//        }
+
+    });
+     //filtter using branch 
+    function filterCategory(type)
+    {
+//        var strarray = type.split(',');
+//     var type = strarray[0];
+//     var head = strarray[1];
+//     if(head=== 1 || head===4){
+//         $("#headkey").val(head);
+//     }
+        $("#category").val('');
+        var type = $('#expense_type').val();
+        $("#category").select2(
+                {
+                    //closeOnSelect:false,
+                    placeholder: "Select",
+                    allowClear: true,
+                    ajax: {
+                        url: livesite + "ProjectExpenses/category/" + type,
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        }
+                    },
+                    escapeMarkup: function (markup) {
+                        return markup;
+                    }
+                });
+    }
+</script>

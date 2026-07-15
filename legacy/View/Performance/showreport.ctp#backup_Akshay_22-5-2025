@@ -1,0 +1,167 @@
+<?php if (isset($arr_reportcriterias)) { ?>
+<form class="form-horizontal" method="post" action="" id="form-showreport">
+    <input type="hidden" id="hidden-report-type" name="hidden-report-type" value="<?php echo $type; ?>" />
+    <input type="hidden" id="hidden-criterias-count" name="hidden-criterias-count" value="1" />
+    <input type="hidden" id="hidden-reportfields" name="hidden-reportfields" value="" />
+    <input type="hidden" class="hidden-criterias" id="hidden-criteria1" name="hidden-criteria1" value="" />
+
+    <!-- Criteria & Month Selection -->
+  <div class="form-group row align-items-center" style="margin-bottom: 1rem; display: flex; flex-wrap: nowrap;">
+
+    <!-- Year Label -->
+    <label class="col-auto col-form-label pr-2"><b>Year:</b></label>
+
+    <!-- Year Dropdown -->
+    <div class="col-md-2 px-1">
+        <select id="reportsfrom" name="reportsfrom" class="form-control">
+            <?php
+            $current_year = date('Y');
+            $current_month = date('n');
+            $fy_start = ($current_month >= 4) ? $current_year : $current_year - 1;
+
+            for ($i = 0; $i < 5; $i++) {
+                $start = $fy_start - $i;
+                $end = $start + 1;
+                echo "<option value=\"$start\">$start-$end</option>";
+            }
+            ?>
+        </select>
+    </div>
+
+    <!-- Criteria Label -->
+    <label for="select-criteria1" class="col-auto col-form-label pl-3 pr-2"><b>Criteria:</b></label>
+
+    <!-- Criteria Dropdown -->
+    <div class="col-md-3 px-1">
+        <select id="select-criteria1" name="select-criteria1" class="form-control" onchange="loadCriteriaItems(1);">
+            <option value="">-- Choose criteria --</option>
+            <?php
+            foreach ($arr_reportcriterias as $value) {
+                echo '<option value="' . $value['reportcriteria'] . '">' . $value['reportcriteria_desc'] . '</option>';
+            }
+            ?>
+        </select>
+    </div>
+
+    <!-- Employee listing (div-items-criteria1) -->
+    <div class="col px-1" id="div-items-criteria1" style="min-width: 200px;"></div>
+
+</div>
+
+
+    <!-- Employee-Specific Fields -->
+    <?php if ($type == 'employee') { ?>
+    <div class="row mt-2">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-4">
+            <div id="allempfields" style="width:100%; height:270px; background-color:white;"></div>
+        </div>
+        <div class="col-sm-4">
+            <div id="reportfields" style="width:100%; height:270px; background-color:white;"></div>
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
+    <?php } ?>
+
+    <!-- Buttons -->
+    <div class="form-group" >
+        <div class="col-md-12 text-right" style="margin-top:30px;">
+            <button type="button" onclick="viewReport();" class="btn btn-primary"><i class="fa fa-eye"></i></button>
+            <button type="button" onclick="downloadReport('pdf');" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+            <button type="button" onclick="downloadReport('excel');" class="btn btn-success"><i class="fa fa-file-excel-o"></i></button>
+        </div>
+    </div>
+
+    <div id="reportCon" class="box box-body"></div>
+</form>
+
+<!-- JS Scripts -->
+<script>
+jQuery(document).ready(function() {
+    $('#form-showreport').parsley();
+
+    <?php if ($type == 'employee') { ?>
+    // DHTMLX Grid for Employee Fields
+    var allempfields = new dhtmlXGridObject('allempfields');
+    allempfields.setHeader("Fields");
+    allempfields.setInitWidths("*");
+    allempfields.setColAlign("left");
+    allempfields.setColSorting("str");
+    allempfields.setMultiLine(false);
+    allempfields.selMultiRows = true;
+    allempfields.enableDragAndDrop(true);
+    allempfields.init();
+    allempfields.clearAndLoad("<?php echo $this->webroot; ?>Performance/listemployeefields", "json");
+
+    var reportfields = new dhtmlXGridObject('reportfields');
+    reportfields.setHeader("Report Fields");
+    reportfields.setInitWidths("*");
+    reportfields.setColAlign("left");
+    reportfields.setColSorting("str");
+    reportfields.setMultiLine(false);
+    reportfields.selMultiRows = true;
+    reportfields.enableDragAndDrop(true);
+    reportfields.init();
+    <?php } ?>
+});
+
+// Load Criteria Items
+function loadCriteriaItems(index) {
+    var criteria = $('#select-criteria' + index).val();
+    $('#hidden-criteria' + index).val(criteria);
+    $('#div-items-criteria' + index).load(livesite + 'Performance/loadcriteriaitems/' + index + '/' + criteria);
+}
+
+function viewReport() {
+    $('#loaders').show();
+    var type = $('#hidden-report-type').val();
+    var criteria = $('#select-criteria1').val();
+    var selected = $('.checkw:checked').length > 0;
+    var container = $("#reportCon");
+    var url = livesite + 'Performance/generatereport/' + type;
+
+    $('#hidden-reportfields').val([]);
+
+    if (!selected) {
+        $('#loaders').hide();
+        alert("Please choose criteria items first");
+        return;
+    }
+
+    if (!criteria) {
+        $('#loaders').hide();
+        alert("Please select a criteria");
+        return;
+    }
+
+    // Now it's safe to collapse sidebar
+    $('body').addClass('sidebar-collapse');
+
+    $.post(url, $('#form-showreport').serialize(), function(response) {
+        container.html(response);
+    })
+    .always(function() {
+        $('#loaders').hide();
+    });
+}
+
+// Download Report
+function downloadReport(mode) {
+    var type = $('#hidden-report-type').val();
+    var criteria = $('#select-criteria1').val();
+    var selected = $('.checkw:checked').length > 0;
+
+    if (!selected) {
+        alert("Please choose criteria items first");
+        return;
+    }
+    if (!criteria) {
+        alert("Please select a criteria");
+        return;
+    }
+
+    $('#form-showreport').attr('action', livesite + 'Performance/generatereport/' + type + '/' + mode);
+    $('#form-showreport').submit();
+}
+</script>
+<?php } ?>

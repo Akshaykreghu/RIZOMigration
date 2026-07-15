@@ -1,0 +1,133 @@
+<style>
+    .form-horizontal .control-label{
+        text-align: left;
+    }
+</style>
+<section class="content-header">
+    <h1 style="text-align:left; font-size: 3em;"> Documents Manager  </h1>
+</section>
+
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box ">
+                <br>
+                <div class="box-body">
+                    <div class="box-body">
+                        <table id="documents_table" class="table table-bordered table-hover">
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div><!-- /.box-body -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function validate(){
+        var valid = true;
+        var templateObj  = $('#document_form #template');
+        var employeeObj  = $('#document_form #employee');
+
+        if (templateObj.val() == ""){
+            templateObj.parents('div .col-sm-12').addClass('has-error')
+            templateObj.parents('div .col-sm-10').append('<span class="help-block">Please choose a template.</span>');
+            valid =false;
+        }
+        
+        if (employeeObj.val() == ""){
+            employeeObj.parents('div .col-sm-12').addClass('has-error')
+            employeeObj.parents('div .col-sm-10').append('<span class="help-block">Please choose a employee.</span>');
+            valid =false;
+        }
+        return valid;
+
+    }
+    function validateDocumentForm(){
+    
+        
+        var valid = validate();
+        var document_nameObj    = $('#document_form #document_name');
+        if (document_nameObj.val() == ""){
+            document_nameObj.parents('div .col-sm-12').addClass('has-error')
+            document_nameObj.parents('div .col-sm-10').append('<span class="help-block">Please enter the document name.</span>');
+            valid =false;
+        }
+        
+        return valid;
+    }
+    function documentPreview(){
+        if($('#document_form #template').val() != '' && $('#document_form #employee').val() != ''){
+            var emp_id = $('#document_form #employee').val();
+            var temp_id = $('#document_form #template').val();
+            $('#document').addClass('iframeCls').attr('src','DocumentManager/docPreview/'+emp_id+'/'+temp_id);
+
+        }
+    }
+
+    jQuery(document).ready(function () {
+
+        $('#documents_table').datagrid({
+            url: livesite + "DocumentManager/getDocuments",
+            pagination: true,
+            singleSelect: true,
+            rownumbers: true,
+            toolbar: [{
+                    text: 'New',
+                    iconCls: 'icon-add',
+                    handler: function () {
+                            showLargeModalForm(livesite + 'DocumentManager/documentForm')
+                        
+                    }
+                },
+                
+                {
+            iconCls: 'icon-remove',
+            text:'Delete',
+            handler: function(){
+                var rows = $('#documents_table').datagrid('getSelected');
+                if (rows){
+                    var document_id = rows.document_pkey;
+                    console.log(document_id);
+                    if (confirm("Are you sure want to delete ")) {
+                        $.ajax({
+                            url:  livesite+"DocumentManager/deleteDocument",
+                            data : {
+                            ids : document_id
+                            },
+                            success : function(response) {
+                                var response =  $.parseJSON(response);
+                                if(response.msg){
+                                    $.notify(response.msg,{
+                                        type: 'success',
+                                        allow_dismiss: true
+                                    });
+                                }
+                                reloadTable('documents_table')
+                            }
+                        });
+                    }
+                }else{
+                    alert("Please select atleast one record to delete")
+                }
+            }
+        }
+                
+                                ],
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            columns: [[
+
+                    {field: 'download_link', title: 'Document Name', width: "40%"},
+                    {field: 'template_name', title: 'Template Name', width: "30%"},
+                    {field: 'emp_name', title: 'Employee Name', width: "30%"}
+                    
+               ] ]
+        });
+    });
+</script>

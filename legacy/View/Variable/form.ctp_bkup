@@ -1,0 +1,102 @@
+
+   <form  id="attendanceuploadtable" action="<?php echo $this->webroot; ?>Variable/VariableSave" method="POST">
+                        <div class="modal-body">
+                             <h4 class="modal-title">Variable Salary Upload</h4>  
+                           
+                             
+                               
+                         <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Choose Employee<span class="star">*</span></label>
+                          <div class="col-sm-8">
+                            <select id="emp_fkey" class="form-control" name="emp_fkey"  >
+                                
+                                         <?php
+                                     foreach ($arr_employees as $value) {
+                                
+                                            $selected = '';
+											if($arr_leaveupoload['0']['EmployeeVariableUpload']['emp_fkey'] == $value['EmployeeDetails']['emp_pkey'])
+											$selected = 'selected="selected"';
+                                            echo '<option '.$selected.' value="' . $value['EmployeeDetails']['emp_pkey'] . '">' . $value['EmployeeDetails']['first_name'] . ' '  .$value['EmployeeDetails']['last_name'] .'</option>';
+                                        }
+                                    
+                                        ?>
+                            </select>
+                        </div>    
+                            </div>    
+                        
+                                         
+                         <div class="form-group">
+                            <label for="month" class="col-sm-4 control-label ">Choose Month</label>
+                            <div class="col-md-8">
+                                <select id="filterby_month" name="filterby_month" class="form-control"  onchange="filterAttendanceupload(this);" >                                                 
+                                     <?php
+                                    for ($i = 0; $i < 10; $i++) {
+										$selected = '';
+										if($arr_leaveupoload['0']['EmployeeVariableUpload']['month_year'] == date('m-Y', strtotime("-$i month", strtotime(date('M-Y')))))
+										$selected = 'selected="selected"';
+                                        echo '<option '.$selected.' value="' . date('m-Y', strtotime("-$i month", strtotime(date('M-Y')))) . '">' . date('M-Y', strtotime("-$i month", strtotime(date('M-Y')))) . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div> </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="first_name">Salary Head Item </label>
+                                <div class="col-md-8">
+                                    <select id="salary_head_item" name="salary_head_item" class="form-control" onchange="filterAttendanceupload(this);" >
+                                      
+                                    <?php foreach ($arr_headitems as $key => $value) {
+											
+                                        ?>                              
+                                        $selected = '';
+										if($arr_leaveupoload['0']['EmployeeVariableUpload']['salary_head_item_fkey'] == $value['SalaryHeadItems']['salary_head_item_pkey'])
+										$selected = 'selected="selected"';
+                                        <option  value="<?php echo $value['SalaryHeadItems']['salary_head_item_pkey']; ?>"><?php echo $value['SalaryHeadItems']['item']; ?></option>
+                                    <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                         <div class="form-group">
+                         <label for="in_amt" class="col-sm-4 control-label">Amount<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                          <input type="text" required="required"     class="form-control" value="<?php echo isset($arr_leaveupoload['0']['EmployeeVariableUpload']['uploaded_amount'])?$arr_leaveupoload['0']['EmployeeVariableUpload']['uploaded_amount']:''; ?>" name="amount" id="amount" >
+                         </div>
+                      </div>
+                        <div class="form-group">
+                         <label for="remarks" class="col-sm-4 control-label">Remark</label>
+                         <div class="col-sm-8">
+                             <textarea name="remark" class="form-control"  id="remark" ><?php echo isset($arr_leaveupoload['0']['EmployeeVariableUpload']['remarks'])?$arr_leaveupoload['0']['EmployeeVariableUpload']['remarks']:''; ?></textarea>
+                         </div>
+                      </div> 
+
+                     <div class="modal-footer">
+            
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+                     </div>
+                       
+                    </form>
+<script type="text/javascript">
+$(document).ready(function() { 
+	//$("#pincode").inputmask("999");
+  $('#attendanceuploadtable').parsley();
+    var options = { 
+      success:function(responseText, statusText, xhr, $form){
+        alert("Variable upload  Successfully");
+	closeModal('att_table');
+}
+    }; 
+ 
+    // bind to the form's submit event 
+    $('#attendanceuploadtable').submit(function() { 
+        $(this).ajaxSubmit(options);         
+        return false;
+    });
+       
+    
+  
+         }); 
+</script>
+                       
+                      
+              
+          

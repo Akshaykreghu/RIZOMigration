@@ -1,0 +1,886 @@
+<style>
+    .searchb {
+        background-color: #cccccc;
+    }
+
+    .heading {
+        display: flex;
+        flex-direction: row;
+        align-items: end;
+        justify-content: space-between;
+        /* margin-left: 20px; */
+    }
+
+    .home {
+        background-color: #ffffffff;
+        border-radius: 50px;
+        padding: 2px 15px;
+        color: #1e516e !important;
+        margin-right: 15px;
+        color: white;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: #1e516e 1px solid;
+    }
+</style>
+<script>
+    function newmode() {
+        $('#div-criteria1').load('StockTranfer/index');
+    }
+
+    function removedata(index, id) {
+        //alert('hai');
+        if (id) {
+            var r = confirm("Do You Want  To Remove The Selected Item")
+            if (r == true) {
+                var pid = $("#stock_tranfer_fkey").val();
+                //console.log(pid);
+                $.ajax({
+                    url: livesite + 'StockTranfer/deletestoreitem/' + id,
+                    success: function(resp) {
+                        console.log(resp);
+                        loadtable(pid, 1);
+                        $.notify($.parseJSON(resp).msg, {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                    }
+                });
+            } else {
+                alert("canceled");
+            }
+        }
+    }
+    //edit data
+    function editdata(index, id) {
+        //alert (id);
+        var pid = $("#stock_tranfer_pkey").val();
+        var url = livesite + 'StockTranfer/transfer/' + id;
+        showModalForm(url);
+        //        $('#modalDiv').load(url, function () {
+        //            $('#modalDiv').modal('show');
+        //        });
+        //alert (pid);
+        //loadtable(pid, 1);
+        //alert(loadtable);
+    }
+    //load item lst table
+    function loadtable(pid, rowindex) {
+        //alert('hai');
+        $("#table_appnd").html('<li style="    font-size: -webkit-xxx-large;" class="fa fa-spinner fa-spin"></li><br>Loading Data....');
+        $.ajax({
+            url: livesite + 'StockTranfer/loadtabledata/' + pid + '/' + rowindex,
+            success: function(response) {
+                //alert(response);
+                var data = response;
+                var div_data = '';
+                div_data += "<div>" + data + "</div>"
+                $("#table_appnd").html(div_data).promise().done(function() {
+
+                });
+
+            }
+        });
+
+    }
+    // remove main store
+    //$("#btn-remove").click(function () {
+    function cancel() {
+        var id = $("#stock_tranfer_fkey").val();
+        if (id) {
+            var r = confirm("Do you want to cancel the Stock Transfer Request?")
+            if (r == true) {
+                //var pid = $("#stock_tranfer_fkey").val();
+                $.ajax({
+                    url: livesite + 'StockTranfer/deletestoremaster/' + id,
+                    success: function(resp) {
+                        refresh();
+                        $.notify($.parseJSON(resp).msg, {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                        newmode();
+                    }
+                });
+            } else {
+                alert("Canceled.");
+            }
+        }
+    }
+    //});
+    //transactioncode check
+    function checkadjustment_code() {
+        var adjustment_code = $('#adjustment_code').val();
+        if (adjustment_code == '') {
+            alert("Please click on new Button for new transaction code. ");
+        }
+    }
+    //remarks check
+    function checkremarks() {
+        var remarks = $('#remarks').val();
+        if (remarks == '') {
+            alert("Please enter reason for return products. ");
+        }
+    }
+    //transactiondate check
+    function checkadjustment_date() {
+        var adjustment_date = $('#adjustment_date').val();
+        if (adjustment_date == '') {
+            alert("Please select transaction date. ");
+        }
+    }
+
+    function submitpor() {
+
+        var id = $("#stock_tranfer_fkey").val();
+        if ($('#table_appnd').find('table').length) {
+
+            $.ajax({
+                url: livesite + 'StockTranfer/submit_return/' + id,
+                success: function(resp) {
+                    $('#att_table').datagrid('load');
+                    $.notify($.parseJSON(resp).msg, {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                }
+            });
+            refresh_all();
+            newmode();
+        } else {
+            alert("Please add items to Submit the Request")
+        }
+
+    }
+    //all refresh 
+    function refresh() {
+        $("#bill").val('');
+        $("#contact_name").val('');
+        $("#required_qty").val('');
+        $("#stock_tranfer_pkey").val('');
+        $("#form-user-master").find('input:text, input:password, input:file, select, textarea,hidden,search').val('');
+        $("#form-user-master").find('input:radio, input:checkbox').removeAttr('checked').removeAttr('selected');
+        $("#table_appnd").html('');
+        $('#dispatch').hide();
+        newmode();
+    }
+    //     function refreshitem() {
+    //        $("#item_desc").val('');
+    //        $("#item_master_pkey").val('');
+    //        $("#required_qty").val('');
+    //        $("#item_code").val('');
+    //        $("#sumdata").val('');
+    //        $("#table_appnd").html('');
+    //        $('#dispatch').hide();
+    //        var id = $("#stock_tranfer_fkey").val();
+    //        if (id) {
+    //            var r = confirm("Do You Want To Remove The Selected Item")
+    //            if (r == true) {
+    //             //var pid = $("#stock_tranfer_fkey").val();
+    //                $.ajax({
+    //                    url: 'StockTranfer/deletestoremaster/' + id,
+    //                    success: function (resp) {
+    //                        $.notify($.parseJSON(resp).msg, {
+    //                            type: 'danger',
+    //                            allow_dismiss: false
+    //                        });
+    //                    }
+    //                });
+    //            } else
+    //            {
+    //                alert("canceled");
+    //            }
+    //        }
+    //    }
+    function refreshitem() {
+        var id = $("#stock_tranfer_fkey").val();
+
+        $.ajax({
+            url: livesite + 'StockTranfer/deletestoremaster/' + id,
+            success: function(resp) {
+
+                $("#item_desc").val('');
+                $("#item_master_pkey").val('');
+                $("#required_qty").val('');
+                $("#item_code").val('');
+                $("#sumdata").val('');
+                $("#table_appnd").html('');
+                $('#dispatch').hide();
+                $("#stock_tranfer_fkey").val('');
+
+            }
+
+        });
+
+    }
+
+    function refresh_all() {
+        $("#bill").val('');
+        $("#contact_name").val('');
+        $("#required_qty").val('');
+        $("#stock_tranfer_pkey").val('');
+        $("#stock_tranfer_fkey").val('');
+        $("#form-user-master").find('input:text, input:password, input:file, select, textarea,hidden,search').val('');
+        $("#form-user-master").find('input:radio, input:checkbox').removeAttr('checked').removeAttr('selected');
+        $("#table_appnd").html('');
+        $('#dispatch').hide();
+    }
+   $(".home").on("click", function () {
+
+    $("#container").isLoading({
+        text: "Loading",
+        position: "overlay",
+    });
+
+    let url = "";
+    var userGroup = <?php echo json_encode($this->Session->read('user_group')); ?>;
+
+    if (userGroup == "1") {
+        url = livesite + "Stockmanagement/index";
+    } 
+    else if (userGroup == "2") {
+        url = livesite + "EmployeeMenu/addon";
+    }
+
+    $("#container").load(url, function () {
+        isDashboardShown = false;
+    });
+
+});
+</script>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- DIRECT CHAT DANGER -->
+            <div class="box ">
+
+                <div class="box-body">
+                    <form class="form-horizontal" id="" action="" method="">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <!--                                <div class="col-md-3">
+                                    <label style="text-align:left;" class="col-md-4 control-label">Search</label>
+                                    <div class="col-md-8">
+                                        <input id="bill" name="bill"   class="form-control">
+                                    </div>
+                                </div>-->
+                                <button type="reset" id="btn-submit" onclick="newmode();" class="btn btn-primary">New</button>
+                                <button type="button" id="btn-refresh" value="Refresh" onclick="refresh();" accesskey="" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+                            </div>
+                        </div>
+
+
+
+                    </form>
+
+
+                    <!-- <h1 class="text-primary-18">Create Stock Transfer</h1> -->
+                    <div class="heading">
+                        <h1 class="text-primary-18"> Create Stock Transfer</h1>
+                        <div class="text-primary-16 home" style="display:flex; align-items:center; gap:10px; cursor:pointer;margin:0 0 10px 0;">
+                            <i class="fa" style="font-size:16px;">&#xf104;</i>
+                            Back
+                        </div>
+                        </div>
+
+
+                        <form class="form-horizontal" style="padding-left:1px; padding-right:8px ; border:1px;" id="form-user-master" method="post" action="<?php echo $this->webroot; ?>StockTranfer/save_stock_transfer">
+                            <div class="row bg-success" style="height:auto;">
+                                <h4 style="padding-left:20px;">Add Basic Details</h4>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <label style="text-align:left;" class="col-md-5 control-label">Transaction Code<label style="color:red;">*</label></label>
+                                            <div class="col-md-7">
+                                                <input id="adjustment_code" readonly="readonly" name="adjustment_code" value="<?php echo isset($arr_att['0']['stock']['adjustment_code']) ? $arr_att['0']['stock']['adjustment_code'] : mt_rand(); ?>" type="text" class="form-control input-md" required="required">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label style="text-align:left;" class="col-md-5 control-label">Transaction Date<label style="color:red;">*</label></label>
+                                            <div class="col-md-7">
+                                                <input id="adjustment_date" readonly="readonly" autocomplete="off" placeholder="select date" name="adjustment_date" value="<?php echo isset($arr_att['0']['stock']['adjustment_date']) ? $arr_att['0']['stock']['adjustment_date'] : ''; ?>" type="text" class="form-control input-md" required="required" onchange="refreshitem();">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label style="text-align:left;" class="col-md-5 control-label">Remarks<label style="color:red;">*</label></label>
+                                            <div class="col-md-7">
+                                                <input id="remarks" name="remarks" value="<?php echo isset($arr_att['0']['stock']['remarks']) ? $arr_att['0']['stock']['remarks'] : ''; ?>" type="text" class="form-control input-md" required="required">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <label style="text-align:left;" class="col-md-5 control-label">From Store <label style="color:red;">*</label></label>
+                                            <div class="col-md-7">
+                                                <input id="store_code" name="from_stores" value="<?php echo isset($arr_att['0']['stock']['from_store']) ? $arr_att['0']['stock']['from_store'] : ''; ?>" type="text" class="form-control input-md stores" required="required" onchange="refreshitem();">
+                                                <input type="hidden" name="from_store" id="from_store" value="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label style="text-align:left;" class="col-md-5 control-label stores">To Store <label style="color:red;">*</label></label>
+                                            <div class="col-md-7">
+                                                <input id="tostore_code" name="to_stores" value="<?php echo isset($arr_att['0']['stock']['to_store']) ? $arr_att['0']['stock']['to_store'] : ''; ?>" type="text" class="form-control input-md stores" required="required" onchange="listitem();">
+                                                <input type="hidden" name="to_store" id="to_store" value="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="modal-body">
+                                    <h4 style="padding-left:20px;">ADD ITEM</h4>
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <label style="text-align:left;" class="col-md-5 control-label">Item Name<label style="color:red;">*</label></label>
+                                            <div class="col-md-7">
+                                                <select id="item_desc" class="form-control js-example-basic-single" name="item_desc" onchange="getcode();">
+
+                                                </select>
+                                                <!-- <input type="text" id="item_desc" class="form-control" name="item_desc"  style="width:190px;" onkeyup="" onchange="" required="required">  -->
+                                                <input type="hidden" id="item_master_pkey" class="form-control" name="item_master_pkey">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" style="display : none ; ">
+                                            <label style="text-align:left;" class="col-md-5 control-label">Item Code<label style="color:red;">*</label></label>
+                                            <div class="col-md-6">
+                                                <input type="text" id="item_code" class="form-control" name="item_code" style="width:190px;" onkeyup="checkitemcode();">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label style="text-align:left;" class="col-md-5 control-label">Balance Qty<label style="color:red;">*</label></label>
+                                            <div class="col-md-7">
+                                                <input type="number" id="sumdata" class="form-control" name="available_qty" required="required" readonly="readonly">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label style="text-align:left;" class="col-md-5 control-label">Transferring Qty<label style="color:red;">*</label></label>
+                                            <div class="col-md-7">
+                                                <input type="number" id="required_qty" class="form-control" name="required_qty" min="1" onkeyup="valuecheck();" required="required ">
+                                            </div>
+                                        </div>
+                                        <input id="po_number" name="po_number" value="" type="hidden">
+                                        <input id="po_pkey" name="po_pkey" value="" type="hidden">
+                                    </div>
+                                    <div id="errormsg" style="color: red;text-align: center;"></div>
+                                    <div class="modal-footer">
+                                        <input type="hidden" name="stock_tranfer_pkey" id="stock_tranfer_pkey" value="<?php echo isset($arr_att['0']['stock']['stock_tranfer_pkey']) ? $arr_att['0']['stock']['stock_tranfer_pkey'] : ''; ?>">
+                                        <button type="submit" id="btn-submit" class="btn btn-primary">Add to Transfer List</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div id="table_appnd" class="" style="text-align: center;">
+
+                                </div>
+                                <div id="dispatch">
+                                    <input type="hidden" name="stock_tranfer_fkey" id="stock_tranfer_fkey" value="<?php echo isset($arr_att['0']['stock_tranfer_item']['stock_tranfer_fkey']) ? $arr_att['0']['stock_tranfer_item']['stock_tranfer_fkey'] : '0'; ?>">
+                                    <input type="button" id="submit_mr" onclick="submitpor();" value="Submit Request" class="btn btn-primary pull-right">
+                                    <input type="button" id="btn-remove" onclick="cancel();" value="Cancel" class="btn btn-danger">
+                                </div>
+                                <div class="spacer-20"></div>
+                            </div>
+                        </form>
+
+                        <div class="col-xs-12">
+                            <div>
+                                <h1>Stock Transfer Details </h1>
+                                <form class="form-horizontal" method="post" action="" id="importemployeectcform">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <!--<label class="col-sm-5 control-label" for="employee">Choose Employee</label>-->
+                                                <div class="col-md-12">
+                                                    <div class="col-sm-2 control-label" for="employee" style="text-align: left;">Search Store <span style="padding-left: 60px;">:</span> </div>
+                                                    <div class="col-md-4">
+                                                        <select id="emp_fkey" class="form-control js-example-basic-single" name="emp_fkey" onchange="filterAttendanceupload(this);">
+
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </form>
+                                <table id="att_table" class="table table-bordered table-hover">
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="table_appnd" class="">
+
+                        </div>
+
+                        <div id="dispatch" style="display: none;">
+                            <!-- <input type="button" id="reload" value="Dispatch Order" class="btn btn-primary">-->
+                            <!--<input type="button" id="btn-remove" value="Remove order" class="btn btn-primary">-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</section>
+<script>
+    function filterEmployees() {
+
+        //        var branch = $('#filterby_branch').val();
+        //alert(branch);
+        $("#emp_fkey").select2({
+            //closeOnSelect:false,
+            placeholder: "Search Store  By Name... ",
+            allowClear: true,
+            ajax: {
+                url: livesite + "Store/storefilter/",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term, // search term
+                        page: params.page
+                    };
+                },
+                processResults: function(data, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    params.page = params.page || 1;
+
+                    return {
+                        results: data.items,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                }
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            }
+        });
+    }
+
+    function filterAttendanceupload(obj) {
+        //        var branch = $('#importemployeectcform #filterby_branch').val();
+        var store = $('#emp_fkey').val();
+        //        var catpkey = $(obj);
+        //        alert(employee);
+
+        $('#att_table').datagrid('load', {
+            item: store
+        });
+        //          filterEmployees();
+
+    }
+    //value check 
+    function valuecheck() {
+        var avil = parseInt($('#sumdata').val());
+        var req = parseInt($('#required_qty').val());
+        //        if (avil < req)
+        //        {
+        //            alert("Please Check Available Quantity ");
+        //            $("#required_qty").val('');
+        //        }
+        var item_pkey = $('#item_master_pkey').val();
+        var date_allocated = $('#adjustment_date').val();
+        var store_fkey = $('#from_store').val();
+
+        $.ajax({
+            url: livesite + 'StockTranfer/finditem_qty/' + date_allocated + '/' + store_fkey + '/' + item_pkey,
+            success: function(response) {
+                var data = $.parseJSON(response);
+                //alert(response);
+                if (parseInt(req) > data['qty'] || data['qty'] == 0) {
+                    //alert("Insufficient Stock");
+                    $("#errormsg").html("You don't have enough stock for this transaction. Please select another transaction date / lesser quantity and try again!!!");
+                    $('#required_qty').val('');
+                } else {
+                    //console.log(data['po_number']);
+                    //console.log(data['po']);
+                    $('#po_number').val(data['po_number']);
+                    $('#po_pkey').val(data['po']);
+                    //var po_number = $('#po_number').val();
+                    $("#errormsg").html("");
+                }
+            }
+        });
+
+    }
+    //itemname check
+    function checkitem() {
+        var item = $('#item_desc').val();
+        if (item != '') {
+            $("#item_code").val('');
+        } else {
+            $('#sumdata').val('');
+            $('#required_qty').val('');
+        }
+        //  finditem();
+    }
+    //itemcode check
+    function checkitemcode() {
+        var itemcode = $('#item_code').val();
+        if (itemcode != '') {
+            $("#item_desc").val('');
+        }
+    }
+
+
+
+    $(document).ready(function() {
+
+        filterEmployees();
+        var currentDate = new Date();
+        $('#adjustment_date').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            startDate: '-15d',
+            endDate: '0d'
+        });
+
+        $('#att_table').datagrid({
+            url: livesite + "StockTranfer/lists",
+            pagination: true,
+            singleSelect: true,
+            rownumbers: true,
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            columns: [
+                [
+                    //{field: 'emp_expenses_pkey', title: '', width: "%"},
+                    {
+                        field: 'adjustment_code',
+                        title: 'Transaction Code',
+                        width: "15%"
+                    },
+                    {
+                        field: 'name',
+                        title: 'Item Name',
+                        width: "20%"
+                    },
+                    {
+                        field: 'qty',
+                        title: 'Quantity',
+                        width: "10%"
+                    },
+                    {
+                        field: 'from_store',
+                        title: 'From Store',
+                        width: "20%"
+                    },
+                    {
+                        field: 'to_store',
+                        title: 'To Store',
+                        width: "20%"
+                    },
+                    {
+                        field: 'adjustment_date',
+                        title: 'Date Transfered',
+                        width: "14%"
+                    },
+                    //  {field: 'is_credited', title: 'Credited Rate', width: '10%'},
+                ]
+            ]
+        });
+        $('#dispatch').hide();
+        //form save time load table        
+        $('#form-user-master').on('submit', function(event) {
+            event.preventDefault();
+            var avil = parseInt($('#sumdata').val());
+            var req = parseInt($('#required_qty').val());
+            if (avil < req) {
+                $("#errormsg").html("You don't have enough stock for this transaction. Please select another transaction date / lesser quantity and try again!!!");
+                $("#required_qty").val('');
+                return false;
+            } else {
+
+                valuecheck();
+                checkadjustment_code();
+                checkadjustment_date();
+                checkremarks();
+                $('#form-user-master').ajaxSubmit({
+                    success: function(resp) {
+                        var pid = $.parseJSON(resp).pk;
+                        console.log(pid);
+                        $("#stock_tranfer_fkey").val(pid);
+                        //loadtable(pid, 1);
+                        $("#item_code").focus();
+                        $('#item_desc').val('');
+                        $("#item_code").val('');
+                        $("#sumdata").val('');
+                        $("#tranfer_stock").val('');
+                        $("#required_qty").val('');
+                        loadtable(pid, 1);
+                        $('#dispatch').show();
+                        //$('#att_table').datagrid('load');
+                        $.notify($.parseJSON(resp).msg, {
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+                    }
+                });
+            }
+        });
+
+
+
+        //find itemcode
+        var item_desc = {
+            url: function(phrase) {
+                return livesite + "StockTranfer/getautocompletionsitem_desc?item_desc=" + phrase + "&store=" + $('#from_store').val() + "&date=" + $('#adjustment_date').val() + "&stock_pkey=" + $('#stock_tranfer_fkey').val();
+            },
+            getValue: "item_desc",
+            list: {
+                onSelectItemEvent: function() {
+                    var selectedItem = $('#item_desc').getSelectedItemData();
+                    $('#item_code').val(selectedItem.item_code);
+                    $('#item_master_pkey').val(selectedItem.item_master_pkey);
+                    $('#sumdata').val(selectedItem.qtyuptodate);
+                    checkitem();
+                    //valuecheck();
+                }
+            }
+        };
+        $('#item_desc').easyAutocomplete(item_desc);
+        //find itemcode
+        var item_code = {
+            url: function(phrase) {
+                return livesite + "StockTranfer/getautocompletionsitem_code?item_code=" + phrase;
+            },
+            getValue: "item_code",
+            list: {
+                onSelectItemEvent: function() {
+                    var selectedItem = $('#item_code').getSelectedItemData();
+                    $('#item_desc').val(selectedItem.item_desc);
+                    $('#sumdata').val(selectedItem.qty);
+                }
+            }
+        };
+
+        $('#item_code').easyAutocomplete(item_code);
+        // search from   store    
+        var store_code = {
+            url: function(phrase) {
+                return livesite + "StockTranfer/getautocompletionsstore_code?store_code=" + phrase;
+            },
+            getValue: "store_location",
+            list: {
+                onSelectItemEvent: function() {
+                    var selectedItem = $('#store_code').getSelectedItemData();
+                    var store_master_pkey = selectedItem.store_master_pkey;
+
+                    $('#from_store').val(store_master_pkey);
+                }
+            }
+        };
+        $('#store_code').easyAutocomplete(store_code);
+        //search to  store       
+        var tostore_code = {
+            url: function(phrase) {
+                return livesite + "StockTranfer/getautocompletionstostore_code?tostore_code=" + phrase;
+            },
+            getValue: "store_location",
+            list: {
+                onSelectItemEvent: function() {
+                    var selectedItem = $('#tostore_code').getSelectedItemData();
+                    var store_master_pkey = selectedItem.store_master_pkey;
+
+                    $('#to_store').val(store_master_pkey);
+                }
+            }
+        };
+        $('#tostore_code').easyAutocomplete(tostore_code);
+
+        $('.stores').on('change', function() {
+            var from_store = $('#from_store').val();
+            var to_store = $('#to_store').val();
+            console.log(from_store);
+            console.log(to_store);
+            if (from_store != '' && to_store != '' && from_store == to_store) {
+                alert("Cannot allocate to same store ");
+                $('#tostore_code').val('');
+                $('#to_store').val('');
+            }
+        });
+
+        //search main stocktranfer
+        var billno = {
+            url: function(phrase) {
+                return livesite + "StockTranfer/getautocompletionsadjustment_code?adjustment_code=" + phrase;
+            },
+            getValue: "adjustment_code",
+            list: {
+                onSelectItemEvent: function() {
+                    var selectedItem = $('#bill').getSelectedItemData();
+                    var id = selectedItem.stock_tranfer_pkey; //alert(id)
+
+
+                    loadtable(id, 1);
+                    //value pass 
+                    $('#stock_tranfer_pkey').val(id);
+                    //list in all field
+                    $('#adjustment_date').val(selectedItem.adjustment_date);
+                    $('#adjustment_code').val(selectedItem.adjustment_code);
+                    $('#store_code').val(selectedItem.from_store);
+                    $('#tostore_code').val(selectedItem.to_store);
+                    $('#remarks').val(selectedItem.remarks);
+
+                    $('#dispatch').show();
+                }
+            }
+        };
+        $('#bill').easyAutocomplete(billno);
+
+    });
+    // item count find
+    function finditem() {
+        //var tostore_name = $("#tostore_code").val();
+        var tostore_name = $("#store_code").val();
+        var item_pkey = $("#item_desc").val();
+        var adjustment_date = $("#adjustment_date").val();
+
+        //alert(tostore_name);
+        // alert (item_pkey);
+        $.ajax({
+            url: livesite + 'StockTranfer/finditem/' + item_pkey + '/' + tostore_name + '/' + adjustment_date,
+            success: function(response) {
+                //alert(response);
+                var data = response;
+                //alert(data);
+                //    alert(data);
+                //                $('#sumdata').val(data);
+
+
+            }
+        });
+
+    }
+    //load table
+    //    function  loadtable(pid, rowindex) {
+    //        
+    //    }
+
+    //remove storeitem   
+    function removedaata(index, id) {
+        if (id) {
+            var r = confirm("Do You Want  To Remove The Selected Item")
+            if (r == true) {
+                var pid = $("#stock_tranfer_pkey").val();
+                $.ajax({
+                    url: livesite + 'StockTranfer/deletestoreitem/' + id,
+                    success: function(resp) {
+                        loadtable(pid, 1);
+                        $.notify($.parseJSON(resp).msg, {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                    }
+                });
+            } else {
+                alert("canceled");
+            }
+        }
+    }
+
+    //edit data
+    function editdaata(index, id) {
+        var pid = $("#stock_tranfer_pkey").val();
+
+        var url = livesite + 'StockTranfer/editstoreitem/' + id;
+        $('#modalDiv').load(url, function() {
+            $('#modalDiv').modal('show');
+        });
+        //alert (pid);
+        loadtable(pid, 1);
+        //alert(loadtable);
+    }
+
+    // Edited by Sinsiya on -----
+    $(document).ready(function() {
+        filterItems();
+    });
+
+    function filterItems() {
+        $("#item_desc").select2({
+            //closeOnSelect:false,
+            placeholder: "Search Item By Name... ",
+            allowClear: true,
+            ajax: {
+                url: livesite + "StockTranfer/itemfilter/",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term, // search term
+                        page: params.page
+                    };
+                },
+                processResults: function(data, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    params.page = params.page || 1;
+                    console.log(data);
+
+                    //                    $('#itemcode').val(itemcode);
+                    //                    $('#item_code1').val(item_pkey);
+                    //                    $('#available_qty').val(qtyuptodate);
+                    return {
+
+                        results: data.items,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+
+                }
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            }
+        });
+    }
+
+    function getcode() {
+        var store = $("#from_store").val().trim(); // Edited by Akshay on 1-4-2025
+        var item = $("#item_desc").val();
+
+        // Edited by Akshay on 1-4-2025
+        if (!store) {
+            store = 0;
+        }
+        // End
+        $.ajax({
+            url: livesite + 'StockTranfer/getitem_code/' + store + '/' + item,
+            success: function(resp) {
+                console.log($.parseJSON(resp).item_code);
+                $('#itemcode').val($.parseJSON(resp).item_code);
+                $('#sumdata').val($.parseJSON(resp).qtyuptodate);
+                $('#item_code1').val($.parseJSON(resp).item_master_pkey);
+
+                // Edited by Akshay on 4-4-2025
+                $('#item_code').val($.parseJSON(resp).item_code);
+                $('#item_master_pkey').val($.parseJSON(resp).item_master_pkey);
+                // End
+
+            }
+        });
+    }
+
+    //checkitemname
+    function checkitemname() {
+        var itemname = $('#item_code');
+        if (itemname != '') {
+            $('#itemcode').val('');
+        }
+    }
+    // End  
+
+
+    //    
+</script>

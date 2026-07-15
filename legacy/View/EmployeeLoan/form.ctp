@@ -1,0 +1,582 @@
+<style>
+    label 
+    {
+        font-size:15px;
+    }
+
+</style>
+
+<script>
+    $.validate({
+        form: '#form-user-master'
+    });
+    var options = {
+        success: function (resp) {
+            $('#modalForm').modal('hide');
+            $('#att_table').datagrid('reload');
+            $('#attdatacsv').val('');
+            $("#filterby_branch").select2("val", "");
+            $("#emp_fkey").select2("val", "");
+
+            $.notify($.parseJSON(resp).msg, {
+                type: 'success',
+                allow_dismiss: false
+            });
+        }  // post-submit callback
+    };
+
+
+    $('#form-user-master').on('submit', function (event) {
+        event.preventDefault();
+        if (confirm(" Do You Want  To Save The Form")) {
+            $('#form-user-master').ajaxSubmit(options)
+        }
+    });
+
+
+</script>
+
+<div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title"> Employee Loan </h4>  
+        </div>
+        <div class="modal-body">
+            <!-- Form starts -->
+
+            <form class="form-horizontal" id="form-user-master" action="<?php echo $this->webroot; ?>EmployeeLoan/employeeloansave" method="POST">
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-4 control-label"> Employee<span class="star">*</span></label>
+                            <div class="col-md-7">
+<!--                                <select id="emp_fkey1" class="form-control" name="emp_fkey"  onchange="findextingsalary();" required="required" >
+                                    <option value="">[--Select--]</option>
+                                <?php
+//                                    foreach ($arr_employees as $value) {
+//                                        $selected = ($data['emp_fkey'] == $value['emp_details']['emp_pkey']) ? 'selected="selected"' : '';
+//
+//                                        echo '<option value="' . $value['emp_details']['emp_pkey'] . '" ' . $selected . '>' . $value['emp_details']['first_name'] . ' ' . $value['emp_details']['last_name'] . '  -  ' . $value['emp_proff']['emp_company_id'] . '</option>';
+//                                    }
+                                ?>
+                                </select>-->
+                                <select id="emp_fkey1" class="form-control js-example-basic-single" name="emp_fkey" style="width: 230px;" >
+                                </select>  
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-4 control-label">Loan Amount<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input type="number" onkeyup="valuecheck();" onchange="loancalculate();" required="required" class="form-control" value="<?php echo $data['loan_amount'] ?>" name="loan_amount" id="loan_amount" >
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_time" class="col-sm-4 control-label">Tenure(month)<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input type="number" min="1" onkeyup="valuecheck1();" onchange="loancalculate();" required="required" class="form-control" value="<?php echo $data['tenure'] ?>" name="tenure" id="tenure" onblur="findenddate();" >
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="out_date" class="col-sm-4 control-label">Interest Rate(%)</label>
+                            <div class="col-md-7">
+                                <input type="number" step="any" onkeyup="findval();" onchange="loancalculate();" class="form-control" value="<?php echo $data['intrest_rate'] ?>" name="intrest_rate" id="intrest_rate" >
+                            </div> 
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="out_time" class="col-sm-4 control-label">EMI Amount<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input type="number" required="required" class="form-control" value="<?php echo $data['emi_amount'] ?>" name="emi_amount" id="emi_amount" readonly="readonly" >
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_time" class="col-sm-4 control-label">EMI Start Month<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <select class="form-control" name="emi_start_month" id="emi_start_month" onchange="findenddate();" >
+                                    <?php
+                                    if ($data2) {
+                                        $start_month = (strtotime($data['emi_start_month']));
+                                        for ($i = 0; $i < 12; $i++) {
+                                            $month = date('Y-m', strtotime("-$i month", $start_month));
+                                            if ($month == date('Y-m')) {
+                                                //echo 'hi2';
+                                                echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                            } else {
+                                                echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                            }
+                                        }
+                                    } else {
+                                        for ($i = 0; $i < 12; $i++) {
+                                            echo '<option value="' . date('Y-m', strtotime("+$i month", strtotime(date('M-Y')))) . '">' . date('M-Y', strtotime("+$i month", strtotime(date('M-Y')))) . '</option>';
+                                        }
+                                    }
+                                    ?>
+
+
+
+                                </select>                            
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_time" class="col-sm-4 control-label">EMI End Month<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input type="text" required="required" class="form-control" value="<?php
+                                if ($data2) {
+                                    if ($data) {
+                                        $datechec = (strtotime($data['emi_end_month']));
+                                        echo $date = date('M-Y', $datechec);
+                                    }
+                                    //echo 'hi1';
+                                } else {
+                                    if ($data['emi_end_month'] != '' || $data['emi_end_month'] != NULL) {
+                                        //This is to check whether the date is set or not. If it is null, display nothing. By ***ARUL P DAS on 18/11/2019***
+                                        $datechec = (strtotime($data['emi_end_month']));
+                                        echo $date = date('M-Y', $datechec);
+                                    } else {
+                                        echo '';
+                                    }
+                                }
+                                ?>"  name="emi_end_month_date_format" id="emi_end_month_date_format" readonly="readonly" >
+                                <input type="hidden" name="emi_end_month" id="emi_end_month" value="">
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="out_date" class="col-sm-4 control-label">Remark</label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" class="form-control" value="<?php echo $data['remarks'] ?>" name="remarks" id="remarks">
+                            </div> 
+                        </div>
+                    </div>
+
+
+                    <?php
+//debug($data);
+                    if ($data2) {
+                        ?>
+                        <div style="padding-top:5%;    padding-left:39%;    color: red;">
+                            <label  data-dismiss="modal">This is not editable</label>
+                        </div>
+                        <?php
+                    } else {
+                        ?>
+                        <div class="modal-footer">
+                            <div class="checkings" style="padding-right: 37%;">
+                                <label style="color: red;"  data-dismiss="modal">Editable for next the <?php
+                                    if ($data3) {
+                                        echo $data3;
+                                    } else {
+                                        echo '3';
+                                    }
+                                    ?> days</label>
+                            </div>
+                            <input type="hidden" required="required" class="form-control" value="<?php echo $data['emp_loan_pkey'] ?>"name="emp_loan_pkey">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                            <button type="submit"  name="btn-submit" id="btn-submit" class="btn btn-success">Save</button>
+
+                        </div>
+                        <?php
+                    }
+                    ?>
+
+
+                </div>
+
+
+
+            </form>
+            <!-- Tax Head Detail Form -->
+
+
+
+
+
+            <!-- form ends-->
+        </div>
+
+    </div>
+
+</div>
+<script type="text/javascript">
+//number valiadtion
+//    function numbevalidation() {
+////        var loan = $('#loan_amount').val(); .
+////        var rate = $('#intrest_rate').val();
+////        var ten = $('#tenure').val();
+//            
+//        
+//    }
+
+    function filterEmployees()//This is to search employee name or company id. By ***ARUL P DAS on 20/12/2019
+    {
+        // var branch = $('#filterby_branch').val();
+        // var month = $('#filterby_month').val();
+        //alert(branch);
+        $("#emp_fkey1").select2(
+                {
+                    //closeOnSelect:false,
+                    placeholder: "All",
+                    allowClear: true,
+                    ajax: {
+                        url: livesite + "EmployeeLoan/jsons_form",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                //                              month: params.month,
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        }
+                    },
+                    escapeMarkup: function (markup) {
+                        return markup;
+                    }
+                });
+    }
+    //This is to clear fields when employee name change. By ***ARUL P DAS on 3/3/2020
+    $("#emp_fkey1").change(function () {
+        $('#loan_amount').val('');
+        $('#tenure').val(0);
+        $('#intrest_rate').val(0);
+        $('#emi_amount').val(0);
+        // $('#emi_start_month ').val('');
+         $('#emi_end_month_date_format').val('');
+        $('#remarks').val('');
+    });
+
+
+    //already  
+    function findextingsalary() {
+        var month = $('#emi_start_month').val();
+        var emp_fkey = $('#emp_fkey1').val();
+        var url = livesite + 'EmployeeLoan/salarycheck';
+//value passiing ajax   
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: {
+                month_year: month,
+                empid: emp_fkey,
+            },
+            success: function (resp) {
+                var json_obj = $.parseJSON(resp);
+                if (json_obj.rows.length > 0) {
+                    // $.notify(json_obj.msg, {
+                    //     type: 'danger',
+                    //     allow_dismiss: false
+                    // });
+                    alert('Salary already processed for current month');
+//                    $('#modalForm').modal('hide');
+//                    $("#btn-submit").hide();
+                    var result = '<?php
+                    for ($i = 1; $i < 12; $i++) {
+                        echo '<option value="' . date('Y-m', strtotime("+$i month", strtotime(date('Y-m')))) . '">' . date('M-Y', strtotime("+$i month", strtotime(date('M-Y')))) . '</option>';
+                    }
+                    ?>';
+                    $('#emi_start_month').html(result);
+
+                } else {
+                    var result = '<?php
+                    if ($data2) {
+                        $start_month = (strtotime($data['emi_start_month']));
+                        for ($i = 0; $i < 12; $i++) {
+                            $month = date('Y-m', strtotime("-$i month", $start_month));
+                            if ($month == date('Y-m')) {
+                                //echo 'hi2';
+                                echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                            } else {
+                                echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                            }
+                        }
+                    } else {
+                        for ($i = 0; $i < 12; $i++) {
+                            echo '<option value="' . date('Y-m', strtotime("+$i month", strtotime(date('M-Y')))) . '">' . date('M-Y', strtotime("+$i month", strtotime(date('M-Y')))) . '</option>';
+                        }
+                    }
+                    ?>';
+                    $('#emi_start_month').html(result);
+//                    $("#btn-submit").show();
+                }
+            }
+        });
+    }
+
+    function findval() {
+        var amount = $('#intrest_rate').val();
+        if (amount < 1) {
+            //alert("Enter valid amount");
+            $('#intrest_rate').val('');
+
+        }
+    }
+    function valuecheck() {
+        var amount = $('#loan_amount').val();
+        if (amount < 1) {
+            // alert("Enter valid amount");
+            $('#loan_amount').val('');
+
+        }
+    }
+    function valuecheck1() {
+        var amount = $('#tenure').val();
+        if (amount < 1) {
+            //  alert("Enter valid amount");
+            $('#tenure').val('');
+
+        }
+    }
+    function findenddate() {
+        var date = $('#emi_start_month').val();
+        var month = $('#tenure').val();
+        var esdt = new Date(date);
+//        alert(date.getMonth());
+        var setMonth = esdt.setMonth(esdt.getMonth() + parseInt(month) - 1);
+console.log(esdt.getMonth());
+console.log(parseInt(month));
+console.log(setMonth);
+//        alert(esdt.getFullYear()+' - '+esdt.getMonth()+1);
+        var dates = date.split("-");
+        var year = (dates[0]);
+        var mon = (dates[1]);
+        var totalmonth = parseInt(month) + parseInt(mon);
+console.log(totalmonth);
+        if (totalmonth > 12)
+        {
+            var newyaer = parseInt(totalmonth) / 12;
+            var newmonth = parseInt(month) % 12;
+            var finalmonth1 = parseInt(newmonth) + parseInt(mon);
+            var finalyear = parseInt(year) + parseInt(newyaer);
+            // alert (finalmonth1);
+            // alert (finalyear);
+            var finalmonth2 = (finalmonth1 - 1);
+            if (finalmonth2 > 12)
+            {
+                var finalmonth = (finalmonth2 - 12);
+            } else {
+                var finalmonth = finalmonth2;
+            }
+
+        } else {
+            var finalmonth = (totalmonth - 1);
+            var finalyear = year;
+        }
+        //  alert (finalmonth);
+        finalmonth = esdt.getMonth() + 1;
+//        alert(finalmonth);
+        if (finalmonth == 1) {
+            var finalmonth_alpha = 'Jan';
+        } else if (finalmonth == 2) {
+            var finalmonth_alpha = 'Feb';
+        } else if (finalmonth == 3) {
+            var finalmonth_alpha = 'Mar';
+        } else if (finalmonth == 4) {
+            var finalmonth_alpha = 'Apr';
+        } else if (finalmonth == 5) {
+            var finalmonth_alpha = 'May';
+        } else if (finalmonth == 6) {
+            var finalmonth_alpha = 'Jun';
+        } else if (finalmonth == 7) {
+            var finalmonth_alpha = 'Jul';
+        } else if (finalmonth == 8) {
+            var finalmonth_alpha = 'Aug';
+        } else if (finalmonth == 9) {
+            var finalmonth_alpha = 'Sep';
+        } else if (finalmonth == 10) {
+            var finalmonth_alpha = 'Oct';
+        } else if (finalmonth == 11) {
+            var finalmonth_alpha = 'Nov';
+        } else if (finalmonth == 12) {
+            var finalmonth_alpha = 'Dec';
+        }
+        //salary check       
+        var month = $('#emi_start_month').val();
+        var emp_fkey = $('#emp_fkey1').val();
+        var url = livesite + 'EmployeeLoan/salarycheck';
+//value passiing ajax   
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: {
+                month_year: month,
+                empid: emp_fkey,
+            },
+            success: function (resp) {
+                var json_obj = $.parseJSON(resp);
+                if (json_obj.rows.length > 0) {
+//                    $.notify(json_obj.msg, {
+//                        type: 'danger',
+//                        allow_dismiss: false
+//                    });
+                    alert(json_obj.msg);
+                    $("#btn-submit").hide();
+
+                } else {
+                    $("#btn-submit").show();
+                }
+            }
+        });
+//        alert(finalmonth);
+
+//var n = d.getMonth() +2;
+        var s = finalmonth;
+        if (finalmonth < 10) {
+            var s = "0" + finalmonth;//This is used to add leading zero to month less than 10. By **ARUL P DAS on 7/12/19
+        }
+        // alert(s);
+        // return false;
+        var getmonth = finalmonth_alpha + "-" + esdt.getFullYear();//This is in the format NOV-2019
+        var month = esdt.getFullYear() + "-" + s;///This is in the format 2019-11
+        $('#emi_end_month_date_format').val(getmonth);
+        $('#emi_end_month').val(month);
+    }
+    function loancalculate() {
+
+        var rate1 = $('#intrest_rate').val();
+        var amount1 = $('#loan_amount').val();
+        var tenure1 = $("#tenure").val();
+        if (amount1 < 1 && rate1 < 1 && tenure1 < 1) {
+            // alert("Enter valid amount");
+            $('#loan_amount').val('');
+            $('#intrest_rate').val('');
+            $('#tenure').val('');
+
+        } else {
+            // alert("hi");
+            var mon = $('#intrest_rate').val();
+            //alert(mon);
+            if (mon != '0') {
+                var emi = 0;
+                var P = 0;
+                var n = 1;
+                var r = 0;
+                // parseFloat: This function parses a string 
+                // and returns a floating point number
+                if ($("#loan_amount").val() !== "")
+                    P = parseFloat($("#loan_amount").val());
+                if ($("#intrest_rate").val() !== "")
+                    r = parseFloat(parseFloat($("#intrest_rate").val()) / 100);
+                if ($("#tenure").val() !== "")
+                    n = parseFloat($("#tenure").val());
+                // alert(n);
+                // Math.pow(): This function returns the value of x to power of y 
+                // Example: (5^2)
+                // toFixed: Convert a number into string by keeping desired decimals                   
+                if (P !== 0 && n !== 0 && r !== 0)
+                    emi = ((P * r / 12) * [Math.pow((1 + r / 12), n)] / [Math.pow((1 + r / 12), n) - 1]);
+            } else if (mon == 0)
+            {
+                var amount = $('#loan_amount').val();
+                var month = $('#tenure').val();
+                var emi = amount / month;
+                //alert(emi);
+                //$("#emi_amount").val(emi);
+            }
+
+
+
+
+            // alert(emi);
+            $("#emi_amount").val(emi.toFixed(2));
+        }
+
+
+    }
+    ;
+//    function loancal() {
+//        var amount = $('#loan_amount').val();
+//        var month = $('#tenure').val();
+//        var result = amount / month;
+//        $("#emi_amount").val(result.toFixed(2));
+//
+//    };
+    $(document).ready(function () {
+        filterEmployees();//This is to search employee name or company id. By ***ARUL P DAS on 20/12/2019
+//        $("#intrest_rate").change(function () {
+//            var emi = 0;
+//            var P = 0;
+//            var n = 1;
+//            var r = 0;
+//            // parseFloat: This function parses a string 
+//            // and returns a floating point number
+//            if ($("#loan_amount").val() !== "")
+//                P = parseFloat($("#loan_amount").val());
+//            if ($("#intrest_rate").val() !== "")
+//                r = parseFloat(parseFloat($("#intrest_rate").val()) / 100);
+//            if ($("#tenure").val() !== "")
+//                n = parseFloat($("#tenure").val());
+//            // Math.pow(): This function returns the value of x to power of y 
+//            // Example: (5^2)
+//            // toFixed: Convert a number into string by keeping desired decimals                   
+//            if (P !== 0 && n !== 0 && r !== 0)
+//                emi = parseFloat((P * r / 12) * [Math.pow((1 + r / 12), n)] / [Math.pow((1 + r / 12), n) - 1]);
+//            $("#emi_amount").val(emi.toFixed(2));
+//
+//        });
+
+        // bind to the form's submit event 
+        $('#attendanceuploadtable').submit(function () {
+            $('#btn-submit').html('<li class="fa fa-spinner fa-spin"></li>Saving').prop("disabled", true);
+            $(this).ajaxSubmit(options);
+            return false;
+        });
+
+        $('#in_time').datepicker({
+            format: 'yyyy-mm-dd',
+            onSelect: function (selected) {
+                var esdt = new Date(selected);
+                var selectedenddate = $("#out_date").val();
+                var ecdt = new Date(selectedenddate);
+                if (esdt > ecdt) {
+                    alert('Expected In Date Should Be Less Than Expected Out Date');
+                    $("#in_date").val('');
+                }
+
+            }
+        })
+        $('#out_time').datepicker({
+            format: 'yyyy-mm-dd',
+            onSelect: function (selected) {
+                var ecdt = new Date(selected);
+                var selectedstartdate = $("#in_date").val();
+                var esdt = new Date(selectedstartdate);
+                if (esdt > ecdt) {
+                    alert('Expected Out Date Should Be Greater Than Expected In Date');
+                    $("#out_date").val('');
+                }
+
+            }
+        })
+        $("#out_date").inputmask("yyyy-mm-dd");
+    });
+</script>

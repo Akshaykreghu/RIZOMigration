@@ -1,0 +1,106 @@
+
+<style>
+/* General form styling */
+form{
+    padding:0 40px 40px 40px;
+}
+/* Heading styles */
+h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+    margin-top:0px;
+}
+
+/* Textarea styling */
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.self_review_details{
+    padding:40px 40px 0 40px;
+}
+
+
+
+</style>
+<div style="padding:40px;">
+<h2>Executive Performance Review Summary</h2>
+
+<div>
+    <h5>Does the Reporting Officer agree with the statement made in Part II ? If not, the extent of disagreement and reasons are thereof. </h5>
+    <textarea rows="5" disabled readonly>
+        <?= h($summary['agreement_comment']) ?>
+        </textarea>
+</div>
+
+
+<table class="attributes" cellpadding="6" cellspacing="0" border="1" style="width: 100%; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th  style="padding:8px;">Attribute</th>
+            <th  style="padding:8px;">Marks</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php $i = 1; ?>
+    <?php foreach ($attributeMarks as $row): ?>
+        <tr>
+            <td  style="padding:8px;"><?= $i++."."." ". h($row['a']['attributes']) ?></td>
+            <td style="padding:8px;">
+    <?= $officerRole === 'reporting_officer' 
+        ? h($row['d']['reporting_officer_marks']) 
+        : h($row['d']['reviewing_officer_marks']) ?>
+</td>
+
+        </tr>
+    <?php endforeach; ?>
+    <tr>
+        <th  style="padding:8px;" >Total Marks</th>
+        <td  style="padding:8px;"><?= h($summary['total_marks']) ?></td>
+    </tr>
+    <tr>
+        <th  style="padding:8px;">Grade</th>
+        <td  style="padding:8px;"><?= h($summary['grade']) ?></td>
+    </tr>
+    </tbody>
+    </table>
+    <div>
+        <h5>Training Need Assessment</h5>
+        <textarea rows="5" disabled readonly>
+        <?= h($summary['training_need']) ?>
+        </textarea>
+    </div>    
+    <div>
+        <h5>Comments & Recommendations based on overall Performance<</h5>
+        <textarea rows="5" disabled readonly>
+            <?= h($summary['comments_recommendation']) ?>
+        </textarea>
+    </div>
+
+    <div style="display:flex;justify-content:end;align-items:center;">
+    <button type="button" class="btn btn-secondary" style="margin-right:5px;" onclick='hideModal();'>Cancel</button>
+    <div>
+ 
+</div>
+<script>
+
+function hideModal() {
+    $('#largeModalForm').modal('hide');
+}
+    </script>
+
+
+
+
+
+
+
+
+

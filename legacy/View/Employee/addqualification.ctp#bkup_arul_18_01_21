@@ -1,0 +1,78 @@
+<script type="text/javascript">
+$(document).ready(function(){
+    /*
+     * Tax Head save
+     */
+    $('#qualifi').parsley();
+    var options = {
+        success : function(responseText, statusText, xhr, $form) {
+            $.notify("Qualification Saved Successfully",{
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+            $('#modalDetailForm').modal('hide');
+            //$("#example1").DataTable().ajax.reload();
+            $("#example1").DataTable().ajax.url( livesite + "Employee/listqualifications/" + $('#empsetuppersonal #emp_pkey').val() ).load();
+        }
+    };
+
+    // bind to the form's submit event
+    $('#qualifi').submit(function() {
+	$('#qualifi').attr('action',livesite+'Employee/savequalifications');
+        if($('#qualifi #course').val() == ''){
+            alert('Please fill personal informations first!');
+        }else{
+            $('#btn-submitquali').html('<li class="fa fa-spinner fa-spin"></li> saving...').attr('disabled','disabled');
+            $(this).ajaxSubmit(options);
+        }
+        return false;
+    });
+    //Ends  
+});
+</script>
+<div class="modal-body">
+<!-- Form Name -->
+<legend>Add Your Qualification Details</legend>
+<form class="form-horizontal" method="post" id="qualifi">
+    <div class="modal-body">
+        <input id="emp_pkey" name="emp_pkey" type="hidden"  value="" >
+        <input id="emp_pkey" name="emp_fkey" type="hidden"  value="<?php echo $emp_pkey ; ?>" >
+        <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Course<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                          <input type="text" required="required" class="form-control" value="" name="course" id="course" >
+                         </div>
+                      </div>
+        <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">University/College Name<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                          <input type="text" required="required" class="form-control" value="" name="university" id="university" >
+                         </div>
+                      </div>
+        <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Duration<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                          <input type="text" required="required" class="form-control" value="" name="duration" id="duration" >
+                         </div>
+                      </div>
+        <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Gained mark<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                          <input type="text" required="required" class="form-control" value="" name="mark" id="mark" >
+                         </div>
+                      </div>
+    
+    </div>           
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" onclick="$('#modalDetailForm').modal('hide');">Cancel</button>
+        <button type="submit" id="btn-submitquali" class="btn btn-primary">Save</button>
+    </div>
+
+</form>
+</div>
+
+<script>
+    $(document).ready(function () {
+//        $('#duration').datepicker({format: 'yyyy-mm-dd',autoclose: true})
+    });
+</script>    

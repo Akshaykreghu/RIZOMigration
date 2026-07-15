@@ -1,0 +1,134 @@
+<?php
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+?>
+<div class="box box-default collapsed-box box-solid">
+    <div class="box-header with-border">
+        <h3 class="box-title">Full And Final Settlement Summary </h3>
+
+        <div class="box-tools pull-right">
+            <button onclick="toggleExpandable(this, 'contain2')" type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+            </button>
+        </div>
+        <!-- /.box-tools -->
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body" id="contain2" >
+        <?php
+        if($leave_encashment_reason != ''){
+            echo $leave_encashment_reason;
+        }
+        $cnt_apprdd = 0;
+        foreach ($employee as $items) {
+            if($items['payroll_master']['action'] != 'Approved'){
+                $cnt_apprdd += 1;
+            }
+        }
+        if ($cnt_apprdd != 0) { ?>
+            <a class="btn btn-danger col-md-12">
+                <h4>Alert! You need to Process All Salary before Process Full and Final</h4>
+                <p>Please verify all salary to complete the full and final</p>
+            </a>
+        <?php } ?>
+        <div class="col-md-12">
+            <h2>Non Approval Salaries </h2>
+            <p>Non Approved Salaries are Doubted as not paid salaries, So Please Approve Salaries in Approve Pay Menu if You already paid. </p>
+            <table class="table">
+                <thead>
+                <th>Sl No.</th>
+                <th>Month</th>
+                <th>Gross Salary</th>
+                <th>Net Salary</th>
+                <th>Process Status</th>
+            <!--                                <th>Damage Amount</th>
+                <th>Action</th>-->
+                </thead>
+                <?php $i = 0;  $salary = 0; ?>
+                <?php if (count($employee) != 0) { ?>
+                    <?php $salary = 0; foreach ($employee as $items) { ?>
+                        <tr>
+                            <?php $i++; ?>
+                            <td><?php echo $i; ?></td>
+                            <td><?php echo $items['payroll_master']['month_year']; ?></td>
+                            <td><?php echo $items['payroll_master']['gross_salary']; ?></td>
+                            <td><?php echo $items['payroll_master']['net_salary']; ?></td>
+                            <td><?php echo ($items['payroll_master']['action'] == '')?'Not Processed':'Processed';  //   if(!isset($items['payroll_master']['net_salary'])){ echo ' - Not Processed '; } ?></td>
+                        <input type="hidden" class="net_sal" value="<?php echo $items['payroll_master']['net_salary']; ?>" >
+                        <?php $salary += $items['payroll_master']['net_salary']; ?>
+                    <!--                                    <td><input type="text" name="depreciation"></td>
+                        <td><button class="btn btn-primary">Return</button></td>-->
+                        </tr>    
+                    <?php } ?>
+                    <?php
+                } else {
+                    echo "<tr><td>No Payrolls Found Here </td></tr>";
+                }
+                ?>
+            </table>
+            <div class="col-md-12 box box-body" style="    padding-top: 23px; display: block ; ">
+                <h4>Payment Summary </h4>
+                <div class="col-md-6" style="    padding-top: 23px; ">
+                    <table class="table">
+                        <thead>
+                        <th>Item</th>
+                        <th>Amount</th>
+                        <th>Remarks </th>
+                    <!--                                <th>Damage Amount</th>
+                        <th>Action</th>-->
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Total Salary </td><td><b><?php echo $salary; ?> </b></td><td> Net Salary </td>
+                            </tr>
+                            <tr>
+                                <td>Leave Encashment Amount </td><td><b><?php echo $encash_sums; ?></b></td><td></td>
+                            </tr>
+                            <tr>
+                                <td>Unclosed Recovery </td><td><b><?php $loan_amt = 0; foreach($loans as $val){  $loan_amt += $val['BalanceOutstanding']; } echo $loan_amt;  ?> </b></td><td>(Loans + Advances + Expenses Outstanding )</td>
+                            </tr>
+                            <tr>
+                                <td>Excess Leaves </td><td><b><?php echo '-'.$excess_leav_amt; ?> </b></td><td><?php if(abs($excess_leave) > 0) { echo 'Taken '.$excess_leave.' Extra Leaves'; } else { echo 'No Extra Leaves '; } ?></td>
+                            </tr>
+                            <tr>
+                                <td><input checked="checked" onchange="ohm_grativity(this);" type="checkbox">Gratuity </td><td><b><?php echo $grativity; ?> </b></td><td><?php echo $gr_eq; ?></td>
+                            </tr>
+                            <tr>
+                                <td><b>total </b></td><td><b id="total_amt_s" value="1" ><?php echo round($salary + $encash_sums - $loan_amt - $excess_leav_amt +$grativity ); ?> </b></td><td></td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+            
+            <?php if ($cnt_apprdd == 0) { ?>
+            <button class="btn btn-primary pull-right" onclick="process();">Generate Full and Final Slip</button>
+            <?php } ?>
+            
+        </div>
+    </div>
+    <script>
+        function ohm_grativity(s){
+            var grat = <?php echo isset($grativity)?$grativity : 0; ?>;
+            var total = <?php echo $salary + $encash_sums - $loan_amt - $excess_leave +$grativity ; ?>;
+            if($(s).prop("checked")){
+                $('#total_amt_s').html(<?php echo $salary + $encash_sums - $loan_amt - $excess_leave +$grativity ; ?>).val(1);
+            }else{
+                $('#total_amt_s').html(<?php echo $salary + $encash_sums - $loan_amt - $excess_leave ; ?>).val(0);
+            }   
+            
+        }
+        jQuery(document).ready(function ($) {
+            var net_sal_sum;
+            $(".net_sal").each(function (index) {
+                net_sal_sum++;
+            });
+            $('#total_amt_s').val(1);
+            
+        });
+        
+        
+    </script>

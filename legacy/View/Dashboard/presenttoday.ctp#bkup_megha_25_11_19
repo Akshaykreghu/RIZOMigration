@@ -1,0 +1,89 @@
+
+<div class="modal-body" style="overflow-y: auto;">
+    <legend>Present Employees</legend>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box ">
+                  
+                <div class="box-body">
+                 
+                    <br>
+                    <fieldset>
+			
+
+			    <table class="table table-bordered todayattandence" id="todays_present_details">
+                            <thead>
+                              <tr>
+                                  <th>Employee Name</th>
+                                 
+                              
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <?php $i=0; foreach ($results as $val) {
+                   $i += 1; 
+                   
+                  ?>
+                                    
+                                        <tr> 
+                                            <td><?php echo $val['present_today']['EmpName']; ?></td>
+                                            
+                                             <?php
+                                            //$fromserver = $val['present_today']['LOGDATE'];
+                                            //date_default_timezone_set('UTC');
+                                            //$fs = strtotime($fromserver);
+                                            //2014-07-02T05:13:45z
+                                            //echo $fromserver_formated = date("d-M-Y  h:i A",strtotime($val['present_today']['LOGDATE']));  ?>
+                                     
+                                        </tr>
+                            <?php  } ?>
+                            </tbody>
+                        </table>
+		
+                    </fieldset>
+                    <br>
+                  
+                </div>
+                 <!-- /.box-body -->
+            </div>
+        </div>
+    </div>    
+
+</div>
+<script> 
+    $(document).ready(function () {
+        $('#todays_present_details').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                     extend: 'print',
+                     messageTop: 'My Payroll Master Employees Present Today Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'pdf',
+                     messageTop: 'My Payroll Master Employees Present Today Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'excel',
+                     messageTop: 'My Payroll Master Employees Present Today Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                }
+            ]
+        });
+        $('.buttons-print').ready(function () {
+            $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');
+            ;
+        });
+        $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');
+        ;
+        $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+    });
+</script>

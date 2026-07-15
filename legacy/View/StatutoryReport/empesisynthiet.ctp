@@ -1,0 +1,886 @@
+<style>
+    .center-text {
+        text-align: center;
+        border-top: white;
+        border-bottom: white;
+        border-right: white;
+        border-left: white;
+    }
+</style>
+<?php if ($mode == '') { ?>
+    <div class="modal-body" style="overflow-y:initial; padding-left:3%; padding-right:3%; padding-bottom:3%;" id="printableEsiContent" >
+        <!-- <h2 align="center" >ESI </h2> -->
+        <div class="row">
+            <div class="col-md-12">
+                <?php 
+                if (count($arr_salary_for_template) == 0){?>
+
+                              <div style="width: 100%; height: 10px; border: 0px solid black;"></div>
+
+                                <div style="width: 100%; text-align:center; border: 0px solid black; justify-content: center;">
+                                   <table class="" style="width:100%;border-bottom: white !important;border-left:white;border-right: white;border-top: white;border-color:white;"> <tr>
+ 
+
+                                                <th colspan="8" class="center-text"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];?></th>
+                                                                                                </tr>
+                                                <tr>  <th colspan="8" class="center-text"><?php echo 'ESI STATEMENT'?></th>
+                                            </tr> 
+                                            <tr > <th>Dated <?PHP echo $currentDateTime;?> </th> <th colspan="6" class="align-nodataleft"  ><?php echo 'FOR THE PERIOD FROM '. $from . ' TO ' . $from?></th>
+                                            </tr>
+                                            <tr><td>&nbsp;</td></tr>
+                                      
+                             <tr><td colspan="7" class="align-nodata" style="font-size:15px;text-align: left;font-weight: bold;">No data available under the selected criteria.</td></tr>
+                                  
+                                    </table></div>
+    <?php                } else{?>
+                  <?php
+                    if ((isset($needBranchWiseReport) && $needBranchWiseReport == 1) || (isset($needdepartmentwiseReport) && $needdepartmentwiseReport == 1) || (isset($needdesignationwise) && $needdesignationwise == 1) || (isset($needgenderwise) && $needgenderwise == 1)) { //do branchwise listing 
+                        ?>
+                        <?php
+                        $i = 0; 
+                        foreach ($arr_salary_for_template as $value) { 
+                            //debug($value);exit();
+                            if (count($value) !== 0) { 
+                                $i += 1;
+                                ?>
+
+                                <div class="box-body " style="overflow-y:auto;width: 100%; ">
+  <legend>
+    <?php
+   //debug($str_criteria_item);exit;
+    if ($str_criteria_item == 'Units') {
+    echo $value['summary']['0']['employee_info']['branch'];
+} elseif ($str_criteria_item == 'Departments') {
+    echo $value['summary']['0']['employee_info']['department'];
+} elseif ($str_criteria_item == 'Designation') {
+    echo $value['summary']['0']['employee_info']['designation'];
+} elseif ($str_criteria_item == 'Gender') {
+    echo $value['summary']['0']['emp_details']['classification'];
+}
+
+    ?>
+</legend>
+
+                                  <table class="" style="width:100%;border-bottom: white !important;border-left:white;border-right: white;border-top: white;border-color:white;"> <tr>
+ 
+
+                                                <th colspan="8" class="center-text"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];?></th>
+                                                                                                </tr>
+                                                <tr>  <th colspan="8" class="center-text"><?php echo 'ESI STATEMENT'?></th>
+                                            </tr> 
+                                            <tr class="single-line"> <th>Dated <?PHP echo $currentDateTime;?> </th> <th colspan="7" class="align-left" style="padding-left:200px;"><?php echo 'FOR THE PERIOD FROM '. $from . ' TO ' . $from?></th>
+                                            </tr>
+                                        <tr style="border-top: 2px solid black !important;">
+                                      
+                                                <th style="text-align:center;font-weight: bold;border-bottom: 2px solid black;border-left: white;border-right: white;border-top:white;">Sl No</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 2px solid black;border-top:white; ">ESI NO</th>
+                                                 <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 2px solid black;border-top:white; ">Employee ID</th>
+                                                <th style="font-weight: bold;border-left: white;border-right: white;border-bottom: 2px solid black;border-top:white; ">Employee Name</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 2px solid black;border-top:white;">Days</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 2px solid black;border-top: white;">Wages Paid</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 2px solid black;border-top: white;">ESI Amount Employee</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 2px solid black;border-top: white;">ESI Amount Employer</th>
+
+                                            </tr>
+
+                                        <tbody>
+                                            <?php $arr_data = $value; ?>
+
+                                            <?php  $arr_daata = $value['summary'];
+                                            $employees = $value;
+                                            if(empty($arr_daata))                        continue;
+                                            if (count($arr_data) >= 0) {
+                                                $i = 0;
+                                                $sum = 0;
+                                                $gross = 0;
+                                                $esi_sal = 0;
+                                                $split1 = 0;
+                                                $split2 = 0;
+                                                $split3 = 0;
+                                                $pf_salary=0;
+                                                $day=0;
+                                                $days=0;
+                                                ?>
+                                                <?php  $arr_e = $employees['summary'];
+                                                foreach ($arr_e as $employee =>$val)  { if($val['0']['Esi'] > 0){
+                                             // $lop = isset($val['payroll_master']['loss_of_pay']) ? $val['payroll_master']['loss_of_pay'] : 0;
+                                             // $present = $month_days - $lop;?>
+                                                    <tr>
+                                                        <?php $i = $i + 1;
+                                                        $empstatus = (isset($val['emp_details']['status'])) && $val['emp_details']['status'] =="2" ? '  (Resigned)':'';
+                                                        ?>
+                                                        <td style="text-align:center;border-left: white;border-right: white;border-bottom: 1px solid black;border-top: 1px solid black;"><?php echo $i;
+                                                    ?></td>
+                                                    <td style="text-align:center;border-left: white;border-right: white;border-top: 1px solid black;"><?php echo $val['emp_details']['esi']; ?></td> 
+                                                   <td style="text-align:center;border-left: white;border-right: white;border-top: 1px solid black;"><?php echo $val['employee_info']['employee_id']; ?></td> 
+                                                    <td style="border-left: white;border-right: white;border-top: 1px solid black;"><?php echo $val['employee_info']['EmpName'] .$empstatus; ?></td>
+                                                     <?php
+                                             $esi1 =round($val['0']['Esi']);
+                                             $employer_esi =isset($val['0']['EMPLOYER_ESI'])? $val['0']['EMPLOYER_ESI']:'';
+                                             eval('$esi = '.$employer_esi.';');
+                                             $esi = round($esi);
+                                             $total = round($esi1 + $esi);
+                                             $sal = ($val['0']['SALARY'] != '0') ?round($val['0']['SALARY']):0;
+                                             $gross += round($val['0']['SALARY']);
+                                           //  $days= ceil($val['payroll_master']['working_days']-$val['payroll_master']['loss_of_pay']);
+                                               $dayscount = $val['0']['leaves'] + $val['0']['weekoff'] + $val['0']['holiday']+ $val['0']['present'];
+                                               $ncp = $val['payroll_master']['calander_days'] - $dayscount;
+
+                  
+                                             $days = ceil($val['payroll_master']['calander_days'] - $ncp);
+                                             $split1 += round($val['0']['Esi']);
+                                            
+                                             $split3+= $esi +round($val['0']['Esi']);
+                                             $day+=round($days);
+                                             $excluded = ($val['0']['Esi']+$esi)/.04;
+                                             if($excluded > $val['0']['SALARY']){
+                                                $excluded = $val['0']['SALARY'];
+                                            }
+                                            $salary = round($val['0']['SALARY']-$excluded );
+                                            $pf_salary+= round($salary);
+                                            //$esi_sal += round($excluded);
+                                            $excluded1 =isset($val['0']['ESI_EARNING'])?$val['0']['ESI_EARNING']:'';
+                                                        $expressionWithoutPortion = str_replace(['* .0075', '* .75 / 100'], '', $excluded1);
+                                                        eval('$esiearning = '.$expressionWithoutPortion.';');
+                                                        $esiearning = floor($esiearning);
+                                                        $esi_sal += $esiearning;
+                                                        $esival = $esiearning * 0.0325;
+                                                        $esi = ceil($esival);
+                                                        $split2+= round($esi);
+                                                        setlocale(LC_MONETARY, 'en_IN');
+                                            ?>
+                                                    <td style="text-align:center;border-left: white;border-right: white;border-top: 1px solid black;"><?php echo $days; ?></td>
+                                                    <td style="text-align:center;border-left: white;border-right: white;border-top: 1px solid black;"><?php echo $esiearning;
+?></td>
+                                                    <td style="text-align:center;border-left: white;border-right: white;border-top: 1px solid black;"><?php echo $esi1 . ''; ?></td>
+                                                    <td style="text-align:center;border-left: white;border-right: white;border-top: 1px solid black;"><?php echo $esi . ''; ?></td>
+
+
+                                                </tr>
+
+                                            </tr>
+                                        <?php } }?>
+
+ <style type="text/css">.newpadding {
+    padding: 8px;
+    border: none;
+}
+</style>
+                                        <tr>
+                                                    <th class="newpadding" colspan="2" style="padding-top:-20px;border-right:white;border-left:white;border-top: 1px solid black;"></th>
+                                                    <th class="newpadding" colspan="2" style="text-align:center;font-weight:bold;font-size: 14px;padding-top:0px;border-right:white;border-left:white;border-top: 1px solid black;"> T O T A L</th>
+                                                    <th class="newpadding" colspan="1"style="font-size: 14px;text-align: center;font-weight: bold;padding-top:0px;padding-right:0px;border-right:white;border-left: white;border-top: 1px solid black;"><?php echo $day;?></th>                                           
+                                                    <th class="newpadding" colspan="1"style="font-size: 14px;text-align: center;font-weight: bold;padding-top:0px;padding-right:0px;border-right:white;border-left: white;border-top: 1px solid black;"><?php echo $esi_sal;?></th>
+                                                    <th class="newpadding" colspan="1" style="font-size: 14px;font-weight: bold;text-align: center;padding-top:0px;padding-right:0px;border-right:white;border-left: white;border-top: 1px solid black;"><?php echo $split1 . ''; ?></th>
+
+                                                    <th class="newpadding" colspan="1" style="font-size: 14px;font-weight: bold;text-align: center;padding-top:0px;padding-right:0px;border-right:white;border-left: white;border-top: 1px solid black;"><?php echo $split2 . ''; ?></th>
+                                                </tr>
+                                                <tr> <th colspan="8" style="border-bottom: 1px solid black;"></th></tr>
+<!--                                        <tr>
+            <th  style="border-left: white;border-right: white;border-bottom: white;border-top: 1px solid black;"></th>
+            <th  style="border-left: white;border-right: white;border-bottom: white;border-top: 1px solid black;"></th>
+            <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom:white ;border-top: 1px solid black;" >Employee Contribution</th>
+            <th  style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom:white; border-top: 1px solid black;"><?php echo number_format($split1, 2 ) . ''; ?></th>
+            <th  style="border-left: white;border-right: white;border-bottom: white;border-top: 1px solid black;"></th>
+            <th  style="border-left: white;border-right: white;border-bottom: white;border-top: 1px solid black;"></th>
+            <th  style="border-left: white;border-right: white;border-bottom: white;border-top: 1px solid black;"></th>
+
+        </tr>
+        <tr>
+            <th  style="border-left: white;border-right: white;border-top: white;"></th>
+            <th  style="border-left: white;border-right: white;border-top: white;"></th>
+            <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-top: white;border-bottom: 1px solid black;" >Employer Contribution</th>
+            <th  style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-top:white ;border-bottom: 1px solid black;"><?php echo number_format($split2, 2 ) . ''; ?></th>
+            <th  style="border-left: white;border-right: white;border-top: white;"></th>
+            <th  style="border-left: white;border-right: white;border-top: white;"></th>
+            <th  style="border-left: white;border-right: white;border-top: white;"></th>
+
+        </tr>-->
+<!--        <tr>
+         <th colspan="2" style="border-left: white;border-right: white;border-top: white;text-align: center;border-bottom:"></th>
+         <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 1px solid black ;" >T O T A L</th>
+         <th  style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 1px solid black;"><?php// $t= round($split1+$split2); echo number_format($t, 2 ) . ''; ?></th>
+         <th colspan="3" style="border-left: white;border-right: white;border-top: white;text-align: center;border-bottom: "></th>
+
+     </tr>  -->
+
+                                     <?php } else { ?>
+                                        <tr>
+                                            <td>No data under this criteria</td>
+                                        </tr>  
+                                    <?php } ?>
+
+
+                                </tbody>
+                            </table>
+
+                        </fieldset>
+                        <br>
+                    </div>
+
+
+                <?php }
+            }
+
+        }
+        else { ?>
+           <?php
+           $i = 0;
+
+           if (count($arr_salary_for_template) !== 0) {
+            $i += 1;
+            ?> 
+            <div class="box-body " style="overflow-y:auto; ">
+               
+    <table class="" style="width:100%;border-bottom: white !important;border-left:white;border-right: white;border-top: white;border-color:white;"> <tr>
+ 
+
+                                                <th colspan="8" class="center-text"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];?></th>
+                                                                                                </tr>
+                                                <tr>  <th colspan="8" class="center-text"><?php echo 'ESI STATEMENT'?></th>
+                                            </tr> 
+                                            <tr class="single-line"> <th>Dated <?PHP echo $currentDateTime;?> </th> <th colspan="6" class="center-text" ><?php echo 'FOR THE PERIOD FROM '. $from . ' TO ' . $from?></th>
+                                            </tr>
+                                        <tr style="border-top: 2px solid black !important;">
+                                      
+                                                <th style="text-align:center;font-weight: bold;border-bottom: 2px solid black;border-left: white;border-right: white;border-top:white;">Sl No</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 2px solid black;border-top:white; ">ESI NO</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 2px solid black;border-top:white; ">Employee ID</th>
+                                                <th style="font-weight: bold;border-left: white;border-right: white;border-bottom: 2px solid black;border-top:white; ">Employee Name</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 2px solid black;border-top:white;">Days</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 2px solid black;border-top: white;">Wages Paid</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 2px solid black;border-top: white;">ESI Amount Employee</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 2px solid black;border-top: white;">ESI Amount Employer</th>
+
+                                            </tr>
+            <tbody>
+             <?php  
+
+                  //  if(empty($arr_daata))                        continue;
+
+             $i = 0;
+             $sum = 0;
+             $gross = 0;
+             $esi_sal = 0;
+             $split1 = 0;
+             $split2 = 0;
+             $split3 = 0;
+             $pf_salary=0;
+             $day=0;
+             $days=0;
+             ?>
+             <?php   foreach ($arr_salary_for_template as $value) {  $arr_e = $value['summary'];
+             foreach ($arr_e as $employee =>$val)  { 
+                if($val['0']['Esi'] > 0){?>
+                    <tr>
+                        <?php $i = $i + 1;
+                        $empstatus = (isset($val['emp_details']['status'])) && $val['emp_details']['status'] =="2" ? '  (Resigned)':''; ?>
+                        <td style="text-align:center;border-left: white;border-right: white;border-bottom: "><?php echo $i;
+                    ?></td>
+                    <td style="text-align:center;border-left: white;border-right: white;"><?php echo $val['emp_details']['esi']; ?></td> 
+                    <td style="text-align:center;border-left: white;border-right: white;"><?php echo $val['employee_info']['employee_id']; ?></td>
+                    <td style="border-left: white;border-right: white;"><?php  echo $val['employee_info']['EmpName'] .$empstatus; ?></td>
+                    <?php
+                                             $esi1 =round($val['0']['Esi']);
+                                             $employer_esi =isset($val['0']['EMPLOYER_ESI'])? $val['0']['EMPLOYER_ESI']:'';
+                                             eval('$esi = '.$employer_esi.';');
+                                             $esi = round($esi);
+                                             $total = round($esi1 + $esi);
+                                             $sal = ($val['0']['SALARY'] != '0') ?round($val['0']['SALARY']):0;
+                                             $gross += round($val['0']['SALARY']);
+                                             // $days = $value['WORKDAYS'];
+                                              $dayscount = $val['0']['leaves'] + $val['0']['weekoff'] + $val['0']['holiday']+ $val['0']['present'];
+                                             $ncp = $val['payroll_master']['calander_days'] - $dayscount;
+
+                  
+                                         $days = ceil($val['payroll_master']['calander_days'] - $ncp);
+                                             $split1 += round($val['0']['Esi']);
+                                            
+                                             $split3+= $esi +round($val['0']['Esi']);
+                                             $day+=round($days);
+                                             $excluded = ($val['0']['Esi']+$esi)/.04;
+                                             if($excluded > $val['0']['SALARY']){
+                                                $excluded = $val['0']['SALARY'];
+                                            }
+                                            $salary = round($val['0']['SALARY']-$excluded );
+                                            $pf_salary+= round($salary);
+                                            //$esi_sal += round($excluded);
+                                            $excluded1 =isset($val['0']['ESI_EARNING'])?$val['0']['ESI_EARNING']:'';
+                                                        $expressionWithoutPortion = str_replace(['* .0075', '* .75 / 100'], '', $excluded1);
+                                                        eval('$esiearning = '.$expressionWithoutPortion.';');
+                                                        $esiearning = floor($esiearning);
+                                                        $esi_sal += $esiearning;
+                                                        $esival = $esiearning * 0.0325;
+                                                        $esi = ceil($esival);
+                                                        $split2+= round($esi);
+                                                        setlocale(LC_MONETARY, 'en_IN');
+                                            ?>
+                    <td style="text-align:center;border-left: white;border-right: white;border-bottom: "><?php echo $days; ?></td>
+                    <td style="text-align:center;border-left: white;border-right: white;"><?php echo  $esiearning; ?></td>
+                    <td style="text-align:center;border-left: white;border-right: white;"><?php echo $esi1 . ''; ?></td>
+                    <td style="text-align:center;border-left: white;border-right: white;"><?php echo $esi . ''; ?></td>
+
+
+                </tr>
+
+
+
+            <?php } } 
+        }?>
+        <tr>
+            <th colspan="4" style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-top: 1px solid black;">T O T A L</th>
+            <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-top: 1px solid black;"><?php echo $day;?></th>
+            <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-top: 1px solid black;"><?php echo $esi_sal;?></th>
+            <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-top: 1px solid black;"><?php echo $split1 . ''; ?></th>
+            <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-top: 1px solid black;"><?php echo $split2 . ''; ?></th>
+        </tr>
+        <tr> <th colspan="8" style="border-bottom: 1px solid black;"></th></tr>
+<!--        <tr>
+            <th  style="border-left: white;border-right: white;border-bottom: white;border-top: 1px solid black;"></th>
+            <th  style="border-left: white;border-right: white;border-bottom: white;border-top: 1px solid black;"></th>
+            <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom:white ;border-top: 1px solid black;" >Employee Contribution</th>
+            <th  style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom:white; border-top: 1px solid black;"><?php //echo number_format($split1, 2 ) . ''; ?></th>
+            <th  style="border-left: white;border-right: white;border-bottom: white;border-top: 1px solid black;"></th>
+            <th  style="border-left: white;border-right: white;border-bottom: white;border-top: 1px solid black;"></th>
+            <th  style="border-left: white;border-right: white;border-bottom: white;border-top: 1px solid black;"></th>
+
+        </tr>-->
+<!--        <tr>
+            <th  style="border-left: white;border-right: white;border-top: white;"></th>
+            <th  style="border-left: white;border-right: white;border-top: white;"></th>
+            <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-top: white;border-bottom: 1px solid black;" >Employer Contribution</th>
+            <th  style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-top:white ;border-bottom: 1px solid black;"><?php //echo number_format($split2, 2 ) . ''; ?></th>
+            <th  style="border-left: white;border-right: white;border-top: white;"></th>
+            <th  style="border-left: white;border-right: white;border-top: white;"></th>
+            <th  style="border-left: white;border-right: white;border-top: white;"></th>
+
+        </tr>-->
+<!--        <tr>
+         <th colspan="2" style="border-left: white;border-right: white;border-top: white;text-align: center;border-bottom:;"></th>
+         <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 1px solid black ;" >T O T A L</th>
+         <th  style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: 1px solid black;"><?php// $t= round($split1+$split2); echo number_format($t, 2 ) . ''; ?></th>
+         <th colspan="3" style="border-left: white;border-right: white;border-top: white;text-align: center;border-bottom: ;"></th>
+
+     </tr>  -->
+
+ <?php } else { ?>
+    <tr>
+        <td>No data under this criteria</td>
+    </tr>  
+<?php } ?>
+</tbody>
+</table>
+</fieldset>
+<br>
+</div>
+<?php } } ?>
+
+</div>
+</div>  
+</div>
+
+
+
+
+<?php } else{ ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';  ?>
+    <style type="text/css">
+        @font-face {
+            font-family: "Times New Roman";
+            src: url("fonts/times-new-roman.ttf") format("truetype");
+            /* You can add additional font formats here if needed */
+        }
+        body {
+            line-height: 1em;
+            font-family: "Times New Roman", Arial, sans-serif;
+
+        }
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+        .row {
+            height: 32px;
+        }
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+       /* table {
+            border: white;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+            background-color: white;
+            border-spacing: 0;
+            border-collapse: collapse;
+            align-items: center;
+        }*/
+        td, th {
+            text-align: left;
+            padding: 1px;
+/*            line-height: 1.42857143;*/
+vertical-align: top;
+/*            font-size: 10px;*/
+border: white;
+
+}
+hr {
+/*            height: 1px;*/
+border: none;
+background-color: black;
+}
+.move-row {
+    margin-bottom: 0px; /* or padding-left: 10px; */
+    margin-bottom: 0px;
+}
+
+.newpadding {
+    padding: 8px;
+}
+.minus30 {
+    padding-top: -30px;
+}
+.padding-top-bottom {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+.hrminus {
+    padding-top: -10px;
+}
+
+.alignleft {
+    text-align: left;
+}
+.alignright {
+    text-align: right;   
+}
+.padding-bottom {
+    padding-bottom:-1px;  
+    padding-top: -1px; 
+}
+.padding-bottom1 {
+    padding-bottom:-1px !important;  
+    
+}
+ 
+</style>
+
+
+<?php
+             echo $this->element('reportadminheader', array(
+                 'title' => 'ESI STATEMENT'));
+            // debug($arr_salary_for_template); die();
+?>
+
+
+
+<?php      $cname= $arr_comp_contact_info['CompanyContactInfo']['business_name'];
+         $add=$arr_comp_contact_info['CompanyContactInfo']['business_name'];
+if (count($arr_salary_for_template) == 0){?>
+
+                                    <div style="width: 100%; height: 10px; border: 0px solid black;"></div>
+
+                                <div style="width: 100%; text-align:center; border: 0px solid black; justify-content: center;">
+                                    <table style="width: 100% !important; min-width: 100%;text-align:center;border-color:white;">
+
+                                        <!--<tr>-->
+                                            <!--<th colspan="4" style="font-weight: bold;font-size:15px;padding-left: 60px;"><?php //echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];?></th>-->
+
+                                            <!--<th colspan="3" style="font-weight: bold;font-size:15px;padding-left: 620px;">Employer ESI No.: <?php //echo $eip;?></th>-->
+                                        <!--</tr>-->
+                                        <!--<tr>-->
+
+                                            <!--<th colspan="7" style="text-align:center;font-weight: bold;font-size:15px;text-align: center;padding-left: 850px;">ESI Summary report for the month of <?php //echo $date; ?></th>-->
+
+                                        <!--</tr>-->                                          
+                                         <tr ><th colspan="8" style="font-size:13px";>No data available under the selected criteria.</th></tr>
+                                    </table></div>
+    <?php
+
+
+
+} else{?>
+    
+  <?php
+                    if (isset($needBranchWiseReport) && $needBranchWiseReport == 1) { //do branchwise listing 
+                        ?>
+                        <?php
+                        $i = 0; 
+                        foreach ($arr_salary_for_template as $value) { 
+                            if (count($value) !== 0) {
+                                $i += 1;
+                                ?>
+                                <!--<div style="width: 100%; height: 10px; border: 0px solid black;"></div>-->
+
+                                <div style="width: 100%; text-align:center; border: 0px solid black; justify-content: center;padding-top: -25px;">
+                                    <table style="width: 100% !important; min-width: 100%;text-align:center;padding: 0px;padding-top:0px;border-color:white;">
+        <tr class="single-line"> <th>Dated <?PHP echo $currentDateTime;?> </th> <th colspan="7" class="center-text" style="padding-left:190px;padding-top:0px;"><?php echo 'FOR THE PERIOD FROM '. $from . ' TO ' . $from?></th>
+                                            </tr>
+                                        <!--<tr>-->
+                                            <!--<th colspan="4" style="font-weight: bold;font-size:15px "> </th>-->
+
+                                            <!--<th colspan="3" style="font-weight: bold;font-size:15px;text-align:right; ">Employer ESI No.: <?php //echo $eip;?></th>-->
+                                        <!--</tr>-->
+                                        <!--<tr>-->
+
+                                            <!--<th colspan="7" style="text-align:center;font-weight: bold;font-size:15px;margin:-50px;padding-top: 30px;padding-right: 0px;padding-bottom: 0px;padding-left:0px;">ESI Summary report for the month of <?php //echo $date; ?></th>-->
+
+                                        <!--</tr>-->
+                                        <!--<tr ><th colspan="10" style="padding-top:0px;padding-bottom: 0px;padding-right: -1px;padding-left: -1px;"><hr></th></tr>-->
+
+
+<!--                                        <tr style="">
+                                           <th class="newpadding minus30" style="font-weight: bold;font-size: 14px;text-align: left;padding-right: 10px!important;padding-top: -10px;">Sl</th>
+                                           <th class="newpadding minus30" style="font-weight: bold;font-size: 14px;text-align: center;padding-top: -10px;">ESI NO</th>
+                                           <th class="newpadding minus30" style="text-align:right;font-weight: bold;font-size: 14px;padding-right: -7px;padding-top: -10px;">EMPLOYEE</th>
+                                           <th class="newpadding minus30" style="text-align:right;font-weight: bold;font-size: 14px;padding-right: -20px !important;padding-top: -10px;">Days</th>
+                                           <th class="newpadding minus30" style="text-align:center;font-weight: bold;font-size: 14px;padding-top: -10px;">Wages Paid</th>
+                                           <th class="newpadding minus30" style="text-align:center;font-weight: bold;font-size: 14px;padding-top: -10px;">ESI Amount Employee</th>
+                                           <th class="newpadding minus30" style="text-align:center;font-weight: bold;font-size: 14px;padding-top: -10px;">ESI Amount Employer</th>
+
+                                       </tr>-->
+                                        <tr ><th colspan="8">
+    <?php
+   //debug($str_criteria_item);exit;
+    if ($str_criteria_item == 'Units') {
+    echo $value['summary']['0']['employee_info']['branch'];
+} elseif ($str_criteria_item == 'Departments') {
+    echo $value['summary']['0']['employee_info']['department'];
+} elseif ($str_criteria_item == 'Designation') {
+    echo $value['summary']['0']['employee_info']['designation'];
+} elseif ($str_criteria_item == 'Gender') {
+    echo $value['summary']['0']['emp_details']['classification'];
+}
+
+?></th>
+                                           
+</tr>
+<tr> <th colspan="8"><hr></th> </tr>
+                                                <tr >
+                                            
+                                                <th style="text-align:center;font-weight: bold;border-bottom: white;border-left: white;border-right: white;border-top:white;">Sl No</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: white;border-top:white; ">ESI NO</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: white;border-top:white; ">Employee ID</th>
+                                                <th style="font-weight: bold;border-left: white;border-right: white;border-bottom: white;border-top:white; ">Employee Name</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: white;border-top:white;">Days</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: white;border-top: white;">Wages Paid</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: white;border-top: white;">ESI Amount Employee</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: white;border-top: white;">ESI Amount Employer</th>
+ 
+                                            </tr>
+<!--                                       <tr>
+                                        <th class="newpadding" style="width:30px;text-align:left;font-size: 14px;font-weight: bold;padding: 0px !important;">&nbsp;(1)</th>
+                                        <th class="newpadding" style="width:250px;text-align:center;font-size: 14px;font-weight: bold;padding: 0px !important;">(2)</th>
+
+                                        <th class="newpadding" style="width:250;text-align:left;font-size: 14px;font-weight: bold;padding: 0px !important;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3)</th>
+
+                                        <th class="newpadding" style="width:100px;text-align:center;font-size: 14px;font-weight: bold;padding: 0px !important;">(4)</th>
+                                        <th class="newpadding" style="width:100px;text-align:center;font-size: 14px;font-weight: bold;padding: 0px !important;">(5)</th>
+                                        <th class="newpadding" style="width:100px;text-align:center;font-size: 14px;font-weight: bold;padding: 0px !important;">(6)</th>
+                                        <th class="newpadding" style="width:20px;text-align:center;font-size: 14px;font-weight: bold;padding: 0px !important;">(7)</th>
+                                    </tr>-->
+                                    <tr><th colspan="8" style="padding-left:0px;padding-right:0px;padding-bottom:-10px;padding-top:-10px;"><hr></th></tr>
+
+                                    <!-- <tbody> -->
+                                        <?php $arr_data = $value; ?>
+
+                                        <?php  $arr_daata = $value['summary'];
+                                        $employees = $value;
+                                        if(empty($arr_daata))                        continue;
+                                        if (count($arr_data) >= 0) {
+                                            $i = 0;
+                                            $sum = 0;
+                                            $gross = 0;
+                                            $esi_sal = 0;
+                                            $split1 = 0;
+                                            $split2 = 0;
+                                            $split3 = 0;
+                                            $pf_salary=0;
+                                            $day=0;
+                                            $days=0;
+                                            ?>
+                                            <?php  $arr_e = $employees['summary'];
+                                            foreach ($arr_e as $employee =>$val)  { if($val['0']['Esi'] > 0){
+                                                $minusPadding = "";
+                                                 if ($i == 1) {
+                                                    $minusPadding = "padding-top:-10px !important;";
+                                                 }
+                                                ?>
+                                                <tr>
+                                                    <?php $i = $i + 1;
+                                                    $empstatus = (isset($val['emp_details']['status'])) && $val['emp_details']['status'] =="2" ? '  (Resigned)':'';?>
+                                                       <td style="text-align:center;border-left: white;border-right: white;border-bottom: white;border-top: white;"><?php echo $i;
+                                                    ?></td>
+                                                    <td style="text-align:center;border-left: white;border-right: white;"><?php echo $val['emp_details']['esi']; ?></td> 
+                                                    <td style="text-align:center;border-left: white;border-right: white;"><?php echo $val['employee_info']['employee_id']; ?></td> 
+                                                    <td style="border-left: white;border-right: white;"> <?php $namenew = ucwords(strtolower($val['employee_info']['EmpName'])) . $empstatus;$name = $namenew;echo wordwrap($name, 20, "<br>\n");?></td>  
+                                                       <?php
+                                                         $esi1 =round($val['0']['Esi']);
+                                                         //$esi = round($val['0']['EMPLOYER_ESI']);
+                                                         $employer_esi =isset($val['0']['EMPLOYER_ESI'])? $val['0']['EMPLOYER_ESI']:'';
+                                                         eval('$esi = '.$employer_esi.';');
+                                                         $esi = round($esi);
+                                                         $total = round($esi1 + $esi);
+                                                         $sal = ($val['0']['SALARY'] != '0') ?round($val['0']['SALARY']):0;
+                                                         $gross += round($val['0']['SALARY']);
+                                                       //  $days= ceil($val['payroll_master']['working_days']-$val['payroll_master']['loss_of_pay']);
+                                                          $dayscount = $val['0']['leaves'] + $val['0']['weekoff'] + $val['0']['holiday']+ $val['0']['present'];
+                                                          $ncp = $val['payroll_master']['calander_days'] - $dayscount;
+
+                  
+                                                          $days = ceil($val['payroll_master']['calander_days'] - $ncp);
+                                                         $split1 += round($val['0']['Esi']);
+                                                        
+                                                         $split3+= $esi +round($val['0']['Esi']);
+                                                         $day+= round($days);
+                                                         $excluded = ($val['0']['Esi']+$esi)/.04;
+                                                         if($excluded > $val['0']['SALARY']){
+                                                            $excluded = $val['0']['SALARY'];
+                                                        }
+                                                        $salary = round($val['0']['SALARY']-$excluded );
+                                                        $pf_salary+= round($salary);
+                                                       // $esi_sal += round($excluded);
+                                                        $excluded1 =isset($val['0']['ESI_EARNING'])?$val['0']['ESI_EARNING']:'';
+                                                        $expressionWithoutPortion = str_replace(['* .0075', '* .75 / 100'], '', $excluded1);
+                                                        eval('$esiearning = '.$expressionWithoutPortion.';');
+                                                        $esiearning = round($esiearning);
+                                                        $esi_sal += $esiearning;
+                                                        $esival = $esiearning * 0.0325;
+                                                        $esi = ceil($esival);
+                                                        $split2+= round($esi);
+                                                        setlocale(LC_MONETARY, 'en_IN');
+                                                        ?>
+                                                       <td style="text-align:center;border-left: white;border-right: white;border-top: white;"><?php echo $days; ?></td>
+                                                    <td style="text-align:center;border-left: white;border-right: white;border-top: white;"><?php echo  $esiearning;
+?></td>
+                                                    <td style="text-align:center;border-left: white;border-right: white;border-top: white;"><?php echo $esi1 . ''; ?></td>
+                                                    <td style="text-align:center;border-left: white;border-right: white;border-top: white;"><?php echo $esi . ''; ?></td>
+
+
+                                                    </tr>
+                                                    <!-- <tr><th colspan="7" >&nbsp;</th></tr>  -->
+
+
+
+                                                <?php } }?> 
+                                                <tr><th colspan="8" style="padding:0px;"><hr /></th></tr> 
+                                                <!-- style="margin-top: ;" -->
+                                                <tr>
+                                                     <th class="newpadding" colspan="3" style="padding-top:-20px;border-right:white;border-left:white;"></th>
+                                                    <th class="newpadding" colspan="1" style="text-align:center;font-weight:bold;font-size: 14px;padding-top:0px;border-right:white;border-left:white;"> T O T A L</th>
+                                                    <th class="newpadding" colspan="1"style="font-size: 14px;text-align: center;font-weight: bold;padding-top:0px;padding-right:0px;border-right:white;border-left: white;"><?php echo $day; ?></th>
+                                                    
+                                                    <th class="newpadding" colspan="1"style="font-size: 14px;text-align: center;font-weight: bold;padding-top:0px;padding-right:0px;border-right:white;border-left: white;"><?php echo $esi_sal; ?></th>
+                                                    <th class="newpadding" colspan="1" style="font-size: 14px;font-weight: bold;text-align: center;padding-top:0px;padding-right:0px;border-right:white;border-left: white;"><?php echo $split1 . ''; ?></th>
+
+                                                    <th class="newpadding" colspan="1" style="font-size: 14px;font-weight: bold;text-align: center;padding-top:0px;padding-right:0px;border-right:white;border-left: white;"><?php echo $split2 . ''; ?></th>
+
+                                                </tr>
+
+                                                <tr>
+                                                    <th class="newpadding hrminus" colspan="8" style="border: 0px solid black;padding: 0px;"><hr></th>
+                                                </tr>
+
+
+                                            <?php } else { ?>
+                                      
+                                                <tr>
+                                                    <td>No data available under the selected criteria</td>
+                                                </tr>  
+                                            <?php } ?>
+
+
+                                            <!-- </tbody> -->
+
+                                        </table>
+                                    </div>
+
+                                <?php }
+                            }
+
+                        }
+                        else { ?>
+                           <?php
+                           $i = 0;
+                           if (count($arr_salary_for_template) !== 0) {
+                            $i += 1;
+                            ?> 
+                            <!--<div style="width: 100%; height: 10px; border: 0px solid black;"></div>-->
+
+                            <div style="width: 100%; text-align:center; border: 0px solid black; justify-content: center;padding-top: -25px;">
+                               <table style="width: 100% !important; min-width: 100%;text-align:center;padding: 0px;padding-top:0px;border-color:white;">
+                            <tr class="single-line"> <th>Dated <?PHP echo $currentDateTime;?> </th> <th colspan="7" class="center-text" style="padding-left:190px;padding-top:0px;"><?php echo 'FOR THE PERIOD FROM '. $from . ' TO ' . $from?></th>
+                                            </tr>
+
+                                    <!--<tr>-->
+                                        <!--<th colspan="4" style="font-weight: bold;font-size:15px "><?php //echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];?></th>-->
+
+                                        <!--<th colspan="3" style="font-weight: bold;font-size:15px;text-align:right; ">Employer ESI No.: <?php //echo $eip;?></th>-->
+                                    <!--</tr>-->
+                                    <!--<tr>-->
+
+                                        <!-- <th colspan="7" style="text-align:center;font-weight: bold;font-size:15px;margin:-50px; ">Monthly ESI report for the month of <?php// echo $mname1 . "/" . $y1; ?></th> -->
+                                        <!--<th colspan="7" style="text-align:center;font-weight: bold;font-size:15px;margin:-50px;padding-top: 60px;padding-right: 0px;padding-bottom: 0px;padding-left:0px;">ESI Summary report for the month of <?php// echo $mname1 . "/" . $y1; ?></th>-->
+
+                                    <!--</tr>-->
+                                   <!--<tr ><th colspan="7" style="padding-top:0px;padding-bottom: 0px;padding-right: -1px;padding-left: -1px;"><hr style="margin-top:-21 px;"></th></tr>-->
+
+
+                                     <tr >
+                                            
+                                                <th style="text-align:center;font-weight: bold;border-bottom: white;border-left: white;border-right: white;border-top:white;">Sl No</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: white;border-top:white; ">ESI NO</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: white;border-top:white; ">Employee ID</th>
+                                                <th style="font-weight: bold;border-left: white;border-right: white;border-bottom: white;border-top:white; ">Employee Name</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: white;border-top:white;">Days</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: white;border-top: white;">Wages Paid</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: white;border-top: white;">ESI Amount Employee</th>
+                                                <th style="text-align:center;font-weight: bold;border-left: white;border-right: white;border-bottom: white;border-top: white;">ESI Amount Employer</th>
+ 
+                                            </tr>
+<!--                                       <tr>
+                                        <th class="newpadding" style="width:30px;text-align:left;font-size: 14px;font-weight: bold;padding: 0px !important;">&nbsp;(1)</th>
+                                        <th class="newpadding" style="width:250px;text-align:center;font-size: 14px;font-weight: bold;padding: 0px !important;">(2)</th>
+
+                                        <th class="newpadding" style="width:250;text-align:left;font-size: 14px;font-weight: bold;padding: 0px !important;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3)</th>
+
+                                        <th class="newpadding" style="width:100px;text-align:center;font-size: 14px;font-weight: bold;padding: 0px !important;">(4)</th>
+                                        <th class="newpadding" style="width:100px;text-align:center;font-size: 14px;font-weight: bold;padding: 0px !important;">(5)</th>
+                                        <th class="newpadding" style="width:100px;text-align:center;font-size: 14px;font-weight: bold;padding: 0px !important;">(6)</th>
+                                        <th class="newpadding" style="width:20px;text-align:center;font-size: 14px;font-weight: bold;padding: 0px !important;">(7)</th>
+                                    </tr>-->
+                                    <tr><th colspan="8" style="padding-left:0px;padding-right:0px;padding-bottom:-10px;padding-top:-10px;"><hr></th></tr>
+                                <?php  
+
+                                $i = 0;
+                                $sum = 0;
+                                $gross = 0;
+                                $esi_sal = 0;
+                                $split1 = 0;
+                                $split2 = 0;
+                                $split3 = 0;
+                                $pf_salary=0;
+                                $day=0;
+                                $days=0;
+                                ?>
+                                <?php   foreach ($arr_salary_for_template as $value) {  $arr_e = $value['summary'];
+                                foreach ($arr_e as $employee =>$val)  { 
+                                    if($val['0']['Esi'] > 0){?>
+
+                                     <tr style="margin-top:-21px;">
+                                        <?php $i = $i + 1;
+                                        $empstatus = (isset($val['emp_details']['status'])) && $val['emp_details']['status'] =="2" ? '  (Resigned)':'';?>
+                                        <td style="text-align:center;border-left: white;border-right: white;border-bottom: white;border-top: white;"><?php echo $i;
+                                                    ?></td>
+                                                    <td style="text-align:center;border-left: white;border-right: white;"><?php echo $val['emp_details']['esi']; ?></td>
+                                                    <td style="text-align:center;border-left: white;border-right: white;"><?php echo $val['employee_info']['employee_id']; ?></td>
+                                                    <td style="border-left: white;border-right: white;"> <?php $namenew = ucwords(strtolower($val['employee_info']['EmpName'])) . $empstatus;$name = $namenew;echo wordwrap($name, 20, "<br>\n"); ?></td>  
+      <?php
+                                             $esi1 =round($val['0']['Esi']);
+                                             $employer_esi =isset($val['0']['EMPLOYER_ESI'])? $val['0']['EMPLOYER_ESI']:'';
+                                             eval('$esi = '.$employer_esi.';');
+                                             $esi = round($esi);
+                                             $total = round($esi1 + $esi);
+                                             $sal = ($val['0']['SALARY'] != '0') ?round($val['0']['SALARY']):0;
+                                             $gross += round($val['0']['SALARY']);
+                                            // $days= $value['WORKDAYS'];
+                                            $dayscount = $val['0']['leaves'] + $val['0']['weekoff'] + $val['0']['holiday']+ $val['0']['present'];
+                                            $ncp = $val['payroll_master']['calander_days'] - $dayscount;
+
+                  
+                                             $days = ceil($val['payroll_master']['calander_days'] - $ncp);
+                                             $split1 += round($val['0']['Esi']);
+                                            
+                                             $split3+= $esi +round($val['0']['Esi']);
+                                             $day+=round($days);
+                                             $excluded = ($val['0']['Esi']+$esi)/.04;
+                                             if($excluded > $val['0']['SALARY']){
+                                                $excluded = $val['0']['SALARY'];
+                                            }
+                                            $salary = round($val['0']['SALARY']-$excluded );
+                                            $pf_salary+= round($salary);
+                                            //$esi_sal += round($excluded);
+                                            $excluded1 =isset($val['0']['ESI_EARNING'])?$val['0']['ESI_EARNING']:'';
+                                                        $expressionWithoutPortion = str_replace(['* .0075', '* .75 / 100'], '', $excluded1);
+                                                        eval('$esiearning = '.$expressionWithoutPortion.';');
+                                                        $esiearning = round($esiearning);
+                                                        $esi_sal += $esiearning;
+                                                        $esival = $esiearning * 0.0325;
+                                                        $esi = ceil($esival);
+                                                        $split2+= round($esi);
+                                                        setlocale(LC_MONETARY, 'en_IN');
+                                            ?>
+                                            <td class="newpadding <?php echo ($i == 1) ? 'padding-bottom1' : 'padding-bottom' ?>" style="font-size: 14px;text-align:center;padding: 0px !important;"><?php echo $days; ?></td>
+                                                        <td class="newpadding <?php echo ($i == 1) ? 'padding-bottom1' : 'padding-bottom' ?>" style="font-size: 14px;text-align:center;padding: 0px !important;"><?php echo $esiearning; ?></td>
+                                                        <td class="newpadding <?php echo ($i == 1) ? 'padding-bottom1' : 'padding-bottom' ?>" style="font-size: 14px;text-align:center;padding: 0px !important;"><?php echo $esi1 . ''; ?></td>
+                                                        <td class="newpadding <?php echo ($i == 1) ? 'padding-bottom1' : 'padding-bottom' ?>" style="font-size: 14px;text-align:center;padding: 0px !important;"><?php echo $esi . ''; ?></td>
+
+                                                    </tr>
+                                                    <!-- <tr><th colspan="7" >&nbsp;</th></tr>  -->
+
+
+
+                                                <?php } }}?> 
+                                                <tr><th colspan="8" style="padding:0px;"><hr /></th></tr> 
+                                                <!-- style="margin-top: ;" -->
+                                                <tr>
+                                                    <th class="newpadding" colspan="3" style="padding-top:-20px"></th>
+                                                    <th class="newpadding" colspan="1" style="text-align:center;font-weight:bold;font-size: 14px;padding-top:0px"> T O T A L</th>
+                                                    <th class="newpadding" colspan="1"style="font-size: 14px;text-align: center;font-weight: bold;padding-top:0px;padding-right:0px"><?php echo $day; ?></th>
+                                                    <th class="newpadding" colspan="1"style="font-size: 14px;text-align: center;font-weight: bold;padding-top:0px;padding-right:0px"><?php echo  $esi_sal; ?></th>
+                                                    <th class="newpadding" colspan="1" style="font-size: 14px;font-weight: bold;text-align: center;padding-top:0px;padding-right:0px"><?php echo $split1 . ''; ?></th>
+                                                    <th class="newpadding" colspan="1" style="font-size: 14px;font-weight: bold;text-align: center;padding-top:0px;padding-right:0px"><?php echo $split2 . ''; ?></th>
+                                                </tr>
+
+                                                <tr>
+                                                    <th class="newpadding hrminus" colspan="8" style="border: 0px solid black;padding: 0px;"><hr></th>
+                                                </tr>
+
+<!--                                                <tr>
+                                                    <th class="" colspan="2" style="padding-top: 10px;"></th>
+                                                    <th class="alignleft" style="font-weight:bold;font-size: 14px;padding-top: 10px;text-align: left;padding-left: 20px;">Employee Contribution</th>
+                                                    <th class="alignright" style="font-size: 14px;font-weight: bold;padding-top: 10px;text-align: center;"><?php //echo number_format($split1, 2 ) . ''; ?></th>
+                                                    <th class="" colspan="3" style="padding-top: 10px;"></th>
+                                                </tr>-->
+<!--                                                <tr>
+                                                    <th class="newpadding " colspan="2" style="border-bottom: 0px solid black;"></th>
+                                                    <th class="newpadding alignleft" style="padding-top: -1px !important; padding-bottom: -1px !important;padding-left: 20px;padding-right: 0px; font-weight:bold;font-size: 14px;text-align: left;">Employer Contribution</th>
+                                                    <th class="newpadding alignright" style="padding-top: -1px !important; padding-bottom: -1px !important;font-size: 14px;font-weight: bold;border-bottom: 0px solid black;text-align: center;"><?php echo number_format(ceil($split2), 2 ) . ''; ?></th>
+                                                    <th class="newpadding " colspan="3" style="border-bottom: 0px solid black;"></th>
+                                                </tr>-->
+
+<!--                                                <tr>
+                                                    <th class="newpadding" colspan="2" style="padding-top: -10px !important;padding: 0px !important;"></th>
+                                                    <th class="newpadding" colspan="2" style="padding-top: -10px !important;padding-left: 20px;
+                                                    padding-right: 20px;"><hr></th>
+                                                    <th class="newpadding" colspan="3" style="padding-top: -10px !important;padding: 0px !important;"></th>
+                                                </tr> -->
+
+<!--                                                <tr>
+                                                    <th class="newpadding minus30" colspan="2" style="padding-top:0px;"></th>
+                                                    <th  class="newpadding minus30 alignleft" style="padding-top: -1px !important; padding-bottom: -1px !important;padding-left: 20px;padding-right: 0px; font-weight:bold;font-size: 14px;text-align: left;"> T O T A L</th>
+                                                    <th  class="newpadding minus30 alignright" style="font-size: 14px;padding-top:-5px;font-weight: bold;text-align: center;"><?php //$t=$split1+ceil($split2); echo number_format($t, 2 ) . ''; ?></th>
+                                                    <th class="newpadding minus30"  style="padding-top:0px"></th>
+                                                </tr>-->
+                                                
+<!--                                                <tr>
+                                                    <th class="newpadding hrminus" colspan="2" style="padding: 0px !important;"></th>
+                                                    <th class="newpadding hrminus" colspan="2" style="padding-top: -10px !important;padding-left: 20px;
+                                                    padding-right: 20px;" ><hr></th>
+                                                    <th class="newpadding hrminus" colspan="3" style="padding: 0px !important;"></th>
+                                                </tr>-->
+                                <?php } else { ?>
+                                    <tr>
+                                        <td>No data under this criteria</td>
+                                    </tr>  
+                                <?php } ?>
+
+                            </table></div>
+                        <?php }  }?>
+
+           <?php } ?>

@@ -1,0 +1,342 @@
+<div class="modal-dialog" style="width: 100% ; ">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title"><?php echo $title; ?></h4><?php //debug($arr_att);    ?>
+        </div>
+        <div class="modal-body">
+            <!-- Form starts -->
+            <div id="" class="">
+                <form class="form-horizontal" id="Purchase_form" method="post" action="<?php echo $this->webroot; ?>PurchaseOrder/save" >
+                    <div role="tabpanel" class="tab-pane" id="div-" name="">
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-3">
+                                    <label class="control-label" >Material Request Code</label>
+                                    <div class="col-md-10">
+
+                                        <input id="mr_code" name="mr_code" value="<?php echo isset($arr_att['0']['materialrequest']['mr_code']) ? $arr_att['0']['materialrequest']['mr_code'] : ''; ?>" type="text"  class="form-control input-md" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label  class="control-label" >Required date<label style="color:red">*</label></label>
+                                    <div class="col-md-10">
+                                        <input id="start_date" name="mr_date" value="<?php echo isset($arr_att['0']['materialrequest']['mr_date']) ? $arr_att['0']['materialrequest']['mr_date'] : ''; ?>" type="text"  class="form-control input-md"  readonly="readonly">
+                                    </div> 
+                                </div>
+                                <div class="col-md-3">
+                                    <label  class="control-label" >Store Code<label style="color:red">*</label></label>
+                                    <div class="col-md-10">
+                                        <!-- //added by megha store location name -->
+                                        <input id="stores" name="stores" value="<?php echo isset($arr_att['0']['materialrequest']['store_code']) ? $arr_att['0']['store_master']['store_location'] : ''; ?>" type="text"  class="form-control input-md" disabled="disabled">
+                                         <!--<input id="stores" name="stores" value="<?php echo isset($store) ? $store : ''; ?>" type="text"  class="form-control input-md" disabled="disabled">-->
+                                    </div> 
+                                </div>
+                                
+                                
+                                <div class="col-md-3">
+                                    <label class="control-label" >Remark<lable style="color:red;">*</lable></label>
+                                    <div class="col-md-10">
+                                        <input id="remarks"  name="remarks" value="<?php echo isset($arr_att['0']['materialrequest']['remarks']) ? $arr_att['0']['materialrequest']['remarks'] : ''; ?>" type="text"  class="form-control input-md" readonly="readonly">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: none; ">
+                                    <!--<label  class="col-md-2 control-label" >Store Code</label>-->
+                                    <div>
+                                        <select id="store_code" class="form-control" readonly="readonly" name="store_code" required="required">
+                                            <option value="" >---select---</option>
+                                            <?php
+                                            $store = '';
+                                            foreach ($all_store as $value) {
+                                                if ($arr_att['0']['materialrequest']['store_code'] == $value['Store']['store_master_pkey']) {
+                                                    $store = $value['Store']['store_code'];
+                                                }
+                                                $selected = ($arr_att['0']['materialrequest']['store_code'] == $value['Store']['store_master_pkey']) ? 'selected="selected"' : '';
+                                                echo '<option value="' . $value['Store']['store_master_pkey'] . '" ' . $selected . '>' . $value['Store']['store_code'] . '   </option>';
+                                            }
+                                            ?>    
+                                        </select>
+      <!--                                    <input id="client_name"  name="client_name" value="<?php // echo isset($arr_att['0']['materialrequest']['client_name']) ? $arr_att['0']['materialrequest']['client_name'] : '';   ?>" type="text"  class="form-control input-md" >-->
+                                    </div>
+                                </div>
+                        <input id="client_name" name="client_name" value="<?php echo isset($arr_att['0']['materialrequest']['customer_name']) ? $arr_att['0']['materialrequest']['customer_name'] : ''; ?>" type="hidden"  class="form-control input-md" readonly="readonly" >  
+                        <input id="client_po_no" name="client_po_no" value="<?php echo isset($arr_att['0']['materialrequest']['client_po_no']) ? $arr_att['0']['materialrequest']['client_po_no'] : ''; ?>" type="hidden"  class="form-control input-md"  readonly="readonly">
+                        <input  name="location" value="<?php echo isset($arr_att['0']['materialrequest']['location']) ? $arr_att['0']['materialrequest']['location'] : ''; ?>" type="hidden"  class="form-control input-md" readonly="readonly">
+                        <div class="form-group form-group-sm">
+
+
+                        </div>
+
+                        <div class="form-group form-group-sm">
+
+
+
+
+
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <div class="col-md-20" > </div>
+                        </div>
+
+                        <div  style="border: 1px solid #DCDCDC" style="padding: 0px 20px 10px 19px;">
+                            <div class="col-xs-4">
+                            </div>
+                            <div class="modal-title" style="font-family:verdana; color:black; size:12px; text-align: center; "><h3>Purchase Order Details</h3></div>
+                            <div class="form-group" id="div-criteria1" style="padding: 0px 20px 10px 19px;">
+                                <div class="col-md-12" >
+                                    <!--                                    <div class="pull-right ">
+                                                                            <a class="btn btn-info btn-sm active"  onclick="addOneReportCriteria(1);">Add New</a>
+                                    
+                                                                        </div>-->
+
+                                </div>
+                                <div class="form-group form-group-sm">
+                                    <div class="col-md-12" > </div>
+                                </div>
+                                <table class="table table-light-border">
+                                    <thead>
+                                        <tr>
+                                            <th>Item Name</th> 
+                                            <th>Requested Qty</th> 
+                                            <th>Pending</th>
+                                            <th>Current Stock</th>
+                                            <th>Re Order Level</th> 
+                                            <!--<th>Required Qty</th>-->
+                                            <th>Order Qty</th>
+                                            <!--<th>Package<label style="color:red;">*</label></th>-->
+                                            <th>Rate</th>
+
+
+
+
+
+                                        </tr>
+                                    </thead>
+
+                                    <?php
+                                    
+                                    if (isset($arr_att) && !empty($arr_att)) {
+                                        $i = 1;
+
+                                        foreach ($arr_att as $value) {
+                                            $data = count($value);
+                                            //debug($value['mrdetails']['item_code']);
+                                            //debug($value);
+                                            $required_qty = isset($value['mrdetails']['required_qty']) ? $value['mrdetails']['required_qty'] : 0;
+                                            $ordered_qty = isset($value['mrdetails']['ordering_qty']) ? $value['mrdetails']['ordering_qty'] : 0;
+                                            $pendig_qty = $required_qty - $ordered_qty;
+                                            ?>
+                                            <tbody>
+                                                <?php
+                                                if ($pendig_qty > 0) { ?>
+                                                    <tr>
+                                                        <td>
+                                                            <select readonly="readonly" id="item_code"   name="item_code[]" style = "width:100%;  background: #eeeeee; " onchange="getitemfordata1(this,<?php echo $i; ?>);">
+                                                                
+                                                                <?php
+                                                                foreach ($all_item as $getitem) {
+                                                                    if($value['mrdetails']['item_code'] == $getitem['Item']['item_master_pkey']){
+                                                                        $item = $getitem['Item']['item_desc'];
+                                                                        $item_value = $getitem['Item']['item_master_pkey'];
+                                                                    }
+                                                                }
+                                                                ?>
+                                                                <option selected="selected" value="<?php echo $item_value; ?>" ><?php echo $item; ?></option>
+                                                            </select>
+                                                        </td>
+                                                        <?php
+                                                        ?>
+                                                        <td><input type = "text" readonly="readonly" value = "<?php echo isset($value['mrdetails']['required_qty']) ? $value['mrdetails']['required_qty'] : ''; ?>" name ="required_qty[]" id = "required_qty" readonly="readonly" style="width:80px; background: #eeeeee; "></td>
+                                                        <td><input type = "text" readonly="readonly" value = "<?php echo $pendig_qty; ?>"  name = "pending_qty[]" id = "pending_qty"  style="width:80px; background: #eeeeee; " onchange="find();" ></td>
+
+
+            <!--<td><input type = "text" value = "<?php echo isset($value['mrdetails']['unit']) ? $value['mrdetails']['unit'] : ''; ?>"  style = "width:60%;" readonly="readonly"></td>-->
+                                                        <?php
+                                                        if (isset($sum) && $sum == "0") {
+                                                            $disabled = "";
+                                                        } else {
+                                                            $disabled = "";
+                                                        }
+                                                        ?>
+                                                        <td><input  type = "text"  value = "<?php echo isset($value['mrdetails']['current_stock']) ? $value['mrdetails']['current_stock'] : ''; ?>" name = "current_stock[]" id = "current_stock" style = "width:80px; background: #eeeeee; " readonly="readonly"></td>
+                                                        <td><input  type = "text"  value = "<?php echo isset($value['mrdetails']['re_order_level']) ? $value['mrdetails']['re_order_level'] : ''; ?>" name = "re_order_level[]" id = "re_order_level" style = "width:80px; background: #eeeeee; " readonly="readonly"></td>
+
+                                                        <td>
+                                                     
+                                                            <input type="hidden" value="<?php echo $pendig_qty; ?>" class="pendings"><input type = "number" min="0" required="" max="<?php echo $pendig_qty; ?>"                         
+                                                 
+                                                                <?php
+                                                            if ($pendig_qty > 0) {
+                                                                echo 'style="background:none;width:60px; "';
+                                                            } else {
+                                                                echo 'readonly="readonly"';
+                                                                echo 'style="background:#eee;width:60px; "';
+                                                            }
+                                                            ?>  value = "<?php echo $pendig_qty; ?>" <?php echo $disabled; ?>  name = "ordering_qty[]" id = "ordering_qty"></td>
+                                                        <!--<td><input  type = "text"  value = "<?php echo isset($value['mrdetails']['package']) ? $value['mrdetails']['package'] : ''; ?>" name = "package[]" id = "package" style = "width: 100px" readonly="readonly"></td>-->
+                                                        <td><input  type = "number" <?php
+                                                            if ($pendig_qty > 0) {
+                                                                echo 'style="background:none; width:60px; "';
+                                                            } else {
+                                                                echo 'readonly="readonly"';
+                                                                echo 'style="background:#eee;width:60px; "';
+                                                            }
+                                                            ?> step="0.01" value = "" name = "rate[]" id = "rate" required="" min="0"></td>
+                                                <input type = "hidden" value = "<?php echo isset($value['mrdetails']['mr_details_pkey']) ? $value['mrdetails']['mr_details_pkey'] : ''; ?>" id = "mr_details_pkey" name = "mr_details_pkey[]">
+                                                </tr>
+                                            <?php } ?>
+                                            </tbody> 
+                                            <?php
+                                            $i++;
+                                        }
+                                    } else {
+                                        ?>
+
+<?php }
+?>
+                                </table>
+
+
+
+
+
+                                <div class="table-responsive" style="padding:0px 3px -1px 19px; margin-top:-20px;" id="getmeterial"  style="display:">
+
+
+                                </div>
+
+
+
+
+
+
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" value="<?php echo isset($arr_att['0']['materialrequest']['mr_pkey']) ? $arr_att['0']['materialrequest']['mr_pkey'] : ''; ?>" id="mr_pkey" name="mr_pkey">
+                            <input type="hidden" id="po_fkey" name="po_fkey" value="<?php echo isset($pk) ? $pk : '0'; ?>">
+                            <button type="submit" id="btn-submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                            <input type="hidden" id="pp_id"  class="btn btn-primary">
+                        </div>
+                    </div>
+
+
+
+                </form>
+
+
+                <!-- Tax Head Detail Form -->
+
+            </div>
+
+
+
+            <!-- form ends-->
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function find(s)
+
+    {
+        var requ = $('#required_qty').val();
+        var order = $(s).val();
+        var pending = $(s).siblings('input[type="hidden"]').val();
+
+//        alert(pending);
+//        alert(order);
+        if (order > pending)
+        {
+            alert("Ordering Quantity Cannot be Greater than Required Qty");
+            $('#ordering_qty').val("");
+        }
+    }
+
+    $('#Purchase_form').on('submit', function (event) {
+        event.preventDefault();
+        $('#Purchase_form #btn-submit').html('<li class="fa fa-spin fa-spinner "></li> Saving....').attr("disabled","disabled");
+        if (confirm("Do You Want To Save The Form")) {
+            $('#Purchase_form').ajaxSubmit(options);
+        }else{
+            $('#Purchase_form #btn-submit').html('Save').prop("disabled",false);
+        }
+    });
+    var options = {
+        success: function (resp) {
+            var row = $('#materialtable').datagrid('getSelected');
+            //console.log(row);
+
+
+
+            $('#largeModalForm').modal('hide');
+            $('#materialtable').datagrid('reload');
+
+            var pk = $("#po_fkey").val();
+            //alert(pk);
+
+            loadtable(pk, 1);
+
+            $.notify("Success", {
+                type: 'success',
+                allow_dismiss: false
+            });
+        }  // post-submit callback
+    };
+    jQuery(document).ready(function () {
+
+
+    });
+
+
+
+
+
+    function  loadtable(pk, rowindex) {
+        $.ajax({
+            url: 'PurchaseOrder/loadtable/' + pk + '/' + rowindex,
+            success: function (response) {
+                //alert(response);
+                var data = response;
+                var div_data = '';
+                div_data += "<div>" + data + "</div>"
+                $("#table_appnd").html(div_data);
+
+            }
+        });
+
+    }
+
+
+    function calculateSum(rowIndex) {
+        var sum = 0;
+
+
+
+
+
+
+        var requ = $('#required_qty').val();
+        var order = $('#ordering_qty').val();
+//        var totl = dedu - unit;
+
+
+        if (requ > order)
+        {
+            alert("check value");
+            $('#ordering_qty').val("");
+        }
+
+    }
+
+
+
+</script>

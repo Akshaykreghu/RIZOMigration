@@ -1,0 +1,273 @@
+  <section class="content-header">
+          <h1>
+           Tax Heads
+           
+          </h1>
+          
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+ <div class="row">
+                                <div class="col-sm-2">
+                            <ul id="sheads" title="Tax Types" lines="true" style="width:100%; height:370px; background-color:white;"></ul>
+
+                                </div>
+                                <div class="col-sm-3">
+                                
+                                    <ul id="shitems"  title="Tax Heads" lines="true" style="width:100%; height:370px; background-color:white;"></ul>
+                                </div>
+                                <div class="col-sm-5">
+                                 
+                                    <ul id="shitems1"  title="Tax Head Details" lines="true" style="width:100%; height:370px; background-color:white;"></ul>
+                                </div>
+                            </div>
+     	
+
+
+
+</section>
+<script>
+	$(document).ready(function(){
+			$('#sheads').datalist({
+                            
+                            toolbar: [{
+				text:'New',
+				iconCls:'icon-add',
+				handler: function(){
+			
+				showModalForm(livesite+'TaxHeads/form')
+                                        
+				}
+				},
+                                {
+				text:'Edit',
+				iconCls:'icon-edit',
+				handler: function(){
+			              // alert('hlo');
+					var headrow = $('#sheads').datalist('getSelected');
+                                        showModalForm(livesite+'TaxHeads/form?id=' + headrow.key)
+                                        
+				}
+				},
+                                 {
+				text:'Delete',
+				iconCls:'icon-remove',
+				handler: function(){
+			        var headrow = $('#sheads').datalist('getSelected');
+                                //alert(headrow.key);
+				//showModalForm(livesite+'SalaryHeads/DeleteHead/'+ headrow.key)
+                                	$.ajax({
+								url : livesite+'TaxHeads/Deletetaxtype/'+ headrow.key,
+								data : {
+								tax_id:headrow.key
+								},
+							success : function(response) {
+					 				$.notify($.parseJSON(response).msg,{
+											type: 'success',
+											allow_dismiss: true,
+                                                                                        
+																									
+										});
+							}
+							});     closeModal('sheads');  
+                                                        closeModal('shitems1');  
+                                        
+				}
+				}
+                                
+                            ],
+		    url: livesite+'TaxHeads/getTaxType',
+		  onSelect:function(index,row){ closeModal('shitems1');
+								var id = row.key; 
+                                                              //alert(id);
+								$('#shitems').datalist('load',{
+								id:id
+								});
+				},
+		    line:true
+		});	
+		
+		
+		$('#shitems').datalist({
+			toolbar: [{
+				text:'New',
+				iconCls:'icon-add',
+				handler: function(){
+                                    //var rows = $('#shitems').datalist('getChecked');
+					var headrow = $('#sheads').datalist('getSelected');
+                                        //alert(headrow.key);
+                                    if(headrow.key!=""){
+				 showModalForm(livesite+'TaxHeads/form_items/' + headrow.key+'/0')}
+                                                                              	}
+				},
+                                  
+                {
+		    text:'Edit',
+            iconCls:'icon-edit',
+			handler: function(){
+				var rows = $('#shitems').datalist('getSelected');
+			        var headrow = $('#sheads').datalist('getSelected');
+		                                        //alert(headrow.key);
+                                    if(headrow.key!=""){
+				 showModalForm(livesite+'TaxHeads/form_items/' + headrow.key+'/'+rows.key)
+			
+        }
+			
+		}},
+                {
+				text:'Delete',
+				iconCls:'icon-remove',
+				handler: function(){
+			        var headrow = $('#shitems').datalist('getSelected');
+                                //alert(headrow.key);
+				//showModalForm(livesite+'SalaryHeads/DeleteHead/'+ headrow.key)
+                                	$.ajax({
+								url : livesite+'TaxHeads/Deletetaxhead/'+ headrow.key,
+								data : {
+								tax_id:headrow.key
+								},
+							success : function(response) {
+					 				$.notify($.parseJSON(response).msg,{
+											type: 'success',
+											allow_dismiss: true,
+                                                                                        
+																									
+										});
+							}
+							});     closeModal('sheads');  
+                                                        closeModal('shitems');  
+                                        
+				}
+				}
+	],
+		   
+		    url: livesite+'TaxHeads/getTaxHead',
+		  onSelect:function(index,row){
+								var id = row.key; 
+                                                              //alert(id);
+								$('#shitems1').datalist('load',{
+								id:id
+								});
+				},
+		    line:true
+		});	
+                	$('#shitems1').datagrid({
+                            
+                            
+                            
+                          toolbar: [{
+				text:'New',
+				iconCls:'icon-add',
+				handler: function(){
+                                    var rows = $('#shitems').datalist('getSelected');
+					//var headrow = $('#sheads').datalist('getSelected');
+                                        //alert(headrow.key);
+                                    if(rows.key!=""){
+				 showModalForm(livesite+'TaxHeads/add_details/' + rows.key+'/0/')}
+                                                                              	}
+				},
+                                {
+				text:'Edit',
+				iconCls:'icon-edit',
+				handler: function(){
+                                    var rows = $('#shitems').datalist('getSelected');
+					var headrow = $('#shitems1').datalist('getSelected');
+                                        //alert(headrow.key);
+                                    if(rows.key!=""){
+				 showModalForm(livesite+'TaxHeads/add_details/' + rows.key+'/'+headrow.key)}
+                                                                              	}
+				},
+                                  
+                {
+		    text:'Save',
+            iconCls:'icon-save',
+			handler: function(){
+				var rows = $('#shitems1').datalist('getChecked');
+					var headrow = $('#sheads').datalist('getSelected');
+				console.log(rows)
+								if (rows){
+													 var str_ids = "";
+                    	 for(var i=0;i<rows.length;i++){
+                    	 	var data = rows[i];
+									 if(str_ids == ""){
+										 str_ids += data.key;
+									 }else
+									 {
+										 str_ids += ","+data.key;
+									 }
+                    	 }
+			
+				$.ajax({
+								url : livesite+"TaxHeads/saveTaxHead",
+								data : {
+								tax_head_item : str_ids,
+								tax_head:headrow.key
+								},
+							success : function(response) { //alert('sucess');
+					 				$.notify($.parseJSON(response).msg,{
+											type: 'success',
+											allow_dismiss: true
+																									
+										});
+							}
+							}); closeModal('shitems1');  
+			
+			}
+			
+			
+			
+			
+		}
+	}],
+		    url: livesite+'TaxHeads/getTaxHeaddetails',
+		    checkOnSelect:true,
+		    singleSelect:false,
+		  		    onUncheck:function(i,rows){
+                                      var headrow = $('#shitems').datalist('getSelected');
+						console.log(rows)						
+
+                                        console.log(rows)
+								if (rows){
+					
+				$.ajax({
+								url : livesite+"TaxHeads/removeTaxHead",
+								data : {
+								tax_head_item : rows.key,
+								tax_head:headrow.key
+								},
+							success : function(response) {
+					 				$.notify($.parseJSON(response).msg,{
+											type: 'success',
+											allow_dismiss: true
+																									
+										}); closeModal('shitems1');  
+							}
+							});
+			
+			}
+			
+			
+			
+		    },
+		    onLoadSuccess:function(){
+		    $('#shitems1').datalist('acceptChanges');	
+		    } ,
+                    fitColumns:true,
+                    columns:[
+				[
+				     {checkbox:true,field:'key'},	
+			              {field:'text',title:'Description',width:"30%"},
+			              {field:'text1',title:'Description first',width:"50%"},
+                                      {field:'text2',title:'Limit',width:"40%"}
+			              
+				]
+				] 
+                            
+                            
+                            
+                        });
+	})
+	
+</script>
+

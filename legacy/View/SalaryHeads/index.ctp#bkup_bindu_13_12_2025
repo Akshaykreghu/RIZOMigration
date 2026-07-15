@@ -1,0 +1,259 @@
+
+<section class="content-header">
+    <!-- edited by athira on 03-07-2025 -->
+    <h1 class="text-primary-18">Salary & Leave Heads</h1>
+    <!-- end -->
+    <hr style="margin-top: 8px;margin-bottom: -2px;">
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-sm-4">
+         <ul id="sheads" title="Salary/Leave Heads" lines="true" style="width:100%; min-height:200px; height:auto">
+
+            </ul>
+
+        </div>
+        <div class="col-sm-8">
+
+            <ul id="shitems" title="Head Items" lines="true" style="width:100%;min-height:200px;height:auto;max-height:500px;">
+
+            </ul>
+        </div>
+    </div>        	
+
+
+
+</section>
+<script>
+    $(document).ready(function () {
+        $('#sheads').datalist({
+            toolbar: [
+                //{
+                //    text: 'New',
+                //    iconCls: 'icon-add',
+                //    handler: function () {
+                //        showModalForm(livesite + 'SalaryHeads/form')
+                //    }
+                //},
+                {
+                    text: 'Edit',
+                    iconCls: 'icon-edit',
+                    handler: function () {
+                        // alert('hlo');
+                        var headrow = $('#sheads').datalist('getSelected');
+                        if (headrow){
+                        showModalForm(livesite + 'SalaryHeads/form?id=' + headrow.key)
+                    }else{
+                        alert("please select any row");
+                    }
+                    }
+                } 
+                //,{
+                //    text: 'Delete',
+                //    iconCls: 'icon-remove',
+                //    handler: function () {
+                 //       var headrow = $('#sheads').datalist('getSelected');
+                        //alert(headrow.key);
+                        //showModalForm(livesite+'SalaryHeads/DeleteHead/'+ headrow.key)
+                //        if (headrow){
+                //            if (confirm("Are you sure want to delete ")) {
+                //        $.ajax({
+                //            url: livesite + 'SalaryHeads/DeleteHead/' + headrow.key,
+                //            data: {
+                //                salary_head: headrow.key
+                //           },
+                //            success: function (response) {
+                //                $.notify($.parseJSON(response).msg, {
+                //                    type: 'success',
+                //                    allow_dismiss: true,
+                //                });
+                //            }
+                //        });
+                //        closeModal('sheads');
+                //   }
+                //        }else{
+                //        alert("please select any row");
+                //    }
+                //    }
+                //}
+
+            ],
+            url: livesite + 'SalaryHeads/getSalaryHead',
+            rownumbers: true,
+            onSelect: function (index, row) {
+                var id = row.key;
+                //alert(id);
+                $('#shitems').datalist('load', {
+                    id: id
+                });
+            },
+            line: true
+        });
+
+
+        $('#shitems').datagrid({
+            url: livesite + 'SalaryHeads/getSalaryHeadItems',
+            checkOnSelect: false,
+            //singleSelect: false,
+            ctrlSelect:true,
+            toolbar: [
+                {
+                    text: 'New',
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        var rows = $('#shitems').datalist('getChecked');
+                        var headrow = $('#sheads').datalist('getSelected');
+                        //alert(headrow.key);
+                        
+                        if (headrow.key != "") {
+                            showModalForm(livesite + 'SalaryHeads/form_items/' + headrow.key + '/0/')
+                        }
+                        
+                    }
+                },
+                {
+                    text: 'Edit',
+                    iconCls: 'icon-edit',
+                    id: "btn",
+                    handler: function () {
+                        var rows = $('#shitems').datalist('getSelected');
+                        var headrow = $('#sheads').datalist('getSelected');
+                        //alert(headrow.key);
+                        if (headrow){
+                        if (headrow.key != "") {
+                            var checkfkeys = rows.fkey;
+                            if (checkfkeys == 0)
+                            {
+								
+                                showModalForm(livesite + 'SalaryHeads/form_items/' + headrow.key + '/' + rows.key)
+
+                            } else
+                            {
+                                $('#btn').linkbutton('disable');
+                            }
+                        }
+                        }else{
+                        alert("please select any row");
+                    }
+                    }
+                },
+                /*{
+                    text: 'Save',
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        var rows = $('#shitems').datalist('getChecked');
+                        var headrow = $('#sheads').datalist('getSelected');
+                        console.log(rows)
+                        if (rows) {
+                            var str_ids = "";
+                            for (var i = 0; i < rows.length; i++) {
+                                var data = rows[i];
+                                if (str_ids == "") {
+                                    str_ids += data.key;
+                                } else
+                                {
+                                    str_ids += "," + data.key;
+                                }
+                            }
+
+                            $.ajax({
+                                url: livesite + "SalaryHeads/saveSalaryHead",
+                                data: {
+                                    salary_head_item: str_ids,
+                                    salary_head: headrow.key
+                                },
+                                success: function (response) {
+                                    $.notify($.parseJSON(response).msg, {
+                                        type: 'success',
+                                        allow_dismiss: true
+
+                                    });
+                                }
+                            });
+
+                        }
+                    }
+                }*/
+            ],
+            
+            onCheck: function (i, rows) {
+                var headrow = $('#sheads').datalist('getSelected');
+                console.log(rows)
+                if (rows) {
+
+                    $.ajax({
+                        url: livesite + "SalaryHeads/saveSalaryHead",
+                        data: {
+                            salary_head_item: rows.key,
+                            salary_head: headrow.key
+                        },
+                        success: function (response) {
+                            $.notify($.parseJSON(response).msg, {
+                                type: 'success',
+                                allow_dismiss: true
+
+                            });
+                        }
+                    });
+
+                }
+            },
+            
+            onUncheck: function (i, rows) {
+                var headrow = $('#sheads').datalist('getSelected');
+                console.log(rows)
+                if (rows) {
+
+                    $.ajax({
+                        url: livesite + "SalaryHeads/removeSalaryHead",
+                        data: {
+                            salary_head_item: rows.key,
+                            salary_head: headrow.key
+                        },
+                        success: function (response) {
+                            $.notify($.parseJSON(response).msg, {
+                                type: 'success',
+                                allow_dismiss: true
+
+                            });
+                        }
+                    });
+
+                }
+            },
+            rownumbers: true,
+            onLoadSuccess: function () { //alert('hloooo');
+                $('#shitems').datalist('acceptChanges');
+            },
+            onSelect: function (index, row) {
+                var headrow = $('#sheads').datalist('getSelected');
+                //alert(headrow.key);
+                if (headrow.key != "") {
+                    var checkfkeys = row.fkey;
+                    if (checkfkeys == 0)
+                    {
+						$('#btn').linkbutton('enable');
+                    } else
+                    {
+                        $('#btn').linkbutton('disable');
+                    }
+                }
+            },
+            fitColumns: true,
+            columns: [
+                [
+                    {checkbox: true, field: 'key'},
+                    {field: 'text', title: 'Name', width: "30%"},
+                    {field: 'type', title: 'Type', width: "10%"},
+//                    {field: 'occurance', title: 'Occurance:', width: "10%"},
+//                    {field: 'date', title: 'Date', width: "10%"},
+                    {field: 'comments', title: 'Comments', width: "35%"},
+                    {field: 'isinslip', title: 'In Salary Slip', width: "12%"},
+                    {field: 'part', title: 'Item Part', width: "15%"}
+                ]
+            ]
+        });
+    })
+
+</script>

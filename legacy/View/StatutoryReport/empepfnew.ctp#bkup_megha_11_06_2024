@@ -1,0 +1,537 @@
+<?php if ($mode == '') { ?>
+    <div class="modal-body" style="overflow-y:initial; padding-left:3%; padding-right:3%; padding-bottom:3%;" >
+        <h3 align="center" >EPF Report</h3>
+        <div class="row">
+            <div class="col-md-12">
+
+                <?php
+                $i = 0;
+                foreach ($arr_salary_for_template as $value) { 
+                    if (count($value) !== 0) {
+                        $i += 1;
+                        ?>
+
+                        <fieldset> 
+
+
+                            <legend> <?php
+                        echo isset($value['0']['employee_info']['branch']) ? "EPF  Report of - " . $value['0']['employee_info']['branch'] : '';
+                        echo ' ';
+                        ?> 
+                            </legend>
+
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <br>
+                        <fieldset>
+
+
+                            <table class="table table-bordered " >
+                                <thead>
+                                    <tr>
+
+                                    <th colspan="7">Employee Details</th>
+                                    <th colspan="4">EPF Details</th>
+                                    <th colspan="1">EPF - Employee</th>
+                                    <th colspan="4">EPF - Employer</th>
+
+                                    </tr>
+                                    <tr>
+
+                                    <th>Sl No</th>
+                                    <th>Employee Name</th>
+                                    <th>Employee ID</th>
+                                    <th>Joining Date</th>
+                                    <th>Branch</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>Gross Salary</th>
+                                    <th>UAN Number</th>
+                                    <!--<th>EPF</th>-->
+                                    <th>EPF Salary</th>
+                                    <th>Excluded Salary</th>
+                                    <?php if($month >= '2020-05' && $month <= '2020-07'){ ?>
+                                    <th>10%</th>
+                                    <?php } else { ?>
+                                    <th>12%</th>
+                                    <?php } ?>
+                                    <th>8.33%</th>
+                                    <?php if($month >= '2020-05' && $month <= '2020-07'){ ?>
+                                    <th>1.67%</th>
+                                    <?php } else { ?>
+                                    <th>3.67%</th>
+                                    <?php } ?>
+                                    <th>0.5%</th>
+                                    <th>0.5%</th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                        <?php $arr_data = $value; ?>
+                                        <?php if (count($arr_data) >= 0) {
+                                            $i = 0;
+                                            $sum = 0;
+                                            $gross = 0;
+                                            $pf_salary = 0;
+                                            $split1= 0;
+                                            $split2 = 0;
+                                            $split3 = 0;
+                                            $split4 = 0;
+                                            ?>
+                                            <?php foreach ($arr_data as $val) { 
+                                                ?>
+                                            <?php if($val['0']['EPF'] == 0)
+                                                 continue;
+                                            $excluded1 =isset($val['0']['EPF_earning'])? $val['0']['EPF_earning']:'';
+                                                        $expressionWithoutPortion = str_replace('* .12', '', $excluded1);
+                                                        eval('$epf_earnings = '.$expressionWithoutPortion.';');
+                                                        $sal1 = round($epf_earnings);
+                                            ?>
+                                            <tr>
+                                                <?php $i = $i + 1;
+                                               
+                                                 ?>
+                                                <td><?php echo $i;
+//                                                    $PO_Status = $val['po']['grn_status'];
+//                                                    $string_po = '';
+//                                                    switch ($PO_Status){
+//                                                        case "0": $string_po = "GRN Received";
+//                                                            break;
+//                                                        case "1": $string_po = "PO Ordered";
+//                                                            break;
+//                                                        case "2": $string_po = "Finalised";
+//                                                            break;
+//                                                        default : $string_po = "PO";
+//                                                            break;
+//                                                    }
+                                                ?></td>
+                                                <td><?php echo $val['employee_info']['EmpName']; ?></td>
+                                            <td><?php echo $val['employee_info']['employee_id']; ?></td>
+                                            <td><?php echo $val['employee_info']['joining_date']; ?></td>
+                                            <td><?php echo $val['employee_info']['branch']; ?></td>
+                                            <td><?php echo $val['employee_info']['department']; ?></td>
+                                            <td><?php echo $val['employee_info']['designation']; ?></td>
+                                            <td><?php echo round($val['0']['SALARY'], 2); ?></td>
+                                            <td><?php echo $val['emp_details']['pf']; ?></td>
+                                            <!--<td><?php echo round($val['0']['EPF'], 2); ?></td>-->
+                                            <?php if($month >= '2020-05' && $month <= '2020-07'){ ?>
+                                            <td><?php echo round($val['0']['EPF'] * 100 / 10, 2); $sal = round($val['0']['EPF'] * 100 / 10, 2); ?></td>
+                                            <?php } else { ?>
+                                            <td><?php echo $sal1; $sal = round($val['0']['EPF_earning'] * 100 / 12, 2); ?></td>
+                                            <?php }
+                                            if($val['emp_details']['eps']=='Y'){
+                                        $pension = (($sal)*.0833); 
+                                        }else{
+                                         $pension = 0;   
+                                        } ?>
+                                            <td><?php echo $pension;  ?></td>
+                                            <?php
+                                                $gross += round($val['0']['SALARY'], 2);
+                                                $pf_salary += $sal;
+                                                $split1 += round($sal * 8.33 / 100, 2);
+                                                if($month >= '2020-05' && $month <= '2020-07'){ 
+                                                $split3 += round($sal * 10 / 100, 2);
+                                                $split2 += round($sal * 1.67 / 100, 2);
+                                                 } else { 
+                                                $split3 += round($sal * 12 / 100, 2);
+                                                $split2 += round($sal * 3.67 / 100, 2);
+                                                 }
+                                                $split4 += round($sal * .5 / 100, 2);
+                                            ?>
+                                            <?php if($month >= '2020-05' && $month <= '2020-07'){ ?>
+                                            <td><?php echo round($sal * 10 / 100, 2); ?></td>
+                                            <?php } else { ?>
+                                            <td><?php echo round($sal * 12 / 100, 2); ?></td>
+                                            <?php } ?>
+                                            <td><?php echo round($sal * 8.33 / 100, 2); ?></td>
+                                            <?php if($month >= '2020-05' && $month <= '2020-07'){ ?>
+                                            <td><?php echo round($sal * 1.67 / 100, 2); ?></td>
+                                            <?php } else { ?>
+                                            <td><?php echo round($sal * 3.67 / 100, 2); ?></td>
+                                            <?php } ?>
+                                            <td><?php echo round($sal * .5 / 100, 2); ?></td>
+                                            <td><?php echo round($sal * .5 / 100, 2); ?></td>
+                                            </tr>
+
+
+
+
+
+                                        <?php } ?>
+                                            <tr>
+                                                <th colspan="7">Total</th>
+                                                <th><?php echo $gross; ?></th>
+                                                <td></td>
+                                                <th><?php echo $pf_salary; ?></th>
+                                                <th><?php // echo $pf_salary; ?></th>
+                                                <th><?php echo $split3; ?></th>
+                                                <th><?php echo $split1; ?></th>
+                                                <th><?php echo $split2; ?></th>
+                                                <th><?php echo $split4; ?></th>
+                                                <th><?php echo $split4; ?></th>
+                                            </tr>
+                                        <?php } else { ?>
+                                        <tr>
+                                            <td colspan="4">No Orders found under this data</td>
+                                        </tr>  
+                                        <?php } ?>
+
+
+                                </tbody>
+                            </table>
+
+                        </fieldset>
+                        <br>
+
+
+        <?php }
+    } ?> <!-- /.box-body -->
+
+            </div>
+        </div>  
+        <!--div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel </button>  
+        </div-->
+        <!---<div class="row">
+              <div class="form-group">
+                  <div class="col-md-12" align="right">
+                      <a href="#" class="btn btn-default" onclick="downloadReport('salarystructure','pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                      <a href="#" class="btn btn-default" onclick="downloadReport('salarystructure','excel');"><i class="icon-file"></i>Download As Excel</a>
+                  </div>
+              </div>
+          </div> -->
+    </div>
+
+<?php } else { ?>
+  
+    <style type="text/css">
+    table {
+        width: 80%;
+        max-width: 80%;
+        margin-bottom: 20px;
+        /*background-color: transparent;*/
+        border-spacing: 0;
+        border-collapse: collapse;
+        table-layout:fixed;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: center;
+      font-size: 12px;
+      word-break: break-all; /* Allow long words to break */
+      white-space: nowrap; /* Prevent text wrapping */
+      overflow: hidden; /* Hide overflowing text */
+      text-overflow: ellipsis; /* Show ellipsis (...) for overflow */
+      border: none;
+    }
+
+    th[colspan="2"], th[rowspan="2"] {
+      background-color: #f2f2f2;
+    }
+
+    th:nth-child(1) {
+      width: 2%;
+    }
+
+    th:nth-child(2) {
+      width: 18%;
+    }
+
+    th:nth-child(3) {
+      width: 40%;
+    }
+
+    th:nth-child(4), th:nth-child(5) {
+      width: 10%;
+    }
+
+    th[colspan="2"]:nth-child(6), th[colspan="2"]:nth-child(7) {
+      width: 10%;
+    }
+  </style>
+  
+<?php
+        $arr_employeepf = array();
+        foreach( $arr_salary_for_template as $value){
+            if(count($value) > 0){
+                $arr_employeepf[] = $value;
+            }
+        }
+  //    debug($arr_employeepf);
+        $month_year = DateTime::createFromFormat('Y-m', $month);
+        $formattedDate = $month_year->format('M/Y');
+      
+?>
+
+<page backtop="30mm" backbottom="10mm" backleft="10mm" backright="10mm" style="font-size: 12pt">
+   <page_header>
+        <div style="margin-top: 50px;">
+        <div style="text-align:left; width:100%; ">
+
+            <div style="position: relative;">
+                <div style="position: absolute; left: 42px; top: 0;">
+                    <b style="font-size: 14px; margin-top: 0px;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?></b>
+                </div>
+                <div style="position: absolute; right: 32px; top: 0;">
+                    <b style="font-size: 14px; margin-top: 0px;">Employer PF No.: <?php echo $emplr_pf_no; ?></b>
+                </div>
+            </div>
+
+
+
+        </div>
+        <br>
+        <div style="text-align: center; border: none; width:450px; margin-top: 0px; margin-left: 160px; margin-right: auto; height: 25px;">
+    <b style="padding: 0px 20px; margin: 0; font-size: 14px; ">
+         PF Summary report for the month of <?php echo $formattedDate;?>
+    </b>
+</div>
+</div>
+    </page_header>
+<?php 
+if(count($arr_employeepf) > 0){
+    ?>
+
+
+<table class="table table-no-row-borders table-min-height" align="center" style="margin-top: -15px;border:1px solid grey;  width: 565px !important; border: 1px solid grey;">
+    <thead>
+        <tr>
+            <th rowspan="2" style="border-top: .5px solid black; padding: 16px 4px 2px; line-height: 1.4;"><b>Sl.<br> No.</b></th>
+            <th rowspan="2" style="width: 16%; text-align: right; border-top: .5px solid black; padding: 8px 20px 8px 8px; line-height: 1.4;"><b>UAN</b></th>
+            <th rowspan="2" style="width: 33%; border-top: .5px solid black; padding-left: 55px; padding: 8px 4px; line-height: 1.4;"><b>Name of Member</b></th>
+            <th colspan="2" style="width: 22.5%; border-top: .5px solid black; padding: 6px 4px; line-height: 1.4; text-align: right;">Employee Contribution</th>
+            <th colspan="2" style="width: 22.5%; border-top: .5px solid black; padding: 6px 4px; line-height: 1.4;">Employer Contribution</th>
+        </tr>
+        <tr>
+            <th style="padding-right: -9px; padding-top:-5px;">PF <br>Earnings</th>
+            <th style="padding-right: 8px; padding-top:-5px;padding-right:0px;">Contribution<br> EPF</th>
+            <th style="padding-top:-5px; padding-right:0px;" >EPF<br> Difference</th>
+            <th style="padding-top:0px; text-align: left; padding-left:0px; vertical-align: top; line-height: 1.6;">Pension<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8.33%</th>
+        </tr>
+        <tr>
+            <th style=" text-align: center;  vertical-align: top; padding-top:0px;" ><b>(1)</b></th>
+            <th style=" text-align: center; text-align:right;padding-right:24px; vertical-align: top;padding-top:0px;" ><b>(2)</b></th>
+            <th style=" text-align: center; padding-right: -48px; vertical-align: top;padding-top:0px;" ><b>(3)</b></th>
+            <th style=" text-align: center; padding-right: -9px; vertical-align: top;padding-top:0px;"><b>(4)</b></th>
+            <th style=" text-align: center; padding-right: -1px;  vertical-align: top; padding-top:0px;" ><b>(5)</b></th>
+            <th style=" text-align: center;  vertical-align: top; padding-top:0px; padding-right: 0px;" ><b>(6)</b></th>
+            <th style=" text-align: center;  vertical-align: top; padding-top:0px;" ><b>(7)</b></th>
+        </tr>
+        <tr style="height:1px; ">
+            <td colspan="7" style="border-bottom: .5px solid black; padding-bottom:1px; padding-top:1px;"></td>
+        </tr>
+    </thead>
+    <tbody>
+        
+        <?php 
+        $i = 0;
+        $column4 = 0;
+        $column5 = 0;
+        $column6 = 0;
+        $column7 = 0;
+        $edli = 0;
+        $pensiontotal = 0;
+        foreach( $arr_employeepf as $branch ){
+            foreach( $branch as $employee ){
+//                $epf_earnings = $employee['0']['EPF_earning'];
+//                $pos = strpos($epf_earnings, '*');
+
+                
+                // if ($pos !== false) {
+                //     // Remove the portion of the string after the asterisk (*)
+                //     // $expression = substr( $epf_earnings, 0, $pos);
+                //     $expression = str_replace('* .12', '', $epf_earnings);
+                //     //$expression = str_replace(array(' ', '*'), '', $expression);
+                // } else {
+                //     $expression = str_replace(' ', '', $expression);
+                // }
+                // eval('$result = ' . $expression . ';');
+               
+             $i++; ?>
+                      <tr style="margin-bottom:5px;">
+                            <td style="width: 3%; text-align: right; padding: 2px;vertical-align: top;"> <?php echo $i; ?></td>
+                            <td style="width:16%;text-align: left; padding: 2px 10px 2px 12px ;vertical-align: top;"><?php echo isset($employee['emp_details']['pf']) ? $employee['emp_details']['pf'] : ''; ?></td>
+                            <td style="width: 33%; text-align: left; padding: 2px 0px 2px 25px; word-break: break-all;white-space:normal; vertical-align: top;"> <?php echo $employee['employee_info']['EmpName']; ?></td>
+                           <?php 
+                                     $sal1 =isset($employee['0']['EPF_earning'])? $employee['0']['EPF_earning']:'';
+                                     if($sal1 != ''){
+                                                       $expressionWithoutPortion = str_replace('* .12', '', $sal1);
+                                                      eval('$epf_earnings = '.$expressionWithoutPortion.';');
+                                                       $sal1 = round($epf_earnings); 
+                                     }
+                             $sal =  ($employee['0']['EPF'] * 100 / 12);
+                                   $column4 = $column4 + $sal1;
+                                    ?>
+                           <td style="width:11.25%;word-break: break-all; text-align: right;padding: 2px; padding-right: -2px;vertical-align: top;"> <?php  echo ($sal1 == 0) ? '' : number_format($sal1, 2); ?></td>
+                            <?php
+                                    if($sal1 > 15000){
+                                        $edli = $edli + 15000;
+                                        if($employee['emp_details']['eps'] !='N'){
+                                        $pension = round((15000)*.0833); $column7 = $column7 + $pension;
+                                        $pensiontotal = $pensiontotal + 15000;
+                                        }else{
+                                         $pension = 0;  
+                                         $pensiontotal = $pensiontotal + 0;
+                                        } 
+                                    }else{
+                                        $edli = $edli + $sal1; 
+                                        if($employee['emp_details']['eps'] !='N'){
+                                        $pension = round(($sal1)*.0833); $column7 = $column7 + $pension;
+                                        $pensiontotal = $pensiontotal + $sal1;
+                                        }else{
+                                         $pension = 0;  
+                                         $pensiontotal = $pensiontotal + 0;
+                                        } 
+                                    }
+                            ?>
+                            <?php $emp_contr = ($employee['0']['EPF']); $column5 = $column5 + $emp_contr; ?>
+                            <td style="width:11.25%;word-break: break-all; text-align: right; padding: 2px 0;vertical-align: top;"> <?php echo ($emp_contr == 0) ? '' : number_format(round($emp_contr), 2); ?></td>
+                            <?php
+                                    $difference = ($emp_contr - $pension);
+                                    $column6 = $difference + $column6; 
+                            ?>
+                            <td style="width:11.25%;word-break: break-all; text-align: right; padding: 2px 5px;vertical-align: top;"> <?php echo ($difference == 0) ? '' : number_format(round($difference), 2); ?></td>
+                            <?php if ($pension > 0) { ?>
+                                <td style="width:11.25%;word-break: break-all;text-align:right; padding: 2px;padding-right:5px;vertical-align: top;"> <?php echo number_format(round($pension), 2); ?></td>
+                            <?php } else { ?>
+                                <td style="width:11.25%;word-break: break-all; text-align: right; padding: 2px;padding-right:5px;vertical-align: top;"> <?php echo ''; ?></td>
+                            <?php } ?>
+                        </tr>
+
+            <?php 
+        } }
+        ?>
+
+        <tr>
+            <td colspan="7" class="heading_bottom" style=" border-bottom: .5px solid black;padding: .1px; line-height: 1;"></td>
+        </tr>
+        <tr>
+        <th colspan="3" style="text-align: right; font-size: 13px; border-bottom: .5px solid black; padding-top: 0px; padding-right: 25px;"><b>T&nbsp;O&nbsp;T&nbsp;A&nbsp;L</b></th>
+            <?php
+            if($column4 != 0){?>
+                <th style=";font-size:13px; border-bottom: .5px solid black; padding-top: 0px; text-align:right;padding-right:-2px;"><b><?php echo number_format(round($column4), 2);?></b></th>
+           <?php }else{?>
+            <th style=" border-bottom: .5px solid black;"><b><?php echo '';?></b></th>
+           <?php }
+            ?>
+            
+            <th style="padding-top: -5px;font-size:13px; border-bottom: .5px solid black; padding-top: 0px;  text-align:right; padding-right: 0px;">
+            <b><?php echo ($column5 == 0) ? '' : number_format(round($column5), 2); ?></b>
+            </th>
+            <th style="padding-top: -5px;font-size:13px; border-bottom: .5px solid black; padding-top: 0px; text-align:right; padding-right: 5px; ">
+            <b><?php echo ($column6 == 0) ? '' : number_format(round($column6), 2); ?></b>
+            </th>
+            <th style="padding-top: -5px;font-size:13px; border-bottom: .5px solid black; padding-top: 0px; text-align:right;padding-right:5px; ">
+            <b><?php echo ($column7 == 0) ? '' : number_format(round($column7), 2); ?></b>
+            </th>
+
+        </tr>
+    </tbody>
+</table>
+
+<table class="table table-no-row-borders table-min-height" align="center" style="margin-top: -5px;border:1px solid grey; width: 565px !important; border: 1px solid grey;  table-layout:fixed">
+    <tbody>
+    <tr style="height: 10px;">
+        <th style="width:19%; text-align: center; font-size: 12px; text-align:left; padding-top: 10px;" ><b></b></th>
+        <th style="width:13%; text-align: center; font-size: 12px; text-align:left;"><b></b></th>
+        <th style="width:18%;text-align: center; text-align:right;"><b>Account No:01&nbsp;</b></th>
+        <th style="width:33%; text-align: center; font-size: 12px;padding-left: 2px; text-align:left; padding-left:7px;"><b>(Column Nos.5+6)</b></th>
+        <th style="width:2%; text-align: center; font-size: 12px; padding-left:0px;"><b>=</b></th>
+        <?php 
+        if(($column5 + $column6) != 0){?>
+            <th style="width:14%; text-align: center; font-size: 12px; text-align:right; padding-right:5px;"><b><?php echo number_format(round($column5 + $column6), 2);?></b></th>
+        <?php }else{?>
+            <th style="width:14%; text-align: center; font-size: 12px; text-align:right; padding-right:5px;"><b><?php echo '';?></b></th>
+        <?php }
+        ?>
+        
+    </tr>
+    <tr style="height: 10px;">
+        <th style="width:19%; text-align: center; font-size: 12px; text-align:left; padding-top: 0px;" ><b></b></th>
+        <th style="width:13%; text-align: center; font-size: 12px; text-align:left; padding-top: 0px;"><b></b></th>
+        <th style="width:18%; text-align:right; padding-top: 0px;"><b>Account No:02&nbsp;</b></th>
+        <th style="width:33%; text-align: center; font-size: 12px;padding-left: 2px; text-align:left;padding-left:6px;padding-top:0px"><b>(0.50000% of Column No.4)</b></th>
+        <th style="width:2%; text-align: center; font-size: 12px; padding-top: 0px; padding-left:0px;"><b>=</b></th>
+        <?php if(($column4 * .005) != 0) {?>
+            <th style="width:14%; text-align: center; font-size: 12px; text-align:right; padding-right:0px; padding-top: 0px;padding-right:5px;"><b><?php echo number_format(round($column4 * .005), 2);?></b></th>
+            <?php }else{?>
+                <th style="width:14%; text-align: center; font-size: 12px; text-align:right; padding-right:0px; padding-top: 0px;padding-right:5px;"><b><?php echo '';?></b></th> 
+            <?php }?>
+        
+    </tr>
+    <tr style="height: 10px;">
+        <th style="width:19%; text-align: center; font-size: 12px; text-align:left; padding-top: 0px;" ><b></b></th>
+        <th style="width:13%; text-align: center; font-size: 12px; text-align:left;  padding-top: 0px; "><b></b></th>
+        <th style="width:18%;text-align: center; text-align:right; padding-top: 0px;"><b>Account No:10 </b></th>
+        <th style="width:33%; text-align: center; font-size: 12px;padding-left: 2px; text-align:left; padding-top: 0px;padding-left:7px;"><b>(Column No. 7)</b></th>
+        <th style="width:2%; font-size: 12px; padding-top: 0px;  padding-left:0px;"><b>=</b></th>
+        <?php 
+        if($column7 != 0){?>
+            <th style="width:14%; text-align: center; font-size: 12px; text-align:right; padding-right:0px; padding-top: 0px;padding-right:5px;"><b><?php echo number_format(round($column7),2);?></b></th>
+        <?php }else{?>
+            <th style="width:14%; text-align: center; font-size: 12px; text-align:right; padding-right:0px; padding-top: 0px;padding-right:5px;"><b><?php echo '';?></b></th>
+        <?php }
+        ?>
+    </tr>
+    <tr style="height: 10px;">
+        <th style="width:19%;  font-size: 12px; text-align:left; padding-left:15px; padding-top: 0px; padding-bottom: -5px;" ><b>E&nbsp; D&nbsp;  L&nbsp;  I Wages :</b></th>
+        <th style="width:13%;  font-size: 12px; text-align:right;  padding-top: 0px; "><b><?php echo number_format(round($edli), 2); ?></b></th>
+        <th style="width:18%;text-align: center; text-align:right; padding-top: 0px;"><b>Account No: 21</b></th>
+        <th style="width:33%; text-align: center; font-size: 12px;padding-left: 2px; text-align:left; padding-top: 0px;padding-left:7px;"><b>E D L I WAGES * 0.50000%</b></th>
+        <th style="width:2%; text-align: center; font-size: 12px; padding-top: 0px; padding-left:0px;"><b>=</b></th>
+        <?php 
+        if(($edli *0.5/100) != 0){?>
+            <th style="width:14%; text-align: center; font-size: 12px; text-align:right; padding-right:0px; padding-top: 0px;padding-right:5px;"><b><?php echo number_format(round($edli *0.5/100), 2 );?></b></th>
+       <?php }else{ 
+        ?>
+            <th style="width:14%; text-align: center; font-size: 12px; text-align:right; padding-right:0px; padding-top: 0px;padding-right:5px;"><b><?php echo '';?></b></th>
+        <?php } ?>
+    </tr>
+    <tr style="height: 10px;">
+        <th style="width:19%; text-align: center; font-size: 12px; text-align:left;border-bottom:.5px solid black; padding-left:15px; padding-top: px;padding-bottom:-5px;" ><b>Pension Wages :</b></th>
+        <th style="width:13%;  font-size: 12px;border-bottom:.5px solid black;text-align:right; padding-top: 0px;padding-bottom:10px; "><b><?php echo number_format(round($pensiontotal), 2);?></b></th>
+        <th style="width:18%;text-align: center; text-align:right;border-bottom:.5px solid black; padding-top: 0px;padding-bottom:10px;"><b>Account No: 22</b></th>
+        <th style="width:33%; text-align: center; font-size: 12px;padding-left: 2px; text-align:left;border-bottom:.5px solid black; padding-top: 0px;padding-bottom:10px;padding-left:7px;"><b>E D L I WAGES * 0.00000%</b></th>
+        <th style="width:2%; text-align: center; font-size: 12px; border-bottom:.5px solid black; padding-top: 0px;padding-bottom:10px; padding-left:0px;"><b>=</b></th>
+        <th style="width:14%; text-align: center; font-size: 12px; text-align:right;border-bottom:.5px solid black; padding-right:0px; padding-top: 0px;padding-bottom:10px;"><b></b></th>
+    </tr>
+
+        <tr>
+        <th colspan="5" style="text-align: center; border-bottom: .5px solid black; border-top: .5px solid black;   padding: 4px 90px 4px 130px; font-size: 13px;"><b>T&nbsp;O&nbsp;T&nbsp;A&nbsp;L</b></th>
+            <?php
+            $sum_total = round($column5 + $column6 + ($column4 * .005) + $column7 + ($edli *0.5/100));
+            if($sum_total != 0 ){
+
+            }else{
+                $sum_total = '';
+            }
+            ?>
+             <?php setlocale(LC_MONETARY, 'en_IN');
+                        $saltot1 = money_format('%!i', ($sum_total));?>
+
+            <th style=" border-bottom:.5px solid black;  border-top:.5px solid black; text-align: right;padding-right:5px;padding: 4px 5px; padding-top: -2px; padding-right:5px; "><b><?php echo $saltot1;?></b></th>
+        </tr>
+    </tbody>
+</table>
+
+
+<p style="text-align:left;font-size: 12px; padding-left:5px;"><b>Total No. of Employees in the Month:&nbsp;<?php echo isset($empcount)? $empcount:'';?></b></p>
+<p style="text-align:left;font-size: 12px; padding-left:5px; margin-top:-10px;"><b>No. of Excluded Employees:&nbsp;<?php echo isset($included_empcount)?($empcount - $included_empcount):'';?></b></p>
+<p style="text-align:left;font-size: 12px; padding-left:5px; margin-top:-10px;"><b>Gross Wages of Excluded Employees:&nbsp;<?php echo isset($exc_gross) && $exc_gross != 0 ? number_format($exc_gross, 2) : '0.00' ?></b></p>
+        <?php }else{?>
+            <p style="text-align:center;font-size: 14px; padding-left:12px;">No data available under the selected criteria</p>
+            <?php }?>
+</page>
+       
+       <?php }
+     ?>
+
+<?php  ?>

@@ -1,0 +1,135 @@
+<!-- <div class="col-md-12">
+    <div class="col-md-7"> -->
+
+<?php
+        $i = 1;
+        $array_data = array();
+        foreach ($arr_salary_for_template as $val) {
+                                    //$dir = getcwd();
+            $empPF = abs($val['epf']);
+            $finaPF = round(($empPF * 100) / 12);
+            $finaPF1 = round(($empPF * 8.33) / 100);
+            $LOP = round($val['lop']);
+            $wwf = abs($val['wwf']);
+            $gross = abs($val['gros']);
+            $empESI = abs($val['esi']);
+            $finaESI = round(($empESI * 100) / 1.75);
+
+            $classification = isset($val['emp_details']['classification'])?$val['emp_details']['classification']:'';
+            $gender = ($classification == 'male') ? 'M' : (($classification == 'female')? 'F':(($classification == 'transgender')? 'T':''));
+
+            $guardian = isset($val['emp_details']['relation_guardian'])?$val['emp_details']['relation_guardian']:'';
+            $relationship = ($guardian == 'Father') ? 'F' : (($guardian == 'Husband')? 'H':'');
+
+            if($val['qualification'] == "ILLITERATE"){
+                $qualification = 'I';
+            }else if($val['qualification'] == "LITERATE"){
+                $qualification = 'L';
+            }else if($val['qualification'] == "NON-MATRIC"){
+                $qualification = 'N';
+            }else if($val['qualification'] == "MATRIC"){
+                $qualification = 'M';
+            }else if($val['qualification'] == "SENIOR-SECONDARY"){
+                $qualification = 'S';
+            }else if($val['qualification'] == "GRADUATE"){
+                $qualification = 'G';
+            }else if($val['qualification'] == "POST-GRADUATE"){
+                $qualification = 'P';
+            }else if($val['qualification'] == "DOCTORATE"){
+                $qualification = 'D';
+            }else if($val['qualification'] == "TECHNICAL(PROFESSIONAL)"){
+                $qualification = 'T';
+            }else{
+                $qualification = '';
+            }
+
+            $maritual = isset($val['emp_details']['maritual_status'])?$val['emp_details']['maritual_status']:'';
+            if($maritual == "Married" || $maritual == "married"){
+                $maritual_status = 'M';
+            }else if($maritual == "Un-Married" || $maritual == "single"){
+                $maritual_status = 'U';
+            }else if($maritual == "Widow/Widower"){
+                $maritual_status = 'W';
+            }else if($maritual == "Divorcee"){
+                $maritual_status = 'D';
+            }else{
+                $maritual_status = '';
+            }
+
+            $passport = isset($val['passport']) ? $val['passport'] : array();
+            if(count($passport) > 0){
+                $pass_num = $passport[0]['emp_passport_visa']['document_number'];
+                $pass_valid_from = $passport[0]['emp_passport_visa']['valid_from'];
+                $pass_valid_till = $passport[0]['emp_passport_visa']['valid_till'];
+            }
+            $doj = isset($val['data']['0']['employee_info']['joining_date']) ? date('d/m/Y',strtotime($val['data']['0']['employee_info']['joining_date'])) : '';
+
+            if($val['UAN']!= ''){
+                $array_data[] = array(
+                    'UAN' => $val['UAN'],
+
+                    'PREVIOUSID' => 'PREVIOUS MEMBER ID',// PREVIOUS MEMBER ID
+
+                    'EMPNAME' => isset($val['data']['0']['employee_info']['EmpName'])?$val['data']['0']['employee_info']['EmpName']:'',
+                    'DOB' => ($val['emp_details']['date_of_birth'])? date('d/m/Y',strtotime($val['emp_details']['date_of_birth'])) : '',
+                    'DOJ' => $doj,
+                    'GENDER'=> $gender,
+                    'GUARDIAN'=>isset($val['emp_details']['guradian'])?$val['emp_details']['guradian']:'',
+                    'RELATIONSHIP'=> $relationship,
+                    'MOBILE' => isset($val['emp_details']['mobile_no'])?$val['emp_details']['mobile_no']:'',
+                    'EMAIL' => isset($val['emp_details']['email'])?$val['emp_details']['email']:'',
+                    
+                    'NATIONALITY' => 'NATIONALITY',//NATIONALITY
+
+                    'EPF' => $finaPF,// FIRST EPF
+                    'QUALIFICATION' => $qualification,
+                    'MARITUALSTATUS' => $maritual_status,
+
+                    'INTERNATIONALWORKER'=>'INTERNATIONALWORKER',//INTERNATIONAL WORKER
+                    'COUNTRYOFORIGIN'=>'COUNTRYOFORIGIN',//COUNTRY OF ORIGIN
+
+                    'PASSPORTNUM' => ($pass_num)? $pass_num : '',
+                    'PASSVALIDFROM' => $pass_valid_from ? date('d/m/Y',strtotime($pass_valid_from)) : '',
+                    'PASSVALIDTILL' => $pass_valid_till ? date('d/m/Y',strtotime($pass_valid_till)) : '',
+
+                    'PHYSICALHANDICAP'=>'PHYSICALHANDICAP',//PHYSICAL HANDICAP
+                    'LOCOMOTIVE'=>'LOCOMOTIVE',//LOCOMOTIVE
+                    'HEARING'=>'HEARING',//HEARING
+                    'VISUAL'=>'VISUAL',//VISUAL
+
+                    'BANKACCNO' => isset($val['emp_details']['account_no'])?$val['emp_details']['account_no']:'',
+                    'IFSC' => isset($val['emp_details']['ifsc_code'])?$val['emp_details']['ifsc_code']:'',
+                    'NAMEASPERBANKDETAILS'=>'NAMEASPERBANKDETAILS',//NAME AS PER BANK DETAILS
+
+                    'PANNO' => isset($val['emp_details']['pan_no'])?$val['emp_details']['pan_no']:'',
+                    'NAMEASONPAN'=>'NAMEASONPAN',//NAME AS ON PAN
+
+                    'AADHAARNO' => isset($val['emp_details']['id_card'])?$val['emp_details']['id_card']:'',
+                    'NAMEASONAADHAAR'=>'NAMEASONAADHAAR',//NAME AS ON AADHAAR
+                );
+            }
+            
+        } 
+
+        // echo "<pre>";
+        // print_r($array_data);
+        // exit();
+        
+        $file_name = 'epsupload.txt';
+        $handle = fopen($file_name, 'w') or die('Cannot open file:  '.$file_name);
+        $data = 'This is the data';
+        // fwrite($handle, $data);
+        // file_put_contents($file_name, $data);
+        foreach($array_data as $data){
+            file_put_contents($file_name, $data['UAN'].'#~#'.$data['PREVIOUSID'].'#~#'.$data['EMPNAME'].'#~#'.$data['DOB'].'#~#'.$data['DOJ'].'#~#'.$data['GENDER'].'#~#'.$data['GUARDIAN'].'#~#'.$data['RELATIONSHIP'].'#~#'.$data['MOBILE'].'#~#'.$data['EMAIL'].'#~#'.$data['NATIONALITY'].'#~#'.$data['EPF'].'#~#'.$data['QUALIFICATION'].'#~#'.$data['MARITUALSTATUS'].'#~#'.$data['INTERNATIONALWORKER'].'#~#'.$data['COUNTRYOFORIGIN'].'#~#'.$data['PASSPORTNUM'].'#~#'.$data['PASSVALIDFROM'].'#~#'.$data['PASSVALIDTILL'].'#~#'.$data['PHYSICALHANDICAP'].'#~#'.$data['LOCOMOTIVE'].'#~#'.$data['HEARING'].'#~#'.$data['VISUAL'].'#~#'.$data['BANKACCNO'].'#~#'.$data['IFSC'].'#~#'.$data['NAMEASPERBANKDETAILS'].'#~#'.$data['PANNO'].'#~#'.$data['NAMEASONPAN'].'#~#'.$data['AADHAARNO'].'#~#'.$data['NAMEASONAADHAAR']."\r\n", FILE_APPEND);
+        }
+        
+        ?>
+<!-- </div>
+</div> -->
+<div class="col-md-12">
+    <div class="col-md-7">
+        <a href="<?php echo $this->webroot; ?>epsupload.txt" download class="btn btn-primary"><i
+                class="icon-file"></i>Click to Download File </a>
+    </div>
+</div>

@@ -1,0 +1,376 @@
+<style>
+    .form-horizontal .control-label {
+        text-align: left;
+        /*padding-left: 76px;*/
+    }
+</style>
+<div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header" style="background: #00659f;color: white">
+            <h4 class="modal-title"> Employee Separation</h4>
+        </div>
+        <div class="modal-body">
+            <!-- Form starts -->
+
+            <form autocomplete="off" class="form-horizontal" id="form-user-master" action="<?php echo $this->webroot; ?>EmployeeResignation/Terminate" method="POST">
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="out_time" class="col-sm-5 control-label">Select Employee<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-sm-6">
+                                <select class="form-control js-example-basic-single new-settled" name="emp_fkey" id="emp_fkey" style="width: 100%">
+                                    <?php if (!empty($details)) { ?>
+                                        <option value="<?php echo $details[0]['EmployeeInfo']['emp_pkey']; ?>"><?php echo $details['0']['EmployeeInfo']['EmpName']; ?></option>
+                                    <?php } else { ?>
+                                        <option value="">[select]</option>
+                                        <?php foreach ($employee as $emp) { ?>
+                                            <option value="<?php echo $emp['EmployeeDetails']['emp_pkey']; ?>"><?php echo $emp['EmployeeDetails']['first_name'] . ' ' . $emp['EmployeeDetails']['last_name'] . ' - ' . $emp['EmployeeProffessional']['emp_company_id']; ?></option>
+                                    <?php }
+                                    } ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-sm-5 control-label">Reason For Leaving<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-6">
+                                <select class="form-control js-example-basic-single" style="width: 100%" name="Reason" required="required" id="Reason">
+                                    <option value="">Select </option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Resignation') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Resignation">Resignation</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Absconding') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Absconding">Absconding</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Dissmissed') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Dissmissed">Dismissed</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Retirement') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Retirement">Retirement</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Retrenchment') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Retrenchment">Retrenchment</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Permanent Disabilities') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Permanent Disabilities">Permanent Disabilities</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'End of Contract') {
+                                                echo 'selected="selected"';
+                                            } ?> value="End of Contract">End of Contract</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Death') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Death ">Death Away From Service</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Death In Service') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Death In Service">Death In Service</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Personal') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Personal">Personal</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Relocation') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Relocation">Relocation</option>
+                                    <!-- <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Better Opportunity') {
+                                                        echo 'selected="selected"';
+                                                    } ?> value="Better Opportunity">Better Opportunity</option> -->
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Cessation (Short Service) - Any Other') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Cessation (Short Service) - Any Other">Cessation (Short Service) - Any Other</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Cessation (Short Service) - Other Cause') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Cessation (Short Service) - Other Cause">Cessation (Short Service) - Other Cause</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Cessation (Short Service) - The Contraction') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Cessation (Short Service) - The Contraction">Cessation (Short Service) - The Contraction</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Cessation (Short Service) - The Employee Ill') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Cessation (Short Service) - The Employee Ill">Cessation (Short Service) - The Employee Ill</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Supernnuation') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Supernnuation">Superannuation</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Left Service') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Left Service">Left Service</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Termination') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Termination">Termination</option>
+                                    <option <?php if (isset($details['0']['Termination']['Reason']) && $details['0']['Termination']['Reason'] == 'Other') {
+                                                echo 'selected="selected"';
+                                            } ?> value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-sm-5 control-label">Resignation Submitted on<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-6">
+                                <!-- Edited by Akshay on 18-3-2024 -->
+                                <input autocomplete="off" onchange="asper_notice();" value="<?php echo isset($details[0]['Termination']['submitted_date']) ? date('d-m-Y', strtotime($details[0]['Termination']['submitted_date'])) : ''; ?>" required="required" type="text" name="date_submitted" id="submitted_dayte" class="ClrElements form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-sm-5 control-label">Last Applied working date<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-6">
+                                <!-- Edited by Akshay on 18-3-2024 -->
+                                <input autocomplete="off" type="hidden" value="<?php echo isset($details[0]['Termination']['terminate_pkey']) ? $details[0]['Termination']['terminate_pkey'] : ''; ?>" name="terminate_pkey" id="terminate_pkey">
+                                <input required="required" type="text" value="<?php echo isset($details[0]['Termination']['last_applied_date']) ? date('d-m-Y', strtotime($details[0]['Termination']['last_applied_date'])) : ''; ?>" name="applied_date" id="applied_date" class="form-control ClrElements applied_date">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-sm-5 control-label">Notice Period<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-6">
+                                <?php $notice = isset($details[0]['Termination']['notice_period']) ? $details[0]['Termination']['notice_period'] : '';
+
+                                if ($notice == '0') {
+                                    $notice = $employee[0]['EmployeeProffessional']['notice_days'];
+                                } ?>
+                                <input type="number" name="notice_period" id="notice_period" readonly="true" value="<?php echo $notice; ?>" class="form-control ClrElements">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-sm-5 control-label">Last working date <br> (asper notice days)<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-6">
+                                <!-- Edited by Akshay on 18-3-2024 -->
+                                <input autocomplete="off" type="text" name="lat_workingday" id="lat_workingday" required="required" value="<?php echo isset($details[0]['Termination']['last_working_date']) ? date('d-m-Y', strtotime($details[0]['Termination']['last_working_date'])) : ''; ?>" readonly="true" class="form-control ClrElements">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-sm-5 control-label">Last Approved working date<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-6">
+                                <!-- Edited by Akshay on 18-3-2024 -->
+                                <input autocomplete="off" type="text" name="apprved" id="apprved" class="form-control ClrElements apprved" value="<?php echo isset($details[0]['Termination']['act_last_working_day']) ? date('d-m-Y', strtotime($details[0]['Termination']['act_last_working_day'])) : ''; ?>" required="required">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-sm-5 control-label">Remarks<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-6">
+                                <textarea name="Remarks" id="Remarks" class="form-control ClrElements" required="required"><?php echo isset($details[0]['Termination']['remarks']) ? $details[0]['Termination']['remarks'] : ''; ?></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary strict-field">Submit Termination</button>
+                </div>
+
+
+            </form>
+            <!-- Tax Head Detail Form -->
+
+
+
+
+
+            <!-- form ends-->
+        </div>
+
+    </div>
+
+</div>
+<script type="text/javascript">
+    $.validate({
+        form: '#form-user-master'
+    });
+    var options = {
+        success: function(resp) {
+            $('#modalForm').modal('hide');
+            $('#emptable').datagrid('reload');
+
+            $.notify($.parseJSON(resp).msg, {
+                type: 'success',
+                allow_dismiss: false,
+                autoHideDelay: 50000,
+            });
+            $('.btn-success').attr("disabled", false);
+        } // post-submit callback
+    };
+
+
+    function setdate(s) {
+        $('.applied_date').datepicker('setStartDate', s);
+        //setenddate();
+    }
+    $('#form-user-master').on('submit', function(event) {
+        if ($('#emp_fkey').val() == '') {
+            alert("please select an employee ");
+            return false;
+        }
+        //Edited by Akshay on 19-7-2024
+        var resignationDateStr = $("#submitted_dayte").val();
+        var appliedDateStr = $("#applied_date").val();
+        var approvedDateStr = $("#apprved").val();
+
+        function parseDate(dateStr) {
+            var parts = dateStr.split('-');
+            return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10)); // year, month (0-based), day
+        }
+
+        var resignationDate = parseDate(resignationDateStr);
+        var appliedDate = parseDate(appliedDateStr);
+        var approvedDate = parseDate(approvedDateStr);
+        console.log('resignationDate', resignationDate);
+        console.log('appliedDate', appliedDate);
+        console.log('approvedDate', approvedDate);
+        if (appliedDate >= resignationDate) {
+            console.log("Last Applied working date is after Resignation Submitted date.");
+        } else {
+            $.notify('Last Applied working date is before Resignation Submitted date.', {
+                type: 'danger',
+                allow_dismiss: false,
+                className: 'notify-container',
+                z_index: 9999,
+                placement: {
+                    from: "bottom", // Options are "top", "bottom", "left", "right"
+                    align: "right" // Options are "left", "center", "right"
+                },
+                offset: {
+                    y: 150, // Vertical offset from the top (in pixels)
+                    x: 20
+                }
+            });
+            return false;
+        }
+
+        if (approvedDate >= resignationDate) {
+            console.log("Last Approved working date is after Resignation Submitted date.");
+        } else {
+            $.notify('Last Approved working date is before Resignation Submitted date.', {
+                type: 'danger',
+                allow_dismiss: false,
+                className: 'notify-container',
+                z_index: 9999,
+                placement: {
+                    from: "bottom", // Options are "top", "bottom", "left", "right"
+                    align: "right" // Options are "left", "center", "right"
+                },
+                offset: {
+                    y: 150, // Vertical offset from the top (in pixels)
+                    x: 20
+                }
+            });
+            return false;
+        }
+        //End
+        event.preventDefault();
+        if (confirm(" Do You Want  To Save The Form  ")) {
+            $('.btn-success').attr("disabled", true);
+            $('#form-user-master').ajaxSubmit(options)
+        }
+    });
+
+    $(document).ready(function() {
+
+        $(".js-example-basic-single").select2();
+        asper_notice();
+
+        $('#submitted_dayte').datepicker({
+            format: 'dd-mm-yyyy', //Edited by Akshay on 18-3-2024
+            onSelect: function(selected) {
+                var esdt = new Date(selected);
+                var checkdate = $('.applied_date').val();
+
+            }
+        })
+        $('.applied_date').datepicker({
+            format: 'dd-mm-yyyy', //Edited by Akshay on 18-3-2024
+            onSelect: function(selected) {
+                var ecdt = new Date(selected);
+                var checkdate = $('#submitted_dayte').val();
+                alert(checkdate);
+            }
+        })
+        $('.new-settled').change(function() {
+
+            var emp_pkey = $('.new-settled').val();
+            $.ajax({
+                url: livesite + "EmployeeResignation/getperiod/" + emp_pkey,
+                type: "POST",
+                success: function(resp) {
+                    var response = JSON.parse(resp);
+
+                    if (response.success == 1) {
+                        $('#notice_period').val(response.days);
+                        asper_notice();
+                        $('#submitted_dayte').datepicker('setStartDate', response.dates);
+                    } else {
+                        $('#notice_period').val('0');
+                        asper_notice();
+                    }
+                }
+            });
+
+        });
+        $('.apprved').datepicker({
+            format: 'dd-mm-yyyy',
+            onSelect: function(selected) {
+                var ecdt = new Date(selected);
+
+            }
+        })
+    });
+
+    function asper_notice() {
+        //Edited by Askhay on 20-3-2024
+        var dateString = $('#submitted_dayte').val();
+        var parts = dateString.split('-');
+
+        // Parse the day, month, and year parts in "dd-mm-yyyy" format
+        var day = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10) - 1; // Adjust month to zero-based indexing
+        var year = parseInt(parts[2], 10);
+
+        // Create the Date object
+        var applied_date = new Date(year, month, day);
+        // var applied_date = new Date($('#submitted_dayte').val());
+        var period = parseInt($('#notice_period').val() - 1);
+        if (period && period >= 0) {
+            period = period;
+        } else {
+            period = 0;
+        }
+        applied_date.setDate(applied_date.getDate() + period);
+        var dd = applied_date.getDate();
+        var mm = applied_date.getMonth() + 1; //January is 0!
+
+        var yyyy = applied_date.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        if (isNaN(yyyy) == false) {
+
+            // var today = yyyy+'-'+mm+'-'+dd;
+            var today = dd + '-' + mm + '-' + yyyy; //Edited by Akshay on 18-3-2024
+            $('#lat_workingday').val(today);
+
+        }
+
+    }
+</script>

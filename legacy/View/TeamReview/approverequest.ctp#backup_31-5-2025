@@ -1,0 +1,570 @@
+<style>
+    /* General form styling */
+
+    form {
+        padding: 0 40px 40px 40px;
+    }
+
+    /* Heading styles */
+    h3 {
+        font-size: 18px;
+        color: #333;
+        margin-bottom: 15px;
+        margin-top: 0px;
+    }
+
+    input {
+        font-weight: normal;
+    }
+
+    /* Textarea styling */
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        resize: vertical;
+        font-size: 14px;
+        line-height: 1.5;
+        font-weight: normal;
+    }
+
+    .self_review_details {
+        padding: 40px 40px 0 40px;
+    }
+</style>
+
+
+<div>
+    <h3 style="margin:0;padding:20px;background-color:#00659F;color:white"><b>Submitted Review</b></h3>
+</div>
+<div class="self_review_details">
+    <table cellpadding="10" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+
+        <?php foreach ($employee_details as $value) { ?>
+            <tr>
+                <td style="padding:8px;"><b>Employee ID </b></td>
+                <td>:</td>
+                <!-- edited by athira on 06-05-2025 -->
+                <td style="padding:8px;"><b><?php echo $value['p']['employee_id'] ?></b> </td>
+                <!-- end -->
+            </tr>
+            <tr>
+                <td style="padding:8px;"><b>Employee Name </b></td>
+                <td>:</td>
+                <td style="padding:8px;"><b><?php echo $value[0]['employee_name'] ?> </b></td>
+            </tr>
+            <tr>
+                <td style="padding:8px;"><b>Designation </b> </td>
+                <td>:</td>
+                <td style="padding:8px;"><b><?php echo $value['p']['designation'] ?></b> </td>
+            </tr>
+
+        <?php } ?>
+        <?php foreach ($self_review_details as $value) { ?>
+            <tr>
+                <td style="padding:8px;">Brief description of duties</td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <textarea rows="5" style="width: 100%;resize:none;background-color:aliceblue;" readonly disabled><?php echo htmlspecialchars($value['self_review_details']['duty_desc']); ?></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:8px;">Brief resume of the work done</td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <textarea rows="5" style="width: 100%;resize:none;background-color:aliceblue;" readonly disabled><?php echo htmlspecialchars($value['self_review_details']['work_done_desc']); ?></textarea>
+                </td>
+            </tr>
+        <?php } ?>
+    </table>
+</div>
+
+<form class="form-horizontal" method="post" action="<?php echo $this->webroot; ?>TeamReview/saveRequest" id="assessmentform">
+    <div>
+        <h3 style="margin-top:10px;"><b> ASSESSMENT <b></h3>
+        <h5><b><i>(Please assess the employee objectively based on over all performance during the period. Each attributes carry 5 Marks)</i></b></h5>
+
+        <!-- edited by athira on 28-05-2025 -->
+        <!-- Disagreement Textarea -->
+        <div style="margin-top:30px;">
+            <h5>1. Does the Reporting Officer agree with the statement made in Part II ? If not, the extent of disagreement and reasons thereof. </h5>
+            <textarea name="agreement_with_part2" rows="5" required style="resize:none;"><?php echo trim($reportingSummary['agreement_comment']); ?></textarea>
+        </div>
+        <!-- end -->
+        <div style="margin-top:5px;">
+            <h5>2. Attributes assessment</h5>
+        </div>
+    </div>
+
+    <input type="hidden" name="emp_fkey" value="<?php echo $selected_emp_id; ?>">
+    <div style="margin-top:20px;">
+        <?php $i = 1; // Initialize counter outside loop 
+        ?>
+        <table border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+            <tr>
+                <th style="padding:8px;text-align:center;">Attributes</th>
+                <!-- <th style="padding:8px;text-align:center;">Marks (Out of 5)</th> -->
+                <?php
+                if ($role == 'reporting_officer') { ?>
+                    <th style="padding:8px;text-align:center;width:22%;">Reporting Officer</th>
+                <?php  } ?>
+                <?php
+                if ($role == 'reviewing_officer') { ?>
+                    <th style="padding:8px;text-align:center;width:22%;">Reporting Officer</th>
+                    <th style="padding:8px;text-align:center;">Reviewing Officer</th>
+
+                <?php  } ?>
+            </tr>
+            <?php foreach ($attributes as $key => $attr) {
+                $attributeKey = $attr['assessment_attributes_executive']['attributes_exec_pkey'];
+                $attributeLabel = $attr['assessment_attributes_executive']['attributes'];
+                $reportingMark = '';
+                $reviewingMark = '';
+
+                // Check if this attribute has existing marks in $attributeMarks
+                foreach ($attributeMarks as $am) {
+                    if ($am['a']['attributes_exec_pkey'] == $attributeKey) {
+                        if (isset($am['d']['reporting_officer_marks'])) {
+                            $reportingMark = $am['d']['reporting_officer_marks'];
+                        }
+                        if (isset($am['d']['reviewing_officer_marks'])) {
+                            $reviewingMark = $am['d']['reviewing_officer_marks'];
+                        }
+                        break;
+                    }
+                }
+            ?>
+                <tr>
+                    <td style="padding:8px;font-weight:normal;">
+                        <?php echo $i . ". " . $attributeLabel; ?>
+                    </td>
+
+                    <?php if ($role == 'reporting_officer') { ?>
+                        <td style="padding:8px;">
+                            <input type="hidden" name="attributes[<?php echo $key; ?>][attribute_key]" value="<?php echo $attributeKey; ?>">
+                            <input type="number" step="any" required name="attributes[<?php echo $key; ?>][mark]" placeholder="Enter marks" value="<?php echo $reportingMark; ?>">
+                        </td>
+                    <?php } ?>
+
+                    <?php if ($role == 'reviewing_officer') { ?>
+                        <td style="padding:8px;">
+                            <?php echo $reportingMark; ?>
+                        </td>
+                        <td style="padding:8px;">
+                            <input type="hidden" name="attributes[<?php echo $key; ?>][attribute_key]" value="<?php echo $attributeKey; ?>">
+                            <input type="number" step="any" required name="attributes[<?php echo $key; ?>][mark]" placeholder="Enter marks" value="<?php echo $reviewingMark; ?>">
+                        </td>
+                    <?php } ?>
+                </tr>
+            <?php $i++;
+            } ?>
+
+            <tr>
+                <td style="padding:8px;text-align:center;"><b>Total Marks</b></td>
+                <?php if ($role == 'reporting_officer') { ?>
+                    <td style="padding:8px;" id="totalMarksRO"><?php echo isset($reportingSummary['total_marks']) ? $reportingSummary['total_marks'] : ' '; ?></td>
+                <?php } ?>
+                <?php if ($role == 'reviewing_officer') { ?>
+                    <td style="padding:8px;" id="">
+                        <?php echo isset($reportingSummary['total_marks']) ? $reportingSummary['total_marks'] : ' '; ?>
+                    </td>
+                    <td style="padding:8px;" id="totalMarksRO"><?php echo isset($reviewingSummary['total_marks']) ? $reviewingSummary['total_marks'] : ' '; ?></td>
+                <?php } ?>
+                <!-- <input type="hidden" name="total_marks" id="total_marks_input" /> -->
+                <input type="hidden" name="total_marks" id="total_marks_input" value="<?php
+                                                                                        echo ($role == 'reviewing_officer')
+                                                                                            ? (isset($reviewingSummary['total_marks']) ? $reviewingSummary['total_marks'] : '')
+                                                                                            : (isset($reportingSummary['total_marks']) ? $reportingSummary['total_marks'] : '');
+                                                                                        ?>" />
+            </tr>
+            <tr>
+                <td style="padding:8px;text-align:center;"><b>Grade</b></td>
+                <?php if ($role == "reporting_officer") { ?>
+                    <td style="padding:8px;" id="gradeOutput">
+                        <?php echo isset($reportingSummary['grade']) ? $reportingSummary['grade'] : ' '; ?>
+                    </td>
+                <?php } ?>
+                <?php if ($role == "reviewing_officer") { ?>
+                    <td style="padding:8px;" id="">
+                        <?php echo isset($reportingSummary['grade']) ? $reportingSummary['grade'] : ' '; ?>
+                    </td>
+                    <td style="padding:8px;" id="gradeOutput"><?php echo isset($reviewingSummary['grade']) ? $reviewingSummary['grade'] : ' '; ?></td>
+                <?php } ?>
+
+                <!-- <input type="hidden" name="grade" id="grade_input" /> -->
+
+
+                <input type="hidden" name="grade" id="grade_input" value="<?php
+                                                                            echo ($role == 'reviewing_officer')
+                                                                                ? (isset($reviewingSummary['grade']) ? $reviewingSummary['grade'] : '')
+                                                                                : (isset($reportingSummary['grade']) ? $reportingSummary['grade'] : '');
+                                                                            ?>" />
+
+            </tr>
+
+
+        </table>
+        <h5 style="margin:15px 0;"><b>Grading</b></h5>
+        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+            <tr>
+                <th style="padding:8px;">Total Marks</th>
+                <th style="padding:8px;">Grade</th>
+            </tr>
+            <tr>
+                <td style="padding:8px;">Above 90</td>
+                <td style="color: green;padding:8px;"><b>Outstanding</b></td>
+            </tr>
+            <tr>
+                <td style="padding:8px;">Above 80 upto 90</td>
+                <td style="color: green;padding:8px;"><b>Very Good</b></td>
+            </tr>
+            <tr>
+                <td style="padding:8px;">Above 60 upto 80</td>
+                <td style="color: orange;padding:8px;"><b>Good</b></td>
+            </tr>
+            <tr>
+                <td style="padding:8px;">Above 40 upto 60</td>
+                <td style="color: orange;padding:8px;"><b>Average</b></td>
+            </tr>
+            <tr>
+                <td style="padding:8px;">Upto 40</td>
+                <td style="color: red;padding:8px;"><b>Below Average</b></td>
+            </tr>
+        </table>
+
+        <div style="margin:15px 0;">
+            <p>(An employee should not be graded outstanding unless exceptional qualities and performance has been noticed. Grounds for giving oustanding/below average grading should be clearly brought out).</p>
+        </div>
+
+        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+
+            <tr>
+                <th style="padding:8px;"></th>
+                <?php if ($role == 'reporting_officer') { ?>
+                    <th style="padding:8px;text-align:center;">Reporting Officer</th>
+                <?php } ?>
+                <?php if ($role == 'reviewing_officer') { ?>
+                    <th style="padding:8px;text-align:center;">Reporting Officer</th>
+                    <th style="padding:8px;text-align:center;">Reviewing Officer</th>
+                <?php } ?>
+            </tr>
+            <tr>
+                <td style="padding:8px;font-weight:normal;width:25%;">Training Need Assessment</td>
+                <?php if ($role == 'reporting_officer') { ?>
+                    <td style="padding:8px;"><textarea name="training_need" required rows="5" style="resize:none;"><?php echo isset($reportingSummary['training_need']) ? $reportingSummary['training_need'] : ' '; ?></textarea></td>
+                <?php } ?>
+                <?php if ($role == 'reviewing_officer') { ?>
+                    <td style="padding:8px;"><textarea disabled rows="5" style="resize:none;border:none;background-color:white;"><?php echo isset($reportingSummary['training_need']) ? $reportingSummary['training_need'] : ' '; ?></textarea></td>
+                    <td style="padding:8px;"> <textarea name="training_need" required rows="5" style="resize:none;"><?php echo isset($reviewingSummary['training_need']) ? $reviewingSummary['training_need'] : ' '; ?></textarea></td>
+                <?php } ?>
+            </tr>
+            <tr>
+                <td style="padding:8px;font-weight:normal;">Comments & Recommendation based on overall Performance</td>
+                <?php if ($role == 'reporting_officer') { ?>
+                    <td style="padding:8px;"><textarea name="comments" required rows="5" style="resize:none;"><?php echo isset($reportingSummary['comments_recommendation']) ? $reportingSummary['comments_recommendation'] : ' '; ?></textarea></td>
+                <?php } ?>
+                <?php if ($role == 'reviewing_officer') { ?>
+                    <td style="padding:8px;"><textarea disabled rows="5" style="resize:none;border:none;background-color:white;"><?php echo isset($reportingSummary['comments_recommendation']) ? $reportingSummary['comments_recommendation'] : ' '; ?></textarea></td>
+                    <td style="padding:8px;"> <textarea name="comments" required rows="5" style="resize:none;"><?php echo isset($reviewingSummary['comments_recommendation']) ? $reviewingSummary['comments_recommendation'] : ' '; ?></textarea></td>
+                <?php } ?>
+            </tr>
+            <tr>
+                <td style="padding:8px;font-weight:normal;">Signature</td>
+                <?php if ($role == 'reporting_officer') { ?>
+                    <td style="padding:8px;">
+
+                    </td>
+                <?php } ?>
+                <?php if ($role == 'reviewing_officer') { ?>
+                    <td style="padding:8px;">
+
+                    </td>
+                    <td style="padding:8px;"> </td>
+                <?php } ?>
+            </tr>
+            <tr>
+                <td style="padding:8px;font-weight:normal;">Name</td>
+                <?php if ($role == 'reporting_officer') { ?>
+                    <td style="padding:8px;font-weight:normal;text-align:center;">
+                        <?php echo $reporting_data[0]['ei']['EmpName']; ?>
+                    </td>
+                <?php } ?>
+                <?php if ($role == 'reviewing_officer') { ?>
+                    <td style="padding:8px;font-weight:normal;text-align:center;">
+                        <?php echo $reporting_data[0]['ei']['EmpName']; ?>
+                    </td>
+                    <td style="padding:8px;font-weight:normal;text-align:center;">
+                        <?php echo $reviewing_data[0]['ei']['EmpName']; ?>
+                    </td>
+                <?php } ?>
+            </tr>
+            <tr>
+                <td style="padding:8px;font-weight:normal;">Designation</td>
+                <?php if ($role == 'reporting_officer') { ?>
+                    <td style="padding:8px;font-weight:normal;text-align:center;">
+                        <?php echo $reporting_data[0]['ei']['designation']; ?>
+                    </td>
+                <?php } ?>
+                <?php if ($role == 'reviewing_officer') { ?>
+                    <td style="padding:8px;font-weight:normal;text-align:center;">
+                        <?php echo $reporting_data[0]['ei']['designation']; ?>
+                    </td>
+                    <td style="padding:8px;font-weight:normal;text-align:center;">
+                        <?php echo $reviewing_data[0]['ei']['designation']; ?>
+                    </td>
+                <?php } ?>
+            </tr>
+            <tr>
+                <td style="padding:8px;font-weight:normal;">Date</td>
+                <?php if ($role == 'reporting_officer') { ?>
+                    <td style="padding:8px;font-weight:normal;">
+
+                    </td>
+                <?php } ?>
+                <?php if ($role == 'reviewing_officer') { ?>
+                    <td style="padding:8px;">
+
+                    </td>
+                    <td style="padding:8px;"> </td>
+                <?php } ?>
+            </tr>
+        </table>
+
+
+
+    </div>
+    <div style="display:flex;justify-content:end;align-items:center;margin-top:15px;">
+        <button type="button" class="btn btn-danger" style="margin-right:8px;" onclick='hideModal();'>Cancel</button>
+        <input type="hidden" name="action_type" id="action_type" value="approve" />
+
+        <input type="submit"
+            value="<?php echo ($role == 'reporting_officer') ? 'Authorize' : 'Approve'; ?>"
+            class="btn btn-success"
+            id="approveBtn" />
+        <div>
+
+
+
+</form>
+<button type="button" class="btn btn-primary" style="margin-left:8px;" onclick="saveDraft()">Save</button>
+<button type="button" class="btn btn-primary" style="margin-left:8px;" onclick="sendBack();">Send Back</button>
+<script>
+    function sendBack() {
+        var form = document.getElementById('assessmentform');
+
+        if (!(form instanceof HTMLFormElement)) {
+            $.notify("Form not found.", {
+                type: 'error',
+                allow_dismiss: false,
+            });
+            return;
+        }
+
+        var formData = new FormData(form);
+        formData.set('action_type', 'send_back');
+
+        fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                // Show success or error notification based on the response
+                $.notify(result.message, {
+                    type: result.status === 'success' ? 'success' : 'danger',
+                    allow_dismiss: false,
+                });
+
+                if (result.status === 'success') {
+                    // ✅ Close modal
+                    $('#largeModalForm').modal('hide');
+
+                    // ✅ Refresh datagrid (if the function exists)
+                    if (typeof reloadGrid === 'function') {
+                        $('#assessment').datagrid('reload');
+                    }
+                }
+            })
+            .catch(error => {
+                $.notify("Send Back failed. Check console for details.", {
+                    type: 'error',
+                    allow_dismiss: false,
+                });
+                console.error(error);
+            });
+    }
+
+    function saveDraft() {
+        var form = document.getElementById('assessmentform');
+
+        if (!(form instanceof HTMLFormElement)) {
+            $.notify("Form not found.", {
+                type: 'error',
+                allow_dismiss: false,
+            });
+            return;
+        }
+
+        var formData = new FormData(form);
+        formData.set('action_type', 'draft'); // Set draft action
+
+        fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                $.notify(result.message, {
+                    type: result.status === 'success' ? 'success' : 'danger',
+                    allow_dismiss: false,
+                });
+
+                if (result.status === 'success') {
+                    // ✅ Optional: Close modal
+                    $('#largeModalForm').modal('hide');
+
+                    // ✅ Optional: Refresh datagrid
+                    if (typeof reloadGrid === 'function') {
+                        $('#assessment').datagrid('reload');
+                    }
+                }
+            })
+            .catch(error => {
+                $.notify("Saving draft failed. Check console for details.", {
+                    type: 'error',
+                    allow_dismiss: false,
+                });
+                console.error(error);
+            });
+    }
+
+
+
+
+
+    jQuery(document).ready(function() {
+
+        $('#largeModalForm').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+
+        var actionType = $('#action_type').val();
+        document.querySelectorAll("input[type='number']").forEach(input => {
+            // Prevent invalid characters like '-'
+            input.addEventListener("keydown", function(e) {
+                if (e.key === '-' || e.key === 'e') {
+                    e.preventDefault();
+                    $.notify("Negative values not allowed", {
+                        type: "danger"
+                    });
+                }
+            });
+
+            // Validate on input
+            input.addEventListener("input", function() {
+                let value = this.value;
+
+                // Only validate if not empty
+                if (value !== '') {
+                    let numericValue = value;
+
+                    if (isNaN(numericValue) || numericValue < 0 || numericValue > 5) {
+                        $.notify("Please enter a value between 0 and 5.", {
+                            type: "danger",
+                            z_index: 9999
+                        });
+                        this.value = '';
+                        return;
+                    }
+                }
+
+                calculateTotalMarks();
+            });
+        });
+
+
+
+        // Function to calculate total marks and grade
+        function calculateTotalMarks() {
+            let totalMarksRO = 0;
+            document.querySelectorAll("input[type='number']").forEach(input => {
+                let value = input.value.trim();
+                let numericValue = Number(value);
+
+                if (!isNaN(numericValue) && numericValue >= 0 && numericValue <= 5) {
+                    totalMarksRO += numericValue;
+                }
+            });
+
+            // Update total marks in the display
+            document.getElementById("totalMarksRO").innerText = totalMarksRO;
+
+            // Calculate grade based on total marks
+            let gradeElement = document.getElementById("gradeOutput");
+            let grade = " ";
+            if (totalMarksRO > 90) {
+                grade = "Outstanding";
+                gradeElement.style.color = "green";
+            } else if (totalMarksRO > 80) {
+                grade = "Very Good";
+                gradeElement.style.color = "green";
+            } else if (totalMarksRO > 60) {
+                grade = "Good";
+                gradeElement.style.color = "orange";
+            } else if (totalMarksRO > 40) {
+                grade = "Average";
+                gradeElement.style.color = "orange";
+            } else {
+                grade = "Below Average";
+                gradeElement.style.color = "red";
+            }
+
+            // Update grade display
+            document.getElementById("gradeOutput").innerText = grade;
+
+            // Set hidden inputs for total marks and grade
+            $("input[name='total_marks']").val(totalMarksRO);
+            $("input[name='grade']").val(grade);
+        }
+
+
+        $("#assessmentform").on("submit", function(e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Collect form data
+            var formData = $(this).serialize();
+
+            // Send data via AJAX
+            $.ajax({
+                url: "<?php echo $this->webroot; ?>TeamReview/saveRequest", // The action URL
+                type: "POST", // Method type (POST)
+                data: formData, // The data to send
+                dataType: "json", // Expect JSON response
+                success: function(response) {
+                    if (response.status == 'success') {
+                        $.notify(response.message, {
+                            type: 'success',
+                            allow_dismiss: false,
+                        });
+                        $('#largeModalForm').modal('hide');
+                        $('#assessment').datagrid('reload');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $.notify("Error ocuured while submitting form", {
+                        type: 'danger',
+                        allow_dismiss: false,
+                    });
+                }
+            });
+        });
+    });
+
+    function hideModal() {
+        $('#largeModalForm').modal('hide');
+    }
+</script>

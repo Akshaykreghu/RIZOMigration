@@ -1,0 +1,160 @@
+<script type="text/javascript">
+function showassets()
+{
+    var emp_pkey = $('#pkey').val();
+ var url = livesite+'Asset/Allocatenew/'+emp_pkey;
+        
+        var container = $("#modalDetailForm #modaldetails-content")
+container.load(url, function() {
+            $("#modalDetailForm").modal('show');
+        });
+}
+
+ $(document).ready(function() {
+
+ var selected = [];
+         
+         $('#Assets tbody').on('click', 'tr', function () {
+//        var id = table1.row(this).data().allocate_pkey;
+//        var index = $.inArray(id, selected);
+//        //alert(index);
+//        if ( index === -1 ) {
+//            selected.push( id );
+//        } else {
+//            selected.splice( index, 1 );
+//        }
+//        //alert(selected.length);
+//        $(this).toggleClass('selected');
+//        
+//        
+        
+        
+        
+        
+        
+              
+ if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+            var id = null;
+        }
+        else {
+            table1.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            var id = table1.row(this).data().allocate_pkey;
+        var index = $.inArray(id, selected);
+        }
+        selected = id;
+        
+        
+        
+    } );
+    $('#edites').click( function () {
+        if(selected != '')
+            {
+     var url = livesite+'Asset/edit/'+selected;
+        
+        var container = $("#modalDetailForm #modaldetails-content")
+container.load(url, function() {
+            $("#modalDetailForm").modal('show');
+        });
+            }
+            else
+            {
+                alert("Please select a row first");
+            }
+    } );
+   
+
+   
+var emp_pkey = $('#pkey').val();
+ var table1 = $('#Assets').DataTable( {
+        "processing": true,
+        "serverSide": true,
+        "paging": false,
+             "deferRender": false,
+            "pageNumber":false,
+            "lengthChange": true,
+            "searching": false,
+            "ordering": false,
+            "singleSelect":true,
+            "info": false,
+            "autoWidth": true,
+            "rowCallback": function( row, data ) {
+            if ( $.inArray(data.allocate_pkey, selected) !== -1 ) {
+                $(row).addClass('selected');
+            }},
+        "ajax": {
+            "url": "Asset/listitems/"+emp_pkey,
+            "type": "POST"
+        },
+        "columns": [
+            { "data": "Type" },
+            { "data": "name" },
+            { "data": "model" },
+            { "data": "brand" },
+            { "data": "serial_no" },
+            { "data": "allocated_date" },
+            { "data": "retreived_date" },
+            { "data": "status" }
+        ]
+    } );
+    } );
+        
+   
+</script>
+<div class="modal-body">
+<!-- Form Name -->
+<legend>Allocate Asset</legend>
+<form class="form-horizontal" method="post" action="Asset/assetsave" id="">
+    <div class="modal-body">
+        <div class="form-group">
+                        <button type="button" onclick="showassets();" class="btn btn-primary" >Add New Asset to Employee</button>
+                        <button type="button" id="edites"  class="btn btn-primary">Edit</button>
+                        <input type="hidden" id="pkey" value="<?php echo $pkey ; ?>">
+                  
+                </div>
+        <div class="col-md-12">
+          <table class="table table-bordered display" id="Assets">
+                            <thead>
+                              <tr>
+                                
+                             <!--    <th>LEAVEPOLICY_GROUP_NAME</th> -->
+                                 
+                                 
+                                  <th>Asset Type</th>
+                                  <th>Asset Name</th>
+                                  
+                                <th>Model</th>
+                                <th>Brand</th>
+                                  <th>Serial No.</th>
+                                  
+                                <th>Allocated Date</th>
+                                  <th>Retreived Date</th>
+                                 <th>Status</th>
+                                  
+                                
+                                
+                              </tr>
+                            </thead>
+                           
+                            <tbody>
+                           
+                            </tbody>
+                            </table>
+        </div>
+        
+    </div>           
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" onclick="$('#modalDetailForm').modal('hide');">Cancel</button>
+        <button type="submit" id="btn-submit" class="btn btn-primary">Save</button>
+    </div>
+
+</form>
+</div>
+<div id="modalDetailForm1" class="modal fade" style="width: 1031px; text-align: center ; ">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="modaldetails-content1" style="width:800px;">
+              
+            </div>
+        </div>
+    </div>

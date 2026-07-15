@@ -1,0 +1,815 @@
+<style>
+    /* edited by athira on 10-04-2025 */
+    table {
+        width: 100%;
+        max-width: 1000px;
+        border-collapse: collapse;
+
+    }
+
+
+    td {
+        border: 1px solid black;
+        padding: 2px;
+        font-size: 13px;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+
+    th {
+        border: 1px solid black;
+        padding: 2px;
+        font-size: 14px;
+    }
+
+    img {
+        width: 100px;
+    }
+
+    p {
+        margin: 0;
+        padding: 0;
+    }
+
+
+    u {
+        font-weight: bold;
+    }
+
+    .hide-border {
+        border-bottom: none;
+    }
+
+    /* end */
+</style>
+<?php
+function generateAcronym($phrase)
+{
+    $words = explode(' ', $phrase);
+    $acronym = '';
+
+    foreach ($words as $word) {
+        $acronym .= strtoupper($word[0]);
+    }
+
+    return $acronym;
+}
+//edited by athira 09-04-2025
+function convertNumberToWords($number)
+{
+    $words = [
+        0 => '',
+        1 => 'One',
+        2 => 'Two',
+        3 => 'Three',
+        4 => 'Four',
+        5 => 'Five',
+        6 => 'Six',
+        7 => 'Seven',
+        8 => 'Eight',
+        9 => 'Nine',
+        10 => 'Ten',
+        11 => 'Eleven',
+        12 => 'Twelve',
+        13 => 'Thirteen',
+        14 => 'Fourteen',
+        15 => 'Fifteen',
+        16 => 'Sixteen',
+        17 => 'Seventeen',
+        18 => 'Eighteen',
+        19 => 'Nineteen',
+        20 => 'Twenty',
+        30 => 'Thirty',
+        40 => 'Forty',
+        50 => 'Fifty',
+        60 => 'Sixty',
+        70 => 'Seventy',
+        80 => 'Eighty',
+        90 => 'Ninety'
+    ];
+
+    $digits = ['', 'Hundred', 'Thousand', 'Lakh', 'Crore'];
+
+    if (!is_numeric($number)) {
+        return 'Invalid number';
+    }
+
+    $isNegative = $number < 0;
+    $number = abs((int)$number);
+
+    if ($number == 0) {
+        return 'Zero Only';
+    }
+
+    $result = '';
+    $place = 0;
+    $parts = [];
+
+    while ($number > 0) {
+        if ($place == 1) {
+            $divisor = 10;
+        } else {
+            $divisor = 100;
+        }
+
+        $num = $number % $divisor;
+        $number = (int)($number / $divisor);
+
+        if ($num) {
+            if ($num < 21) {
+                $str = $words[$num];
+            } else {
+                $tens = (int)($num / 10) * 10;
+                $unit = $num % 10;
+                $str = trim($words[$tens] . ' ' . $words[$unit]);
+            }
+
+            $parts[] = trim($str . ' ' . ($digits[$place]));
+        }
+        $place++;
+    }
+
+    $parts = array_reverse($parts);
+
+    if (count($parts) > 1) {
+        $last = array_pop($parts);
+        $wordsString = implode(' ', $parts) . ' and ' . $last;
+    } else {
+        $wordsString = $parts[0];
+    }
+
+    // Add "Negative" if the number is negative
+    if ($isNegative) {
+        $wordsString = 'Negative ' . $wordsString;
+    }
+
+    return trim($wordsString) . ' Only';
+}
+//end
+?>
+
+<page>
+    <!-- edited by athira on 09-04-2025 -->
+    <table align="center">
+        <thead>
+            <tr>
+                <th style="border:1px solid black;  vertical-align:middle;" colspan="10">
+                    <img src="<?php echo $logo; ?>" alt="Logo" />
+                    <p style="text-align:center;    position: absolute;
+            top:6%;
+    left: 30%;"><b><?php echo $business_name; ?></b></p>
+                </th>
+            </tr>
+        </thead>
+
+
+
+        <tr>
+            <td colspan="10" style='font-size:14px;border:1px solid black;text-align:center;'><u>FULL & FINAL SETTLEMENT STATEMENT</u></td>
+        </tr>
+
+        <tr>
+            <td colspan="10" style='font-size:14px;border:1px solid black;text-align:center;'><b>Service Particulars</b></td>
+        </tr>
+
+        <tr>
+            <td colspan="3" style="border-right:none;" class="hide-border">Name of the Employee</td>
+            <td class="hide-border" style="border-right:none;">:</td>
+            <td colspan="6" class="hide-border">
+                <?php if ($details['0']['EmployeeDetails']['classification'] == 'male') {
+                    $name = 'Shri. ';
+                } else {
+                    if ($details['0']['EmployeeDetails']['maritual_status'] == 'single') {
+                        $name = 'Kumari. ';
+                    } else {
+                        $name = 'Shrimati. ';
+                    }
+                }
+
+                $emp_name = isset($details['0']['EmployeeInfo']['EmpName']) ? ($details['0']['EmployeeInfo']['EmpName']) : (isset($details[0][0]['name']) ? $details[0][0]['name'] : '');
+                echo $name . $emp_name;
+
+                ?>
+
+            </td>
+
+        </tr>
+
+        <tr>
+            <td colspan="3" style="border-right:none;" class="hide-border">Employee ID</td>
+            <td class="hide-border" style="border-right:none;">:</td>
+            <td colspan="6" class="hide-border">
+                <?php echo $details['0']['EmployeeInfo']['employee_id'];  ?>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="3" style="border-right:none;" class="hide-border">Designation</td>
+            <td class="hide-border" style="border-right:none;">:</td>
+            <td colspan="6" class="hide-border">
+                <?php echo $details['0']['EmployeeInfo']['designation'];  ?>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="3" style="border-right:none;" class="hide-border">Date of Joining</td>
+            <td class="hide-border" style="border-right:none;">:</td>
+            <td colspan="6" class="hide-border">
+                <?php echo date('d-m-Y', strtotime($details[0]['EmployeeInfo']['joining_date'])); ?>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="3" style="border-right:none;" class="hide-border">Date of Resignation</td>
+            <td class="hide-border" style="border-right:none;">:</td>
+            <td colspan="6" class="hide-border">
+                <?php echo date('d-m-Y', strtotime($details[0]['Termination']['submitted_date']));  ?>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="3" style="border-right:none;" class="hide-border">Date of Relieving</td>
+            <td class="hide-border" style="border-right:none;">:</td>
+            <td colspan="6" class="hide-border">
+                <?php echo date('d-m-Y', strtotime($details[0]['Termination']['act_last_working_day'])); ?>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="3" style="border-right:none;" class="hide-border">Reason for Relieving</td>
+            <td class="hide-border" style="border-right:none;">:</td>
+            <td colspan="6" class="hide-border">
+                <?php echo $details[0]['Termination']['Reason']; ?>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="3" style="border-right:none;">Completed Years of Service</td>
+            <td style="border-right:none;">:</td>
+            <td style="border-right:none;">
+                <?php echo $years; ?>
+            </td>
+            <td style="border-right:none;">Years</td>
+            <td style="border-right:none;">
+                <?php echo $months; ?>
+            </td>
+            <td style="border-right:none;">Months</td>
+            <td style="border-right:none;">
+                <?php echo $days; ?>
+            </td>
+            <td>Days</td>
+        </tr>
+
+        <tr>
+            <td colspan="10" style='font-size:14px;border:1px solid black;text-align:center;'><b>Last Wage Details</b></td>
+        </tr>
+
+        <?php
+        foreach ($structure as $val) {
+            $last_wage_item = isset($val['emp_salary_structure']['salary_head_item_desc']) ? $val['emp_salary_structure']['salary_head_item_desc'] : '';
+            $last_wage_rate = isset($val['emp_salary_structure']['structure_det_value']) ? $val['emp_salary_structure']['structure_det_value'] : '';
+        ?>
+            <tr>
+                <td colspan="3" class="hide-border">
+                    <?php echo $last_wage_item; ?>
+                </td>
+                <td style="border-right:none;" class="hide-border"></td>
+                <td colspan="1" class="hide-border" style="text-align:right;border-right:none;">
+                    <?php echo number_format(abs($last_wage_rate), 2, '.', ''); ?>
+                </td>
+                <td class="hide-border" style="border-right:none;"></td>
+                <td class="hide-border" style="border-right:none;"></td>
+                <td class="hide-border" style="border-right:none;"></td>
+                <td class="hide-border" style="border-right:none;"></td>
+                <td class="hide-border"></td>
+            </tr>
+        <?php } ?>
+
+        <tr>
+            <td colspan="3" class="hide-border">Notice period as per offer Letter</td>
+            <td style="border-right:none;" class="hide-border"></td>
+            <td colspan="1" class="hide-border" style="border-right:none;text-align:right;"><?php echo $notice = isset($details['0']['Termination']['notice_period']) ? $details['0']['Termination']['notice_period'] : 0; ?> days</td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border"></td>
+        </tr>
+
+        <?php
+        $leave_balance_total = 0;
+        foreach ($details as $detail) {
+            if (isset($detail['EmpSettleSlip']['type']) && $detail['EmpSettleSlip']['type'] == 'BALANCE') {
+                $leave_balance_type = isset($detail['EmpSettleSlip']['salary_head_item_desc']) ? $detail['EmpSettleSlip']['salary_head_item_desc'] : '';
+                $leave_balance_total = isset($detail['EmpSettleSlip']['leave_total']) ? $detail['EmpSettleSlip']['leave_total'] : 0;
+            }
+        }
+        ?>
+
+        <tr>
+            <td colspan="3" class="hide-border">Notice period served </td>
+            <td style="border-right:none;" class="hide-border"></td>
+            <td colspan="1" class="hide-border" style="border-right:none;text-align:right;">
+                <?php
+                $work = $resignaion_period_working_days;
+                $notice_period = isset($details['0']['Termination']['notice_period']) ? $details['0']['Termination']['notice_period'] : 0;
+                $leave_balance = isset($details['0']['Termination']['leave_balance']) ? $details['0']['Termination']['leave_balance'] : 0;
+                $working_days_settled = isset($details['0']['Termination']['working_days_settled']) ? $details['0']['Termination']['working_days_settled'] : 0;
+                $notice_period_served =  $working_days_settled;
+
+                if ($notice_period_served > $notice_period) {
+                    $notice_period_served = $notice_period;
+                }
+                echo ($notice_period_served); ?> days
+            </td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border"></td>
+        </tr>
+
+        <?php
+        $leave_type = '';
+        $leave_balance_type  = '';
+        $leave_total = 0;
+        $id_card = 0;
+        $leave_balance_total = 0;
+        foreach ($details as $detail) {
+            $item_name = isset($detail['SalaryHeadItems']['occurance']) ? $detail['SalaryHeadItems']['occurance'] : '';
+            if ($detail['EmpSettleSlip']['type'] == 'ENCASHMENT' && $detail['EmpSettleSlip']['status'] == 1) {
+                $leave_type = isset($detail['EmpSettleSlip']['salary_head_item_desc']) ? $detail['EmpSettleSlip']['salary_head_item_desc'] : '';
+                $leave_total = isset($detail['EmpSettleSlip']['leave_total']) ? $detail['EmpSettleSlip']['leave_total'] : 0;
+            } elseif (isset($detail['EmpSettleSlip']['type']) && $detail['EmpSettleSlip']['type'] == 'BALANCE') {
+                $leave_balance_type = isset($detail['EmpSettleSlip']['salary_head_item_desc']) ? $detail['EmpSettleSlip']['salary_head_item_desc'] : '';
+                $leave_balance_total = isset($detail['EmpSettleSlip']['leave_total']) ? $detail['EmpSettleSlip']['leave_total'] : 0;
+            } elseif (isset($detail['EmpSettleSlip']['type']) && $detail['EmpSettleSlip']['type'] == 'ID') {
+                $id_card =  isset($detail['EmpSettleSlip']['salary_amount']) ? $detail['EmpSettleSlip']['salary_amount'] : 0;
+            }
+
+            $pl = 0;
+            if ($item_name != '') {
+                $item_name = $item_name . ' adjusted against working days';
+        ?>
+                <tr>
+                    <td colspan="3" class="hide-border"><?php echo $item_name; ?></td>
+                    <td style="border-right:none;" class="hide-border"></td>
+                    <td colspan="1" class="hide-border" style="border-right:none;text-align:right;">
+                        <?php echo $pl = isset($detail['Termination']['encashed_days']) ? $detail['Termination']['encashed_days'] : 0; ?> days
+                    </td>
+                    <td class="hide-border" style="border-right:none;"></td>
+                    <td class="hide-border" style="border-right:none;"></td>
+                    <td class="hide-border" style="border-right:none;"></td>
+                    <td class="hide-border" style="border-right:none;"></td>
+                    <td class="hide-border"></td>
+                </tr>
+        <?php }
+        }
+        ?>
+
+        <tr>
+            <?php
+            $leave_name = '';
+            if ($leave_type != '') {
+                $leave_name = generateAcronym($leave_type);
+            }
+            ?>
+            <td colspan="3" class="hide-border"><?php echo $leave_name; ?> adjusted against notice period</td>
+            <td style="border-right:none;" class="hide-border"></td>
+            <td colspan="1" class="hide-border" style="border-right:none;text-align:right;">
+                <?php $leave = isset($details[0]['Termination']['leave_balance']) ? ($details[0]['Termination']['leave_balance']) : 0;
+                $leavebal = isset($details[0]['Termination']['approved_balance']) ? ($details[0]['Termination']['approved_balance']) : 0;
+                echo $leave; ?> days
+            </td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border"></td>
+        </tr>
+
+        <tr>
+            <td colspan="3" class="hide-border">Notice period shortfall after adjustment</td>
+
+            <?php
+            if ($notice > 0) {
+                $submitted_date = $details['0']['Termination']['submitted_date'];
+                $last_working_date = $details['0']['Termination']['last_working_date'];
+                $submitted_timestamp = strtotime($submitted_date);
+                $last_working_timestamp = strtotime($last_working_date);
+                $difference_seconds = $last_working_timestamp - $submitted_timestamp;
+                $difference_days = floor($difference_seconds / (60 * 60 * 24));
+                $after_adjustment = $notice_period - $offs_actual - $working_days_settled - $leave_balance;
+            } else {
+                $after_adjustment = 0;
+            }
+            if ($after_adjustment < 0) {
+                $after_adjustment = 0;
+            }
+
+            ?>
+            <td style="border-right:none;" class="hide-border"></td>
+            <td colspan="1" class="hide-border" style="border-right:none;text-align:right;"><?php echo $after_adjustment; ?> days</td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border"></td>
+        </tr>
+
+        <?php
+        $leave_balance_name = '';
+        if ($leave_balance_type) {
+            $leave_balance_name = generateAcronym($leave_balance_type);
+        } ?>
+
+        <?php
+        if ($leave_balance_name !== '') {
+        ?>
+            <tr>
+                <td colspan="3" style="border:1px solid black;"><?php echo $leave_balance_name; ?> Balance after adjustment</td>
+                <td style="border-right:none;"></td>
+                <td colspan="1" style="border-right:none;text-align:right;"><?php echo $leavebal; ?> days</td>
+                <td style="border-right:none;"></td>
+                <td style="border-right:none;"></td>
+                <td style="border-right:none;"></td>
+                <td style="border-right:none;"></td>
+                <td></td>
+            </tr>
+        <?php } else { ?>
+            <!-- Add an empty placeholder row to maintain table structure -->
+            <tr>
+                <td colspan="3" style="border:1px solid black;"></td>
+                <td colspan="7" style="border:1px solid black;"></td>
+            </tr>
+        <?php } ?>
+
+        <tr>
+            <td colspan="10" style='font-size:14px; border:1px solid black; text-align:center;'>
+                <b>
+                    Full & Final Calculation
+                </b>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td colspan="3" style='font-size:14px;' class="hide-border">
+                <b>
+                    <u>Earnings</u>
+                </b>
+            </td>
+            <td colspan="7" class="hide-border"></td>
+        </tr>
+
+        <?php
+
+        $total_earnings = 0;
+        foreach ($arr_emp_settle['payd_additional'] as $key => $val) { ?>
+            <?php $earnings =  isset($arr_emp_settle['payd_additional'][$key][0]['salary_amount']) ? $arr_emp_settle['payd_additional'][$key][0]['salary_amount'] : '';
+            if ($earnings > 0) { ?>
+                <tr>
+                    <td colspan="3" class="hide-border">
+                        <?php
+                        $item = isset($arr_emp_settle['payd_additional'][$key]['emp_settle_slip']['salary_head_item_desc'])
+                            ? $arr_emp_settle['payd_additional'][$key]['emp_settle_slip']['salary_head_item_desc'] : '';
+                        $item = str_replace("Consolidated Pay", "Salary", $item);
+                        $pattern = '/-(\d{4})-(\d{2})$/';
+                        if (preg_match($pattern, $item, $matches)) {
+                            $date = new DateTime($matches[1] . '-' . $matches[2] . '-01');
+                            $formattedDate = ' of ' . $date->format('F Y');
+                            $newString = preg_replace($pattern, $formattedDate, $item);
+                            $item = $newString;
+                        }
+                        echo $item;
+                        ?>
+                    </td>
+                    <td style="border-right:none;" class="hide-border">Rs.</td>
+                    <td class="hide-border" style="border-right:none;text-align:right;">
+                        <?php $earnings =  isset($arr_emp_settle['payd_additional'][$key][0]['salary_amount']) ? $arr_emp_settle['payd_additional'][$key][0]['salary_amount'] : ''; ?>
+                        <?php echo number_format((float)$earnings, 2, '.', '');
+                        if ($earnings != '') {
+                            $total_earnings += $earnings;
+                        }
+                        ?>
+                    </td>
+                    <td colspan="5" class="hide-border">(Upto<?php echo  date('d-m-Y', strtotime($details['0']['Termination']['act_last_working_day'])); ?>)</td>
+                </tr>
+            <?php }
+        }
+        foreach ($arr_emp_settle['Extra_additions'] as $key => $val) { ?>
+            <?php $earnings =  isset($arr_emp_settle['Extra_additions'][$key]['emp_settle_slip']['salary_amount']) ? $arr_emp_settle['Extra_additions'][$key]['emp_settle_slip']['salary_amount'] : '';
+            if ($earnings > 0) { ?>
+                <tr>
+                    <td colspan="3" class="hide-border">
+                        <?php
+                        $item = isset($arr_emp_settle['Extra_additions'][$key]['emp_settle_slip']['salary_head_item_desc'])
+                            ? $arr_emp_settle['Extra_additions'][$key]['emp_settle_slip']['salary_head_item_desc'] : '';
+                        $item = str_replace("Balance", "", $item);
+                        $pattern = '/-(\d{4})-(\d{2})$/';
+                        if (preg_match($pattern, $item, $matches)) {
+                            $date = new DateTime($matches[1] . '-' . $matches[2] . '-01');
+                            $formattedDate = ' of ' . $date->format('F Y');
+                            $newString = preg_replace($pattern, $formattedDate, $item);
+                            $item = $newString;
+                        }
+                        echo $item;
+                        ?>
+                    </td>
+                    <td class="hide-border" style="border-right:none;">Rs.</td>
+                     <!-- edited by athira on 13-04-2025 -->
+                    <td class="hide-border" style="border-right:none;text-align:right;">
+                        <?php echo number_format((float)$earnings, 2, '.', '');
+                        if ($earnings != '') {
+                            $total_earnings += $earnings;
+                        }
+                        ?>
+                    </td>
+                    <td class="hide-border" style="border-right:none;"></td>
+                    <td class="hide-border" style="border-right:none;"></td>
+                    <td class="hide-border" style="border-right:none;"></td>
+                    <td class="hide-border" style="border-right:none;"></td>
+                    <td class="hide-border"></td>
+                    <!-- end -->
+                </tr>
+        <?php }
+        }
+        ?>
+        <tr>
+            <td style="text-align:right;" colspan="3" class="hide-border"><b>TOTAL</b></td>
+            <td style="border-right:none;" class="hide-border"><b>Rs.</b></td>
+            <td colspan="1" class="hide-border" style="border-right:none;text-align:right;">
+                <b><u><?php
+                        $grand =  $total_earnings;
+                        // echo isset($grand) ? number_format($grand) : '';
+                        echo isset($grand) ? number_format($grand, 2, '.', ',') : '0.00';
+                        ?></u></b>
+            </td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border"></td>
+        </tr>
+
+        <tr>
+            <td colspan="3" class="hide-border"><b><u>Deductions</u></b></td>
+            <td colspan="7" class="hide-border"></td>
+        </tr>
+
+        <?php $total_deduction = 0;  ?>
+        <?php foreach ($arr_emp_settle['payd_deductions'] as $key => $val) { ?>
+            <tr>
+                <td colspan="3" class="hide-border">
+                    <?php
+                    $item = isset($arr_emp_settle['payd_deductions'][$key]['emp_settle_slip']['salary_head_item_desc'])
+                        ? $arr_emp_settle['payd_deductions'][$key]['emp_settle_slip']['salary_head_item_desc'] : '';
+
+                    $item = str_replace("Balance", "", $item);
+                    $pattern = '/-(\d{4})-(\d{2})$/';
+                    if (preg_match($pattern, $item, $matches)) {
+                        $date = new DateTime($matches[1] . '-' . $matches[2] . '-01');
+                        $formattedDate = ' of ' . $date->format('F Y');
+                        $newString = preg_replace($pattern, $formattedDate, $item);
+                        $item = $newString;
+                    }
+                    echo $item;
+                    ?>
+
+                </td>
+                <td class="hide-border" style="border-right:none;">Rs.</td>
+                <td colspan="1" class="hide-border" style="border-right:none;text-align:right;">
+                    <?php $deduction =  isset($arr_emp_settle['payd_deductions'][$key][0]['salary_amount']) ? $arr_emp_settle['payd_deductions'][$key][0]['salary_amount'] : ''; ?>
+                    <?php echo  number_format(abs($deduction), 2, '.', '');
+                    if ($deduction != '') {
+                        $total_deduction += abs($deduction);
+                    }
+                    ?>
+                </td>
+                <td class="hide-border" style="border-right:none;"></td>
+                <td class="hide-border" style="border-right:none;"></td>
+                <td class="hide-border" style="border-right:none;"></td>
+                <td class="hide-border" style="border-right:none;"></td>
+                <td class="hide-border"></td>
+            </tr>
+        <?php } ?>
+
+
+        <?php
+        $hit_notice_pay = false;
+        foreach ($arr_emp_settle['Extra_deductions'] as $key => $val) {
+            $item = isset($arr_emp_settle['Extra_deductions'][$key]['emp_settle_slip']['salary_head_item_desc'])
+                ? $arr_emp_settle['Extra_deductions'][$key]['emp_settle_slip']['salary_head_item_desc'] : '';
+            if ($item == 'Notice Pay') {
+                $hit_notice_pay = true;
+            }
+            if ($item != 'ID Card') { ?>
+                <tr>
+                    <td class="hide-border" colspan="3">
+                        <?php
+                        $item = str_replace("Balance", "", $item);
+                        $pattern = '/-(\d{4})-(\d{2})$/';
+                        if (preg_match($pattern, $item, $matches)) {
+                            $date = new DateTime($matches[1] . '-' . $matches[2] . '-01');
+                            $formattedDate = ' of ' . $date->format('F Y');
+                            $newString = preg_replace($pattern, $formattedDate, $item);
+                            $item = $newString;
+                        }
+                        echo $item;
+                        ?>
+                    </td>
+                    <td style="border-right:none;" class="hide-border">Rs.</td>
+                    <td colspan="1" class="hide-border" style="border-right:none;text-align:right;">
+                        <?php $deduction =  isset($arr_emp_settle['Extra_deductions'][$key]['emp_settle_slip']['salary_amount']) ? $arr_emp_settle['Extra_deductions'][$key]['emp_settle_slip']['salary_amount'] : ''; ?>
+                        <?php echo number_format(abs($deduction), 2, '.', '');
+                        if ($deduction != '') {
+                            $total_deduction += abs($deduction);
+                        }
+                        ?>
+                    </td>
+                    <td class="hide-border" style="border-right:none;"></td>
+                    <td class="hide-border" style="border-right:none;"></td>
+                    <td class="hide-border" style="border-right:none;"></td>
+                    <td class="hide-border" style="border-right:none;"></td>
+                    <td class="hide-border"></td>
+                </tr>
+        <?php }
+        }
+        ?>
+
+        <?php
+        if (!$hit_notice_pay) { ?>
+            <tr>
+                <td class="hide-border" colspan="3">Notice Pay</td>
+                <td style="border-right:none;" class="hide-border">Rs.</td>
+                <td colspan="1" class="hide-border" style="border-right:none;text-align:right;">
+                    <?php
+                    $notice = round($after_adjustment * $per_day_salary);
+                    echo number_format($notice, 2, '.', '');
+                    $total_deduction += $notice;
+                    ?>
+                </td>
+                <td class="hide-border" style="border-right:none;"></td>
+                <td class="hide-border" style="border-right:none;"></td>
+                <td class="hide-border" style="border-right:none;"></td>
+                <td class="hide-border" style="border-right:none;"></td>
+                <td class="hide-border"></td>
+            </tr>
+        <?php } ?>
+
+        <tr>
+            <td class="hide-border" colspan="3">ID card</td>
+            <td style="border-right:none;" class="hide-border">Rs.</td>
+            <td class="hide-border" colspan="1" style="border-right:none;text-align:right">
+                <?php
+                echo number_format(abs($id_card), 2, '.', '');
+                $total_deduction -= $id_card;
+                ?>
+            </td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border"></td>
+        </tr>
+
+        <tr>
+            <td style="text-align:right;" colspan="3" class="hide-border"><b>TOTAL</b></td>
+            <td style="border-right:none;" class="hide-border">Rs.</td>
+            <td colspan="1" class="hide-border" style="border-right:none;text-align:right;">
+                <b><u><?php echo number_format(isset($total_deduction) ? abs($total_deduction) : 0, 2, '.', ''); ?></u></b>
+            </td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border"></td>
+        </tr>
+
+        <tr>
+
+            <td style="text-align:right;" class="hide-border" colspan="3">
+                <b>
+                    Net Payable/Receivable(-)
+                </b>
+            </td>
+            <td style="border-right:none;" class="hide-border">
+                <b>Rs.</b>
+            </td>
+            <td class="hide-border" colspan="1" style="border-right:none;text-align:right;">
+                <?php $net_pay = number_format(round($grand - $total_deduction), 2); ?>
+                <b><u><?php echo $net_pay; ?></u></b>
+            </td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border" style="border-right:none;"></td>
+            <td class="hide-border"></td>
+
+        </tr>
+
+        <tr>
+            <td style="border-left:1px solid black;border-bottom:1px solid black;border:none;"></td>
+            <td style="border-bottom:1px solid black;border:none;"></td>
+            <td style="border-bottom:1px solid black;border-right:1px soild black;"></td>
+            <td style="border-bottom:1px solid black;border:none;"></td>
+            <td style="border-bottom:1px solid black;border:none;"></td>
+            <td style="border-bottom:1px solid black;border:none;"></td>
+            <td style="border-bottom:1px solid black;border:none;"></td>
+            <td style="border-bottom:1px solid black;border:none;"></td>
+            <td style="border-bottom:1px solid black;border:none;"></td>
+            <td style="border-bottom:1px solid black;border-right:1px soild black;"></td>
+        </tr>
+
+        <tr>
+            <td colspan="3">Amount paid as settlement to company </td>
+            <td style="border-right:none;">
+                <b>Rs.</b>
+            </td>
+            <td style="border-right:none;text-align:center;">
+                <b>
+                    <?php if ($amt_paid_emp[0]['termination']['amt_paid_by_empaddition'] != 0) {
+                        echo $amt_paid_emp[0]['termination']['amt_paid_by_empaddition'];
+                    } else {
+                        echo "0.00";
+                    }
+                    ?>
+                </b>
+            </td>
+            <td style="border-right:none;"> paid on</td>
+            <td colspan="4"> <b>
+                    <?php
+                    if ($amt_paid_emp[0]['termination']['amt_paid_by_empaddition'] == 0) {
+                        echo "NA";
+                    }
+                    ?>
+                </b></td>
+
+        </tr>
+
+        <tr>
+            <td colspan="3">Full & Final Settlement payable/receivable(-)</td>
+            <td style="border-right:none;">
+                <b>Rs.</b>
+            </td>
+
+            <td style="border-right:none;">
+                <b>
+                    <?php
+                    if (isset($amt_paid_emp[0]['termination']['amt_paid_by_empaddition']) && $amt_paid_emp[0]['termination']['amt_paid_by_empaddition'] != 0) {
+                        $numberString = $net_pay;
+                        $numberInt = (int) str_replace(',', '', $numberString);
+                        if ($numberInt < 0) {
+                            $net_pay = number_format(round(($numberInt) + (int)$amt_paid_emp[0]['termination']['amt_paid_by_empaddition']), 2);
+                        } else {
+                            $net_pay = number_format(round(($numberInt) - (int)$amt_paid_emp[0]['termination']['amt_paid_by_empaddition']), 2);
+                        }
+                    }
+                    echo $net_pay;
+                    ?>
+                </b>
+            </td>
+            <td style="border-right:none;">i.e R/o</td>
+            <td colspan="4">
+                <b>
+                    <?php echo $net_pay; ?>
+                </b>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td colspan="3" rowspan="2" style="text-align:center;"><b>Net Payable</b></td>
+            <td colspan="7" style="text-align:center;">
+                <b><?php echo $net_pay; ?></b>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="7" style="border-left:none;text-align:center;">
+                <b>
+                    <?php
+                    $cleaned_number = (int)str_replace([',', '.00'], '', $net_pay);
+                    $converted_words = convertNumberToWords((int)round($cleaned_number));
+
+                    if (strlen($converted_words) > 55) {
+                        $break_point = strrpos(substr($converted_words, 0, 55), ' ');
+                        if ($break_point !== false) {
+                            $converted_words = substr_replace($converted_words, '<br>', $break_point, 1);
+                        }
+                    }
+
+                    echo "( " . $converted_words . ")";
+                    ?>
+                </b>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td colspan="10" style="border:1px solid black;text-align:center;">This is a system generated statement which does not require signature</td>
+        </tr>
+
+    </table>
+    <!-- edited by athira on 09-04-2025  end -->
+
+</page>

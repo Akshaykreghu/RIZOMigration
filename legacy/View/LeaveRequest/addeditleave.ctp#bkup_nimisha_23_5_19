@@ -1,0 +1,588 @@
+<form class="form-horizontal" method="post" action="<?php echo $this->webroot; ?>LeaveRequest/saveLeaveEntry" id="myleaverequestform">
+    <div class="modal-header" style="background: #00659f;color: white">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"><?php echo $head; ?></h4>
+
+    </div>
+    <input id="myLeaveAction" name="myLeaveAction" type="hidden"  value="Save" >
+    <input id="LEAVEENTRYID" name="LEAVEENTRYID" type="hidden"  value="<?php echo $leaveentryId; ?>" >
+    <input id="LEAVEENTRYID" name="LEAVESTATUS" type="hidden"  value="<?php echo $arr_leave_details['LEAVESTATUS']; ?>" >
+      <?php if($leaveentryId == 0 ) { ?>
+    <div class="modal-body">
+
+        <fieldset>
+            <!-- Form Name -->
+            <input id="model" name="model" type="hidden"  value="LeaveRequests" >
+            
+
+            <div class="form-group">
+                <div class="col-md-6">
+                    <label style="text-align:left;" class="col-md-4 control-label" for="salary_head_item_fkey">Leave Type&nbsp;<span style="color:red;">*</span></label>
+                    <div class="col-md-8">
+                        <select <?php echo ($leaveentryId > 0) ? 'disabled="disabled"' : 'required=""'; ?> id="salary_head_item_fkey" name="salary_head_item_fkey" class="form-control" >
+                            <option value="">--Select--</option>
+                            <?php
+                            foreach ($arr_leave_type as $key => $value) {
+                                $selected = ($arr_leave_details['salary_head_item_fkey'] == $value['SalaryHeadItems']['salary_head_item_pkey']) ? 'selected="selected"' : '';
+                                echo '<option value="' . $value['SalaryHeadItems']['salary_head_item_pkey'] . '" ' . $selected . '>' . $value['SalaryHeadItems']['item'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-12" id="showremarks" style="margin-top: 15px;">
+                    
+                 <label style="text-align:left;"  class="col-md-2  control-label">Leave Type Remarks :</label>
+                <div class="col-md-4  " id="remarks" style="font-weight: bolder;padding-top: 7px">
+                </div>  
+                 <label style="text-align:left;" id="balance" class="col-md-2 control-label"></label>
+                    <div class="col-md-4" style="padding-right: 0px;padding-top: 7px; padding-left: 0px;">
+                        <label style="text-align:left;" id="Leavebalance"></label>
+                       <input type="hidden" id="hid_yearly_balance" name="hid_yearly_balance" />
+                        <input type="hidden" id="hid_monthly_balance" name="hid_monthly_balance" />
+                       
+                        <!--input class="col-md-8" style="background: white ; text-align: left ; border: none ; " disabled="disabled" type="text" id="Leavebalance" name="Leavebalance"-->
+                    </div>
+                    
+                
+              
+                    </div>
+                <div class="col-md-6" id="div-leavestatus" <?php
+                if ($leaveentryId == 0) {
+                    echo 'style="display: none;"';
+                }
+                ?>>
+                    <label style="text-align:left;" class="col-md-4 control-label" for="LEAVESTATUS">Leave Status</label>
+                    <label style="text-align:left;padding-top: 7px;" class="col-md-8" id="label-leavestatus"><?php echo $arr_leave_details['LEAVESTATUS']; ?></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-6">
+                    <label style="text-align:left;" class="col-md-4 control-label" for="FROMDATE">From Date&nbsp;<span style="color:red;">*</span></label>
+                    <div class="col-md-8" style="padding-left: 0px;padding-right: 0px;">
+                        <div class="col-md-6">
+                            <input <?php echo ($leaveentryId > 0) ? 'disabled="disabled"' : 'required=""'; ?> class="form-control input-md strict-field" id="FROMDATE" name="FROMDATE" value="<?php echo $arr_leave_details["FROMDATE"]; ?>" type="text" required="" >
+                        </div>
+                        <div class="col-md-6">
+                            <select <?php echo ($leaveentryId > 0) ? 'disabled="disabled"' : 'required=""'; ?> class="form-control input-md strict-field" id="FROMHALF" name="FROMHALF" >
+                                <option value="1" <?php echo($arr_leave_details["FROMHALF"] == '1') ? 'selected="selected"' : ''; ?>>First Half</option>
+                                <option value="2" <?php echo($arr_leave_details["FROMHALF"] == '2') ? 'selected="selected"' : ''; ?>>Second Half</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label style="text-align:left;" class="col-md-4 control-label" for="TODATE">To Date&nbsp;<span style="color:red;">*</span></label>
+                    <div class="col-md-8" style="padding-left: 0px;padding-right: 0px;">
+                        <div class="col-md-6">
+                            <input <?php echo ($leaveentryId > 0) ? 'disabled="disabled"' : 'required=""'; ?> class="form-control input-md strict-field" id="TODATE" name="TODATE" value="<?php echo $arr_leave_details["TODATE"]; ?>" type="text" required="" >
+                        </div>
+                        <div class="col-md-6">
+                            <select <?php echo ($leaveentryId > 0) ? 'disabled="disabled"' : 'required=""'; ?> class="form-control input-md strict-field" id="TOHALF" name="TOHALF" >
+                                <option value="1" <?php echo($arr_leave_details["TOHALF"] == '1') ? 'selected="selected"' : ''; ?>>First Half</option>
+                                <option value="2" <?php echo($arr_leave_details["TOHALF"] != '1' || $arr_leave_details["TOHALF"] == '2') ? 'selected="selected"' : ''; ?>>Second Half</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+          
+
+            <div class="form-group">
+                <div class="col-md-6">
+                    <label style="text-align:left;" class="col-md-4 control-label" for="Authorized">Authorize By&nbsp;<span style="color:red;">*</span></label>
+                    <div class="col-md-8" >
+                        <input type="text" id="Authorized" class="form-control strict-field" value="<?php echo isset($arr_leave_details['AUTHORIZEDBYNAME']) ? $arr_leave_details['AUTHORIZEDBYNAME'] : '' ?>" name="Authorized" placeholder="Search Your Employee Name" style="width: 250px; " required="" />
+                        <input type="hidden" id="ISAutherizedby" name="ISAutherizedby" value="<?php echo isset($arr_leave_details['ISAutherizedby']) ? $arr_leave_details['ISAutherizedby'] : '' ?>" />
+                        <span id="MouseAuth"></span>
+<!--                    <select id="ISAutherizedby" name="ISAutherizedby" class="form-control" required="">
+             <option value="">--Select--</option>
+                        <?php
+                        //  foreach ($arr_reportingemployees as $key => $value) {
+                        // $selected = ($arr_leave_details['ISAutherizedby'] == $value['emp_pkey']) ? 'selected="selected"' : '';
+                        //echo '<option value="' . $value['emp_pkey'] . '" ' . $selected . '>' . $value['emp_name'] . '</option>';
+                        // }
+                        ?>
+         </select>-->
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label style="text-align:left;" class="col-md-4 control-label" for="APPROVEDBY">Approve By&nbsp;<span style="color:red;">*</span></label>
+                    <div class="col-md-8">
+                        <input type="text" id="APPROVED" class="form-control input-md strict-field" name="APPROVED" value="<?php echo isset($arr_leave_details['APPROVEDBYNAME']) ? $arr_leave_details['APPROVEDBYNAME'] : '' ?>" placeholder="Search Your Employee Name" style="width: 250px ; " required="" />
+                        <input type="hidden" id="APPROVEDBY" class="form-control" name="APPROVEDBY" value="<?php echo isset($arr_leave_details['APPROVEDBY']) ? $arr_leave_details['APPROVEDBY'] : '' ?>" />
+                        <span  id="MouseAppr"></span>
+
+<!--                    <select id="APPROVEDBY" name="APPROVEDBY" class="form-control" >
+    <option value="">--Select--</option>
+                        <?php
+                        foreach ($arr_reportingemployees as $key => $value) {
+                            $selected = ($arr_leave_details['APPROVEDBY'] == $value['emp_pkey']) ? 'selected="selected"' : '';
+                            echo '<option value="' . $value['emp_pkey'] . '" ' . $selected . '>' . $value['emp_name'] . '</option>';
+                        }
+                        ?>
+</select>-->
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-6">
+                    <label style="text-align:left;" class="col-md-4 control-label" for="Reason">Reason&nbsp;<span style="color:red;">*</span></label>
+                    <div class="col-md-8">
+                        <textarea id="Reason" name="Reason" type="text" placeholder="Reason" class="form-control input-md strict-field" required="" ><?php echo $arr_leave_details["Reason"]; ?></textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label style="text-align:left;" class="col-md-4 control-label" for="contact_No">Contact Number&nbsp;<span style="color:red;">*</span></label>
+                    <div class="col-md-8">
+                        <input id="contact_No" name="contact_No" value="<?php echo $arr_leave_details["contact_No"]; ?>" type="number" placeholder="Contact Number" class="form-control input-md strict-field" required="" >
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-6">
+                    <label style="text-align:left;" class="col-md-4 control-label" for="contact_person">Duties handed over to&nbsp;<span style="color:red;">*</span></label>
+                    <div class="col-md-8">
+                        <!--<input id="contact_person" name="contact_person" value="<?php echo $arr_leave_details["contact_person"]; ?>" type="text" placeholder="Duties handed over to" class="form-control input-md strict-field" required="" >-->
+                        <select style="width:100%; " id="contact_person" name="contact_person" placeholder="Duties handed over to" class="form-control select2-searching input-md strict-field" required="" >
+                            <option>Select</option>
+                            <?php if(isset($arr_leave_details["contact_person"])){ ?>
+                                <option selected="selected" value="<?php echo $arr_leave_details["contact_person"]; ?>"><?php echo $arr_leave_details["contact_person"]; ?></option>
+                            <?php } ?>
+                            <?php foreach ($arr_users as $users) {
+                                ?>
+                                <option value="<?php echo $users['0']['name']; ?>"><?php echo $users['0']['name']; ?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6" style="display: none;">
+                    <label style="text-align:left;" class="col-md-4 control-label" for="leave_days">Number of days</label>
+                    <div class="col-md-8">
+                        <input id="leave_days" name="leave_days" value="<?php echo $arr_leave_details["leave_days"]; ?>" type="text" placeholder="Number of days" class="form-control input-md" >
+                    </div>
+                </div>
+            </div>
+    </div>
+ <?php } else {?>
+  <div class="modal-body">
+       <div class="box-body">
+                    <input type="hidden" name="salary_head_item_fkey"  value="<?php echo $arr_leave_details['salary_head_item_fkey']; ?>" >
+                    <input name="FROMDATE" value="<?php echo $arr_leave_details["FROMDATE"]; ?>" type="hidden" required="" >
+                    <input name="TODATE" value="<?php echo $arr_leave_details["TODATE"]; ?>" type="hidden" required="" >
+                    <input type="hidden" name="FROMHALF" value="<?php echo $arr_leave_details["FROMHALF"]; ?>" >
+                    <input type="hidden" value="<?php echo $arr_leave_details['TOHALF']; ?>" name="TOHALF" >
+                    <input type="hidden" value="<?php echo $arr_leave_details['LEAVESTATUS']; ?>" name="LEAVESTATUS">
+                    <div class="row>" <span style="font-size: 28px;padding-left: 15px;margin-top: -22px;text-align: center;">Leave Details</span><span style="font-size: 16px;font-weight: lighter;padding-left: 1px;"> (<?php echo $arr_leave['0']['salary_head_items']['item'] ?>)</span> </div>
+                      <hr style="margin-top: 4px;">
+                    <div class="row" style="padding-left: 15px;margin-top: -15px;">
+                        <div class="col-md-4 col-sm-4 col-xs-4" style="font-size: 16px;font-weight: 600;" ><?php echo $arr_leave_details["FROMDATE"]; ?><span style="font-size: 15px;font-weight: 300"><?php echo isset($arr_leave_details["FROMHALF"]) && $arr_leave_details["FROMHALF"]=="1" ? '&nbsp;(First Half)' : '&nbsp;(Second Half)'?></span></div>
+                        <div class="col-md-1 col-sm-1 col-xs-1" style="padding-top: 4px;"> To</div>
+                        <div class="col-md-4 col-sm-4 col-xs-4" style="font-size: 16px;font-weight: 600;"><?php echo $arr_leave_details["TODATE"]; ?><span style="font-size: 15px;font-weight: 300"><?php echo isset($arr_leave_details["TOHALF"]) && $arr_leave_details["TOHALF"]=="1" ? '&nbsp;(First Half)' : '&nbsp;(Second Half)'?></span> </div>
+                        <div class="col-md-1 col-sm-1 col-xs-1" style="padding-top: 4px;">-</div>
+                        <div class="col-md-2 col-sm-2 col-xs-2" style="font-size: 16px;font-weight: 600;"><?php echo $arr_leave_details['leave_days']?>&nbsp;Day(s)</div></div>
+               <hr style="margin-top: 2px;margin-bottom: 9px;">
+                <div class="form-group " >
+                    <div class="row" style="padding-top: 2px;padding-left: 30px;">
+                        <div class="col-md-2 col-sm-2 col-xs-2" >
+                            <span>
+                               Applied date 
+                            </span>
+                        </div>
+                        
+                        <div class="col-md-4 col-sm-4 col-xs-4">
+                       <b>    : <?php echo $arr_leave_details['applied_date']?></b>
+                        </div>
+                         <div class="col-md-3 col-sm-2 col-xs-2" >
+                            <span>
+                               Leave Status 
+                            </span>
+                        </div>
+                       
+                        <div class="col-md-3 col-sm-4 col-xs-4">
+                           : <b id="label-leavestatus"><?php echo $arr_leave_details['LEAVESTATUS']; ?></b>
+                        </div>
+                        
+                    </div>
+                    <div class="row" style="padding-top: 12px;padding-left: 30px;">
+                        <div class="col-md-2 col-sm-2 col-xs-2" >
+                            <span>
+                               Reason
+                            </span>
+                        </div>
+                        
+                        
+                        <?php if (in_array($arr_leave_details['LEAVESTATUS'], array('Approved', 'Authorized'))) { ?>
+                         <div class="col-md-4 col-sm-4 col-xs-4" id="showreason">
+                             :<textarea id="Reason" name="Reason" type="text" placeholder="Reason" style="margin-left: 7px;margin-top: -15px;"class="form-control input-md " ><?php echo $arr_leave_details["Reason"]; ?></textarea>
+                        </div>
+        <?php }  else{?>
+            <div class="col-md-4 col-sm-4 col-xs-4">
+                       <b>   : <?php echo $arr_leave_details['Reason']?></b>
+                        </div>
+     <?php   }
+?>
+                        
+                         <div class="col-md-3 col-sm-3 col-xs-3">
+                            <span>
+                             Duties Handover to 
+                            </span>
+                        </div>
+                       
+                        <div class="col-md-3 col-sm-4 col-xs-4">
+                      <b>    : <?php echo $arr_leave_details['contact_person']?></b>
+                        </div>
+                        
+                    </div>
+                    <!--<hr style="margin-left: 17px;margin-right: 17px;border-color: silver;margin-top: 9px;margin-bottom: 2px">-->
+                        <div class="row" style="padding-top: 12px;padding-left: 30px;">
+                        <div class="col-md-2 col-sm-2 col-xs-2" >
+                            <span >
+                             Authorized By 
+                            </span>
+                        </div>
+                        
+                        <div class="col-md-4 col-sm-4 col-xs-4">
+                            <b>  : <?php echo $arr_leave_details['AUTHORIZEDBYNAME']?></b>
+                        </div>
+                         <div class="col-md-3 col-sm-2 col-xs-2">
+                            <span>
+                             Authorized Date
+                            </span>
+                        </div>
+                        
+                        <div class="col-md-3 col-sm-4 col-xs-4">
+                       <b>  : <?php echo isset($arr_leave_details['Autherized_date']) && $arr_leave_details['Autherized_date'] == '0000-00-00' ? '': $arr_leave_details['Autherized_date']?></b>
+                        </div>
+                        
+                    </div>
+                       <div class="row" style="padding-top: 12px;padding-left: 30px;">
+                        <div class="col-md-2 col-sm-2 col-xs-2" >
+                            <span>
+                             Approved By
+                            </span>
+                        </div>
+                       
+                        <div class="col-md-4 col-sm-4 col-xs-4">
+                       <b>  : <?php echo $arr_leave_details['APPROVEDBYNAME']?></b>
+                        </div>
+                         <div class="col-md-3 col-sm-2 col-xs-2" >
+                            <span>
+                             Approved Date
+                            </span>
+                        </div>
+                    
+                        <div class="col-md-3 col-sm-4 col-xs-4">
+                       <b>  : <?php echo $arr_leave_details['APPROVED_date']?></b>
+                        </div>
+                        
+                    </div>
+                       <div class="row" style="padding-top: 12px;padding-left: 30px;">
+                        <div class="col-md-2 col-sm-2 col-xs-2" >
+                            <span>
+                            Remarks By Authorised Person
+                            </span>
+                        </div>
+                       
+                        <div class="col-md-4 col-sm-6 col-xs-6">
+                            <b> : <?php echo $arr_leave_details['AuthoriseRemarks']?></b>
+                        </div>
+                           <div class="col-md-3 col-sm-2 col-xs-2" >
+                            <span>
+                            Remarks By Approved Person
+                            </span>
+                        </div>
+                       
+                        <div class="col-md-3 col-sm-6 col-xs-6">
+                            <b> : <?php echo isset($arr_leave_details['ApproveRemarks']) ? $arr_leave_details['ApproveRemarks'] :'';?></b>
+                        </div>
+                       
+   
+                    </div>
+                </div>
+            </div>
+    </div>
+    <?php } ?>
+    <div class="modal-footer">
+        <div id="loader" class="col-md-8" style="display:none;">
+            <span class="btn btn-success"><li class="fa fa-spinner fa-spin"></li>Loading Please Wait ....</span>
+        </div>
+
+        <!-- Need to cancel auth / approved leaves also : On 11 March 2017 -->
+        <?php if (!in_array($arr_leave_details['LEAVESTATUS'], array('Cancelled', 'Cancellation Authorized', 'Rejected'))) { ?>
+        <?php if (in_array($arr_leave_details['LEAVESTATUS'], array('Applied', 'Approved', 'Authorized'))) { ?>
+            <button type="button" id="btn-cancel" class="btn btn-danger" onclick="cancelLeave()" style="display: <?php
+        if ($leaveentryId == 0) {
+            echo "none";
+        }
+            ?>" >
+                Cancel Leave
+            </button>
+        <?php } ?>
+            <?php if (!in_array($arr_leave_details['LEAVESTATUS'], array('Authorized', 'Approved','Applied', 'Cancelled', 'Cancellation Authorized', 'Rejected','Cancelled', 'Cancellation Authorized', 'Rejected','Cancellation Approved','CancellationOfApproved'))) { ?>
+                <button type="submit" id="btn-submit" class="btn btn-primary strict-field">
+                    Save
+                </button>
+    <?php } ?>
+<?php } ?>
+    </div>
+    <script>
+
+      var leaverequestoptions = {};
+        jQuery(document).ready(function () {
+
+<?php if (isset($leaveentryId) && $leaveentryId != 0) { ?>
+                getLeaveBalance();
+<?php } else { ?>
+                $('#Leavebalance').hide();
+                $('#balance').hide();
+                $('#showremarks').hide();
+<?php } ?>
+            var usersoptions = {
+                url: function (phrase) {
+                    return livesite + 'LeaveRequest/getusers?username=' + phrase;
+                },
+                getValue: "full_name",
+                list: {
+                    onClickEvent: function () {
+                        console.log('onClickEvent');
+                        var selectedItem = $("#Authorized").getSelectedItemData();
+                        var site_fkey = selectedItem.emp_pkey;
+                        //  alert(site_fkey); 
+
+
+                        $("#ISAutherizedby").val(site_fkey);
+                        $('#MouseAuth').html('');
+
+                    },
+                    onKeyEnterEvent: function () {
+                        console.log('onKeyEnterEvent');
+                    },
+                    onMouseOverEvent: function () {
+                        console.log('onMouseOverEvent');
+                    }
+                }
+            };
+
+            $('#Authorized').easyAutocomplete(usersoptions);
+
+
+            var usersoptionsappr = {
+                url: function (phrase) {
+                    return livesite + 'LeaveRequest/getusers?username=' + phrase;
+                },
+                getValue: "full_name",
+                list: {
+                    onClickEvent: function () {
+                        var selectedItem = $("#APPROVED").getSelectedItemData();
+                        var site_fkey = selectedItem.emp_pkey;
+                        //  alert(site_fkey); 
+
+                        $('#MouseAppr').html('');
+                        $("#APPROVEDBY").val(site_fkey);
+
+                    }
+                }
+            };
+
+            $('#APPROVED').easyAutocomplete(usersoptionsappr);
+
+            $('#salary_head_item_fkey').on('change', function () {
+                $('#loader').fadeIn(1000);
+                getLeaveBalance();
+            })
+            $('#contact_person').select2();
+            $('#FROMDATE').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true
+            }).on('changeDate', function (e) {
+                // `e` here contains the extra attributes
+                var selected = $("#FROMDATE").val();
+                var sdt = new Date(selected);
+                var selectenddate = $("#TODATE").val();
+                var edt = new Date(selectenddate);
+                if (edt < sdt)
+                {
+                    alert("From date should be less than To date");
+                    $("#FROMDATE").val('');
+                }
+            });
+            $("#FROMDATE").inputmask("yyyy-mm-dd");
+
+            $('#TODATE').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true
+            }).on('changeDate', function (e) {
+                // `e` here contains the extra attributes
+                var selected = $("#TODATE").val();
+                var edt = new Date(selected);
+                var selectsdate = $("#FROMDATE").val();
+                var sdt = new Date(selectsdate);
+                if (edt < sdt)
+                {
+                    alert("To date should be greater than From date");
+                    $("#TODATE").val('');
+                    return false;
+                }
+                getLeaveBalance();
+            });
+            $("#TODATE").inputmask("yyyy-mm-dd");
+
+            $('#myleaverequestform').parsley();
+
+            leaverequestoptions = {
+                //  target:        '#output2',   // target element(s) to be updated with server response 
+                //  beforeSubmit:  showRequest,  // pre-submit callback 
+                success: function (resp) {
+                    var success = $.parseJSON(resp).success;
+                    var message = $.parseJSON(resp).message;
+                    if (success == false) {
+                        alert(message);
+                        $('#btn-submit').html('Save').prop('disabled', false);
+                        $('#btn-cancel').html('Cancel Leave...').attr('disabled', 'false');
+                        return;
+                    }
+
+                    var warning = $.parseJSON(resp).warningmessage;
+                    var leaveentryid = $.parseJSON(resp).leaveentryId;
+                    var leavestatus = $.parseJSON(resp).leavestatus;
+                    $('#myleaverequestform #LEAVEENTRYID').val(leaveentryid);
+                    $('#myleaverequestform #btn-cancel').show();
+                    $('#label-leavestatus').html(leavestatus);
+                    $('#div-leavestatus').show();
+
+                    /*
+                     * Show Leave dates here
+                     * On 03 Aug 2015
+                     */
+                    reloadTable('myleaverequeststable');
+                    if (warning != '') {
+                        alert(warning);
+                        $('#btn-submit').html('Save').prop('disabled', false);
+                    } else {
+                        //Calculate no of leave days here
+                        $('#largeModalForm').modal('hide');
+                        showSmallModalForm(livesite + 'LeaveRequest/showleavedays/' + leaveentryid);
+                    }
+                    //Ends
+                }, // post-submit callback
+                error: function () {
+                    $('#largeModalForm').modal('hide');
+                    alert('Sorry for the inconvenience, please contact support');
+                }
+
+                // other available options: 
+                //url:       url         // override for form's 'action' attribute 
+                //type:      type        // 'get' or 'post', override for form's 'method' attribute 
+                //dataType:  null        // 'xml', 'script', or 'json' (expected server response type) 
+                //clearForm: true        // clear all form fields after successful submit 
+                //resetForm: true        // reset the form after successful submit 
+
+                // $.ajax options can be used here too, for example: 
+                //timeout:   3000 
+            };
+
+            $('#APPROVED').keyup(function() {
+                $('#APPROVEDBY').val('');
+            }); 
+            
+            $('#Authorized').keyup(function() {
+                $('#ISAutherizedby').val('');
+            }); 
+            
+            // bind to the form's submit event 
+            $('#myleaverequestform').submit(function (event) {
+                event.preventDefault();
+                var yearly_balance = $('#hid_yearly_balance').val();
+                var monthly_balance = $('#hid_monthly_balance').val();
+
+                if ($('#ISAutherizedby').val() == '') {
+                    var texts = "Please select by Mouse click";
+                    $('#MouseAuth').html(texts).css("color", "red");
+                    return false;
+                }
+                if ($('#APPROVEDBY').val() == '') {
+                    var texts = "Please select by Mouse click";
+                    $('#MouseAppr').html(texts).css("color", "red");
+                    return false;
+                }
+                if (yearly_balance == 0 && monthly_balance == 0 && $('#myleaverequestform #LEAVEENTRYID').val() <= 0) {
+                    alert("You don't have sufficient leave balance!");
+                    return false;
+                }
+                var start = $('#FROMDATE').datepicker('getDate');
+                var end = $('#TODATE').datepicker('getDate');
+                var days = (end - start) / 1000 / 60 / 60 / 24;
+                $('#leave_days').val(days + 1);
+                if ($('#myleaverequestform #LEAVEENTRYID').val() > 0) {
+                    var r = confirm("Do you want to resubmit leave ?");
+                    if (r == true) {
+                        $('#btn-submit').html('<li class="fa fa-spinner fa-spin"></li> saving...').prop('disabled', 'disabled');
+                        // inside event callbacks 'this' is the DOM element so we first 
+                        // wrap it in a jQuery object and then invoke ajaxSubmit 
+                        $(this).ajaxSubmit(leaverequestoptions);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    $('#btn-submit').html('<li class="fa fa-spinner fa-spin"></li> saving...').prop('disabled', 'disabled');
+                    $(this).ajaxSubmit(leaverequestoptions);
+                }
+                // !!! Important !!! 
+                // always return false to prevent standard browser submit and page navigation 
+                return false;
+            });
+        });
+        function cancelLeave() {
+            if (confirm("Really you want to cancel leave?")) {
+
+                if ($.trim($('#label-leavestatus').html()) == 'Applied')
+                    $('#myLeaveAction').val('Cancelled');
+                else if ($.trim($('#label-leavestatus').html()) == 'Authorized')
+                    $('#myLeaveAction').val('Cancellation Applied');
+                else if ($.trim($('#label-leavestatus').html()) == 'Approved')
+                    $('#myLeaveAction').val('Cancellation Applied');
+//                alert($.trim($('#label-leavestatus').html()));
+                $('#btn-cancel').html('<li class="fa fa-spinner fa-spin"></li> Cancelling Leave...').attr('disabled', 'disabled');
+                $('#myleaverequestform').ajaxSubmit(leaverequestoptions);
+            }
+        }
+
+        function getLeaveBalance() {
+            var salary_head_item_fkey = $('#salary_head_item_fkey').val();
+            var end_date = $('#TODATE').val();
+            $.ajax({
+                url: livesite + 'LeaveRequest/GetLeaveBalance/' + salary_head_item_fkey + '/' + end_date,
+                type: 'POST',
+                success: function (resp)
+                {
+                    var yearly_balance = $.parseJSON(resp).yearly_balance;
+                    var monthly_balance = $.parseJSON(resp).monthly_balance;
+                    var remarks = $.parseJSON(resp).remarks;
+                    $('#hid_yearly_balance').val(yearly_balance);
+                    $('#hid_monthly_balance').val(monthly_balance);
+                    $('#Leavebalance').html('Yearly Balance : ' + yearly_balance + ', Monthly Balance : ' + monthly_balance );
+                    $('#showremarks').show();
+                    $('#remarks').html(' '+remarks);
+                    $('#balance').show();
+                    $('#Leavebalance').show();
+                    //$('#Leavebalance').val(resp);
+                    
+                    var allow_negative = $.parseJSON(resp).allow_negative;
+                    
+                    if((monthly_balance == 0 && allow_negative != 'Y') || yearly_balance == 0){
+                        $('.strict-field').attr('disabled', true);
+                    } else {
+                        $('.strict-field').attr('disabled', false);
+                    }
+
+                }
+            });
+            $('#loader').fadeOut(1000);
+        }
+    </script>

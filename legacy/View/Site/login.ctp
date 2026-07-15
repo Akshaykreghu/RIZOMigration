@@ -1,0 +1,75 @@
+<!--
+<div class="error-container">
+	<div class="error-container-inner">
+		<span class="error-icon"></span><span class="error-msg">Invalid Username or Password</span>
+	</div>
+</div>-->
+
+
+<style>
+    .login-error {
+        width: 100%;
+        color: #df2c2c;
+        margin-bottom: 15px;
+        margin-top: 15px;
+    }
+</style>
+
+<!--<div class="login-box"> -->
+<!--      <div class="login-logo">
+        <a href=""><b>My Payroll Master</b></a>
+      </div>-->
+<!--      <div class="box box-header pull-right login-box-body col-sm-10" style="border-radius: 28px;">-->
+<!--    <p class="login-box-msg">Sign in to start your session</p>-->
+<?php if (isset($messages)) { ?>
+    <div class="alert alert-danger" role="alert" style="padding: 4px 9px;"><?php echo $messages; ?></div>
+<?php } ?>
+<form class="form-signin" role="form" method="post" action="<?php echo $this->webroot ?>Site/login">
+    <!--        <div class="form-group has-feedback">
+            <input name="user_id" type="text"  class="form-control"  id="user_id"  placeholder="User Name" required autofocus />
+            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+            <input type="password" id="password" name="password" class="form-control" placeholder="Password" required />
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>-->
+    <input class="form-control" type="text" name="user_id" id="user_id" placeholder="User Name" required>
+    <input class="form-control" type="password" name="password" placeholder="Password" required>
+    <!--                            <input type="radio" id="admin" name="user_group" value="1">-->
+    <!--        <input type="radio" name="user_group" id="user_group1" value="1">-->
+    <!--                            <label for="admin"> Admin </label>-->
+    <!--                            <input type="radio" name="user_group" id="user_group2" value="2" checked="yes">-->
+    <!--                            <input type="radio" id="employee" name="user_group" value="2" checked="yes">
+                            <label for="employee">Employee</label><br><br>-->
+    <input name="rememberme" type="checkbox" id="chk1"><label for="chk1">Remember me</label>
+    <div class="form-button">
+        <button id="login" type="submit" class="ibtn">Login</button> <a href="<?php echo $this->webroot; ?>Site/passwordreset">Forget password?</a>
+    </div>
+    <!--        <div class="row">
+            <div class="col-xs-8">
+                <label class="radio-inline">
+                    <input type="radio" name="user_group" id="user_group1" value="1"> Admin
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="user_group" id="user_group2" value="2" checked="yes"> Employee
+                </label>
+            </div>
+            <div class="col-xs-4">
+                <button id="login" type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+            </div> /.col 
+        </div>
+        <div class="col-xs-12 col-xs-6">
+            <div classdiv="checkbox icheck">
+                <label class="">
+                    <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false" style="position: relative; width:24px;"><input name="rememberme" type="checkbox" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"><ins class="iCheck-helper" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div>
+                </label> Stay signed in
+            </div>
+        </div>
+        <div class="col-xs-12 col-xs-6">
+            <div classdiv="checkbox icheck">
+                <a href="<?php echo $this->webroot; ?>Site/passwordreset">I forgot my password</a><br>
+            </div>
+        </div>-->
+</form>
+<!--</div> /.login-box-body 
+    </div> /.login-box -->

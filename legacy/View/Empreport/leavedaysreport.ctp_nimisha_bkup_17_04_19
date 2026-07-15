@@ -1,0 +1,114 @@
+<section class="content-header">
+    <h1> LEAVE DAYS REPORT </h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- DIRECT CHAT DANGER -->
+            <div class="box ">
+                <div class="box-header with-border">
+                 
+                    
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <!-- Employee import form -->
+                    <form class="form-horizontal" method="post" action="" id="importemployeectcform">
+                        <div class="row">
+                   
+                        
+                        <div class="form-group">
+                         
+                
+                        <div class="col-md-4">
+                            <label class="col-sm-5" for="filterby_branch">Choose Month</label>
+                            <div class="col-md-7">
+                                
+                                
+                                <select id="filterby_branch" name="filterby_branch" class="form-control" onchange="filterAttendanceupload(this);"  >
+                                    <option>--Choose Month--</option>
+                                      <?php
+                                    for ($i = 0; $i < 10; $i++) {
+                                        echo '<option value="' . date('Y-m', strtotime("-$i month", strtotime(date('M-Y')))) . '">' . date('M-Y', strtotime("-$i month", strtotime(date('M-Y')))) . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                                
+
+                            </div>
+                        </div> 
+                         
+                    </div> 
+                  
+                  
+                            
+                        </div>
+                        
+                     
+                    </form>
+                     <div class="box-body">
+                <br>
+                <table id="att_table" class="table table-bordered table-hover">
+                    <tbody>
+                    </tbody>
+                </table>
+            </div><!-- /.box-body -->
+                </div>
+                 
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>    
+    function filterAttendanceupload(obj) {
+        var branch = $('#importemployeectcform #filterby_branch').val();   
+        var employee = $('#importemployeectcform #emp_fkey').val()
+  
+        $('#att_table').datagrid('load', {
+            branch: branch,
+            employee: employee,
+           
+        }); 
+        
+    } 
+ 
+   
+  
+    
+ jQuery(document).ready(function () {
+        var employee = $('#attendanceuploadfilter #emp_fkey').val();
+
+        $('#att_table').datagrid({
+             toolbar: [
+                                 {
+				text:'Download',
+				iconCls:'icon-download',
+				handler: function(){
+                                        var month =  $('#importemployeectcform #filterby_branch').val();   
+                               var url = livesite+'Empreport/leavereportpdf/'+month;
+                               $(location).attr('href',url);  
+                                      
+			
+				}
+				}
+                                
+                            ],
+            url: livesite + "Empreport/employeeleavelist",
+            pagination: true,
+            singleSelect: false,
+            queryParams:{
+                    employee: employee
+                },
+                   
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            columns: [[
+                    {field: 'leave_date', title:'LEAVE DATE', width: "30%"},
+                    {field: 'Leavestatus', title: 'Leave Status', width: "30%"},
+                    {field:'leave_session',title:'Leave Session',width:'20%'},
+                     {field:'Remarks',title:'Remarks',width:'20%'},
+                      ]]
+        });
+    });
+</script>

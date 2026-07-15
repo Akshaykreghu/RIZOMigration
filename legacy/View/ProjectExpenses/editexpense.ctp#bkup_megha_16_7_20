@@ -1,0 +1,388 @@
+<form class="form-horizontal" style="padding-left:1px; padding-right:8px ; border:1px;margin-bottom:20px;" id="form-user-master" method="post" action="<?php echo $this->webroot; ?>ProjectExpenses/edit_save" >
+<!--<h1 class="page-header">Edit Expense</h1>-->
+    
+
+        <h4 style="padding-top: 20px;padding-left:20px;">Edit Expense</h4>
+        <div class="divider"></div>
+        <div style="padding-left:75px;padding-bottom:20px;">
+<!--        <div class="form-group">
+                        <div class="col-md-10">
+                                <label for="in_date" class="col-sm-5 control-label">Choose Employee<span class="star">*</span></label>
+                                <div class="col-md-7">
+                                    Employee Company ID added by ***ARUL P DAS on 20/12/2019 
+                                    <select id="emp_fkey" class="form-control" name="emp_fkey" required="required" >
+                                        <option value="">[--Select--]</option>
+                                        <?php
+                                        foreach ($arr_employees as $value) {
+                                            $selected = ($data['0']['emp_expense_details']['emp_fkey'] == $value['emp_details']['emp_pkey']) ? 'selected="selected"' : '';
+                                            echo '<option value="' . $value['emp_details']['emp_pkey'] . '" ' . $selected . '>' . $value['emp_details']['first_name'] . ' ' . $value['emp_details']['last_name'] . ' - ' . $value['emp_proff']['emp_company_id'] . '</option>';
+                                        }
+                                        ?>
+                                    </select> 
+                                </div>
+                            </div>
+        </div>-->
+        <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_time" class="col-sm-5 control-label">Expense Name<span class="star">*</span></label>
+                            <div class="col-md-7">
+                               <input type="hidden"  class="form-control" value="<?php echo $data['0']['emp_expense_details']['expense_type_fkey'];?>" name="expense" id="expense" >
+                                <!--<input type="text" class="form-control" name="expense_type" id="expense_type" style="background:white;" placeholder="Enter Expense Type"  required="required" list="team_list">-->
+                                <select id="expense_type" name="expense_type" class="form-control" required="required" onchange="filterCategory(this);">
+                                    <option value="">[--Select--]</option>
+                                    <!-- HERE SAVES THE EXPENSE TYPE PKEY INTO EXPENSE TABLE-->
+                                    
+                                    <?php
+                                    foreach ($expense_type as $type) {
+                                        foreach ($type as $t) {
+                                    
+                                     $selected = ($data['0']['emp_expense_details']['expense_type_fkey'] == $t['expense_type_pkey']) ? 'selected="selected"' : '';
+                                            echo '<option value="' . $t['expense_type_pkey'] . '" ' . $selected . '>' . $t["expense_type_name"] . '</option>';
+                                       
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div> 
+                        </div>
+        </div>
+        <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="category" class="col-sm-5 control-label">Category</label>
+                            <div class="col-md-7">
+                                  <select id="category" class="form-control js-example-basic-single" name="category">
+                                      <?php if($data['0']['emp_expense_details']['category_fkey']){ ?>
+                                      <option value="<?php echo $data['0']['emp_expense_details']['category_fkey']; ?> " ><?php echo $data['0']['expense_item']['category'];?></option>
+                                      <?php } ?>
+                                  </select>
+                            </div> 
+                        </div>
+        </div>
+<!--             <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="exp_date" class="col-sm-5 control-label">Expense Date<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input type="text"  class="form-control"  value="<?php echo isset($data['0']['emp_expense_details']['exp_date'])?$data['0']['emp_expense_details']['exp_date']:'';?>" name="exp_date" id="exp_date" readonly="readonly" style="background:white;" placeholder="Select Date" required="required">onchange="//findextingsalary();"
+                            </div> 
+                        </div>
+                        
+                    </div>-->
+
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="expenses_amount" class="col-sm-5 control-label">Expense Amount<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input type="number" step="0.01" min="0" required="required" onchange="add();" class="form-control" value="<?php echo isset($data['0']['emp_expense_details']['exp_amount'])?$data['0']['emp_expense_details']['exp_amount']:'';?>" name="expenses_amount" id="expenses_amount">
+                            </div> 
+                        </div>
+                    </div>
+               <div class="form-group">
+                         <div class="col-md-10">
+                            <label for="cgst" class="col-sm-5 control-label">CGST</label>
+                            <div class="col-md-7">
+                                <input type="number" step="0.01" min="0" class="form-control" onchange="add();" value="<?php echo isset($data['0']['emp_expense_details']['cgst'])?$data['0']['emp_expense_details']['cgst']:'';?>" name="cgst" id="cgst" >
+                            </div> 
+                        </div>
+                 </div>
+               <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="sgst" class="col-sm-5 control-label">SGST</label>
+                            <div class="col-md-7">
+                                <input type="number" step="0.01" min="0" class="form-control" onchange="add();" value="<?php echo isset($data['0']['emp_expense_details']['sgst'])?$data['0']['emp_expense_details']['sgst']:'';?>" name="sgst" id="sgst">
+                            </div> 
+                        </div>
+               </div>
+               <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="total" class="col-sm-5 control-label">Total</label>
+                            <div class="col-md-7">
+                                <input type="number" step="0.01" class="form-control" readonly="readonly" value="<?php echo isset($data['0']['emp_expense_details']['total'])?$data['0']['emp_expense_details']['total']:'';?>" name="total" id="total">
+                            </div> 
+                        </div>
+                         
+                    </div>
+<!--                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="gst_bill_no" class="col-sm-5 control-label">GST Bill No</label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" value="<?php echo isset($data['0']['emp_expense_details']['gst_bill_no'])?$data['0']['emp_expense_details']['gst_bill_no']:'';?>" name="gst_bill_no" id="gst_bill_no">
+                            </div> 
+                        </div>
+                    </div>-->
+<!--               <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="gst_bill_status" class="col-sm-5 control-label">GST Bill Status</label>
+                            <div class="col-md-7">
+                                <select id="gst_bill_status"  class="form-control" name="gst_bill_status">
+                               <option value="">[--Select--]</option>
+                               <?php $status = isset($data[0]['emp_expense_details']['gst_bill_status']) ? $data[0]['emp_expense_details']['gst_bill_status']: ''; ?>
+                               <?php $arr_status = array('Completed', 'Pending','NIL');
+                               foreach ($arr_status as $value) { ?>
+                                <?php
+                                if ($value == $status) {
+                                    $selected = 'selected="selected"';
+                                } else {
+                                    $selected = '';
+                                }
+                                ?>
+                                <option <?php echo $selected; ?> value="<?php echo $value; ?>"><?php echo $value; ?></option>
+                               <?php } ?>
+                              </select> 
+                            </div> 
+                        </div>
+               </div>-->
+<!--               <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="payment" class="col-sm-5 control-label">Payment<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input type="number" step="0.01"  required="required" onchange="minus();" class="form-control" value="<?php echo isset($data['0']['emp_expense_details']['payment'])?$data['0']['emp_expense_details']['payment']:'';?>" name="payment" id="payment">
+                            </div> 
+                        </div>
+               </div>-->
+<!--               <div class="form-group">
+                            <div class="col-md-10">
+                            <label for="balance" class="col-sm-5 control-label">Balance</label>
+                            <div class="col-md-7">
+                                <input type="number" step="0.01" readonly="readonly" class="form-control" value="<?php echo isset($data['0']['emp_expense_details']['balance'])?$data['0']['emp_expense_details']['balance']:'';?>" name="balance" id="balance" >
+                            </div> 
+                        </div>
+                       
+                    </div>-->
+<!--                    <div class="form-group">
+                         <div class="col-md-10">
+                            <label for="payment_status" class="col-sm-5 control-label">Payment Status<span class="star">*</span></label>
+                            <div class="col-md-7">
+                              <select id="payment_status"  class="form-control" name="payment_status" required="required" >
+                               <option value="">[--Select--]</option>
+                               <?php $status = isset($data[0]['emp_expense_details']['payment_status']) ? $data[0]['emp_expense_details']['payment_status']: ''; ?>
+                               <?php $arr_status = array('Completed', 'Pending');
+                               foreach ($arr_status as $value) { ?>
+                                <?php
+                                if ($value == $status) {
+                                    $selected = 'selected="selected"';
+                                } else {
+                                    $selected = '';
+                                }
+                                ?>
+                                <option <?php echo $selected; ?> value="<?php echo $value; ?>"><?php echo $value; ?></option>
+                               <?php } ?>
+                              </select>
+                               </div> 
+                        </div>
+                    </div>-->
+               <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="related_party" class="col-sm-5 control-label">Related Party</label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" value="<?php echo isset($data['0']['emp_expense_details']['related_party'])?$data['0']['emp_expense_details']['related_party']:'';?>" name="related_party" id="related_party">
+                            </div> 
+                        </div>
+               </div>
+               <div class="form-group">
+                       <div class="col-md-10">
+                            <label for="image" class="col-sm-5 control-label">Image</label>
+                            <div class="col-md-7">
+<!--                                <input type="text"  class="form-control" value="<?php // echo $data['remarks']?>" name="image" id="image">-->
+                                <input type="file" class="form-control file"  id="image" name="image" >
+                            </div> 
+                      </div>
+               </div>
+  <div class="form-group">
+           <div class="  pull-right">
+                <input type="hidden" name="oldimg" value="<?php echo isset($data['0']['emp_expense_details']['image'])?$data['0']['emp_expense_details']['image']:'';?>">
+                <input type="hidden" name="emp_expense_fkey" id="emp_expense_fkey" value="<?php echo $data['0']['emp_expense_details']['emp_expense_fkey'];?>">
+                <input type="hidden" name="expense_details_pkey" id="expense_details_pkey" value="<?php echo $data['0']['emp_expense_details']['expense_details_pkey'];?>">
+                <button type="submit" id="btn-submit" class="btn btn-primary pull-right "  style="margin-right:15px;">Update Expense</button>
+          </div>
+  </div> 
+          </div>
+</form>
+<script>
+   
+     function filterCategory(type)
+    {
+     $("#category").val('');
+        var exp = $('#expense_type').val();
+        $("#category").select2(
+                {
+                    //closeOnSelect:false,
+                    placeholder: "Select",
+                    allowClear: true,
+                    ajax: {
+                        url: livesite + "ProjectExpenses/category/" + exp,
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) { 
+                            console.log(params);
+//                            return{
+//                               id: '<?php echo $data['0']['emp_expense_details']['category_fkey']; ?>', 
+//                               a_key: '<?php echo $data['0']['expense_item']['category']; ?>' 
+//                            }
+                            return {
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        }
+                    },
+                    escapeMarkup: function (markup) {
+                        return markup;
+                    }
+                });
+    }
+    $(document).ready(function () {
+   // $('#category').val(<?php echo $data['0']['expense_item']['category'];?>);
+   // $('#category').select2('data', {id: '<?php echo $data['0']['emp_expense_details']['category_fkey']; ?>', a_key: '<?php echo $data['0']['expense_item']['category']; ?>'});
+    $('#exp_date').datepicker({ 
+            format: 'yyyy-mm-dd',       
+            autoclose: true,
+            //startDate: '+1d',
+        
+        });
+  
+        });
+        function add(){
+         var amt = parseFloat($('#expenses_amount').val());
+         var sgst = parseFloat($('#sgst').val());
+         var cgst = parseFloat($('#cgst').val());
+         if(amt> 0 && sgst > 0 && cgst > 0){
+         var total = amt + sgst + cgst;
+         }else if (amt> 0 && cgst > 0){
+           var total = amt + cgst; 
+         }else if (amt> 0 && sgst > 0){
+           var total = amt + sgst; 
+         }else if (amt> 0 ){
+           var total = amt;  
+         }else{
+          // var total = 0;   
+         }
+         total = parseFloat(total);
+         $("#total").val(total);
+        // $('#payment').max = total;
+         // minus();
+    }
+//     function minus(){
+//         var total = parseFloat($('#total').val());
+//         var payment = parseFloat($('#payment').val());
+//         if(total> 0 && payment > 0){
+//         var balance = total - payment;
+//         }else if(total> 0){
+//          var balance = total;   
+//         }
+//         balance = parseFloat(balance);
+//         $("#balance").val(balance);
+//         
+//    }
+     var options = { 
+            success:function(responseText){
+                var response = JSON.parse(responseText);
+               
+                if(response.success == false){
+                    closeSmallModalForm();
+                }
+                else{
+                    closeSmallModalForm(); 
+                     $.notify("Updated Successfully",{
+                    type: 'success',
+                    allow_dismiss: false
+                });
+               var pkey = response.pk;
+               showdetails(pkey);
+                }              
+            }
+        }; 
+ 
+        // bind to the form's submit event 
+        $('#form-user-master').submit(function() { 
+            $(this).ajaxSubmit(options); 
+            return false;
+        });
+        function showdetails(id){
+        showLargeModalForm(livesite + 'ProjectExpenses/view_expense/' + id);
+                    }
+//     $('#form-user-master').on('submit', function (event) {
+//            event.preventDefault();
+//            
+//            if($('#emp_fkey').val() == ''){
+//                if ($("#emp_fkey").next(".validation").length == 0) // only add if not added
+//                 {
+//                $('#emp_fkey').parent().append("<div class='validation' style='color:red;'>Please select employee. </div>");
+//                
+//                 }
+//                 return false;
+//            }else{
+//                $("#emp_fkey").next(".validation").hide();
+//            }
+//             if($('#expense_type').val() == ''){
+//                if ($("#expense_type").next(".validation").length == 0) // only add if not added
+//                 {
+//                $('#expense_type').parent().append("<div class='validation' style='color:red;'>Please select expense type.. </div>");
+//                
+//                 }
+//                 return false;
+//            }else{
+//                $("#expense_type").next(".validation").hide();
+//            }
+//            if($('#expenses_amount').val() == ''){
+//                if ($("#expenses_amount").next(".validation").length == 0) // only add if not added
+//                 {
+//                $('#expenses_amount').parent().append("<div class='validation' style='color:red;'>Please enter expense amount. </div>");
+//                
+//                 }
+//                 return false;
+//            }else{
+//                $("#expenses_amount").next(".validation").hide();
+//            }
+//            if($('#exp_date').val() == ''){
+//                if ($("#exp_date").next(".validation").length == 0) // only add if not added
+//                 {
+//                $('#exp_date').parent().append("<div class='validation' style='color:red;'>Please select expense date. </div>");
+//                
+//                 }
+//                 return false;
+//            }else{
+//                $("#exp_date").next(".validation").hide();
+//            }
+//            if($('#payment').val() == ''){
+//                if ($("#payment").next(".validation").length == 0) // only add if not added
+//                 {
+//                $('#payment').parent().append("<div class='validation' style='color:red;'>Please enter payment amount. </div>");
+//                
+//                 }
+//                 return false;
+//            }else{
+//                $("#payment").next(".validation").hide();
+//            }
+//            if($('#payment_status').val() == ''){
+//                if ($("#payment_status").next(".validation").length == 0) // only add if not added
+//                 {
+//                $('#payment_status').parent().append("<div class='validation' style='color:red;'>Please select payment status. </div>");
+//                
+//                 }
+//                 return false;
+//            }else{
+//                $("#payment_status").next(".validation").hide();
+//            }
+//            $('#form-user-master').ajaxSubmit({
+//                success: function (resp) {
+//                    $.notify('Updated Successfully.', {
+//                        type: 'success',
+//                        allow_dismiss: true
+//                    });
+//                    closeSmallModalForm();
+//                }
+//                  
+//                  var pkey = $.parseJSON(resp).pk;
+//                  showLargeModalForm(livesite + 'ProjectExpenses/view_expense/' + pkey);
+//            });
+//
+//        });
+</script>

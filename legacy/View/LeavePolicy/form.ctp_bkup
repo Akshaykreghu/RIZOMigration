@@ -1,0 +1,138 @@
+  <form id="lpForm" action="<?php echo $this->webroot; ?>LeavePolicy/savepolicy" method="post">
+      <div class="modal-body">
+      	
+    			<div class="form-group">
+    					<input id="LEAVEPOLICY_GROUP_ID" name="LEAVEPOLICY_GROUP_ID" type="hidden"  value="<?php echo $data["LEAVEPOLICY_GROUP_ID"]; ?>" >
+               
+    				<input id="LEAVEPOLICYID" name="LEAVEPOLICYID" type="hidden"  value="<?php echo $data["LEAVEPOLICYID"]; ?>" >
+                     	 <label>Leave Type</label>
+                   
+						 <select name="salary_head_item_fkey" class="form-control input-md" required="" >
+						 	<option>[--Select--]</option>
+				     		<?php foreach ($policygroup as $key => $value) {
+								 $selected = "";
+								 if($data['salary_head_item_fkey'] ==$value['id'] ){
+								 	 $selected = 'selected="selected"';
+								 }
+								 ?>
+								 
+								 <option <?php echo $selected;  ?> value="<?php echo $value['id'];?>"><?php echo $value['label'];?></option>
+								 <?php
+							 } ?>
+				     	 </select>
+
+                    </div>
+                    <div class="form-group">
+                    
+                        <!--div class="col-md-6">
+                    <?php 
+                    $checked = '';
+                    if($data['IS_SANDWICH'] != null &&  $data['IS_SANDWICH'] == "Y")   $checked = 'checked="checked"'; ?>
+                    	  <input type="checkbox" <?php echo $checked; ?> value="Y" name="IS_SANDWICH"> Is Sandwitch Leave
+                        </div-->
+                        <div class="col-md-6">
+                             <?php 
+                    $checked = '';
+                    if($data['is_leave_encash'] != null &&  $data['is_leave_encash'] == "Y")   $checked = 'checked="checked"'; ?>
+                    	  <input type="checkbox" <?php echo $checked; ?> value="Y"  id="is_leave_encash" name="is_leave_encash"> Is Leave Encash
+                        </div>
+					</div>
+                    <div class="form-group">
+                    	<div class="row">
+							  <div class="col-xs-2">
+							   <label>Year Limit </label>          <input type="text" class="form-control" name="alloted_leave_forthe_year" value="<?php echo $data["alloted_leave_forthe_year"]; ?>">
+							  </div>
+							  <div class="col-xs-3">
+							    <label>Monthly Limit </label>      <input type="text" class="form-control" name="alloted_leave_forthe_month" value="<?php echo $data["alloted_leave_forthe_month"]; ?>">
+							  </div>
+							  <div class="col-xs-4">
+							   <label>Carry Forward Limit </label> <input type="text" class="form-control" name="CARRY_FORWARD_LIMIT" value="<?php echo $data["CARRY_FORWARD_LIMIT"]; ?>">
+							  </div>
+							  <div class="col-xs-4" id="encahsment_container">
+							   <label>Leave Encashment Limit </label> <input type="text" class="form-control" name="leave_encash_limit" id="encahsmentlimit" value="<?php echo isset($data["leave_encash_limit"])?$data["leave_encash_limit"]:''; ?>"> 
+							  </div>
+						</div>
+                      
+                    </div>
+                    
+                     <div class="form-group">
+                     	 <label>Applicable To</label>
+                     	  <select name="APPLICABLE_TO" class="form-control input-md" required="" >
+                     	  	<?php foreach ($applicableTo as $key => $value) {
+								 $selected = "";
+								 if($data['APPLICABLE_TO'] == $value['id'] ){
+								 	 $selected = 'selected="selected"';
+								 }
+								 ?>
+								 
+								 <option <?php echo $selected;  ?> value="<?php echo $value['id'];?>"><?php echo $value['label'];?></option>
+								 <?php
+							 } ?>
+                     	  		
+   						  </select>
+                     </div>
+                     <div class="form-group">
+                     	<?php 
+                    $checked = '';
+                    if($data['ALLOW_NEGETIVE'] != null &&  $data['ALLOW_NEGETIVE'] == "Y")   $checked = 'checked="checked"'; ?>
+                    
+                    	  <input type="checkbox" <?php echo $checked; ?> value="Y" name="ALLOW_NEGETIVE"> Allow Negetive Balance
+					 </div>
+                     <div class="form-group">
+                     	  <label>Description</label>
+                     	  <textarea name="REMARKS" class="form-control input-md" required="" ><?php echo $data["REMARKS"]; ?></textarea> 
+                     	  		
+                     </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+      </form>
+<script type="text/javascript">
+$(document).ready(function() {
+   <?php if(isset($data['is_leave_encash']) and $data['is_leave_encash'] == "Y")  { ?>
+           $('#encahsmentlimit').show();
+           $('#encahsment_container').show();
+           $('#is_leave_encash').prop("checked",true);
+   <?php }
+   else{ 
+       
+?>     
+        $('#encahsmentlimit').hide();
+           $('#encahsment_container').hide();
+           $('#is_leave_encash').prop("checked",false);
+   <?php } ?>
+        
+
+        $('#is_leave_encash').click(function(){
+            if($(this).prop("checked") == true){
+                $('#encahsmentlimit').show();
+                $('#encahsment_container').show();
+            }
+            else if($(this).prop("checked") == false){
+                $('#encahsmentlimit').hide().val('');
+                $('#encahsment_container').hide();
+            }
+        });
+     
+  $('#lpForm').parsley();
+    var options = { 
+  success:function(responseText, statusText, xhr, $form){
+	closeSmallModalForm('leavepolicytable');
+}
+    }; 
+ 
+    // bind to the form's submit event 
+    $('#lpForm').submit(function() { 
+        // inside event callbacks 'this' is the DOM element so we first 
+        // wrap it in a jQuery object and then invoke ajaxSubmit 
+        $(this).ajaxSubmit(options); 
+ 
+        // !!! Important !!! 
+        // always return false to prevent standard browser submit and page navigation 
+        return false; 
+    });
+    }); 
+</script>

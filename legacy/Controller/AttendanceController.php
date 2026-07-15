@@ -1,0 +1,2751 @@
+<?php
+
+/**
+ * Static content controller.
+ *
+ * This file will render views from views/pages/
+ *
+ * PHP 5
+ *
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
+ * @package       app.Controller
+ * @since         CakePHP(tm) v 0.2.9
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ */
+App::uses('AppController', 'Controller');
+
+App::uses('ConnectionManager', 'Model');
+
+/**
+ * Static content controller
+ *
+ * Override this controller by placing a copy in controllers directory of an application
+ *
+ * @package       app.Controller
+ * @link http://book.cakephp.org/2.0/en/controllers/pages-controller.html
+ */
+class AttendanceController extends AppController
+{
+
+    /**
+     * Controller name
+     *
+     * @var string
+     */
+    public $name = 'Attendance';
+    public $datatable;
+
+    /**
+     * This controller does not use a model
+     *
+     * @var array
+     */
+    public $uses = array('EmployeeDetails', 'Units', 'AttendanceRegister', 'DbConfig', 'SalaryHeadItems', 'LeaveRequests', 'EmployeeLeaveTransaction');
+    public $components = array('MasterdataManagement');
+
+    public function showregister()
+    {
+        $this->EmployeeDetails->useDbConfig = $this->Session->read('ds');
+         $plan = $this->EmployeeDetails->query('SELECT plan FROM comp_contact_info');
+        $plan = isset($plan['0']['comp_contact_info']['plan']) ? $plan['0']['comp_contact_info']['plan'] : '';
+        $this->set('plan', $plan);
+        if ($this->Session->read('emp_fkey')) {
+            $emp_pkey = $this->Session->read('emp_fkey');
+            $arr_leavetypes = $this->EmployeeDetails->query("select atten_mgt_priv from emp_proff where emp_fkey = $emp_pkey");
+            $key = isset($arr_leavetypes['0']['emp_proff']['atten_mgt_priv']) ? $arr_leavetypes['0']['emp_proff']['atten_mgt_priv'] : 0;
+
+            if ($key == 1) {
+                $emp_pkeys =  0;
+            } else {
+                $emp_pkeys = $emp_pkey;
+            }
+        } else {
+            $emp_pkeys = 0;
+        }
+
+        //edited by sinsiya 26-02-2024
+        $user_group = $this->Session->read('user_group');
+        // if ($user_group == 2) {
+        //     $cur_emp_key = $this->Session->read("emp_fkey");
+        //     $payroUser = $this->EmployeeDetails->query("select emp_proff.payro_priv,emp_proff.emp_branch,branches.branch_name from emp_proff JOIN branches ON emp_proff.emp_branch = branches.branch_code where emp_proff.emp_fkey ='$cur_emp_key'");
+        // }
+        // if (isset($payroUser[0]['emp_proff']['payro_priv'])) {
+        //     $arr_branches = $this->MasterdataManagement->getBranchesListForCombo();
+        // } else {
+        //     $arr_branches = $this->MasterdataManagement->getBranchesListForCombo($emp_pkeys);
+        // }
+
+        // Edited by Akshay on 31-10-2025
+        $company_code = $this->Session->read('company_code');
+        $emp_pkeys = ($company_code == 'STFR')? 0: $company_code;
+        // End
+        $arr_branches = $this->MasterdataManagement->getBranchesListForCombo($emp_pkeys);
+        $this->set('arr_branches', $arr_branches);
+        $emp_fkey = $this->Session->read('emp_fkey');
+        if (isset($emp_fkey) && $emp_fkey != '') {
+            $joins = array(
+                array(
+                    'table' => 'emp_proff',
+                    'alias' => 'EmployeeProfessionalDetails',
+                    'type' => 'LEFT',
+                    'foreignKey' => false,
+                    'conditions' => array('EmployeeDetails.emp_pkey = EmployeeProfessionalDetails.emp_fkey')
+                )
+            );
+            $conditions  =   array('status' => 1, 'EmployeeProfessionalDetails.attr1' => $emp_fkey);
+            $arr_employees = Set::extract('/EmployeeDetails/.', $this->EmployeeDetails->find("all", array('order' => array('emp_pkey DESC'), 'joins' => $joins, "fields" => array("EmployeeDetails.emp_pkey", "EmployeeDetails.emp_name"), "conditions" => $conditions)));
+        } else {
+            $arr_employees = Set::extract('/EmployeeDetails/.', $this->EmployeeDetails->find("all", array('order' => array('emp_pkey DESC'), "fields" => array("emp_pkey", "emp_name"), "conditions" => array('status' => 1))));
+        }
+        $this->set('arr_employees', $arr_employees);
+
+        $arr_registerentries = array(
+            'P' => array(
+                'label' => 'Present',
+                'color' => 'green',
+                'textColor' => 'white'
+            ),
+            /*'L' => array(
+                'label' => 'On Leave',
+                'color' => 'orange',
+                'textColor' => 'white'
+            ),*/
+            /*'FDL' => array(
+                'label' => 'Full Day Leave', 
+             * 
+                'color' => 'orange',
+                'textColor' => 'white'
+            ),
+            'FHL' => array(
+                'label' => 'First Half Leave',
+                'color' => 'orange',
+                'textColor' => 'white'
+            ),
+            'SHL' => array(
+                'label' => 'Second Half Leave',
+                'color' => 'orange',
+                'textColor' => 'white'
+            ),*/
+            'WO' => array(
+                'label' => 'Week Off',
+                'color' => 'yellow',
+                'textColor' => 'black'
+            ),
+            'HO' => array(
+                'label' => 'Holiday',
+                'color' => 'blue',
+                'textColor' => 'white'
+            ),
+            'A' => array(
+                'label' => 'Absent',
+                'color' => 'red',
+                'textColor' => 'white'
+            ),
+            'LOP' => array(
+                'label' => 'Loss Of Pay',
+                'color' => 'maroon',
+                'textColor' => 'white'
+            ),
+            'OTHERS' => array(
+                'label' => 'Others',
+                'color' => 'deepskyblue',
+                'textColor' => 'white'
+            )
+        );
+
+        $this->SalaryHeadItems->useDbConfig = $this->Session->read('ds');
+        $arr_leavetypes = $this->SalaryHeadItems->query("select UCASE(ifnull(occurance,'LOP')) AS abbr,item from salary_head_items where ucase(item_type)='LEAVE' AND occurance != 'LOP'");
+        $arr_leaveabbr = array();
+        foreach ($arr_leavetypes as $leaveabbr => $leave) {
+            if ($leave[0]['abbr'] == 'TC') {
+                $arr_registerentries['TC'] = array(
+                    'label' => 'Time Coupen',
+                    'color' => '#ef00ff',
+                    'textColor' => 'white'
+                );
+            } else {
+                $arr_registerentries[$leave[0]['abbr']] = array(
+                    'label' => $leave['salary_head_items']['item'],
+                    'color' => 'orange',
+                    'textColor' => 'white'
+                );
+            }
+            $arr_leaveabbr[] = strtoupper($leave[0]['abbr']);
+        }
+        //On 31 July 2016
+        //$arr_leaveabbr[] = "LOP";
+        $this->set('str_leaveabbr', implode('#', $arr_leaveabbr));
+
+        $this->set('arr_registerentries', $arr_registerentries);
+    }
+
+     public function showregisteradmin()
+    {
+        $this->EmployeeDetails->useDbConfig = $this->Session->read('ds');
+        if ($this->Session->read('emp_fkey')) {
+            $emp_pkey = $this->Session->read('emp_fkey');
+            $arr_leavetypes = $this->EmployeeDetails->query("select atten_mgt_priv from emp_proff where emp_fkey = $emp_pkey");
+            $key = isset($arr_leavetypes['0']['emp_proff']['atten_mgt_priv']) ? $arr_leavetypes['0']['emp_proff']['atten_mgt_priv'] : 0;
+
+            if ($key == 1) {
+                $emp_pkeys =  0;
+            } else {
+                $emp_pkeys = $emp_pkey;
+            }
+        } else {
+            $emp_pkeys = 0;
+        }
+
+        $user_group = $this->Session->read('user_group');
+     
+        // Edited by Akshay on 31-10-2025
+        $company_code = $this->Session->read('company_code');
+        $emp_pkeys = ($company_code == 'STFR')? 0: $company_code;
+        // End
+        $arr_branches = $this->MasterdataManagement->getBranchesListForCombo($emp_pkeys);
+        $this->set('arr_branches', $arr_branches);
+       // $emp_fkey = $this->Session->read('emp_fkey');
+        // if (isset($emp_fkey) && $emp_fkey != '') {
+        //     $joins = array(
+        //         array(
+        //             'table' => 'emp_proff',
+        //             'alias' => 'EmployeeProfessionalDetails',
+        //             'type' => 'LEFT',
+        //             'foreignKey' => false,
+        //             'conditions' => array('EmployeeDetails.emp_pkey = EmployeeProfessionalDetails.emp_fkey')
+        //         )
+        //     );
+        //     $conditions  =   array('status' => 1, 'EmployeeProfessionalDetails.attr1' => $emp_fkey);
+        //     $arr_employees = Set::extract('/EmployeeDetails/.', $this->EmployeeDetails->find("all", array('order' => array('emp_pkey DESC'), 'joins' => $joins, "fields" => array("EmployeeDetails.emp_pkey", "EmployeeDetails.emp_name"), "conditions" => $conditions)));
+        // } else {
+            $arr_employees = Set::extract('/EmployeeDetails/.', $this->EmployeeDetails->find("all", array('order' => array('emp_pkey DESC'), "fields" => array("emp_pkey", "emp_name"), "conditions" => array('status' => 1))));
+       // }
+        $this->set('arr_employees', $arr_employees);
+
+        $arr_registerentries = array(
+            'P' => array(
+                'label' => 'Present',
+                'color' => 'green',
+                'textColor' => 'white'
+            ),
+          
+            'WO' => array(
+                'label' => 'Week Off',
+                'color' => 'yellow',
+                'textColor' => 'black'
+            ),
+            'HO' => array(
+                'label' => 'Holiday',
+                'color' => 'blue',
+                'textColor' => 'white'
+            ),
+            'A' => array(
+                'label' => 'Absent',
+                'color' => 'red',
+                'textColor' => 'white'
+            ),
+            'LOP' => array(
+                'label' => 'Loss Of Pay',
+                'color' => 'maroon',
+                'textColor' => 'white'
+            ),
+            'OTHERS' => array(
+                'label' => 'Others',
+                'color' => 'deepskyblue',
+                'textColor' => 'white'
+            )
+        );
+
+        $this->SalaryHeadItems->useDbConfig = $this->Session->read('ds');
+        $arr_leavetypes = $this->SalaryHeadItems->query("select UCASE(ifnull(occurance,'LOP')) AS abbr,item from salary_head_items where ucase(item_type)='LEAVE' AND occurance != 'LOP'");
+        $arr_leaveabbr = array();
+        foreach ($arr_leavetypes as $leaveabbr => $leave) {
+            if ($leave[0]['abbr'] == 'TC') {
+                $arr_registerentries['TC'] = array(
+                    'label' => 'Time Coupen',
+                    'color' => '#ef00ff',
+                    'textColor' => 'white'
+                );
+            } else {
+                $arr_registerentries[$leave[0]['abbr']] = array(
+                    'label' => $leave['salary_head_items']['item'],
+                    'color' => 'orange',
+                    'textColor' => 'white'
+                );
+            }
+            $arr_leaveabbr[] = strtoupper($leave[0]['abbr']);
+        }
+      
+        $this->set('str_leaveabbr', implode('#', $arr_leaveabbr));
+
+        $this->set('arr_registerentries', $arr_registerentries);
+         $this->autoRender = false;
+         $this->render('showregister');
+		
+       
+    }
+
+
+    public function showregistertab($verified = 0)
+    {
+        $this->set('tab', $verified);
+
+        $arr_requestdata = $this->request->data;
+        $month = isset($arr_requestdata['month']) ? $arr_requestdata['month'] : date('Y-m');
+        $branch = isset($arr_requestdata['branch']) ? $arr_requestdata['branch'] : '';
+
+        $arr_conditions = array('status' => 1);
+        if ($branch != '') {
+            $arr_conditions['branch_code'] = $branch;
+        }
+        //edited by arul on 12/12/2019 Employee company id added
+        //        $this->EmployeeDetails->useDbConfig = $this->Session->read('ds');
+        //        $emp_fkey = $this->Session->read('emp_fkey');
+        //        if(isset($emp_fkey) && $emp_fkey != ''){
+        //            $joins = array(
+        //            array(
+        //            'table' => 'emp_proff',
+        //            'alias' => 'EmployeeProfessionalDetails',
+        //            'type' => 'LEFT',
+        //            'foreignKey' => false,
+        //            'conditions'=> array('EmployeeDetails.emp_pkey = EmployeeProfessionalDetails.emp_fkey')
+        //            )
+        //            );
+        //            $conditions  =   array('status'=>1,'EmployeeProfessionalDetails.attr1'=>$emp_fkey);
+        //            $arr_employees = Set::extract('/EmployeeDetails/.', $this->EmployeeDetails->find("all", array('order'=> array('emp_pkey DESC'), 'joins' => $joins,"fields" => array("EmployeeDetails.emp_pkey", "EmployeeDetails.emp_name"), "conditions" => $conditions)));
+        //        }else{
+        //            $arr_employees = Set::extract('/EmployeeDetails/.', $this->EmployeeDetails->find("all", array('order'=> array('emp_pkey DESC'), "fields" => array("emp_pkey", "emp_name"), "conditions" => array('status' => 1))));
+        //        }
+        //        $this->set('arr_employees', $arr_employees);
+        $arr_conditions = "";
+        if ($branch != '') {
+            $arr_conditions .= ' and emp_details.branch_code="' . $branch . '"';
+        }
+
+        $this->EmployeeDetails->useDbConfig = $this->Session->read('ds');
+        $emp_fkey = $this->Session->read('emp_fkey');
+         $company_code = $this->Session->read('company_code'); // Edited by Akshay on 31-10-2025
+        if (isset($emp_fkey) && $emp_fkey != '' && $company_code != 'STFR') { // Edited by Akshay on 31-10-2025
+            $arr_leavetypes = $this->EmployeeDetails->query("select atten_mgt_priv from emp_proff where emp_fkey = $emp_fkey");
+            $key = isset($arr_leavetypes['0']['emp_proff']['atten_mgt_priv']) ? $arr_leavetypes['0']['emp_proff']['atten_mgt_priv'] : 0;
+            if ($key != 1) {
+                $arr_conditions .= ' and emp_proff.attr1=' . $emp_fkey . '';
+            } else {
+                $arr_conditions .= '';
+            }
+            $arr_employees = $this->EmployeeDetails->query('select emp_pkey,first_name,last_name,emp_company_id from emp_details join emp_proff on emp_pkey=emp_fkey where emp_details.status=1 ' . $arr_conditions . ' order by emp_pkey DESC');
+        } else {
+            $arr_employees = $this->EmployeeDetails->query('select emp_pkey,first_name,last_name,emp_company_id from emp_details join emp_proff on emp_pkey=emp_fkey where emp_details.status=1 order by emp_pkey DESC');
+        }
+        $this->set('arr_employees', $arr_employees);
+        //end Employee company id added
+        //Fetch company's attendance end date
+        $this->DbConfig->useDbConfig = $this->Session->read('ds');
+        $company_code = $this->Session->read('company_code'); //company_code
+        $arr_db_config = Set::extract('/DbConfig/.', $this->DbConfig->find("first", array("fields" => array("attendance_date"), "conditions" => array('active' => 'Y', 'company_code' => $company_code))));
+
+        //By santhosh on 27 Dec 2015
+        //$att_startdate = isset($arr_db_config[0]['attendance_date'])?$arr_db_config[0]['attendance_date']:1;
+        //$att_enddate = date('t',  strtotime($month));
+        //On 20 Feb 2016
+        //$att_enddate = isset($arr_db_config[0]['attendance_date'])?$arr_db_config[0]['attendance_date']:1;
+        //$att_startdate = $att_enddate + 1;
+        //edited by megha on 11_03_2020
+        //        $attendance_date = isset($arr_db_config[0]['attendance_date']) ? $arr_db_config[0]['attendance_date'] : 0;
+        //        $att_enddate = date('d', strtotime('-' . $attendance_date . ' day', strtotime(date('Y-m-t', strtotime($month)))));
+        //        $att_startdate = date('d', strtotime('+1 day', strtotime(date('Y-m-d', strtotime('-' . $attendance_date . ' day', strtotime(date('Y-m-t', strtotime('-1 months', strtotime($month)))))))));
+        //        $arr_date_in_selectedmonth = range(1, $att_enddate);
+        //        if ($att_startdate != 1) {
+        //            $arr_date_in_prevmonth = range($att_startdate, date('t', strtotime('-1 months', strtotime($month))));
+        //        } else {
+        //            $arr_date_in_prevmonth = array();
+        //        }
+        //added by megha on on 11_03_2020 changed for SH Infra
+        $attendance_date = isset($arr_db_config[0]['attendance_date']) ? $arr_db_config[0]['attendance_date'] : 0;
+        $month1 =  $month . '-01';
+        $att_startdate = $this->EmployeeDetails->query("select att_start_end_fn(DATE_FORMAT('$month1', '%Y-%m-01'), 1) as monthly_att_fromdate");
+        $att_enddate = $this->EmployeeDetails->query("select att_start_end_fn(DATE_FORMAT('$month1', '%Y-%m-01'), 2) as monthly_att_todate");
+        $att_startdate1 = date("d", strtotime($att_startdate['0']['0']['monthly_att_fromdate']));
+        $att_enddate1 = date("d", strtotime($att_enddate['0']['0']['monthly_att_todate']));
+
+        $arr_date_in_selectedmonth = range(1, $att_enddate1);
+
+        if ($att_startdate1 != 1) {
+            $arr_date_in_prevmonth = range($att_startdate1, date('t', strtotime('-1 months', strtotime($month))));
+        } else {
+            $arr_date_in_prevmonth = array();
+        }
+        //end
+        $arr_dates = array_merge($arr_date_in_prevmonth, $arr_date_in_selectedmonth);
+        $this->set('arr_dates', $arr_dates);
+
+        //On 27 Dec 2015
+        //$date_start = date('Y-m-d',strtotime($month.'-'.$att_startdate));
+        //$date_end = date('Y-m-d',strtotime('-1 day',strtotime('+1 months',strtotime($date_start))));
+        //On 26/01/2016
+        //$date_start = date('Y-m-d', strtotime('-1 months', strtotime($month . '-' . $att_startdate)));
+        //$date_end = date('Y-m-d', strtotime($month . '-' . $att_enddate));        
+        //02 March 2016
+        //$date_end = date('Y-m-d', strtotime('-' . $attendance_date . ' day', strtotime(date('Y-m-t', strtotime($month)))));
+        //$date_start = date('Y-m-d', strtotime('+1 day', strtotime(date('Y-m-d', strtotime('-' . $attendance_date . ' day', strtotime(date('Y-m-t', strtotime('-1 months', strtotime($month))))))))); 
+        $date_start = $att_startdate['0']['0']['monthly_att_fromdate'];
+        $date_end = $att_enddate['0']['0']['monthly_att_todate'];
+        //$date_start = current($arr_dates);
+        //$date_end = end($arr_dates);		
+
+        $this->set('date_start', $date_start);
+        $this->set('date_end', $date_end);
+    }
+
+    /*
+     * List attendance register
+     * By santhosh on 02 Aug 2015
+     */
+
+    public function listregisterentries()
+    {
+        $this->autoRender = FALSE;
+
+        $month = isset($_REQUEST['month']) ? $_REQUEST['month'] : '';
+        //Fetch company's attendance end date
+        $this->DbConfig->useDbConfig = $this->Session->read('ds');
+        $company_code = $this->Session->read('company_code'); //company_code
+        $arr_db_config = Set::extract('/DbConfig/.', $this->DbConfig->find("first", array("fields" => array("attendance_date"), "conditions" => array('active' => 'Y', 'company_code' => $company_code))));
+        $attendance_date = isset($arr_db_config[0]['attendance_date']) ? $arr_db_config[0]['attendance_date'] : 0;
+        //commented by megha and  added function call 26_03_2020
+        //$att_enddate = strtotime('-' . $attendance_date . ' day', strtotime(date('Y-m-t', strtotime($month))));
+        //$att_startdate = strtotime('+1 day', strtotime(date('Y-m-d', strtotime('-' . $attendance_date . ' day', strtotime(date('Y-m-t', strtotime('-1 months', strtotime($month))))))));
+
+        $month1 =  $month . '-01';
+        $att_startdate = $this->DbConfig->query("select att_start_end_fn(DATE_FORMAT('$month1', '%Y-%m-01'), 1) as monthly_att_fromdate");
+        $att_enddate = $this->DbConfig->query("select att_start_end_fn(DATE_FORMAT('$month1', '%Y-%m-01'), 2) as monthly_att_todate");
+        $att_startdate1 = strtotime($att_startdate['0']['0']['monthly_att_fromdate']);
+        $att_enddate1 = strtotime($att_enddate['0']['0']['monthly_att_todate']);
+
+        $datediff = $att_enddate1 - $att_startdate1;
+
+        $numberOfDays = floor($datediff / (60 * 60 * 24)) + 1;
+
+
+
+        //On 31 JUly 2016
+        $this->SalaryHeadItems->useDbConfig = $this->Session->read('ds');
+        $arr_leavetypes = $this->SalaryHeadItems->query("select UCASE(ifnull(occurance,'LOP')) AS abbr from salary_head_items where ucase(item_type)='LEAVE' AND occurance != 'LOP'");
+        $arr_leaveabbr = array();
+        foreach ($arr_leavetypes as $leaveabbr => $leave) {
+            $arr_leaveabbr[] = strtoupper($leave[0]['abbr']);
+        }
+
+        $this->AttendanceRegister->useDbConfig = $this->Session->read('ds');
+        $limit = isset($_REQUEST['rows']) ? $_REQUEST['rows'] : 50;
+        $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
+
+        $sort = isset($_POST['sort']) ? strval($_POST['sort']) : 'emp_name';
+        $order = isset($_POST['order']) ? strval($_POST['order']) : 'asc';
+
+        $ofst = ($page - 1) * $limit;
+
+        $conditions = array('AttendanceRegister.isdelete="Y"');
+        if (isset($_REQUEST['branch']) && $_REQUEST['branch'] != '') {
+            $conditions[] = 'AttendanceRegister.branch_code="' . $_REQUEST['branch'] . '"';
+        }
+        if (isset($_REQUEST['employee']) && $_REQUEST['employee'] != '') {
+            $conditions[] = 'AttendanceRegister.emp_fkey=' . $_REQUEST['employee'];
+        }
+        if (isset($_REQUEST['month']) && $_REQUEST['month'] != '') {
+            $conditions[] = 'AttendanceRegister.month_year="' . $_REQUEST['month'] . '"';
+        } else {
+            $conditions[] = 'AttendanceRegister.month_year="' . date('Y-m', strtotime(date('M-Y'))) . '"';
+        }
+
+        $fields = 'AttendanceRegister.*';
+        $joins = array(
+            array(
+                'table' => 'branches',
+                'alias' => 'Branch',
+                'type' => 'LEFT',
+                'foreignKey' => false,
+                'conditions' => array(
+                    'AttendanceRegister.branch_code = Branch.branch_code',
+                    'Branch.status=1'
+                )
+            ),
+            array(
+                'table' => 'emp_details',
+                'alias' => 'EmployeeDetails',
+                'type' => 'LEFT',
+                'foreignKey' => false,
+                'conditions' => array(
+                    'AttendanceRegister.emp_fkey = EmployeeDetails.emp_pkey',
+                    'EmployeeDetails.status=1'
+                )
+            )
+        );
+
+        $this->datatable["conditions"] = $conditions;
+        $resp_register = array();
+        $resp_register["rows"] = array();
+        $count = $this->AttendanceRegister->find("count", array("conditions" => $conditions));
+        $conditions[] = 'EmployeeDetails.status = 1';
+        $emp_fkey = $this->Session->read('emp_fkey');
+
+        if (isset($emp_fkey) && $emp_fkey != '') {
+            $arr_leavetypes = $this->AttendanceRegister->query("select atten_mgt_priv from emp_proff where emp_fkey = $emp_fkey");
+            $key = isset($arr_leavetypes['0']['emp_proff']['atten_mgt_priv']) ? $arr_leavetypes['0']['emp_proff']['atten_mgt_priv'] : 0;
+            if ($key != 1) {
+                $joins[] = array(
+                    'table' => 'emp_proff',
+                    'alias' => 'EmployeeProfessionalDetails',
+                    'type' => 'LEFT',
+                    'foreignKey' => false,
+                    'conditions' => array('EmployeeDetails.emp_pkey = EmployeeProfessionalDetails.emp_fkey')
+                );
+                $conditions[] = "EmployeeProfessionalDetails.attr1 = '$emp_fkey' ";
+                //$conditions[] = "EmployeeProfessionalDetails.HOLIDAY_GROUP_ID is not null or EmployeeProfessionalDetails.LEAVEPOLICY_GROUP_ID is not null or EmployeeProfessionalDetails.day_time_seq is not null or EmployeeProfessionalDetails.structure_id is not null  ";
+            }
+        }
+        $arr_register = $this->AttendanceRegister->find("all", array('fields' => $fields, 'joins' => $joins, "conditions" => $conditions, 'order' => array($sort => $order), 'limit' => intval($limit), 'offset' => intval($ofst)));
+
+        foreach ($arr_register as $key => $value) {
+            $resp_register["rows"][$key] = $value["AttendanceRegister"];
+
+            //Count of present / leave / lop days
+            $int_days_present = 0; //count(array_keys($value["AttendanceRegister"], "P"));
+            $int_days_leave = 0; //count(array_keys($value["AttendanceRegister"], "L"));
+            //$int_days_holidays = 0;//count(array_keys($value["AttendanceRegister"], "HO"));
+            $int_days_lop = 0; //count(array_keys($value["AttendanceRegister"], "HO"));
+            //debug($value["AttendanceRegister"]);	
+            $dayCount = 1;
+            foreach ($value["AttendanceRegister"] as $key1 => $val) {
+
+                if ($dayCount <= $numberOfDays && strpos($key1, "FIELD") === 0) {
+                    $arr_field = explode('/', $val);
+                    // code before removing compoff p s $int_days_present += ((isset($arr_field[0]) && ($arr_field[0] == 'P' || $arr_field[0] == 'WFH' || $arr_field[0] == 'COFF' || $arr_field[0] == 'NA'))?((count($arr_field) == 1)?1:0.5):0)+((isset($arr_field[1]) && ($arr_field[1] == 'P' || $arr_field[1] == 'WFH' || $arr_field[1] == 'COFF' || $arr_field[1] == 'NA'))?0.5:0);
+                    $int_days_present += ((isset($arr_field[0]) && ($arr_field[0] == 'P' || $arr_field[0] == 'WFH')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0) + ((isset($arr_field[1]) && ($arr_field[1] == 'P' || $arr_field[1] == 'WFH')) ? 0.5 : 0);
+                    //$int_days_present += (strpos($val, '/') != FALSE)?substr_count($val,'P')/2:0;
+
+                    //Moved $int_days_leave calculation to js on formatRegisterEntry() method
+                    //$int_days_leave += substr_count($val,'FHL')/2 + substr_count($val,'SHL')/2 + substr_count($val,'FDL'); 
+                    /*foreach ($arr_field as $half){
+                        if(in_array(strtoupper($half), $arr_leavetypes)){
+                            $int_days_leave += 1/2;
+                        }
+                    }*/
+
+                    //On 31 JUly 2016
+                    foreach ($arr_field as $half) {
+                        if (count($arr_field) == 1) {
+                            if (in_array(strtoupper($half), $arr_leaveabbr)) {
+                                $int_days_leave += 1;
+                            }
+                        } else {
+                            if (in_array(strtoupper($half), $arr_leaveabbr)) {
+                                $int_days_leave += 1 / 2;
+                            }
+                        }
+                    }
+
+                    //$int_days_holidays += (($val=="H")?1:0);
+
+                    //On 23 Aug 2016
+                    //$int_days_lop += (strpos($val, '/') != FALSE)?substr_count($val,'LOP')/2:substr_count($val,'LOP');
+                    //if( $value["AttendanceRegister"]['registerid'] == 2289) echo "#".$val."#".PHP_EOL;
+                    $int_days_lop += (strpos($val, '/') != FALSE) ? substr_count($val, 'LOP') / 2 : (empty($val) ? 1 : substr_count($val, 'LOP'));
+
+                    $dayCount++;
+                }
+            }
+            $resp_register["rows"][$key]['days_present'] = $int_days_present;
+            $resp_register["rows"][$key]['days_leave'] = 0; //$int_days_leave;
+            //$resp_register["rows"][$key]['days_holidays'] = $int_days_holidays;
+            $resp_register["rows"][$key]['days_lop'] = $int_days_lop;
+        }
+        $resp_register["total"] = $count;
+        echo json_encode($resp_register);
+    }
+
+    public function listverifiedregisterentries()
+    {
+        $this->autoRender = FALSE;
+        $this->AttendanceRegister->useDbConfig = $this->Session->read('ds');
+        $limit = isset($_REQUEST['rows']) ? $_REQUEST['rows'] : 50;
+        $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
+
+        $sort = isset($_POST['sort']) ? strval($_POST['sort']) : 'emp_name';
+        $order = isset($_POST['order']) ? strval($_POST['order']) : 'asc';
+
+        $ofst = ($page - 1) * $limit;
+
+        $conditions = array('AttendanceRegister.isdelete="N"');
+        if (isset($_REQUEST['branch']) && $_REQUEST['branch'] != '') {
+            $conditions[] = 'AttendanceRegister.branch_code="' . $_REQUEST['branch'] . '"';
+        }
+        if (isset($_REQUEST['employee']) && $_REQUEST['employee'] != '') {
+            $conditions[] = 'AttendanceRegister.emp_fkey=' . $_REQUEST['employee'];
+        }
+        if (isset($_REQUEST['month']) && $_REQUEST['month'] != '') {
+            $conditions[] = 'AttendanceRegister.month_year="' . $_REQUEST['month'] . '"';
+        } else {
+            $conditions[] = 'AttendanceRegister.month_year="' . date('Y-m', strtotime(date('M-Y'))) . '"';
+        }
+
+        $fields = 'AttendanceRegister.*';
+        $joins = array(
+            array(
+                'table' => 'branches',
+                'alias' => 'Branch',
+                'type' => 'LEFT',
+                'foreignKey' => false,
+                'conditions' => array(
+                    'AttendanceRegister.branch_code = Branch.branch_code',
+                    'Branch.status=1'
+                )
+            ),
+            array(
+                'table' => 'emp_details',
+                'alias' => 'EmployeeDetails',
+                'type' => 'LEFT',
+                'foreignKey' => false,
+                'conditions' => array(
+                    'AttendanceRegister.emp_fkey = EmployeeDetails.emp_pkey',
+                    'EmployeeDetails.status=1'
+                )
+            )
+        );
+
+        $this->datatable["conditions"] = $conditions;
+        $resp_register = array();
+        $resp_register["rows"] = array();
+        $count = $this->AttendanceRegister->find("count", array("conditions" => $conditions));
+        $emp_fkey = $this->Session->read('emp_fkey');
+
+        if (isset($emp_fkey) && $emp_fkey != '') {
+            $arr_leavetypes = $this->AttendanceRegister->query("select atten_mgt_priv from emp_proff where emp_fkey = $emp_fkey");
+            $key = isset($arr_leavetypes['0']['emp_proff']['atten_mgt_priv']) ? $arr_leavetypes['0']['emp_proff']['atten_mgt_priv'] : 0;
+            if ($key != 1) {
+                $joins[] = array(
+                    'table' => 'emp_proff',
+                    'alias' => 'EmployeeProfessionalDetails',
+                    'type' => 'LEFT',
+                    'foreignKey' => false,
+                    'conditions' => array('EmployeeDetails.emp_pkey = EmployeeProfessionalDetails.emp_fkey')
+                );
+                $conditions[] = "EmployeeProfessionalDetails.attr1 = '$emp_fkey' ";
+            }
+        }
+        $arr_register = $this->AttendanceRegister->find("all", array('fields' => $fields, 'joins' => $joins, "conditions" => $conditions, 'order' => array($sort => $order), 'limit' => intval($limit), 'offset' => intval($ofst)));
+        foreach ($arr_register as $key => $value) {
+            $resp_register["rows"][$key] = $value["AttendanceRegister"];
+            //edited by megha on 21/11/2019 attendance register reversal
+            $emppkey = $value['AttendanceRegister']['emp_fkey'];
+            $month = $value['AttendanceRegister']['month_year'];
+            $arr_register1 = $this->AttendanceRegister->query("select action from payroll_master where emp_fkey='$emppkey' and month_year='$month' ");
+            $action = isset($arr_register1['0']['payroll_master']['action']) ? $arr_register1['0']['payroll_master']['action'] : 'Null';
+            $resp_register["rows"][$key]['action'] = $action;
+            //end
+            $int_days_present = isset($value["AttendanceRegister"]['presant_total']) ? $value["AttendanceRegister"]['presant_total'] : 0;
+            $int_days_leave = isset($value["AttendanceRegister"]['leave_total']) ? $value["AttendanceRegister"]['leave_total'] : 0;
+            $int_days_lop = isset($value["AttendanceRegister"]['lop_total']) ? $value["AttendanceRegister"]['lop_total'] : 0;
+
+            $resp_register["rows"][$key]['days_present'] = $int_days_present;
+            $resp_register["rows"][$key]['days_leave'] = $int_days_leave;
+            $resp_register["rows"][$key]['days_lop'] = $int_days_lop;
+        }
+        $resp_register["total"] = $count;
+        echo json_encode($resp_register);
+    }
+
+    public function processregisterentries()
+    {
+        $this->autoRender = FALSE;
+        $this->AttendanceRegister->useDbConfig = $this->Session->read('ds');
+        $result = array('success' => 0);
+        $outputParameter = array();
+        $outputParameter[] = $this->Session->read('company_code'); //company_code
+        $outputParameter[] = (isset($_POST['branch']) && $_POST['branch'] != '') ? $_POST['branch'] : '';
+        $outputParameter[] = $this->Session->read("login_user_id"); //user id
+        $outputParameter[] = (isset($_POST['month']) && $_POST['month'] != '') ? date('Y-m-d', strtotime($_POST['month'])) : '';
+        $month = (isset($_POST['month']) && $_POST['month'] != '') ? date('Y-m', strtotime($_POST['month'])) : '';
+        $monthStart = ($month != '') ? $month . '-01' : ''; // Edited by Akshay on 29-5-2025
+        $branch_code = (isset($_POST['branch']) && $_POST['branch'] != '') ? $_POST['branch'] : '';
+        $this->AttendanceRegister->query("UPDATE attendance_register_history SET start_time = NOW() WHERE month = '$monthStart' AND branch = '$branch_code' AND status = '0'");
+       
+        $deleterecords = $this->AttendanceRegister->query("DELETE edt FROM emp_detail_timeattandance edt
+        JOIN emp_details ed ON edt.emp_pkey = ed.emp_pkey WHERE ed.branch_code = '$branch_code' AND edt.yearmonth = '$monthStart'
+        AND edt.isdelete = 'Y' AND edt.emp_pkey NOT IN (SELECT emp_fkey FROM attendance_register WHERE isdelete = 'N' 
+        AND month_year = DATE_FORMAT('$monthStart', '%Y-%m'))");
+      //  $get_emp = $this->AttendanceRegister->query("select emp_pkey from emp_details where branch_code= '$branch_code' and status = '1' and emp_pkey in (select emp_fkey from emp_proff where day_time_seq is not null)"); 
+    //     foreach ($get_emp as $value) {
+    //         $emp_pkey = isset($value['emp_details']['emp_pkey']) ? $value['emp_details']['emp_pkey'] : 0;
+    //       // $deleterecords = $this->AttendanceRegister->query("delete from  emp_detail_timeattandance where 
+    //   // emp_pkey in ('$emp_pkey')  and yearmonth='$monthStart' and isdelete='Y' and emp_pkey  not in (select emp_fkey from attendance_register where isdelete='N' and month_year = DATE_FORMAT('$monthStart','%Y-%m')) ");
+       
+
+
+    //         $shiftdetailed = $this->AttendanceRegister->query("select is_multiple_days from working_day_time_procedures where  day_time_seq in (select day_time_seq from emp_proff where emp_fkey = '$emp_pkey' )");
+    //         try {
+    //             if ($shiftdetailed['0']['working_day_time_procedures']['is_multiple_days'] == 'Y') {
+    //                 if (!$this->AttendanceRegister->query("SELECT time_duration_check_multishift('$monthStart', '$emp_pkey', '$branch_code')")) {
+    //                     continue;
+    //                 }
+    //             } else {
+    //                 if (!$this->AttendanceRegister->query("SELECT time_duration_check('$monthStart', '$emp_pkey', '$branch_code')")) {
+    //                     continue;
+    //                 }
+    //             }
+    //         } catch (Exception $e) {
+    //             debug($e);
+    //         }
+    //     }
+      
+
+       // $this->AttendanceRegister->query("UPDATE `attendance_register_update` SET `status` = '0' WHERE DATE_FORMAT(month_year,'%Y-%m') = '$month' ");
+      //  try {
+            $out = $this->AttendanceRegister->insertUpdateAttendanceRegisterProc($outputParameter);
+            //Edited by megha on 27/08/2025
+             $count = $this->AttendanceRegister->query("select count(*) as cnt from attendance_register left join emp_details on (emp_details.emp_pkey = attendance_register.emp_fkey) 
+         where month_year = '$month' and attendance_register.branch_code= '$branch_code' and emp_details.status = 1");
+            $cnt = isset($count[0][0]['cnt'])?isset($count[0][0]['cnt']):'N'; 
+            $count1 = $this->AttendanceRegister->query("select count(*) as cnt from attendance_register left join emp_details on (emp_details.emp_pkey = attendance_register.emp_fkey) 
+         where month_year = '$month' and attendance_register.branch_code= '$branch_code' and emp_details.status = 1 and isdelete='Y'");
+           $cnt1 = isset($count1[0][0]['cnt'])?$count1[0][0]['cnt']:'N';
+        $this->AttendanceRegister->query("UPDATE attendance_register_history SET status = '1',end_time = NOW(), process = CONCAT('Process, ', '$cnt',',', '$cnt1'),
+              duration = TIMESTAMPDIFF(SECOND, start_time, NOW()) WHERE month = '$monthStart' AND branch = '$branch_code' AND status = '0'");
+        // } catch (Exception $e) {
+        //     debug($e);
+        // }
+
+        $result['success'] = 1;
+        echo json_encode($result);
+    }
+    //edited by athira on 03-04-2025
+
+    public function viewregisterentries()
+    {
+        $this->autoRender = FALSE;
+        $this->AttendanceRegister->useDbConfig = $this->Session->read('ds');
+        $result = array('success' => 0);
+        // $outputParameter = array();
+        // $company_code = $this->Session->read('company_code');
+        // $outputParameter[] = $this->Session->read('company_code'); // company_code
+        // $outputParameter[] = (isset($_POST['branch']) && $_POST['branch'] != '') ? $_POST['branch'] : '';
+        // $outputParameter[] = $this->Session->read("login_user_id"); // user_id
+        // $outputParameter[] = (isset($_POST['month']) && $_POST['month'] != '') ? date('Y-m-d', strtotime($_POST['month'])) : '';
+        // $month = (isset($_POST['month']) && $_POST['month'] != '') ? date('Y-m', strtotime($_POST['month'])) : '';
+
+        // // Retrieve employee data
+        //$branch_code = (isset($_POST['branch']) && $_POST['branch'] != '') ? $_POST['branch'] : '';
+        //$get_emp = $this->AttendanceRegister->query("SELECT emp_pkey FROM emp_details WHERE branch_code = '$branch_code' AND status = '1' AND emp_pkey IN (SELECT emp_fkey FROM emp_proff WHERE day_time_seq IS NOT NULL)");
+
+        // foreach ($get_emp as $value) {
+        //     $emp_pkey = isset($value['emp_details']['emp_pkey']) ? $value['emp_details']['emp_pkey'] : 0;
+        // }
+
+
+        // Call the new procedure `insert_update_att_reg_view`
+      //  $out = $this->AttendanceRegister->query("CALL insert_update_att_reg_view('$company_code', '$branch_code', '$emp_pkey', '$month',@`Perr_msg`)");
+
+        $result['success'] = 1;
+        echo json_encode($result);
+    }
+    //end
+
+    // public function verifyregisterentries($registerid = 0)
+    // {
+    //     $this->autoRender = FALSE;
+
+    //     $month = isset($_REQUEST['month']) ? $_REQUEST['month'] : '';
+    //     //Fetch company's attendance end date
+    //     $this->DbConfig->useDbConfig = $this->Session->read('ds');
+    //     $company_code = $this->Session->read('company_code'); //company_code
+    //     $user_id = $this->Session->read("login_user_id"); // Edited by Akshay on 29-12-2025
+    //     $arr_db_config = Set::extract('/DbConfig/.', $this->DbConfig->find("first", array("fields" => array("attendance_date"), "conditions" => array('active' => 'Y', 'company_code' => $company_code))));
+    //     $attendance_date = isset($arr_db_config[0]['attendance_date']) ? $arr_db_config[0]['attendance_date'] : 0;
+    //     $att_enddate = strtotime('-' . $attendance_date . ' day', strtotime(date('Y-m-t', strtotime($month))));
+    //     $att_startdate = strtotime('+1 day', strtotime(date('Y-m-d', strtotime('-' . $attendance_date . ' day', strtotime(date('Y-m-t', strtotime('-1 months', strtotime($month))))))));
+    //     $month = date("Y-m", strtotime($_REQUEST['startdate']));
+    //     $datediff = $att_enddate - $att_startdate;
+    //     $numberOfDays = floor($datediff / (60 * 60 * 24)) + 1;
+    //     $startdate = $_REQUEST['startdate'];
+    //     $enddate = $_REQUEST['enddate'];
+
+    //     $this->SalaryHeadItems->useDbConfig = $this->Session->read('ds');
+    //     $arr_leavetypes = $this->SalaryHeadItems->query("select UCASE(ifnull(occurance,'LOP')) AS abbr from salary_head_items where ucase(item_type)='LEAVE' AND occurance != 'LOP'");
+    //     $arr_leaveabbr = array();
+    //     foreach ($arr_leavetypes as $leaveabbr => $leave) {
+    //         $arr_leaveabbr[] = strtoupper($leave[0]['abbr']);
+    //     }
+
+    //     $this->AttendanceRegister->useDbConfig = $this->Session->read('ds');
+    //     $result = array('success' => 0);
+
+    //     $arr_requestdata = $this->request->data;
+    //     //Modified On 21 Feb 2016
+    //     if (isset($arr_requestdata["ids"])) {
+    //         //$ar_ids = explode(",", $_REQUEST["ids"]);$arr_requestdata
+    //         $arr_registerids = isset($arr_requestdata["ids"]) ? explode(",", $arr_requestdata["ids"]) : array();
+    //         $ar_ids = array();
+    //         foreach ($arr_registerids as $register_id) {
+    //             if (empty(json_decode($this->checkifregistercanverify($register_id, $arr_requestdata)))) {
+    //                 $ar_ids[] = $register_id;
+    //             }
+    //         }
+    //         // debug($ar_ids);exit;   
+    //         $arr_count_days = array();
+    //         if (!empty($ar_ids)) {
+
+    //             $arr_register = $this->AttendanceRegister->find(
+    //                 "all",
+    //                 array(
+    //                     'fields' => 'AttendanceRegister.*',
+    //                     'conditions' => array(
+    //                         'AttendanceRegister.registerid' => $ar_ids
+    //                     )
+    //                 )
+    //             );
+    //             foreach ($arr_register as $key => $value) {
+    //                 $emps = isset($value["AttendanceRegister"]['emp_fkey']) ? $value["AttendanceRegister"]['emp_fkey'] : 0;
+    //                 // Edited by Akshay on 29-12-2025
+    //                 if ($company_code == 'SHYD'||$company_code == 'GAAR') {
+    //                     $month_year = isset($value["AttendanceRegister"]['month_year']) ? $value["AttendanceRegister"]['month_year'] : '';
+    //                     $arr_leave_items = $this->SalaryHeadItems->query("SELECT lp.salary_head_item_fkey, shi.occurance, shi.item
+    //                                                                     FROM emp_proff ep
+    //                                                                     LEFT JOIN leavepolicy lp ON lp.LEAVEPOLICY_GROUP_ID = ep.LEAVEPOLICY_GROUP_ID
+    //                                                                     LEFT JOIN salary_head_items shi ON shi.salary_head_item_pkey = lp.salary_head_item_fkey
+    //                                                                     WHERE ep.emp_fkey = '$emps';");
+    //                 }
+    //                 // End
+    //                 $update_fields = $this->SalaryHeadItems->query("select * from attendance_register_update where status = '1' and emp_fkey = '$emps' and DATE_FORMAT(month_year,'%Y-%m') = '$month' and field in ('/LOP','LOP','LOP/','WFH','/WFH','WFH/') ");
+    //                 foreach ($update_fields as $vals) {
+    //                     $f = $vals['attendance_register_update']['field'];
+    //                     $d = $vals['attendance_register_update']['month_year'];
+    //                     $emp = $vals['attendance_register_update']['emp_fkey'];
+    //                     $this->SalaryHeadItems->query("UPDATE emp_detail_timeattandance SET others = '$f' WHERE att_date = '$d' and emp_pkey = '$emp' ");
+    //                 }
+
+    //                 $reg_id = isset($value["AttendanceRegister"]['registerid']) ? $value["AttendanceRegister"]['registerid'] : 0;
+    //                 //Count of present / leave / lop days
+    //                 $int_days_present = 0;
+    //                 $int_days_leave = 0;
+    //                 $int_days_lop = 0;
+    //                 //edited by megha on 16/11/2019 ho/wo count
+    //                 $int_holiday = 0;
+    //                 $int_weekoff = 0;
+
+    //                 $dayCount = 1;
+    //                 foreach ($value["AttendanceRegister"] as $key1 => $val) {
+    //                     if ($dayCount <= $numberOfDays && strpos($key1, "FIELD") === 0) {
+    //                         $arr_field = explode('/', $val);
+    //                         //$int_days_present += ((isset($arr_field[0]) && $arr_field[0] == 'P')?0.5:0)+((isset($arr_field[1]) && $arr_field[1] == 'P')?0.5:0);
+    //                         //$int_days_present += ((isset($arr_field[0]) && ($arr_field[0] == 'P' || $arr_field[0] == 'WFH' || $arr_field[0] == 'COFF' || $arr_field[0] == 'NA'))?((count($arr_field) == 1)?1:0.5):0)+((isset($arr_field[1]) && ($arr_field[1] == 'P' || $arr_field[1] == 'WFH' || $arr_field[1] == 'COFF' || $arr_field[1] == 'NA'))?0.5:0); Backup exclude N/A 02-01-2017
+    //                         // Before removing COMPOFF from present days $int_days_present += ((isset($arr_field[0]) && ($arr_field[0] == 'P' || $arr_field[0] == 'WFH' || $arr_field[0] == 'COFF'))?((count($arr_field) == 1)?1:0.5):0)+((isset($arr_field[1]) && ($arr_field[1] == 'P' || $arr_field[1] == 'WFH' || $arr_field[1] == 'COFF'))?0.5:0);
+    //                         $int_days_present += ((isset($arr_field[0]) && ($arr_field[0] == 'P' || $arr_field[0] == 'WFH')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0) + ((isset($arr_field[1]) && ($arr_field[1] == 'P' || $arr_field[1] == 'WFH')) ? 0.5 : 0);
+    //                         //$int_days_present += (strpos($val, '/') != FALSE)?substr_count($val,'P')/2:0;
+    //                         //$int_days_leave += substr_count($val,'FHL')/2 + substr_count($val,'SHL')/2 + substr_count($val,'FDL');
+    //                         //edited by megha on 16/11/2019 ho/wo count
+    //                         $int_holiday += ((isset($arr_field[0]) && ($arr_field[0] == 'HO')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0) + ((isset($arr_field[1]) && ($arr_field[1] == 'HO')) ? 0.5 : 0);
+    //                         $int_weekoff += ((isset($arr_field[0]) && ($arr_field[0] == 'WO')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0) + ((isset($arr_field[1]) && ($arr_field[1] == 'WO')) ? 0.5 : 0);
+    //                         foreach ($arr_field as $half) {
+    //                             if (count($arr_field) == 1) {
+    //                                 if (in_array(strtoupper($half), $arr_leaveabbr)) {
+    //                                     $int_days_leave += 1;
+    //                                 }
+    //                             } else {
+    //                                 if (in_array(strtoupper($half), $arr_leaveabbr)) {
+    //                                     $int_days_leave += 1 / 2;
+    //                                 }
+    //                             }
+    //                         }
+
+    //                         //On 23 Aug 2016
+    //                         //$int_days_lop += (strpos($val, '/') != FALSE)?substr_count($val,'LOP')/2:substr_count($val,'LOP');
+    //                         $int_days_lop += (strpos($val, '/') != FALSE) ? substr_count($val, 'LOP') / 2 : (($val == '') ? 0 : substr_count($val, 'LOP'));
+    //                         $dayCount++;
+    //                     }
+    //                 }
+    //                 //  debug($company_code);exit;
+    //                 //added by megha attendance verification with calendar days 28/04/2025
+    //                 if ($company_code == 'SHYD' || $company_code == 'KWMT') {
+
+    //                     $int_days_present = 0;
+    //                     // $int_days_leave = 0;
+    //                     // $int_days_lop = 0;
+    //                     $int_holiday = 0;
+    //                     $int_weekoff = 0;
+    //                     $int_na = 0;
+    //                     $dayCount = 1;
+
+    //                     $monthstart = date('Y-m', strtotime($enddate));
+    //                     $monthend = date('Y-m', strtotime('+1 month', strtotime($enddate)));
+
+    //                     $fields1 = [];
+    //                     for ($i = 11; $i <= 30; $i++) {
+    //                         $fields1[] = 'FIELD' . $i;
+    //                     }
+    //                     // for ($i = 12; $i <= 31; $i++) {
+    //                     //     $fields1[] = 'FIELD' . $i;
+    //                     // }
+
+    //                     $fields2 = [];
+    //                     for ($i = 1; $i <= 10; $i++) {
+    //                         $fields2[] = 'FIELD' . $i;
+    //                     }
+
+    //                     $attendance1 = $this->AttendanceRegister->find('first', [
+    //                         'conditions' => [
+    //                             'emp_fkey' => $emps,
+    //                             'month_year' => $monthstart
+    //                         ],
+    //                         'fields' => $fields1
+    //                     ]);
+
+    //                     $attendance2 = $this->AttendanceRegister->find('first', [
+    //                         'conditions' => [
+    //                             'emp_fkey' => $emps,
+    //                             'month_year' => $monthend
+    //                         ],
+    //                         'fields' => $fields2
+    //                     ]);
+    //                     $attendance = [];
+
+    //                     if (!empty($attendance1['AttendanceRegister'])) {
+    //                         $attendance = $attendance1['AttendanceRegister'];
+    //                     }
+
+    //                     if (!empty($attendance2['AttendanceRegister'])) {
+    //                         $attendance = array_merge($attendance, $attendance2['AttendanceRegister']);
+    //                     }
+    //                     // debug($attendance);
+    //                     foreach ($attendance as $key1 => $val) {
+    //                         if ($dayCount <= $numberOfDays && strpos($key1, "FIELD") === 0) {
+    //                             $arr_field = explode('/', $val);
+
+    //                             // $int_days_present += ((isset($arr_field[0]) && ($arr_field[0] == 'P' || $arr_field[0] == 'WFH' || $arr_field[0] == 'WFO')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0) 
+    //                             //                     + ((isset($arr_field[1]) && ($arr_field[1] == 'P' || $arr_field[1] == 'WFH' || $arr_field[1] == 'WFO')) ? 0.5 : 0);
+
+    //                             $int_holiday += ((isset($arr_field[0]) && ($arr_field[0] == 'HO')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0)
+    //                                 + ((isset($arr_field[1]) && ($arr_field[1] == 'HO')) ? 0.5 : 0);
+
+    //                             $int_weekoff += ((isset($arr_field[0]) && ($arr_field[0] == 'WO')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0)
+    //                                 + ((isset($arr_field[1]) && ($arr_field[1] == 'WO')) ? 0.5 : 0);
+
+    //                             $int_na += ((isset($arr_field[0]) && ($arr_field[0] == 'NA')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0)
+    //                                 + ((isset($arr_field[1]) && ($arr_field[1] == 'NA')) ? 0.5 : 0);
+
+    //                             // foreach ($arr_field as $half) {
+    //                             //     if (count($arr_field) == 1) {
+    //                             //         if (in_array(strtoupper($half), $arr_leaveabbr)) {
+    //                             //             $int_days_leave += 1;
+    //                             //         }
+    //                             //     } else {
+    //                             //         if (in_array(strtoupper($half), $arr_leaveabbr)) {
+    //                             //             $int_days_leave += 0.5;
+    //                             //         }
+    //                             //     }
+    //                             // }
+
+    //                             //   $int_days_lop += (strpos($val, '/') !== false) ? substr_count($val, 'LOP') / 2 : (($val == '') ? 0 : substr_count($val, 'LOP'));
+
+    //                             $dayCount++;
+    //                         }
+    //                     }
+    //                     $datetime = new DateTime($enddate);
+    //                     $daysInMonth = (int)$datetime->format('t');
+    //                     // debug($int_days_present);
+    //                     $int_days_present = $daysInMonth - $int_days_leave - $int_days_lop - $int_holiday - $int_weekoff - $int_na;
+    //                     // debug($int_days_present);
+    //                     //                 debug($daysInMonth);
+    //                     //                 debug($int_days_leave);
+    //                     //                 debug($int_days_lop);
+    //                     //                 debug($int_holiday);
+    //                     //                 debug($int_weekoff);
+    //                 }
+    //                 //end
+
+    //                 $arr_count_days[$reg_id]['days_present'] = $int_days_present;
+    //                 $arr_count_days[$reg_id]['days_leave'] = $int_days_leave;
+    //                 $arr_count_days[$reg_id]['days_lop'] = $int_days_lop;
+    //                 //edited by megha on 16/11/2019 ho/wo count
+    //                 $arr_count_days[$reg_id]['holiday_total'] = $int_holiday;
+    //                 $arr_count_days[$reg_id]['weekoff_total'] = $int_weekoff;
+
+    //                 // Edited by Akshay on 29-12-2025
+    //                 if ($company_code == 'SHYD'||$company_code == 'GAAR') {
+    //                     $this->AttendanceRegister->query(
+    //                         "UPDATE monthly_leave_balance
+    //                                                     SET status = 0
+    //                                                     WHERE emp_fkey = ?
+    //                                                     AND month_year = ?",
+    //                         [$emps, $month_year]
+    //                     );
+    //                     foreach ($arr_leave_items as $leave_item) {
+    //                         $leave_item_fkey = $leave_item['lp']['salary_head_item_fkey'];
+    //                         $occurance = $leave_item['shi']['occurance'];
+    //                         $item_desc = $leave_item['shi']['item'];
+    //                         $arr_balance = $this->AttendanceRegister->query(
+    //                             "SELECT leave_balance_inthe_year_fn(?, ?, ?) AS balance",
+    //                             [$emps, $leave_item_fkey, $month_year . '-01']
+    //                         );
+
+    //                         $balance = isset($arr_balance[0][0]['balance']) ? $arr_balance[0][0]['balance'] : 0;
+    //                         try {
+    //                             $this->AttendanceRegister->query(
+    //                                 "INSERT INTO monthly_leave_balance
+    //                             (emp_fkey, month_year, salary_head_item_fkey, occurance, salary_head_item_desc, balance, created_by)
+    //                         VALUES (?, ?, ?, ?, ?, ?, ?)",
+    //                                 [
+    //                                     $emps,
+    //                                     $month_year,
+    //                                     $leave_item_fkey,
+    //                                     $occurance,
+    //                                     $item_desc,
+    //                                     $balance,
+    //                                     $user_id
+    //                                 ]
+    //                             );
+    //                         } catch (Exception $e) {
+    //                             debug($e);
+    //                         }
+    //                     }
+    //                 }
+    //                 // End
+    //             }
+
+    //             foreach ($ar_ids as $key => $val) {
+    //                 $this->AttendanceRegister->updateAll(
+    //                     array(
+    //                         'isdelete' => "'N'",
+    //                         'presant_total' => $arr_count_days[$val]['days_present'],
+    //                         'leave_total' => $arr_count_days[$val]['days_leave'],
+    //                         'lop_total' => $arr_count_days[$val]['days_lop'],
+    //                         //edited by megha on 16/11/2019 ho/wo count
+    //                         'holiday_total' => $arr_count_days[$val]['holiday_total'],
+    //                         'weekoff_total' => $arr_count_days[$val]['weekoff_total']
+    //                     ),
+    //                     array(
+    //                         'AttendanceRegister.registerid' => $val
+    //                     )
+    //                 );
+    //             }
+    //             $result['success'] = 1;
+    //         } else {
+    //             $result['success'] = 0;
+    //         }
+    //     } else if ($registerid != 0) {
+
+    //         $arr_register = $this->AttendanceRegister->find(
+    //             "all",
+    //             array(
+    //                 'fields' => 'AttendanceRegister.*',
+    //                 'conditions' => array(
+    //                     'AttendanceRegister.registerid' => $register_id
+    //                 )
+    //             )
+    //         );
+
+    //         foreach ($arr_register as $key => $value) {
+
+    //             $emps = isset($value["AttendanceRegister"]['emp_fkey']) ? $value["AttendanceRegister"]['emp_fkey'] : 0;
+    //             // Edited by Akshay on 29-12-2025
+    //             if ($company_code == 'SHYD'||$company_code == 'GAAR') {
+    //                 $month_year = isset($value["AttendanceRegister"]['month_year']) ? $value["AttendanceRegister"]['month_year'] : '';
+    //                 $arr_leave_items = $this->SalaryHeadItems->query("SELECT lp.salary_head_item_fkey, shi.occurance, shi.item
+    //                                                                 FROM emp_proff ep
+    //                                                                 LEFT JOIN leavepolicy lp ON lp.LEAVEPOLICY_GROUP_ID = ep.LEAVEPOLICY_GROUP_ID
+    //                                                                 LEFT JOIN salary_head_items shi ON shi.salary_head_item_pkey = lp.salary_head_item_fkey
+    //                                                                 WHERE ep.emp_fkey = '$emps';");
+    //             }
+    //             // End
+    //             $update_fields = $this->SalaryHeadItems->query("select * from attendance_register_update where status = '1' and emp_fkey = '$emps' and DATE_FORMAT(month_year,'%Y-%m') = '$month' and field in ('/LOP','LOP','LOP/','WFH','/WFH','WFH/') ");
+    //             foreach ($update_fields as $vals) {
+    //                 $f = $vals['field'];
+    //                 $d = $vals['month_year'];
+    //                 $emp = $vals['emp_fkey'];
+    //                 $this->SalaryHeadItems->query("UPDATE emp_detail_timeattandance SET others = '$f' WHERE att_date = '$d' and emp_fkey = '$emp' ");
+    //             }
+    //             //Count of present / leave / lop days
+    //             $int_days_present = 0;
+    //             $int_days_leave = 0;
+    //             $int_days_lop = 0;
+    //             //edited by megha on 16/11/2019 ho/wo count
+    //             $int_holiday = 0;
+    //             $int_weekoff = 0;
+
+    //             $dayCount = 1;
+    //             foreach ($value["AttendanceRegister"] as $key1 => $val) {
+    //                 if ($dayCount <= $numberOfDays && strpos($key1, "FIELD") === 0) {
+    //                     //$int_days_present += (strpos($val, '/') != FALSE)?substr_count($val,'P')/2:0;
+    //                     $arr_field = explode('/', $val);
+    //                     //$int_days_present += ((isset($arr_field[0]) && ($arr_field[0] == 'P' || $arr_field[0] == 'WFH' || $arr_field[0] == 'COFF' || $arr_field[0] == 'NA'))?((count($arr_field) == 1)?1:0.5):0)+((isset($arr_field[1]) && ($arr_field[1] == 'P' || $arr_field[1] == 'WFH' || $arr_field[1] == 'COFF' || $arr_field[1] == 'NA'))?0.5:0);bakups
+    //                     $int_days_present += ((isset($arr_field[0]) && ($arr_field[0] == 'P' || $arr_field[0] == 'WFH' || $arr_field[0] == 'COFF')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0) + ((isset($arr_field[1]) && ($arr_field[1] == 'P' || $arr_field[1] == 'WFH' || $arr_field[1] == 'COFF')) ? 0.5 : 0);
+    //                     //$int_days_leave += substr_count($val,'FHL')/2 + substr_count($val,'SHL')/2 + substr_count($val,'FDL');
+    //                     //edited by megha on 16/11/2019 ho/wo count
+    //                     $int_holiday += ((isset($arr_field[0]) && ($arr_field[0] == 'HO')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0) + ((isset($arr_field[1]) && ($arr_field[1] == 'HO')) ? 0.5 : 0);
+    //                     $int_weekoff += ((isset($arr_field[0]) && ($arr_field[0] == 'WO')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0) + ((isset($arr_field[1]) && ($arr_field[1] == 'WO')) ? 0.5 : 0);
+    //                     foreach ($arr_field as $half) {
+    //                         if (count($arr_field) == 1) {
+    //                             if (in_array(strtoupper($half), $arr_leaveabbr)) {
+    //                                 $int_days_leave += 1;
+    //                             }
+    //                         } else {
+    //                             if (in_array(strtoupper($half), $arr_leaveabbr)) {
+    //                                 $int_days_leave += 1 / 2;
+    //                             }
+    //                         }
+    //                     }
+
+    //                     //On 23 Aug 2016
+    //                     //$int_days_lop += (strpos($val, '/') != FALSE)?substr_count($val,'LOP')/2:substr_count($val,'LOP');
+    //                     $int_days_lop += (strpos($val, '/') != FALSE) ? substr_count($val, 'LOP') / 2 : (($val == '') ? 0 : substr_count($val, 'LOP'));
+    //                     $dayCount++;
+    //                 }
+    //             }
+
+    //             $this->AttendanceRegister->updateAll(
+    //                 array(
+    //                     'isdelete' => "'N'",
+    //                     'presant_total' => $int_days_present,
+    //                     'leave_total' => $int_days_leave,
+    //                     'lop_total' => $int_days_lop,
+    //                     //edited by megha on 16/11/2019 ho/wo count
+    //                     'holiday_total' => $int_holiday,
+    //                     'weekoff_total' => $int_weekoff
+    //                 ),
+    //                 array(
+    //                     'AttendanceRegister.registerid' => $registerid
+    //                 )
+    //             );
+
+    //             // Edited by Akshay on 29-12-2025
+    //             if ($company_code == 'SHYD'||$company_code == 'GAAR') {
+    //                 $this->AttendanceRegister->query(
+    //                     "UPDATE monthly_leave_balance
+    //                                                     SET status = 0
+    //                                                     WHERE emp_fkey = ?
+    //                                                     AND month_year = ?",
+    //                     [$emps, $month_year]
+    //                 );
+    //                 foreach ($arr_leave_items as $leave_item) {
+    //                     $leave_item_fkey = $leave_item['lp']['salary_head_item_fkey'];
+    //                     $occurance = $leave_item['shi']['occurance'];
+    //                     $item_desc = $leave_item['shi']['item'];
+    //                     $arr_balance = $this->AttendanceRegister->query(
+    //                         "SELECT leave_balance_inthe_year_fn(?, ?, ?) AS balance",
+    //                         [$emps, $leave_item_fkey, $month_year . '-01']
+    //                     );
+
+    //                     $balance = isset($arr_balance[0][0]['balance']) ? $arr_balance[0][0]['balance'] : 0;
+    //                     try {
+    //                         $this->AttendanceRegister->query(
+    //                             "INSERT INTO monthly_leave_balance
+    //                             (emp_fkey, month_year, salary_head_item_fkey, occurance, salary_head_item_desc, balance, created_by)
+    //                         VALUES (?, ?, ?, ?, ?, ?, ?)",
+    //                             [
+    //                                 $emps,
+    //                                 $month_year,
+    //                                 $leave_item_fkey,
+    //                                 $occurance,
+    //                                 $item_desc,
+    //                                 $balance,
+    //                                 $user_id
+    //                             ]
+    //                         );
+    //                     } catch (Exception $e) {
+    //                         debug($e);
+    //                     }
+    //                 }
+    //             }
+    //             // End
+    //         }
+    //         $result['success'] = 1;
+    //     }
+    //     echo json_encode($result);
+    // }
+
+    public function verifyregisterentries($registerid = 0)
+    {
+        $this->autoRender = FALSE;
+
+        $month = isset($_REQUEST['month']) ? $_REQUEST['month'] : '';
+        //Fetch company's attendance end date
+        $this->DbConfig->useDbConfig = $this->Session->read('ds');
+        $company_code = $this->Session->read('company_code'); //company_code
+        $user_id = $this->Session->read("login_user_id"); // Edited by Akshay on 29-12-2025
+        $arr_db_config = Set::extract('/DbConfig/.', $this->DbConfig->find("first", array("fields" => array("attendance_date"), "conditions" => array('active' => 'Y', 'company_code' => $company_code))));
+        $this->AttendanceRegister->useDbConfig = $this->Session->read('ds');
+        $att_startdate = strtotime($_REQUEST['startdate']);
+        $att_enddate = strtotime($_REQUEST['enddate']);
+        $datediff = $att_enddate - $att_startdate;
+        $numberOfDays = floor($datediff / (60 * 60 * 24)) + 1;
+        $startdate = $_REQUEST['startdate'];
+        $enddate = $_REQUEST['enddate'];
+        // Restoring month variable for other logic
+        if ($month == '') {
+            $month = date("Y-m", strtotime($_REQUEST['startdate']));
+        }
+        $month1 =  $month . '-01';
+
+        $this->SalaryHeadItems->useDbConfig = $this->Session->read('ds');
+        $arr_leavetypes = $this->SalaryHeadItems->query("select UCASE(ifnull(occurance,'LOP')) AS abbr from salary_head_items where ucase(item_type)='LEAVE' AND occurance != 'LOP'");
+        $arr_leaveabbr = array();
+        foreach ($arr_leavetypes as $leaveabbr => $leave) {
+            $arr_leaveabbr[] = strtoupper($leave[0]['abbr']);
+        }
+
+        $result = array('success' => 0);
+
+        $arr_requestdata = $this->request->data;
+        //Modified On 21 Feb 2016
+        if (isset($arr_requestdata["ids"])) {
+            //$ar_ids = explode(",", $_REQUEST["ids"]);$arr_requestdata
+            $arr_registerids = isset($arr_requestdata["ids"]) ? explode(",", $arr_requestdata["ids"]) : array();
+            $ar_ids = array();
+            foreach ($arr_registerids as $register_id) {
+                if (empty(json_decode($this->checkifregistercanverify($register_id, $arr_requestdata)))) {
+                    $ar_ids[] = $register_id;
+                }
+            }
+            // debug($ar_ids);exit;   
+            $arr_count_days = array();
+            if (!empty($ar_ids)) {
+
+                $arr_register = $this->AttendanceRegister->find(
+                    "all",
+                    array(
+                        'fields' => 'AttendanceRegister.*',
+                        'conditions' => array(
+                            'AttendanceRegister.registerid' => $ar_ids
+                        )
+                    )
+                );
+                foreach ($arr_register as $key => $value) {
+                    $emps = isset($value["AttendanceRegister"]['emp_fkey']) ? $value["AttendanceRegister"]['emp_fkey'] : 0;
+                    // Edited by Akshay on 29-12-2025
+                    if ($company_code == 'SHYD'||$company_code == 'GAAR') {
+                        $month_year = isset($value["AttendanceRegister"]['month_year']) ? $value["AttendanceRegister"]['month_year'] : '';
+                        $arr_leave_items = $this->SalaryHeadItems->query("SELECT lp.salary_head_item_fkey, shi.occurance, shi.item
+                                                                        FROM emp_proff ep
+                                                                        LEFT JOIN leavepolicy lp ON lp.LEAVEPOLICY_GROUP_ID = ep.LEAVEPOLICY_GROUP_ID
+                                                                        LEFT JOIN salary_head_items shi ON shi.salary_head_item_pkey = lp.salary_head_item_fkey
+                                                                        WHERE ep.emp_fkey = '$emps';");
+                    }
+                    // End
+                    $update_fields = $this->SalaryHeadItems->query("select * from attendance_register_update where status = '1' and emp_fkey = '$emps' and DATE_FORMAT(month_year,'%Y-%m') = '$month' and field in ('/LOP','LOP','LOP/','WFH','/WFH','WFH/') ");
+                    foreach ($update_fields as $vals) {
+                        $f = $vals['attendance_register_update']['field'];
+                        $d = $vals['attendance_register_update']['month_year'];
+                        $emp = $vals['attendance_register_update']['emp_fkey'];
+                        $this->SalaryHeadItems->query("UPDATE emp_detail_timeattandance SET others = '$f' WHERE att_date = '$d' and emp_pkey = '$emp' ");
+                    }
+
+                    $reg_id = isset($value["AttendanceRegister"]['registerid']) ? $value["AttendanceRegister"]['registerid'] : 0;
+                    //Count of present / leave / lop days
+                    $int_days_present = 0;
+                    $int_days_leave = 0;
+                    $int_days_lop = 0;
+                    //edited by megha on 16/11/2019 ho/wo count
+                    $int_holiday = 0;
+                    $int_weekoff = 0;
+
+                    $dayCount = 1;
+                    foreach ($value["AttendanceRegister"] as $key1 => $val) {
+                        if ($dayCount <= $numberOfDays && strpos($key1, "FIELD") === 0) {
+                            $arr_field = explode('/', $val);
+                            //$int_days_present += ((isset($arr_field[0]) && $arr_field[0] == 'P')?0.5:0)+((isset($arr_field[1]) && $arr_field[1] == 'P')?0.5:0);
+                            //$int_days_present += ((isset($arr_field[0]) && ($arr_field[0] == 'P' || $arr_field[0] == 'WFH' || $arr_field[0] == 'COFF' || $arr_field[0] == 'NA'))?((count($arr_field) == 1)?1:0.5):0)+((isset($arr_field[1]) && ($arr_field[1] == 'P' || $arr_field[1] == 'WFH' || $arr_field[1] == 'COFF' || $arr_field[1] == 'NA'))?0.5:0); Backup exclude N/A 02-01-2017
+                            // Before removing COMPOFF from present days $int_days_present += ((isset($arr_field[0]) && ($arr_field[0] == 'P' || $arr_field[0] == 'WFH' || $arr_field[0] == 'COFF'))?((count($arr_field) == 1)?1:0.5):0)+((isset($arr_field[1]) && ($arr_field[1] == 'P' || $arr_field[1] == 'WFH' || $arr_field[1] == 'COFF'))?0.5:0);
+                            $int_days_present += ((isset($arr_field[0]) && ($arr_field[0] == 'P' || $arr_field[0] == 'WFH')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0) + ((isset($arr_field[1]) && ($arr_field[1] == 'P' || $arr_field[1] == 'WFH')) ? 0.5 : 0);
+                            //$int_days_present += (strpos($val, '/') != FALSE)?substr_count($val,'P')/2:0;
+                            //$int_days_leave += substr_count($val,'FHL')/2 + substr_count($val,'SHL')/2 + substr_count($val,'FDL');
+                            //edited by megha on 16/11/2019 ho/wo count
+                            $int_holiday += ((isset($arr_field[0]) && ($arr_field[0] == 'HO')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0) + ((isset($arr_field[1]) && ($arr_field[1] == 'HO')) ? 0.5 : 0);
+                            $int_weekoff += ((isset($arr_field[0]) && ($arr_field[0] == 'WO')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0) + ((isset($arr_field[1]) && ($arr_field[1] == 'WO')) ? 0.5 : 0);
+                            foreach ($arr_field as $half) {
+                                if (count($arr_field) == 1) {
+                                    if (in_array(strtoupper($half), $arr_leaveabbr)) {
+                                        $int_days_leave += 1;
+                                    }
+                                } else {
+                                    if (in_array(strtoupper($half), $arr_leaveabbr)) {
+                                        $int_days_leave += 1 / 2;
+                                    }
+                                }
+                            }
+
+                            //On 23 Aug 2016
+                            //$int_days_lop += (strpos($val, '/') != FALSE)?substr_count($val,'LOP')/2:substr_count($val,'LOP');
+                            $int_days_lop += (strpos($val, '/') != FALSE) ? substr_count($val, 'LOP') / 2 : (($val == '') ? 0 : substr_count($val, 'LOP'));
+                            $dayCount++;
+                        }
+                    }
+                    //  debug($company_code);exit;
+                    //added by megha attendance verification with calendar days 28/04/2025
+                    if ($company_code == 'SHYD' || $company_code == 'KWMT') {
+
+                        $int_days_present = 0;
+                        // $int_days_leave = 0;
+                        // $int_days_lop = 0;
+                        $int_holiday = 0;
+                        $int_weekoff = 0;
+                        $int_na = 0;
+                        $dayCount = 1;
+
+                        $monthstart = date('Y-m', strtotime($enddate));
+                        $monthend = date('Y-m', strtotime('+1 month', strtotime($enddate)));
+
+                        $fields1 = [];
+                        for ($i = 11; $i <= 30; $i++) {
+                            $fields1[] = 'FIELD' . $i;
+                        }
+                        // for ($i = 12; $i <= 31; $i++) {
+                        //     $fields1[] = 'FIELD' . $i;
+                        // }
+
+                        $fields2 = [];
+                        for ($i = 1; $i <= 10; $i++) {
+                            $fields2[] = 'FIELD' . $i;
+                        }
+
+                        $attendance1 = $this->AttendanceRegister->find('first', [
+                            'conditions' => [
+                                'emp_fkey' => $emps,
+                                'month_year' => $monthstart
+                            ],
+                            'fields' => $fields1
+                        ]);
+
+                        $attendance2 = $this->AttendanceRegister->find('first', [
+                            'conditions' => [
+                                'emp_fkey' => $emps,
+                                'month_year' => $monthend
+                            ],
+                            'fields' => $fields2
+                        ]);
+                        $attendance = [];
+
+                        if (!empty($attendance1['AttendanceRegister'])) {
+                            $attendance = $attendance1['AttendanceRegister'];
+                        }
+
+                        if (!empty($attendance2['AttendanceRegister'])) {
+                            $attendance = array_merge($attendance, $attendance2['AttendanceRegister']);
+                        }
+                        // debug($attendance);
+                        foreach ($attendance as $key1 => $val) {
+                            if ($dayCount <= $numberOfDays && strpos($key1, "FIELD") === 0) {
+                                $arr_field = explode('/', $val);
+
+                                // $int_days_present += ((isset($arr_field[0]) && ($arr_field[0] == 'P' || $arr_field[0] == 'WFH' || $arr_field[0] == 'WFO')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0) 
+                                //                     + ((isset($arr_field[1]) && ($arr_field[1] == 'P' || $arr_field[1] == 'WFH' || $arr_field[1] == 'WFO')) ? 0.5 : 0);
+
+                                $int_holiday += ((isset($arr_field[0]) && ($arr_field[0] == 'HO')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0)
+                                    + ((isset($arr_field[1]) && ($arr_field[1] == 'HO')) ? 0.5 : 0);
+
+                                $int_weekoff += ((isset($arr_field[0]) && ($arr_field[0] == 'WO')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0)
+                                    + ((isset($arr_field[1]) && ($arr_field[1] == 'WO')) ? 0.5 : 0);
+
+                                $int_na += ((isset($arr_field[0]) && ($arr_field[0] == 'NA')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0)
+                                    + ((isset($arr_field[1]) && ($arr_field[1] == 'NA')) ? 0.5 : 0);
+
+                                // foreach ($arr_field as $half) {
+                                //     if (count($arr_field) == 1) {
+                                //         if (in_array(strtoupper($half), $arr_leaveabbr)) {
+                                //             $int_days_leave += 1;
+                                //         }
+                                //     } else {
+                                //         if (in_array(strtoupper($half), $arr_leaveabbr)) {
+                                //             $int_days_leave += 0.5;
+                                //         }
+                                //     }
+                                // }
+
+                                //   $int_days_lop += (strpos($val, '/') !== false) ? substr_count($val, 'LOP') / 2 : (($val == '') ? 0 : substr_count($val, 'LOP'));
+
+                                $dayCount++;
+                            }
+                        }
+                        $datetime = new DateTime($enddate);
+                        $daysInMonth = (int)$datetime->format('t');
+                        // debug($int_days_present);
+                        $int_days_present = $daysInMonth - $int_days_leave - $int_days_lop - $int_holiday - $int_weekoff - $int_na;
+                        // debug($int_days_present);
+                        //                 debug($daysInMonth);
+                        //                 debug($int_days_leave);
+                        //                 debug($int_days_lop);
+                        //                 debug($int_holiday);
+                        //                 debug($int_weekoff);
+                    }
+                    //end
+
+                    $arr_count_days[$reg_id]['days_present'] = $int_days_present;
+                    $arr_count_days[$reg_id]['days_leave'] = $int_days_leave;
+                    $arr_count_days[$reg_id]['days_lop'] = $int_days_lop;
+                    //edited by megha on 16/11/2019 ho/wo count
+                    $arr_count_days[$reg_id]['holiday_total'] = $int_holiday;
+                    $arr_count_days[$reg_id]['weekoff_total'] = $int_weekoff;
+
+                    // Edited by Akshay on 29-12-2025
+                    if ($company_code == 'SHYD'||$company_code == 'GAAR') {
+                        $this->AttendanceRegister->query(
+                            "UPDATE monthly_leave_balance
+                                                        SET status = 0
+                                                        WHERE emp_fkey = ?
+                                                        AND month_year = ?",
+                            [$emps, $month_year]
+                        );
+                        foreach ($arr_leave_items as $leave_item) {
+                            $leave_item_fkey = $leave_item['lp']['salary_head_item_fkey'];
+                            $occurance = $leave_item['shi']['occurance'];
+                            $item_desc = $leave_item['shi']['item'];
+                            $arr_balance = $this->AttendanceRegister->query(
+                                "SELECT leave_balance_inthe_year_fn(?, ?, ?) AS balance",
+                                [$emps, $leave_item_fkey, $month_year . '-01']
+                            );
+
+                            $balance = isset($arr_balance[0][0]['balance']) ? $arr_balance[0][0]['balance'] : 0;
+                            try {
+                                $this->AttendanceRegister->query(
+                                    "INSERT INTO monthly_leave_balance
+                                (emp_fkey, month_year, salary_head_item_fkey, occurance, salary_head_item_desc, balance, created_by)
+                            VALUES (?, ?, ?, ?, ?, ?, ?)",
+                                    [
+                                        $emps,
+                                        $month_year,
+                                        $leave_item_fkey,
+                                        $occurance,
+                                        $item_desc,
+                                        $balance,
+                                        $user_id
+                                    ]
+                                );
+                            } catch (Exception $e) {
+                                debug($e);
+                            }
+                        }
+                    }
+                    // End
+                }
+
+                foreach ($ar_ids as $key => $val) {
+                    $this->AttendanceRegister->updateAll(
+                        array(
+                            'isdelete' => "'N'",
+                            'presant_total' => $arr_count_days[$val]['days_present'],
+                            'leave_total' => $arr_count_days[$val]['days_leave'],
+                            'lop_total' => $arr_count_days[$val]['days_lop'],
+                            //edited by megha on 16/11/2019 ho/wo count
+                            'holiday_total' => $arr_count_days[$val]['holiday_total'],
+                            'weekoff_total' => $arr_count_days[$val]['weekoff_total']
+                        ),
+                        array(
+                            'AttendanceRegister.registerid' => $val
+                        )
+                    );
+                }
+                $result['success'] = 1;
+            } else {
+                $result['success'] = 0;
+            }
+        } else if ($registerid != 0) {
+
+            $arr_register = $this->AttendanceRegister->find(
+                "all",
+                array(
+                    'fields' => 'AttendanceRegister.*',
+                    'conditions' => array(
+                        'AttendanceRegister.registerid' => $register_id
+                    )
+                )
+            );
+
+            foreach ($arr_register as $key => $value) {
+
+                $emps = isset($value["AttendanceRegister"]['emp_fkey']) ? $value["AttendanceRegister"]['emp_fkey'] : 0;
+                // Edited by Akshay on 29-12-2025
+                if ($company_code == 'SHYD'||$company_code == 'GAAR') {
+                    $month_year = isset($value["AttendanceRegister"]['month_year']) ? $value["AttendanceRegister"]['month_year'] : '';
+                    $arr_leave_items = $this->SalaryHeadItems->query("SELECT lp.salary_head_item_fkey, shi.occurance, shi.item
+                                                                    FROM emp_proff ep
+                                                                    LEFT JOIN leavepolicy lp ON lp.LEAVEPOLICY_GROUP_ID = ep.LEAVEPOLICY_GROUP_ID
+                                                                    LEFT JOIN salary_head_items shi ON shi.salary_head_item_pkey = lp.salary_head_item_fkey
+                                                                    WHERE ep.emp_fkey = '$emps';");
+                }
+                // End
+                $update_fields = $this->SalaryHeadItems->query("select * from attendance_register_update where status = '1' and emp_fkey = '$emps' and DATE_FORMAT(month_year,'%Y-%m') = '$month' and field in ('/LOP','LOP','LOP/','WFH','/WFH','WFH/') ");
+                foreach ($update_fields as $vals) {
+                    $f = $vals['field'];
+                    $d = $vals['month_year'];
+                    $emp = $vals['emp_fkey'];
+                    $this->SalaryHeadItems->query("UPDATE emp_detail_timeattandance SET others = '$f' WHERE att_date = '$d' and emp_fkey = '$emp' ");
+                }
+                //Count of present / leave / lop days
+                $int_days_present = 0;
+                $int_days_leave = 0;
+                $int_days_lop = 0;
+                //edited by megha on 16/11/2019 ho/wo count
+                $int_holiday = 0;
+                $int_weekoff = 0;
+
+                $dayCount = 1;
+                foreach ($value["AttendanceRegister"] as $key1 => $val) {
+                    if ($dayCount <= $numberOfDays && strpos($key1, "FIELD") === 0) {
+                        //$int_days_present += (strpos($val, '/') != FALSE)?substr_count($val,'P')/2:0;
+                        $arr_field = explode('/', $val);
+                        //$int_days_present += ((isset($arr_field[0]) && ($arr_field[0] == 'P' || $arr_field[0] == 'WFH' || $arr_field[0] == 'COFF' || $arr_field[0] == 'NA'))?((count($arr_field) == 1)?1:0.5):0)+((isset($arr_field[1]) && ($arr_field[1] == 'P' || $arr_field[1] == 'WFH' || $arr_field[1] == 'COFF' || $arr_field[1] == 'NA'))?0.5:0);bakups
+                        $int_days_present += ((isset($arr_field[0]) && ($arr_field[0] == 'P' || $arr_field[0] == 'WFH' || $arr_field[0] == 'COFF')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0) + ((isset($arr_field[1]) && ($arr_field[1] == 'P' || $arr_field[1] == 'WFH' || $arr_field[1] == 'COFF')) ? 0.5 : 0);
+                        //$int_days_leave += substr_count($val,'FHL')/2 + substr_count($val,'SHL')/2 + substr_count($val,'FDL');
+                        //edited by megha on 16/11/2019 ho/wo count
+                        $int_holiday += ((isset($arr_field[0]) && ($arr_field[0] == 'HO')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0) + ((isset($arr_field[1]) && ($arr_field[1] == 'HO')) ? 0.5 : 0);
+                        $int_weekoff += ((isset($arr_field[0]) && ($arr_field[0] == 'WO')) ? ((count($arr_field) == 1) ? 1 : 0.5) : 0) + ((isset($arr_field[1]) && ($arr_field[1] == 'WO')) ? 0.5 : 0);
+                        foreach ($arr_field as $half) {
+                            if (count($arr_field) == 1) {
+                                if (in_array(strtoupper($half), $arr_leaveabbr)) {
+                                    $int_days_leave += 1;
+                                }
+                            } else {
+                                if (in_array(strtoupper($half), $arr_leaveabbr)) {
+                                    $int_days_leave += 1 / 2;
+                                }
+                            }
+                        }
+
+                        //On 23 Aug 2016
+                        //$int_days_lop += (strpos($val, '/') != FALSE)?substr_count($val,'LOP')/2:substr_count($val,'LOP');
+                        $int_days_lop += (strpos($val, '/') != FALSE) ? substr_count($val, 'LOP') / 2 : (($val == '') ? 0 : substr_count($val, 'LOP'));
+                        $dayCount++;
+                    }
+                }
+
+                $this->AttendanceRegister->updateAll(
+                    array(
+                        'isdelete' => "'N'",
+                        'presant_total' => $int_days_present,
+                        'leave_total' => $int_days_leave,
+                        'lop_total' => $int_days_lop,
+                        //edited by megha on 16/11/2019 ho/wo count
+                        'holiday_total' => $int_holiday,
+                        'weekoff_total' => $int_weekoff
+                    ),
+                    array(
+                        'AttendanceRegister.registerid' => $registerid
+                    )
+                );
+
+                // Edited by Akshay on 29-12-2025
+                if ($company_code == 'SHYD'||$company_code == 'GAAR') {
+                    $this->AttendanceRegister->query(
+                        "UPDATE monthly_leave_balance
+                                                        SET status = 0
+                                                        WHERE emp_fkey = ?
+                                                        AND month_year = ?",
+                        [$emps, $month_year]
+                    );
+                    foreach ($arr_leave_items as $leave_item) {
+                        $leave_item_fkey = $leave_item['lp']['salary_head_item_fkey'];
+                        $occurance = $leave_item['shi']['occurance'];
+                        $item_desc = $leave_item['shi']['item'];
+                        $arr_balance = $this->AttendanceRegister->query(
+                            "SELECT leave_balance_inthe_year_fn(?, ?, ?) AS balance",
+                            [$emps, $leave_item_fkey, $month_year . '-01']
+                        );
+
+                        $balance = isset($arr_balance[0][0]['balance']) ? $arr_balance[0][0]['balance'] : 0;
+                        try {
+                            $this->AttendanceRegister->query(
+                                "INSERT INTO monthly_leave_balance
+                                (emp_fkey, month_year, salary_head_item_fkey, occurance, salary_head_item_desc, balance, created_by)
+                            VALUES (?, ?, ?, ?, ?, ?, ?)",
+                                [
+                                    $emps,
+                                    $month_year,
+                                    $leave_item_fkey,
+                                    $occurance,
+                                    $item_desc,
+                                    $balance,
+                                    $user_id
+                                ]
+                            );
+                        } catch (Exception $e) {
+                            debug($e);
+                        }
+                    }
+                }
+                // End
+            }
+            $result['success'] = 1;
+        }
+        echo json_encode($result);
+    }
+
+    public function loadattendanceregisterheader()
+    {
+        $this->autoRender = FALSE;
+        $arr_requestdata = $this->request->data;
+        $month = isset($arr_requestdata['month']) ? $arr_requestdata['month'] : date('Y-m');
+
+        //Fetch company's attendance start date
+        $this->DbConfig->useDbConfig = $this->Session->read('ds');
+        $company_code = $this->Session->read('company_code'); //company_code
+        $arr_db_config = Set::extract('/DbConfig/.', $this->DbConfig->find("first", array("fields" => array("attendance_date"), "conditions" => array('active' => 'Y', 'company_code' => $company_code))));
+
+        //On 20 Feb 2016
+        //$att_startdate = isset($arr_db_config[0]['attendance_date'])?$arr_db_config[0]['attendance_date']:1;
+        //$att_enddate = date('t',strtotime($month));
+        //$att_startdate = $att_enddate + 1;
+        $attendance_date = isset($arr_db_config[0]['attendance_date']) ? $arr_db_config[0]['attendance_date'] : 0;
+        $att_enddate = date('d', strtotime('-' . $attendance_date . ' day', strtotime(date('Y-m-t', strtotime($month)))));
+        $att_startdate = date('d', strtotime('+1 day', strtotime(date('Y-m-d', strtotime('-' . $attendance_date . ' day', strtotime(date('Y-m-t', strtotime('-1 months', strtotime($month)))))))));
+
+        $arr_columns = array();
+        $arr_columns[] = array('field' => 'emp_name', 'title' => 'Employee name', 'width' => '10%');
+        for ($i = $att_startdate; $i <= $att_enddate; $i++) {
+            $arr_columns[] = array('field' => 'FIELD' . $i, 'title' => $i, 'width' => '3%', 'styler:styleDay');
+        }
+        $arr_columns[] = array('field' => 'days_present', 'title' => 'Days present', 'width' => '10%');
+        $arr_columns[] = array('field' => 'days_leave', 'title' => 'Days on leave', 'width' => '10%');
+        $arr_columns[] = array('field' => 'days_holidays', 'title' => 'Holidays', 'width' => '10%');
+        echo json_encode($arr_columns);
+    }
+
+    //Modified On 21 Feb 2016
+    public function checkifregistercanverify($registerid = 0, $arr_requestdata = array())
+    {
+        $this->autoRender = FALSE;
+        if (empty($arr_requestdata)) {
+            $arr_requestdata = $this->request->data;
+        }
+        if ($registerid != 0) {
+            $startdate = isset($arr_requestdata['startdate']) ? $arr_requestdata['startdate'] : '';
+            $enddate = isset($arr_requestdata['enddate']) ? $arr_requestdata['enddate'] : '';
+
+            $arr_dates_between = $this->createDateRangeArray($startdate, $enddate);
+
+            $startTimeStamp = strtotime($startdate);
+            $endTimeStamp = strtotime($enddate);
+
+            $timeDiff = abs($endTimeStamp - $startTimeStamp);
+
+            $numberDays = $timeDiff / 86400;  // 86400 seconds in one day
+            // and you might want to convert to integer
+            $numberDays = intval($numberDays);
+
+            $this->AttendanceRegister->useDbConfig = $this->Session->read('ds');
+            $arr_register = Set::extract('/AttendanceRegister/.', $this->AttendanceRegister->find("first", array("conditions" => array('registerid' => $registerid))));
+
+
+            $no_days_in_register = count($arr_dates_between);
+            $arr_misspunched_date_fields = array();
+            $i = 1;
+            while ($i <= $no_days_in_register) {
+                if ($arr_register[0]['FIELD' . $i] == 'null' || $arr_register[0]['FIELD' . $i] == '' || $arr_register[0]['FIELD' . $i] == 'A/A') {
+                    $arr_misspunched_date_fields[$i] = $arr_dates_between[$i - 1];
+                } else if (is_array(explode('/', $arr_register[0]['FIELD' . $i]))) {
+                    $arr_entry = explode('/', $arr_register[0]['FIELD' . $i]);
+                    if (isset($arr_entry[0]) && ($arr_entry[0] == '' || $arr_entry[0] == 'A')) {
+                        $arr_misspunched_date_fields[$i] = array($arr_dates_between[$i - 1], 1);
+                    }
+                    if (isset($arr_entry[1]) && ($arr_entry[1] == '' || $arr_entry[1] == 'A')) {
+                        $arr_misspunched_date_fields[$i] = array($arr_dates_between[$i - 1], 2);
+                    }
+                }
+                $i++;
+            }
+            //Ends
+        }
+        return json_encode($arr_misspunched_date_fields);
+    }
+
+    public function updateregisterentries($registerid = 0)
+    {
+        $this->set('registerid', $registerid);
+        $this->AttendanceRegister->useDbConfig = $this->Session->read('ds');
+        if ($registerid != 0) {
+            $arr_requestdata = $this->request->data;
+            if (!empty($arr_requestdata)) {
+                $json_dates = $arr_requestdata['dates'];
+
+
+                //  debug($json_dates);
+                $arr_dates = json_decode($json_dates);
+                $this->set('arr_dates', $arr_dates);
+            }
+            $emp_pkeys = $this->AttendanceRegister->query("select month_year,emp_fkey from attendance_register where registerid = '$registerid' ");
+            $emp_pkey = $emp_pkeys['0']['attendance_register']['emp_fkey'];
+            $this->set('emp_pkey', $emp_pkey);
+            //added by megha date added to year-month format for getting compoff leave
+            $date = date('d');
+            $yearmonth = $emp_pkeys['0']['attendance_register']['month_year'];
+            $month = $emp_pkeys['0']['attendance_register']['month_year'] . '-' . $date;
+																	  
+            $att_enddate = $this->AttendanceRegister->query("select att_start_end_fn(DATE_FORMAT('$month', '%Y-%m-01'), 2) as monthly_att_todate");
+            $att_enddate1 = $att_enddate['0']['0']['monthly_att_todate'];
+            $years = $this->AttendanceRegister->query("select fin_year from fin_year where Year_status = 'OPEN' and vattr1 = 0 and is_current_finyear = 'Y' and status = '1' and branch_code in (select branch_code from emp_details where emp_pkey = '$emp_pkey') ");
+            $year = isset($years['0']['fin_year']['fin_year']) ? $years['0']['fin_year']['fin_year'] : 0;
+            //edited by athira on 23-09-2025
+            $company_code = $this->Session->read('company_code');
+            $restricted_companies = [
+                    'KWMT','ABSG','MBCT','MRBS','STCL',
+                    'AGNG','ESNP','VGNN','AYRK','VGFS','VSFS'
+                ];
+               if (!in_array($company_code, $restricted_companies, true)) {
+            $arr_leaves_heads = $this->AttendanceRegister->query("SELECT salary_head_item_pkey,occurance,(select encash.approved_days 
+            FROM leave_encashment_master as encash WHERE salary_head_items.salary_head_item_pkey = encash.salary_head_item_fkey and encash.is_approved = 'Y' AND encash.status = 1 AND encash.emp_fkey = '$emp_pkey' ORDER BY encash.creation_date LIMIT 1) AS encashed_leave FROM `salary_head_items` WHERE head_fkey in(select head_pkey from  salary_heads where lcase(item_type)='leave' and value='Y' and status=1) and salary_head_item_pkey IN(select salary_head_item_fkey from leavepolicy where LEAVEPOLICY_GROUP_ID IN (SELECT LEAVEPOLICY_GROUP_ID FROM emp_proff WHERE emp_fkey='$emp_pkey') and status = 1 ) and occurance != 'LOP' LIMIT 50");
+             }
+             else{
+             $arr_leaves_heads = $this->AttendanceRegister->query("SELECT salary_head_item_pkey,occurance,(select encash.approved_days 
+             FROM leave_encashment_master as encash WHERE salary_head_items.salary_head_item_pkey = encash.salary_head_item_fkey and encash.is_approved = 'Y' AND encash.status = 1 AND encash.emp_fkey = '$emp_pkey' AND encash.fin_year='$year' ORDER BY encash.creation_date LIMIT 1) AS encashed_leave FROM `salary_head_items` WHERE head_fkey in(select head_pkey from  salary_heads where lcase(item_type)='leave' and value='Y' and status=1) and salary_head_item_pkey IN(select salary_head_item_fkey from leavepolicy where LEAVEPOLICY_GROUP_ID IN (SELECT LEAVEPOLICY_GROUP_ID FROM emp_proff WHERE emp_fkey='$emp_pkey') and status = 1 ) and occurance != 'LOP' LIMIT 50");
+             }
+            //end
+            
+            $arr_leave = array();
+           
+            $this->set('arr_leaves', $arr_leaves_heads);
+            foreach ($arr_leaves_heads as $key => $val) {
+                $head = $val['salary_head_items']['occurance'];
+                $slary_head_item_pkey = $val['salary_head_items']['salary_head_item_pkey'];
+               //edited by athira on 22-09-2025                
+				$restricted_companies = [
+                    'KWMT','ABSG','MBCT','MRBS','STCL',
+                    'AGNG','ESNP','VGNN','AYRK','VGFS','VSFS'
+                ];
+               if (!in_array($company_code, $restricted_companies, true)) {
+				$encash = $val['0']['encashed_leave'];
+                 $lbalance = $this->AttendanceRegister->query("select leave_balance_inthe_year_fn('$emp_pkey','$slary_head_item_pkey','$att_enddate1') as LeaveBalance");
+               }else{
+                    $lbalance = $this->AttendanceRegister->query("select leave_balance_inthe_month_fn('$emp_pkey','$slary_head_item_pkey','$att_enddate1','$year') as LeaveBalance");
+               }
+               
+                $resp = isset($lbalance['0']['0']['LeaveBalance']) ? round($lbalance['0']['0']['LeaveBalance'], 1) : 0;
+                if ($head == 'Indirect') {
+                    $resp = 31;
+                }
+                $arr_leave[] = array(
+                    "salary_head_item_pkey" => $slary_head_item_pkey,
+                    "Head" => $head,
+                    "leaveBalance" => $resp
+                );
+            }
+            $this->set('arr_leave', $arr_leave);
+         
+            ///////The below code is to check whether the employee already leave applied for listed dates. BY ***ARUL P DAS on 22/11/2019***
+            //sh infra attendance register month 
+            $month1 =  $yearmonth . '-01';
+            $att_startdate = $this->AttendanceRegister->query("select att_start_end_fn(DATE_FORMAT('$month1', '%Y-%m-01'), 1) as monthly_att_fromdate");
+            $att_enddate = $this->AttendanceRegister->query("select att_start_end_fn(DATE_FORMAT('$month1', '%Y-%m-01'), 2) as monthly_att_todate");
+            $att_startdate1 = $att_startdate['0']['0']['monthly_att_fromdate'];
+            $att_enddate1 = $att_enddate['0']['0']['monthly_att_todate'];
+            //end
+            //-- and date_format(emp_leave_transactions.leave_date,'%Y-%m') = '$yearmonth' 
+            $leave_details = $this->AttendanceRegister->query("select emp_leave_transactions.Leavestatus,emp_leave_transactions.leave_date,emp_leave_transactions.leave_session,leaveentries.EMP_fkey, salary_head_items.occurance from emp_leave_transactions left join leaveentries on (leaveentries.LEAVEENTRYID = emp_leave_transactions.LEAVEENTRYID) left join salary_head_items on (salary_head_items.salary_head_item_pkey = leaveentries.salary_head_item_fkey) where leaveentries.EMP_fkey = '$emp_pkey' and emp_leave_transactions.leave_date >= '$att_startdate1' and emp_leave_transactions.leave_date <=  '$att_enddate1' 
+		and emp_leave_transactions.Leavestatus  ='Applied' ");
+            $this->set('leave_details', $leave_details);
+
+            ///////ENDS HERE
+        }
+        //edited by athira on 22-09-2025
+        $restricted_companies = [
+                    'KWMT','ABSG','MBCT','MRBS','STCL',
+                    'AGNG','ESNP','VGNN','AYRK','VGFS','VSFS'
+                ];
+               if (!in_array($company_code, $restricted_companies, true)) {
+          $this->render('updateregisterentriesnew');
+         }else{
+		  $this->render('updateregisterentries');
+		 }
+        //end
+    }
+
+     //edited by athira on 22-09-2025
+    public function updateLeave()
+    {
+        $this->autoRender = false;
+        $this->AttendanceRegister->useDbConfig = $this->Session->read('ds');
+
+        if (!$this->request->is('post')) return;
+
+        // Helper function to safely return JSON
+        $returnJSON = function ($data) {
+            echo json_encode($data);
+            return;
+        };
+
+        $arr_form_data = $this->request->data;
+
+        $occurrence    = isset($arr_form_data['occurrence']) ? $arr_form_data['occurrence'] : '';
+        $oldOccurrence = isset($arr_form_data['old_occurrence']) ? $arr_form_data['old_occurrence'] : '';
+        $emp_pkey      = isset($arr_form_data['emp_pkey']) ? $arr_form_data['emp_pkey'] : '';
+        $leave_date    = isset($arr_form_data['leave_date']) ? $arr_form_data['leave_date'] : '';
+        $session       = isset($arr_form_data['session']) ? floatval($arr_form_data['session']) : '';
+
+
+        // Get salary head item key
+        $salary_head_item = $this->AttendanceRegister->query("
+        SELECT salary_head_item_pkey 
+        FROM salary_head_items 
+        WHERE occurance = '$occurrence'
+    ");
+        $salary_head_item_pkey = isset($salary_head_item[0]['salary_head_items']['salary_head_item_pkey']) ? $salary_head_item[0]['salary_head_items']['salary_head_item_pkey'] : '';
+
+        // Get leave policy id for employee
+        $leavepolicy = $this->AttendanceRegister->query("
+        SELECT policy_id 
+        FROM emp_config 
+        WHERE type='LEAVE' 
+          AND emp_fkey = '$emp_pkey'
+          AND status = 1
+    ");
+        $policy_id = $leavepolicy[0]['emp_config']['policy_id'];
+
+        // Check if there are exceptions
+        $is_exceptions = $this->AttendanceRegister->query("
+        SELECT exceptions
+        FROM leavepolicy 
+        WHERE salary_head_item_fkey = '$salary_head_item_pkey' 
+          AND LEAVEPOLICY_GROUP_ID = '$policy_id'
+    ");
+        $is_exception = isset($is_exceptions[0]['leavepolicy']['exceptions']) ? $is_exceptions[0]['leavepolicy']['exceptions'] : '';
+
+        $exceptionData = [];
+        $months_worked = null;
+
+        if ($is_exception === 'Y') {
+            // Get leave policy exceptions
+            $exceptions = $this->AttendanceRegister->query("
+            SELECT minimum_service, maximum_leave, minimum_leave, 
+                   min_day_before_apply, leave_policy_type,
+                   LEAVEPOLICYID, LEAVEPOLICY_GROUP_ID 
+            FROM leavepolicy 
+            WHERE salary_head_item_fkey = '$salary_head_item_pkey' 
+              AND LEAVEPOLICY_GROUP_ID = '$policy_id'
+        ");
+            $exceptionData = $exceptions[0]['leavepolicy'];
+
+            // Employee joining date
+            $empData = $this->AttendanceRegister->query("
+            SELECT joining_date 
+            FROM emp_proff 
+            WHERE emp_fkey = $emp_pkey
+        ");
+
+            $joining_date = $empData[0]['emp_proff']['joining_date'];
+
+            // if ($joining_date) {
+            //     $min_date = (new DateTime($joining_date))->modify("+$min_service month");
+
+            //     if ($leaveDay < $min_date) {
+            //         return $returnJSON([
+            //             'status' => 'error',
+            //             'message' => "Employee must complete at least $min_service months of service."
+            //         ]);
+            //     }
+            // }
+
+
+
+            // Minimum leave check
+            // $minimum_leave = isset($exceptionData['minimum_leave']) 
+            //     ? floatval($exceptionData['minimum_leave']) 
+            //     : null; // null means no minimum
+
+            // $total_leave_applied = 0;
+            // if (isset($this->request->data['sessions']) && is_array($this->request->data['sessions'])) {
+            //     foreach ($this->request->data['sessions'] as $s) {
+            //         $total_leave_applied += floatval($s);
+            //     }
+            // } else {
+            //     $total_leave_applied = floatval($this->request->data['session']);
+            // }
+
+            // if ($minimum_leave !== null && $total_leave_applied < $minimum_leave) {
+            //     return $returnJSON([
+            //         'status'  => 'error',
+            //         'message' => "Minimum leave allowed for this type is $minimum_leave day(s). You tried to apply $total_leave_applied day(s)."
+            //     ]);
+            // }
+
+        }
+
+        // Success response
+        return $returnJSON([
+            'status'     => 'success',
+            'newVal'     => $occurrence,
+            'exceptions' => $exceptionData,
+            'months_worked' => $months_worked ? $months_worked : null
+        ]);
+    }
+
+    //end
+    
+    public function submitregisterentry()
+    {
+        $this->autoRender = FALSE;
+        $this->AttendanceRegister->useDbConfig = $this->Session->read('ds');
+        $arr_requestdata = $this->request->data;
+        //debug($arr_requestdata);die();
+        $registerid = isset($arr_requestdata['hid-registerid']) ? $arr_requestdata['hid-registerid'] : 0;
+        $count = isset($arr_requestdata['hid-count-missing']) ? $arr_requestdata['hid-count-missing'] : 0;
+        $attendance_date = $this->AttendanceRegister->query("select month_year,emp_fkey from attendance_register where registerid = '$registerid' ");
+        $day = isset($attendance_date['0']['attendance_register']['month_year']) ? $attendance_date['0']['attendance_register']['month_year'] : '';
+        $emp_fkey = isset($attendance_date['0']['attendance_register']['emp_fkey']) ? $attendance_date['0']['attendance_register']['emp_fkey'] : '';
+        $arr_leaves = $this->AttendanceRegister->query("SELECT salary_head_item_pkey,occurance FROM `salary_head_items` WHERE head_fkey in(select head_pkey from  salary_heads where lcase(item_type)='leave' and value='Y' and status=1) and salary_head_item_pkey IN(select salary_head_item_fkey from leavepolicy where LEAVEPOLICY_GROUP_ID IN (SELECT LEAVEPOLICY_GROUP_ID FROM emp_proff WHERE emp_fkey='$emp_fkey'))  ");
+        // and occurance != 'LOP' LIMIT 50 
+        $arr_leave = array();
+        foreach ($arr_leaves as $key => $val) {
+            $arr_leave[] = $val['salary_head_items']['occurance'];
+            //$arr_leave[$key]['pkey'] = $val['salary_head_items']['salary_head_item_pkey'];
+        }
+        $arr_leave[] = 'LOP';
+        //added by megha on on 11_03_2020 changed for SH Infra
+        // $attendance_date = isset($arr_db_config[0]['attendance_date']) ? $arr_db_config[0]['attendance_date'] : 0;
+        $month1 =  $day . '-01';
+        $att_startdate = $this->AttendanceRegister->query("select att_start_end_fn(DATE_FORMAT('$month1', '%Y-%m-01'), 1) as monthly_att_fromdate");
+        $att_enddate = $this->AttendanceRegister->query("select att_start_end_fn(DATE_FORMAT('$month1', '%Y-%m-01'), 2) as monthly_att_todate");
+        $att_startdate1 = date("d", strtotime($att_startdate['0']['0']['monthly_att_fromdate']));
+        $att_enddate1 = date("d", strtotime($att_enddate['0']['0']['monthly_att_todate']));
+        $startdate =  $att_startdate['0']['0']['monthly_att_fromdate'];
+        $enddate1 =  $att_enddate['0']['0']['monthly_att_todate'];
+        $enddate =  date('Y-m-d', strtotime($att_enddate['0']['0']['monthly_att_todate'] . ' +1 day'));
+        /* $format = "Y-m-d";
+		$interval = new DateInterval('P1D'); // 1 Day
+        $dateRange = new DatePeriod('$startdate', '$interval', '$enddate'); */
+
+        /* $range = [];
+        foreach ($dateRange as $date) {
+        $range[] = $date->format($format);
+        } */
+        $range = $this->createDateRange($startdate, $enddate);
+
+        $arr_date_in_selectedmonth = range(1, $att_enddate1);
+
+        if ($att_startdate1 != 1) {
+            $arr_date_in_prevmonth = range($att_startdate1, date('t', strtotime('-1 months', strtotime($day))));
+            $arr_date_in_prevmonth1 = range($att_startdate1, date('Y-m-d', strtotime('-1 months', strtotime($day))));
+        } else {
+            $arr_date_in_prevmonth = array();
+        }
+
+        $arr_dates = array_merge($arr_date_in_prevmonth, $arr_date_in_selectedmonth);
+
+        // $this->set('arr_dates', $arr_dates);
+        //end
+        if ($registerid != 0) {
+            if ($count != 0) {
+                $arr_fields = array();
+                $out = array();
+                $message = 0;
+                //Save process starts
+                $arr_register_before_save = Set::extract('/AttendanceRegister/.', $this->AttendanceRegister->find("first", array("conditions" => array('registerid' => $registerid))));
+                $arr_updateentries = array();
+                for ($i = 0; $i < $count; $i++) {
+                    $index = isset($arr_requestdata['hid-reg-field-' . $i]) ? $arr_requestdata['hid-reg-field-' . $i] : '';
+
+                    $arr_fields[] = $index;
+                    //added by megha on on 11_03_2020 changed for SH Infra
+                    $month_startdate = $day . "-01";
+                    $j = $arr_requestdata['hid-reg-field-' . $i] - 1;
+                    $leave_date = $this->AttendanceRegister->query("SELECT DATE_ADD('$month_startdate', INTERVAL '$j' DAY) as day");
+                    $leave_days =  $leave_date['0']['0']['day'];
+                    $daycount1 =  $this->AttendanceRegister->query("SELECT DATEDIFF('$startdate', '$month_startdate') AS DateDiff");
+                    $daycount = $daycount1['0']['0']['DateDiff'];
+                    $newdate = $this->AttendanceRegister->query("SELECT DATE_ADD('$leave_days', INTERVAL '$daycount' DAY) as day");
+                    $leave_date = $newdate['0']['0']['day'];
+                    //end 
+
+                    $half = isset($arr_requestdata['hid-reg-field-half-' . $i]) ? $arr_requestdata['hid-reg-field-half-' . $i] : '';
+
+
+                    if ($half != '') {
+                        $leave_head = $arr_requestdata['reg-date-' . $i];
+                        //$leave_days = $day."-".$arr_requestdata['hid-reg-field-' . $i];
+
+                        $f = $arr_requestdata['reg-date-' . $i];
+                        $daycounts =  $this->AttendanceRegister->query("SELECT DATEDIFF('$month_startdate', '$leave_days') AS DateDiff");
+                        $field = abs($daycounts['0']['0']['DateDiff']) + 1;
+
+                        //Update half
+                        $fieldentry = isset($arr_updateentries['FIELD' . $index]) ? str_replace('"', '', $arr_updateentries['FIELD' . $index]) : (isset($arr_register_before_save[0]['FIELD' . $index]) ? $arr_register_before_save[0]['FIELD' . $index] : '');
+                        if ($half == 1) {
+                            $fieldentry_for_half_to_save = (isset($arr_requestdata['reg-date-' . $i]) && $arr_requestdata['reg-date-' . $i] != '') ? $arr_requestdata['reg-date-' . $i] : substr($fieldentry, 0, strpos($fieldentry, '/'));
+                            $f = $fieldentry_for_half_to_save . '/';
+                            $arr_updateentries['FIELD' . $field] = '"' . substr_replace($fieldentry, $fieldentry_for_half_to_save, 0, strpos($fieldentry, '/')) . '"';
+                            if (in_array($arr_requestdata['reg-date-' . $i], $arr_leave)) {
+
+                                $out = $this->AddHalfLeave($leave_head, $leave_date, $emp_fkey, "1");
+                                if (isset($out['count']) && $out['count'] > 0) {
+                                    //   debug($out); 
+                                    $count = $out['count'];
+                                    $status = $out['status'];
+                                    $type = $out['type'];
+                                    $message = 1;
+                                    echo json_encode(array('success' => 2, 'count' => $count, 'status' => $status, 'type' => $type, 'day' => $leave_date));
+                                }
+                            }
+                        } else {
+                            $fieldentry_for_half_to_save = (isset($arr_requestdata['reg-date-' . $i]) && $arr_requestdata['reg-date-' . $i] != '') ? $arr_requestdata['reg-date-' . $i] : substr($fieldentry, strpos($fieldentry, '/') + 1);
+                            $arr_updateentries['FIELD' . $field] = '"' . substr_replace($fieldentry, $fieldentry_for_half_to_save, strpos($fieldentry, '/') + 1) . '"';
+                            $f = '/' . $fieldentry_for_half_to_save;
+                            if (in_array($arr_requestdata['reg-date-' . $i], $arr_leave)) {
+                                $out = $this->AddHalfLeave($leave_head, $leave_date, $emp_fkey, "2");
+                                if (isset($out['count']) && $out['count'] > 0) {
+                                    $count = $out['count'];
+                                    $status = $out['status'];
+                                    $type = $out['type'];
+                                    $message = 1;
+                                    echo json_encode(array('success' => 2, 'count' => $count, 'status' => $status, 'type' => $type, 'day' => $leave_date));
+                                }
+                            }
+                        }
+                    } else {
+                        if (in_array($arr_requestdata['reg-date-' . $i], $arr_leave)) {
+
+                            $leave_head = $arr_requestdata['reg-date-' . $i];
+                            //$leave_days = $day."-".$arr_requestdata['hid-reg-field-' . $i];
+                            /* $month_startdate = $day."-01"; 
+							$j = $arr_requestdata['hid-reg-field-' . $i] - 1;
+							$leave_date = $this->AttendanceRegister->query("SELECT DATE_ADD('$month_startdate', INTERVAL '$j' DAY) as day"); 
+							$leave_days =  $leave_date['0']['0']['day'];
+							$daycount1 =  $this->AttendanceRegister->query("SELECT DATEDIFF('$startdate', '$month_startdate') AS DateDiff");
+							$daycount = $daycount1['0']['0']['DateDiff']; */
+
+                            $out = $this->AddLeave($leave_head, $leave_date, $emp_fkey);
+                            if (isset($out['count']) && $out['count'] > 0) {
+
+                                $count = $out['count'];
+                                $status = $out['status'];
+                                $type = $out['type'];
+                                $message = 1;
+                                echo json_encode(array('success' => 2, 'count' => $count, 'status' => $status, 'type' => $type, 'day' => $leave_date));
+                            }
+                        }
+
+                        $f = $arr_requestdata['reg-date-' . $i];
+                        $daycounts =  $this->AttendanceRegister->query("SELECT DATEDIFF('$month_startdate', '$leave_days') AS DateDiff");
+                        $field = abs($daycounts['0']['0']['DateDiff']) + 1;
+                        if ($arr_requestdata['reg-date-' . $i] != '')
+                            $arr_updateentries['FIELD' . $field] = isset($arr_requestdata['reg-date-' . $i]) ? '"' . $arr_requestdata['reg-date-' . $i] . '/' . $arr_requestdata['reg-date-' . $i] . '"' : '""';
+                    }
+                    //added wfh to leave delete section
+                    if ($arr_requestdata['reg-date-' . $i] == 'WFH' || $arr_requestdata['reg-date-' . $i] == '/WFH' || $arr_requestdata['reg-date-' . $i] == 'WFH/' || $arr_requestdata['reg-date-' . $i] == 'LOP' || $arr_requestdata['reg-date-' . $i] == '/LOP' || $arr_requestdata['reg-date-' . $i] == 'LOP/') {
+                        $this->LeaveRequests->useDbConfig = $this->Session->read('ds');
+                        $this->EmployeeLeaveTransaction->useDbConfig = $this->Session->read('ds');
+                        $leave_count = $this->AttendanceRegister->query("select count(*) cnt from emp_leave_transactions left join leaveentries on(leaveentries.LEAVEENTRYID = emp_leave_transactions.LEAVEENTRYID) where leave_date=date_format('$leave_date','%Y-%m-%d') and EMP_fkey= '$emp_fkey'  and emp_leave_transactions.Leavestatus='Applied'");
+                        $leaves = $this->AttendanceRegister->query("select emp_leave_transactions.* from emp_leave_transactions left join leaveentries on(leaveentries.LEAVEENTRYID = emp_leave_transactions.LEAVEENTRYID) where leave_date=date_format('$leave_date','%Y-%m-%d') and EMP_fkey= '$emp_fkey'  and emp_leave_transactions.Leavestatus='Applied'");
+
+                        $leave_count = isset($leave_count) ? $leave_count : 0;
+                        if ($leave_count['0']['0']['cnt'] > 0) {
+                            $id = isset($leaves['0']['emp_leave_transactions']['LEAVEENTRYID']) ? $leaves['0']['emp_leave_transactions']['LEAVEENTRYID'] : '';
+                            $id1 = isset($leaves['1']['emp_leave_transactions']['LEAVEENTRYID']) ? $leaves['1']['emp_leave_transactions']['LEAVEENTRYID'] : '';
+                            if ($id1 != '') {
+                                //$this->AttendanceRegister->query("DELETE FROM emp_leave_transactions WHERE LEAVEENTRYID = '$id1' "); 
+                                //$this->AttendanceRegister->query("DELETE FROM leaveentries WHERE LEAVEENTRYID = '$id1' ");
+                                $this->LeaveRequests->updateAll(
+                                    array(
+                                        'LEAVESTATUS' => "'CancelledByAdmin'",
+                                        'AuthoriseRemarks' => "'Leave rejected by Admin for verifying attendance'",
+                                        'ApproveRemarks' =>  "'Leave rejected by Admin for verifying attendance'"
+                                    ),
+                                    array(
+                                        'LeaveRequests.LEAVEENTRYID' => $id1
+                                    )
+                                );
+                                $this->EmployeeLeaveTransaction->updateAll(
+                                    array(
+                                        'Leavestatus' => "'CancelledByAdmin'"
+                                    ),
+                                    array(
+                                        'EmployeeLeaveTransaction.LEAVEENTRYID' => $id1
+                                    )
+                                );
+                            }
+                            //$this->AttendanceRegister->query("DELETE FROM emp_leave_transactions WHERE LEAVEENTRYID = '$id' "); 
+                            //$this->AttendanceRegister->query("DELETE FROM leaveentries WHERE LEAVEENTRYID = '$id' ");
+                            $this->LeaveRequests->updateAll(
+                                array(
+                                    'LEAVESTATUS' => "'CancelledByAdmin'",
+                                    'AuthoriseRemarks' => "'Leave rejected by Admin for verifying attendance'",
+                                    'ApproveRemarks' =>  "'Leave rejected by Admin for verifying attendance'"
+                                ),
+                                array(
+                                    'LeaveRequests.LEAVEENTRYID' => $id
+                                )
+                            );
+                            $this->EmployeeLeaveTransaction->updateAll(
+                                array(
+                                    'Leavestatus' => "'CancelledByAdmin'"
+                                ),
+                                array(
+                                    'EmployeeLeaveTransaction.LEAVEENTRYID' => $id
+                                )
+                            );
+                        }
+                    }
+                    //end wfh to leave delete
+                    $d = $leave_date;
+                    //debug($leave_date);
+                    //$d = $day."-".$arr_requestdata['hid-reg-field-' . $i];
+                    $f = $arr_requestdata['reg-date-' . $i];
+                    $this->AttendanceRegister->query("INSERT INTO `attendance_register_update` (`month_year`, `emp_fkey`, `field`, `status`)
+VALUES ('$d', '$emp_fkey', '$f', '1');");
+                }
+                if ($message == 0) {
+                    $this->AttendanceRegister->updateAll(
+                        $arr_updateentries,
+                        array('AttendanceRegister.registerid' => $registerid)
+                    );
+                    //ends
+
+                    echo json_encode(array('success' => 1));
+                }
+            }
+        } else {
+            echo json_encode(array('success' => 0));
+        }
+    }
+
+
+    /**
+     * Returns every date between two dates as an array
+     * @param string $startDate the start of the date range
+     * @param string $endDate the end of the date range
+     * @param string $format DateTime format, default is Y-m-d
+     * @return array returns every date between $startDate and $endDate, formatted as "Y-m-d"
+     */
+    public function createDateRange($startDate, $endDate, $format = "Y-m-d")
+    {
+        $begin = new DateTime($startDate);
+        $end = new DateTime($endDate);
+
+        $interval = new DateInterval('P1D'); // 1 Day
+        $dateRange = new DatePeriod($begin, $interval, $end);
+
+        $range = [];
+        foreach ($dateRange as $date) {
+            $range[] = $date->format($format);
+        }
+
+        return $range;
+    }
+
+    public function AddLeave($head = '', $day = '', $emp_fkey = 0)
+    {
+        $this->autoRender = FALSE;
+        $this->LeaveRequests->useDbConfig = $this->Session->read('ds');
+        $leaves = array();
+        //added by megha auto delete applied leaves of employees on 13/02/2020
+        $leave_count = $this->LeaveRequests->query("select count(*) cnt from emp_leave_transactions left join leaveentries on(leaveentries.LEAVEENTRYID = emp_leave_transactions.LEAVEENTRYID) where leave_date=date_format('$day','%Y-%m-%d') and EMP_fkey= '$emp_fkey'  and emp_leave_transactions.Leavestatus='Applied'");
+        $leaves = $this->LeaveRequests->query("select emp_leave_transactions.* from emp_leave_transactions left join leaveentries on(leaveentries.LEAVEENTRYID = emp_leave_transactions.LEAVEENTRYID) where leave_date=date_format('$day','%Y-%m-%d') and EMP_fkey= '$emp_fkey'  and emp_leave_transactions.Leavestatus='Applied'");
+
+        $leave_count = isset($leave_count) ? $leave_count : 0;
+        if ($leave_count['0']['0']['cnt'] > 0) {
+            $id = $leaves['0']['emp_leave_transactions']['LEAVEENTRYID'];
+            $id1 = isset($leaves['1']['emp_leave_transactions']['LEAVEENTRYID']) ? $leaves['1']['emp_leave_transactions']['LEAVEENTRYID'] : '';
+            if ($id1 != '') {
+                $this->LeaveRequests->query("DELETE FROM emp_leave_transactions WHERE LEAVEENTRYID = '$id1' ");
+                $this->LeaveRequests->query("DELETE FROM leaveentries WHERE LEAVEENTRYID = '$id1' ");
+            }
+            $this->LeaveRequests->query("DELETE FROM emp_leave_transactions WHERE LEAVEENTRYID = '$id' ");
+            $this->LeaveRequests->query("DELETE FROM leaveentries WHERE LEAVEENTRYID = '$id' ");
+        }
+        //end auto delete
+        $arr_attendance_register = $this->LeaveRequests->query("select count(*) cnt from attendance_register where month_year=date_format('$day','%Y-%m') and isdelete='N' and emp_fkey= '$emp_fkey' ");
+
+
+        //        $arr_leave_check = $this->LeaveRequests->query("Select count(*) from emp_leave_transactions 
+        //                                where leave_date = '$day'   and LEAVEENTRYID in (select LEAVEENTRYID  
+        //                                from leaveentries where EMP_fkey = $emp_fkey) and LEAVESTATUS in ('Applied','Approved','Authorized' ) 
+        //                            ");
+        //        $data = $arr_leave_check['0']['0']['count(*)'];
+        //        if ($data != 0) {   debug($emp_fkey);
+        //            
+        //            return true;
+        //        }
+        //attendance register leave update
+        //          $arr_leave_check = $this->LeaveRequests->query("Select count(*),LeaveEntries.LEAVESTATUS,SalaryHeadItems.item from emp_leave_transactions 
+        //          left join leaveentries as LeaveEntries on(emp_leave_transactions.LEAVEENTRYID = LeaveEntries.LEAVEENTRYID)
+        //          left join salary_head_items as SalaryHeadItems on(LeaveEntries.salary_head_item_fkey = SalaryHeadItems.salary_head_item_pkey)
+        //          where leave_date = '$day' and EMP_fkey = '$emp_fkey' and LeaveEntries.salary_head_item_fkey = SalaryHeadItems.salary_head_item_pkey
+        //          and emp_leave_transactions.Leavestatus in ('Applied','Approved','Authorized' ) limit 1 ");
+        //       
+        //        $count = $data['count'] = $arr_leave_check['0']['0']['count(*)'];
+        //        $data['status'] =$arr_leave_check['0']['LeaveEntries']['LEAVESTATUS'];
+        //        $data['type'] = $arr_leave_check['0']['SalaryHeadItems']['item'];
+        //        if ($data['count'] != 0) {
+        //            return $data;
+        //        }
+        //end attendance register leave update
+        //else{
+        $arr_leaves = $this->LeaveRequests->query("SELECT salary_head_item_pkey FROM `salary_head_items` WHERE `item_type` = 'Leave' AND `status` = '1' and occurance = '$head' limit 1");
+        $leaveentryId = 0;
+        $leaves['salary_head_item_fkey'] = isset($arr_leaves['0']['salary_head_items']['salary_head_item_pkey']) ? $arr_leaves['0']['salary_head_items']['salary_head_item_pkey'] : 0;
+        //edited by megha on 11/10/2019 leave date changed to today
+        //$leaves['applied_date'] = $day;
+        $leaves['applied_date'] = date('Y-m-d');
+        $leaves['AuthoriseRemarks'] = "Leave Authorized For Verifying Attendance";
+        $leaves['ApproveRemarks'] = "Leave Approved For Verifying Attendance";
+        $leaves['LEAVESTATUS'] = "Approved";
+        $leaves['EMP_fkey'] = $emp_fkey;
+        $leaves['FROMDATE'] =  $day;
+        $leaves['FROMHALF'] = 1;
+        $leaves['TODATE'] = $day;
+        $leaves['TOHALF'] = 2;
+        $leaves['ISAutherized'] = 1;
+        $leaves['ISAutherizedby'] = "0";
+        $leaves['Autherized_date'] = date("Y-m-d");
+        $leaves['ISAPPROVED'] = 1;
+        $leaves['APPROVEDBY'] = "0";
+        $leaves['APPROVED_date'] = date("Y-m-d");
+        $leaves['Reason'] = "Leave uploaded For Verifying Attendance";
+        $leaves['REMARKS'] = "Leave uploaded For Verifying Attendance";
+        $leaves['leave_days'] = 1;
+        $fromdate = $day;
+        $fromhalf = 1;
+        $todate = $day;
+        $tohalf = 2;
+        $leavedays = 1;
+        $leavestatus = "Applied";
+        $this->LeaveRequests->saveAll($leaves);
+        $leaveentryId = $this->LeaveRequests->getLastInsertID();
+        //  debug("CALL leave_transaction_prc('$leaveentryId','$emp_fkey','$fromdate','$fromhalf','$todate','$tohalf','$leavedays','$leavestatus',@Perror_message);");
+        //  die();
+        $out = $this->LeaveRequests->query("CALL leave_transaction_prc('$leaveentryId','$emp_fkey','$fromdate','$fromhalf','$todate','$tohalf','$leavedays','$leavestatus',@Perror_message);");
+        $leavestatuses = "Approved";
+        $outs = $this->LeaveRequests->query("CALL leave_transaction_prc('$leaveentryId','$emp_fkey','$fromdate','$fromhalf','$todate','$tohalf','$leavedays','$leavestatuses',@Perror_message);");
+        if (isset($arr_attendance_register) && $arr_attendance_register['0']['0']['cnt'] != 0) {
+            return $arr_attendance_register;
+        }
+        return true;
+        // }
+    }
+
+    public function AddHalfLeave($head = '', $day = '', $emp_fkey = 0, $session = "")
+    {
+        $this->autoRender = FALSE;
+        $this->LeaveRequests->useDbConfig = $this->Session->read('ds');
+        $leaves = array();
+        //added by megha auto delete applied leaves of employees on 13/02/2020
+        $leave_count = $this->LeaveRequests->query("select count(*) cnt,emp_leave_transactions.LEAVEENTRYID from emp_leave_transactions left join leaveentries on(leaveentries.LEAVEENTRYID = emp_leave_transactions.LEAVEENTRYID) where leave_date=date_format('$day','%Y-%m-%d') and EMP_fkey= '$emp_fkey'  and emp_leave_transactions.Leavestatus='Applied' and emp_leave_transactions.leave_session='$session' ");
+        $leave_count = isset($leave_count) ? $leave_count : 0;
+        if ($leave_count['0']['0']['cnt'] > 0) {
+            $id = $leave_count['0']['emp_leave_transactions']['LEAVEENTRYID'];
+            $this->LeaveRequests->query("DELETE FROM emp_leave_transactions WHERE LEAVEENTRYID = '$id' ");
+            $this->LeaveRequests->query("DELETE FROM leaveentries WHERE LEAVEENTRYID = '$id' ");
+        }
+        //end auto delete
+        //attendance register leave update     
+        //        $arr_leave_check = $this->LeaveRequests->query("Select count(*),LeaveEntries.LEAVESTATUS,SalaryHeadItems.item from emp_leave_transactions 
+        //          left join leaveentries as LeaveEntries on(emp_leave_transactions.LEAVEENTRYID = LeaveEntries.LEAVEENTRYID)
+        //          left join salary_head_items as SalaryHeadItems on(LeaveEntries.salary_head_item_fkey = SalaryHeadItems.salary_head_item_pkey)
+        //          where leave_date = '$day' and EMP_fkey = '$emp_fkey' and LeaveEntries.salary_head_item_fkey = SalaryHeadItems.salary_head_item_pkey
+        //          and emp_leave_transactions.Leavestatus in ('Applied','Approved','Authorized' ) and emp_leave_transactions.leave_session in ('1','2') limit 1 ");
+        //    
+        //        $count = $data['count'] = $arr_leave_check['0']['0']['count(*)'];
+        //        $data['status'] =$arr_leave_check['0']['LeaveEntries']['LEAVESTATUS'];
+        //        $data['type'] = $arr_leave_check['0']['SalaryHeadItems']['item'];
+        //        if ($data['count'] != 0) {
+        //        
+        //            return $data;
+        //        }
+        //end attendance register leave update
+        $arr_leaves = $this->AttendanceRegister->query("SELECT salary_head_item_pkey FROM `salary_head_items` WHERE `item_type` = 'Leave' AND `status` = '1' and occurance = '$head' LIMIT 1");
+        $leaveentryId = 0;
+        $leaves['salary_head_item_fkey'] = isset($arr_leaves['0']['salary_head_items']['salary_head_item_pkey']) ? $arr_leaves['0']['salary_head_items']['salary_head_item_pkey'] : 0;
+        //edited by megha on 11/10/2019 leave date changed to today
+        //$leaves['applied_date'] = $day;
+        $leaves['applied_date'] = date('Y-m-d');
+        $leaves['AuthoriseRemarks'] = "Leave Authorized For Verifying Attendance";
+        $leaves['ApproveRemarks'] = "Leave Approved For Verifying Attendance";
+        $leaves['LEAVESTATUS'] = "Approved";
+        $leaves['EMP_fkey'] = $emp_fkey;
+        $leaves['FROMDATE'] =  $day;
+        $leaves['FROMHALF'] = $session;
+        $leaves['TODATE'] = $day;
+        $leaves['TOHALF'] = $session;
+        $leaves['ISAutherized'] = 1;
+        $leaves['ISAutherizedby'] = "0";
+        $leaves['Autherized_date'] = date("Y-m-d");
+        $leaves['ISAPPROVED'] = 1;
+        $leaves['APPROVEDBY'] = "0";
+        $leaves['APPROVED_date'] = date("Y-m-d");
+        $leaves['Reason'] = "Leave uploaded For Verifying Attendance";
+        $leaves['REMARKS'] = "Leave uploaded For Verifying Attendance";
+        $leaves['leave_days'] = 0.5;
+        $fromdate = $day;
+        $fromhalf = $session;
+        $todate = $day;
+        $tohalf = $session;
+        $leavedays = 0.5;
+        $leavestatus = "Applied";
+        $this->LeaveRequests->saveAll($leaves);
+        $leaveentryId = $this->LeaveRequests->getLastInsertID();
+        $out = $this->LeaveRequests->query("CALL leave_transaction_prc('$leaveentryId','$emp_fkey','$fromdate','$fromhalf','$todate','$tohalf','$leavedays','$leavestatus',@Perror_message);");
+        $leavestatuses = "Approved";
+        $outs = $this->LeaveRequests->query("CALL leave_transaction_prc('$leaveentryId','$emp_fkey','$fromdate','$fromhalf','$todate','$tohalf','$leavedays','$leavestatuses',@Perror_message);");
+        return true;
+    }
+
+    public function createDateRangeArray($strDateFrom, $strDateTo)
+    {
+        // takes two dates formatted as YYYY-MM-DD and creates an
+        // inclusive array of the dates between the from and to dates.
+        // could test validity of dates here but I'm already doing
+        // that in the main script
+
+        $aryRange = array();
+
+        $iDateFrom = mktime(1, 0, 0, substr($strDateFrom, 5, 2), substr($strDateFrom, 8, 2), substr($strDateFrom, 0, 4));
+        $iDateTo = mktime(1, 0, 0, substr($strDateTo, 5, 2), substr($strDateTo, 8, 2), substr($strDateTo, 0, 4));
+
+        if ($iDateTo >= $iDateFrom) {
+            array_push($aryRange, date('Y-m-d', $iDateFrom)); // first entry
+            while ($iDateFrom < $iDateTo) {
+                $iDateFrom += 86400; // add 24 hours
+                array_push($aryRange, date('Y-m-d', $iDateFrom));
+            }
+        }
+        return $aryRange;
+    }
+    public function verifiedpdf($branch, $month, $emp, $mode)
+
+    {
+        //echo $emp; die();
+        $this->autoRender = FALSE;
+        $this->AttendanceRegister->useDbConfig = $this->Session->read('ds');
+        $this->Units->useDbConfig = $this->Session->read('ds');
+        $this->EmployeeDetails->useDbConfig = $this->Session->read('ds');
+        $arr_registerentries = array(
+            'P' => array(
+                'label' => 'Present',
+                'color' => 'green',
+                'textColor' => 'white'
+            ),
+            /*'L' => array(
+                'label' => 'On Leave',
+                'color' => 'orange',
+                'textColor' => 'white'
+            ),*/
+            'FDL' => array(
+                'label' => 'Full Day Leave',
+                'color' => 'orange',
+                'textColor' => 'white'
+            ),
+            'FHL' => array(
+                'label' => 'First Half Leave',
+                'color' => 'orange',
+                'textColor' => 'white'
+            ),
+            'SHL' => array(
+                'label' => 'Second Half Leave',
+                'color' => 'orange',
+                'textColor' => 'white'
+            ),
+            'WO' => array(
+                'label' => 'Week Off',
+                'color' => 'yellow',
+                'textColor' => 'black'
+            ),
+            'HO' => array(
+                'label' => 'Holiday',
+                'color' => 'blue',
+                'textColor' => 'white'
+            ),
+            'A' => array(
+                'label' => 'Absent',
+                'color' => 'red',
+                'textColor' => 'white'
+            ),
+            'LOP' => array(
+                'label' => 'Loss Of Pay',
+                'color' => 'maroon',
+                'textColor' => 'white'
+            ),
+            'COFF' => array(
+                'label' => 'COMBO OFF',
+                'color' => 'deepskyblue',
+                'textColor' => 'white'
+            ),
+            'WFH' => array(
+                'label' => 'Work From Home',
+                'color' => 'deepskyblue',
+                'textColor' => 'white'
+            ),
+            'OTHERS' => array(
+                'label' => 'Others',
+                'color' => 'deepskyblue',
+                'textColor' => 'white'
+            )
+        );
+        $this->set('arr_registerentries', $arr_registerentries);
+
+
+        $conditions = array('AttendanceRegister.isdelete="N"');
+        if (isset($branch) && $branch != '') {
+            $conditions[] = 'AttendanceRegister.branch_code="' . $branch . '"';
+        }
+        if (isset($emp) && $emp != 'null') {
+            $conditions[] = 'AttendanceRegister.emp_fkey=' . $emp;
+        }
+        if (isset($month) && $month != '') {
+            $conditions[] = 'AttendanceRegister.month_year="' . $month . '"';
+        } else {
+            $conditions[] = 'AttendanceRegister.month_year="' . date('Y-m', strtotime(date('M-Y'))) . '"';
+        }
+
+        $fields = 'AttendanceRegister.*';
+        $joins = array(
+            array(
+                'table' => 'branches',
+                'alias' => 'Branch',
+                'type' => 'LEFT',
+                'foreignKey' => false,
+                'conditions' => array(
+                    'AttendanceRegister.branch_code = Branch.branch_code',
+                    'Branch.status=1'
+                )
+            ),
+            array(
+                'table' => 'emp_details',
+                'alias' => 'EmployeeDetails',
+                'type' => 'LEFT',
+                'foreignKey' => false,
+                'conditions' => array(
+                    'AttendanceRegister.emp_fkey = EmployeeDetails.emp_pkey',
+                    'EmployeeDetails.status=1'
+                )
+            )
+        );
+
+        $this->datatable["conditions"] = $conditions;
+        $resp_register = array();
+        // $resp_register["rows"] = array();
+        $count = $this->AttendanceRegister->find("count", array("conditions" => $conditions));
+        $arr_register = $this->AttendanceRegister->find("all", array('fields' => $fields, 'joins' => $joins, "conditions" => $conditions));
+        //debug($arr_register);
+        foreach ($arr_register as $key => $value) {
+            $resp_register[$key] = $value["AttendanceRegister"];
+
+            $int_days_present = isset($value["AttendanceRegister"]['presant_total']) ? $value["AttendanceRegister"]['presant_total'] : 0;
+            $int_days_leave = isset($value["AttendanceRegister"]['leave_total']) ? $value["AttendanceRegister"]['leave_total'] : 0;
+            $int_days_lop = isset($value["AttendanceRegister"]['lop_total']) ? $value["AttendanceRegister"]['lop_total'] : 0;
+
+            $resp_register[$key]['days_present'] = $int_days_present;
+            $resp_register[$key]['days_leave'] = $int_days_leave;
+            $resp_register[$key]['days_lop'] = $int_days_lop;
+        }
+        $branch = $this->Getbranchname($branch);
+        //debug($branch);
+        $this->set('resp_register', $resp_register);
+        $this->set('month', $month);
+        $this->set('branch', $branch);
+
+        if ($mode == 'pdf') {
+            //$html2pdf->pdf->SetFont('times', 'BI', 20, '', 'false');
+            // $this->set('mode','pdf');
+            $view = new View($this, false);
+            $view_output = $view->render('reportverified');
+            App::import('Vendor', 'HTML2PDF', array('file' => 'html2pdf_v4.03' . DS . 'html2pdf.class.php'));
+
+            $html2pdf = new HTML2PDF('L', 'A2', 'en');
+            //$html2pdf->addFont('inherit', '', getcwd().'/fonts/glyphicons-halflings-regular.ttf');
+            //$html2pdf->pdf->SetFont('times', 'BI', 20, '', 'false');
+            $html2pdf->pdf->SetDisplayMode('fullpage');
+            $html2pdf->writeHTML($view_output);
+            $html2pdf->Output('Reportverified.pdf', 'D');
+        } else {
+            //echo $mode;
+            $str_company_code   =   $this->Session->read('company_code');
+            $file_name  = isset($str_company_code) ? $str_company_code . "_verifiedattendance.xlsx" : "ShiftPolicy" . strtotime() . ".xlsx";
+
+            App::import('Vendor', 'PHPExcel', array('file' => 'PHPExcel.php'));
+            $objPHPExcel = new PHPExcel();
+
+            $objPHPExcel->getProperties()->setCreator("Administrator");
+            $objPHPExcel->getProperties()->setLastModifiedBy("Administrator");
+            $objPHPExcel->getProperties()->setTitle("Office 2007 XLSX Test Document");
+            $objPHPExcel->getProperties()->setSubject("Office 2007 XLSX Test Document");
+            $objPHPExcel->getProperties()->setDescription("Employee Information Report By Forsight");
+
+            $objPHPExcel->setActiveSheetIndex(0);
+
+            $worksheet = $objPHPExcel->getActiveSheet();
+
+            $worksheet->setCellValueByColumnAndRow(0, 1, "Attendance Register for " . $month);
+            $worksheet->setCellValueByColumnAndRow(1, 2, $branch);
+
+            $rowcount = 2;
+            $columncount = 0;
+
+            $objPHPExcel->getActiveSheet()->SetCellValue(PHPExcel_Cell::stringFromColumnIndex($columncount) . $rowcount, 'Employee NAME');
+            $columncount = 1;
+            for ($i = 1; $i <= 31; $i++) {
+                $objPHPExcel->getActiveSheet()->SetCellValue(PHPExcel_Cell::stringFromColumnIndex($columncount) . $rowcount, $i);
+                $columncount++;
+            }
+            $objPHPExcel->getActiveSheet()->SetCellValue(PHPExcel_Cell::stringFromColumnIndex($columncount) . $rowcount, 'Days Present');
+            $objPHPExcel->getActiveSheet()->SetCellValue(PHPExcel_Cell::stringFromColumnIndex($columncount + 1) . $rowcount, 'Day On Leave');
+            $objPHPExcel->getActiveSheet()->SetCellValue(PHPExcel_Cell::stringFromColumnIndex($columncount + 2) . $rowcount, 'Loss Of Pay');
+
+            $rowcount = $rowcount + 1;
+            foreach ($resp_register as $val) {
+                $columncount = 0;
+
+                $name = $val['emp_name'];
+                $objPHPExcel->getActiveSheet()->SetCellValue(PHPExcel_Cell::stringFromColumnIndex($columncount) . $rowcount, $name);
+                $columncount = 1;
+                for ($i = 1; $i <= 31; $i++) {
+
+
+                    $FIELD = 'FIELD' . $i;
+                    $fl = $val[$FIELD];
+                    $color = $this->getcolor($fl);
+                    $bak_color = $color['back'];
+                    $color = "";
+                    $color =  trim($bak_color);
+                    //echo $color;die();
+                    $objPHPExcel->getActiveSheet()
+                        ->getStyleByColumnAndRow($columncount, $rowcount)
+                        ->applyFromArray(
+                            array(
+                                'fill' => array(
+                                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                                    'color' => array('rgb' => $color)
+                                )
+                            )
+                        );
+
+
+                    $objPHPExcel->getActiveSheet()->SetCellValue(PHPExcel_Cell::stringFromColumnIndex($columncount) . $rowcount, $fl);
+                    //$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($columncount,$rowcount)->applyFromArray($styleArray);
+
+                    $columncount++;
+                }
+                // echo $color;die();                      
+                // die();
+                $dp = $val['days_present'];
+                $lea = $val['days_leave'];
+                $lop = $val['days_lop'];
+                $objPHPExcel->getActiveSheet()->SetCellValue(PHPExcel_Cell::stringFromColumnIndex($columncount) . $rowcount, $dp);
+                $objPHPExcel->getActiveSheet()->SetCellValue(PHPExcel_Cell::stringFromColumnIndex($columncount + 1) . $rowcount, $lea);
+                $objPHPExcel->getActiveSheet()->SetCellValue(PHPExcel_Cell::stringFromColumnIndex($columncount + 2) . $rowcount, $lop);
+                $rowcount++;
+            }
+            $rowcount = $rowcount + 1;
+            $columncount = 0;
+            foreach ($arr_registerentries as $key => $entry) {
+                $color = $this->getcolor($key);
+                $bak_color = $color['back'];
+                $color = "";
+                $color =  trim($bak_color);
+                $label = $key . ':' . $entry['label'];
+                $objPHPExcel->getActiveSheet()
+                    ->getStyleByColumnAndRow($columncount, $rowcount)
+                    ->applyFromArray(
+                        array(
+                            'fill' => array(
+                                'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                                'color' => array('rgb' => $color)
+                            )
+                        )
+                    );
+                $objPHPExcel->getActiveSheet()->SetCellValue(PHPExcel_Cell::stringFromColumnIndex($columncount) . $rowcount, $label);
+                $columncount++;
+            }
+            $worksheet->mergeCells('A1:F1');
+            $worksheet->getStyle('A1')->getAlignment()->applyFromArray(
+                array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,)
+            );
+
+            $objPHPExcel->getActiveSheet()->setTitle('Attendance Verfied Report ');
+
+            $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+            $objWriter->save(dirname(__FILE__) . "/" . $file_name);
+
+            // output headers so that the file is downloaded rather than displayed
+            header('Content-Type: application/vnd.ms-excel; charset=utf-8');
+            header('Content-Disposition: attachment; filename=' . $file_name);
+
+            readfile(dirname(__FILE__) . "/" . $file_name);
+            unlink(dirname(__FILE__) . "/" . $file_name);
+        }
+    }
+    public function  Getbranchname($branchid)
+    {
+        $this->autoRender = FALSE;
+        $this->Units->useDbConfig = $this->Session->read('ds');
+        $arr_branches = Set::extract('/Units/.', $this->Units->find("first", array("conditions" => array('branch_code' => $branchid))));
+        $branch = $arr_branches[0]['branch_name'];
+        //$this->controller->Units->useDbConfig = $this->Session->read('ds');
+        //$arr_branches	=	Set::extract('/Units/.',$this->controller->Units->find('all',array('fields'=>'id,branch_code,branch_name','conditions'=>array('status'=>1))));
+        return $branch;
+    }
+    //edited by megha on 18/11/2019,13/01/2020,15_02_2020 Attendance reversal
+    public function removeAttendanceEntry()
+    {
+        $this->autoRender = FALSE;
+        $this->AttendanceRegister->useDbConfig = $this->Session->read('ds');
+        $success = 1;
+
+        $arr_requestdata = $this->request->data;
+        // debug($arr_requestdata);
+        if (isset($arr_requestdata["payroll_pkey"])) {
+            $arr_payroll_pkeys = $arr_requestdata["payroll_pkey"];
+            $arr_payroll_emppkeys1 = $arr_requestdata["emp_pkey"];
+            $month_year = $arr_requestdata["month"];
+            $arr_payroll_pkeys1 = str_replace(",", "','", $arr_payroll_pkeys);
+            $arr_payroll_emppkeys1 = str_replace(",", "','", $arr_payroll_emppkeys1);
+            // $this->AttendanceRegister->query("UPDATE attendance_register SET isdelete = 'Y' WHERE registerid in ('$arr_payroll_pkeys1') ");
+            $arr_leaves = $this->AttendanceRegister->query("SELECT action,emp_fkey FROM `payroll_master` WHERE `month_year` = '$month_year' AND `emp_fkey` in ('$arr_payroll_emppkeys1')");
+            //  $this->AttendanceRegister->query("UPDATE attendance_register SET isdelete = 'Y' WHERE action not in ('Processed','Approved') ");
+
+            $arr_emps = $this->AttendanceRegister->query("SELECT emp_fkey as emp FROM `attendance_register` WHERE `month_year` = '$month_year' AND `emp_fkey` in ('$arr_payroll_emppkeys1')");
+
+            foreach ($arr_emps as $emps) {
+                $emp_list[] = $emps['attendance_register']['emp'];
+            }
+            //          if(empty($arr_leaves)){
+            //             $this->AttendanceRegister->query("UPDATE attendance_register SET isdelete = 'Y' WHERE `month_year` = '$month_year' AND `emp_fkey` in ('$arr_payroll_emppkeys1')");  
+            //            
+            //         }else{
+            foreach ($arr_leaves as $leave) {
+                $action = $leave['payroll_master']['action'];
+                $emp = $leave['payroll_master']['emp_fkey'];
+                $payroll_list[] =  $emp;
+                if ($action != 'Processed' && $action != 'Approved') {
+                    $this->AttendanceRegister->query("UPDATE attendance_register SET isdelete = 'Y' WHERE `month_year` = '$month_year' AND `emp_fkey` = $emp ;");
+                    //  $success = 1;
+                } else {
+                    $success = 0;
+                }
+            }
+            if (empty($arr_leaves)) {
+                $this->AttendanceRegister->query("UPDATE attendance_register SET isdelete = 'Y' WHERE `month_year` = '$month_year' AND `emp_fkey` in ('$arr_payroll_emppkeys1')");
+            } else {
+                $result1 = array_diff($emp_list, $payroll_list);
+                foreach ($result1 as $val) {
+                    $this->AttendanceRegister->query("UPDATE attendance_register SET isdelete = 'Y' WHERE `month_year` = '$month_year' AND `emp_fkey`= $val");
+                }
+            }
+        }
+        $result = array('success' => $success);
+        echo json_encode($result);
+    }
+    public function  getcolor($fl)
+    {
+        switch ($fl) {
+            case 'P':
+            case 'p':
+                $Color['back'] = '008000';
+                $Color['txt'] = 'FFFFFF';
+                break;
+            //case 'L':
+            //case 'l':
+            case 'FDL':
+            case 'fdl':
+            case 'FHL':
+            case 'fhl':
+            case 'SHL':
+            case 'shl':
+                $Color['back'] = 'FFA500';
+                $Color['txt'] = 'FFFFFF';
+                break;
+            case 'WO':
+            case 'wo':
+                $Color['back'] = 'FFFF00';
+                $Color['txt'] = '000000';
+                break;
+            case 'HO':
+            case 'ho':
+                $Color['back'] = '0000FF';
+                $Color['txt'] = 'FFFFFF';
+                break;
+            case 'LOP':
+            case 'lop':
+                $Color['back'] = '800000';
+                $Color['txt'] = 'FFFFFF';
+                break;
+            case 'COFF':
+            case 'coff':
+            case 'WFH':
+            case 'wfh':
+            case 'NA':
+            case 'na':
+            case 'OTHERS':
+            case 'others':
+                $Color['back'] = '00BFFF ';
+                $Color['txt'] = '#FFFFFF';
+                break;
+            default:
+                $Color['back'] = 'FF0000';
+                $Color['txt'] = 'FFFFFF';
+                break;
+        }
+        return $Color;
+    }
+     public function checkprocessingstatus()
+    {
+        $this->autoRender = FALSE;
+        $this->AttendanceRegister->useDbConfig = $this->Session->read('ds');
+        $arr_requestdata = $this->request->data;
+        $branch = (isset($_POST['branch']) && $_POST['branch'] != '') ? $_POST['branch'] : '';
+        $user = $this->Session->read("login_user_id"); //user id
+        $month = (isset($_POST['month']) && $_POST['month'] != '') ? date('Y-m-d', strtotime($_POST['month'])) : '';
+        $leave_count = $this->AttendanceRegister->query("select count(*) cnt from attendance_register_history  where month='$month' and branch= '$branch'  and status='0' AND start_time > DATE_SUB(NOW(), INTERVAL 15 MINUTE) ");
+        $count = isset($leave_count['0']['0']['cnt'])?$leave_count['0']['0']['cnt']:'0';
+        if($count > 0){
+        $result['success'] = 0;
+        $data = $this->AttendanceRegister->query("select start_time from attendance_register_history  where month='$month' and branch= '$branch'  and status='0'");
+        $time = isset($data['0']['attendance_register_history']['start_time'])?$data['0']['attendance_register_history']['start_time']:'';
+        $result['message'] = "Attendance processing is already running by ".$user ." since ".$time.". Please wait..";
+        }else{
+        $result['success'] = 1;
+        $currenttime= date("Y-m-d H:i:s");
+        $this->AttendanceRegister->query("insert into attendance_register_history(branch,month,created_by,process,status) 
+        values ('$branch','$month','$user','Attendance Process','0')");
+        $data = $this->AttendanceRegister->query("select duration,start_time from attendance_register_history  where month='$month' and branch= '$branch'  and status='1' order by attendance_register_history_pkey desc limit 1");
+        $duration = isset($data['0']['attendance_register_history']['duration'])?$data['0']['attendance_register_history']['duration']:'';
+        $minutes = floor($duration / 60);
+        $remainingSeconds = $duration % 60;
+        $time = ($minutes > 0) ?$minutes . " min " . $remainingSeconds . " sec": $remainingSeconds . " sec";
+        $start_time = isset($data['0']['attendance_register_history']['start_time'])?$data['0']['attendance_register_history']['start_time']:'';
+        $result['message'] = "The last processing took ".$time ." on ".$start_time; 
+        }
+        echo json_encode($result);
+    } 
+    public function checkprocessinglaststatus()
+    {
+        $this->autoRender = FALSE;
+        $this->AttendanceRegister->useDbConfig = $this->Session->read('ds');
+        $arr_requestdata = $this->request->data;
+        $branch = (isset($_POST['branch']) && $_POST['branch'] != '') ? $_POST['branch'] : '';
+        $month = (isset($_POST['month']) && $_POST['month'] != '') ? date('Y-m-d', strtotime($_POST['month'])) : '';
+        $data = $this->AttendanceRegister->query("select duration,start_time from attendance_register_history  where month='$month' and branch= '$branch'  and status='1' order by attendance_register_history_pkey desc limit 1");
+        $duration = isset($data['0']['attendance_register_history']['duration'])?$data['0']['attendance_register_history']['duration']:'';
+        $minutes = floor($duration / 60);
+        $remainingSeconds = $duration % 60;
+        $time = ($minutes > 0) ?$minutes . " min " . $remainingSeconds . " sec": $remainingSeconds . " sec";
+        $start_time = isset($data['0']['attendance_register_history']['start_time'])?$data['0']['attendance_register_history']['start_time']:'';
+      
+        if($start_time != ''){
+        $result['success'] = 0;
+        $dt = new DateTime($start_time);
+        $formatted= $dt->format("H.i \p\m \o\\n d-m-Y");
+        $result['message'] = "Attendance processed at ".$formatted.". You can click on view and verify the attendance if there are no changes after last processing."; 
+        }else{
+            $result['success'] = 1;
+            $result['message'] = "";
+        }
+         echo json_encode($result);
+    }
+}
+                
+/*function getLeaveCount($leave, $key, $arrParams)
+{
+    $arrParams[1] = substr_count($arrParams[0],  strtoupper($leave[0]['abbr']))/2;
+}*/

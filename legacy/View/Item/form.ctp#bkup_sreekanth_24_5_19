@@ -1,0 +1,463 @@
+<script>
+    var options = {
+        success: function (resp) {
+            $('#modalForm').modal('hide');
+            $('#acctptable').datagrid('reload');
+            $.notify("Success", {
+                type: 'success',
+                allow_dismiss: false
+            });
+        }  // post-submit callback
+    };
+    $('#itemform').on('submit', function (event) {
+
+        event.preventDefault();
+        if (confirm("Do You Want To Save The Form")) {
+            $('#itemform').ajaxSubmit(options);
+        }
+    });
+</script>
+<div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">ITEM MASTER</h4>
+        </div>
+        <div class="modal-body">
+            <!-- Form starts -->
+            <div id="empsetup-save-response" class="">
+                <form class="form-horizontal"  method="post" action="<?php echo $this->webroot; ?>Item/save" id="itemform" name="itemform">
+                    <div class="modal-body">
+                        <input type="hidden" value="<?php echo isset($arr_att['0']['itemmaster']['item_master_pkey']) ? $arr_att['0']['itemmaster']['item_master_pkey'] : ''; ?>" id="item_master_pkey" name="item_master_pkey">    
+
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-3 control-label" >Item Code<lable style="color:red">*</lable></label>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="text" value="<?php echo isset($arr_att['0']['itemmaster']['item_code']) ? $arr_att['0']['itemmaster']['item_code'] : ''; ?>" name="item_code" id="item_code" required="required" >
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-3 control-label" for="item_desc">Item Name<label style="color:red">*</label></label>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="text" value='<?php echo isset($arr_att["0"]["itemmaster"]["item_desc"]) ? $arr_att["0"]["itemmaster"]["item_desc"] : ""; ?>' name="item_desc" id="item_desc" required="required" >
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-3 control-label" for="item_category">Item Category</label>
+                            <div class="col-sm-7">
+                                <select id="item_category" class="form-control" name="item_category">
+                                    <option value="" >---select---</option>
+                                    <?php
+                                    // debug($all_category);
+                                    foreach ($all_category as $value) {
+                                        //debug($value);
+                                        $selected = ($arr_att['0']['itemmaster']['item_category'] == $value['CategoryMaster']['category_pkey']) ? 'selected="selected"' : '';
+                                        echo '<option value="' . $value['CategoryMaster']['category_pkey'] . '" ' . $selected . '>' . $value['CategoryMaster']['description'] . '  </option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group form-group-sm" style="display: none; ">
+                            <label  class="col-sm-3 control-label" for="item_specification">Item Specification</label>
+                            <div class="col-sm-7">
+                                <select id="item_specification" name="item_specification" class="form-control">
+                                    <option value="">---select---</option>
+                                    <?php
+                                    foreach ($all_specification as $specification) {
+                                        $selected = ($arr_att['0']['itemmaster']['item_specification'] == $specification['ItemSpecification']['specification_pkey']) ? 'selected="selected"' : '';
+                                        echo '<option value="' . $specification['ItemSpecification']['specification_pkey'] . '" ' . $selected . '>' . $specification['ItemSpecification']['item_specification'] . '    </option>';
+                                    }
+                                    ?>
+                                </select>
+<!--                                <input class="form-control" type="text" value="<?php //echo  isset($arr_att['0']['itemmaster']['item_specification']) ? $arr_att['0']['itemmaster']['item_specification'] :'';  ?>" name="item_specification" id="item_specification">-->
+                            </div>
+                        </div>
+
+                    </div>
+                    <ul class="nav nav-tabs" role="tablist" >
+                        <!--        <li role="presentation">
+                                    <a href="#div-itemdetails" aria-controls="div-empsetuppersonal" role="tab" data-toggle="tab">Item Details</a>
+                                </li>-->
+                        <li role="presentation"  class="active">
+                            <a href="#div-additionaldetails" aria-controls="div-empsetuptaxation" role="tab" data-toggle="tab">Cost & Price</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#div-quantitydetails" aria-controls="div-empsetupprofessional" role="tab" data-toggle="tab">Quantity Details</a>
+                        </li>
+                        <!--        <li role="presentation">
+                                    <a href="#div-warrantydetails" aria-controls="div-empsetuptaxation" role="tab" data-toggle="tab">Warranty Details</a>
+                                </li>-->
+
+                    </ul>
+
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane" id="div-itemdetails" name="itemdetails">
+
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" >Main Supplier Code</label>
+                                        <input type="hidden" value="<?php echo isset($arr_att['0']['itemdetails']['item_details_pkey']) ? $arr_att['0']['itemdetails']['item_details_pkey'] : ''; ?>" id="item_details_pkey" name="item_details_pkey">    
+                                        <input type="hidden" value="<?php echo isset($arr_att['0']['itemdetails']['item_master_fkey']) ? $arr_att['0']['itemdetails']['item_master_fkey'] : ''; ?>" id="item_master_fkey" name="item_master_fkey">    
+
+                                        <div class="col-md-7">
+                                            <input id="main_supp_code" name="main_supp_code" value="<?php echo isset($arr_att['0']['itemdetails']['main_supp_code']) ? $arr_att['0']['itemdetails']['main_supp_code'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label  style="text-align:left;" class="col-md-4 control-label" >Alt Supplier Code </label>
+                                        <div class="col-md-7">
+                                            <input id="alt_supp_code" name="alt_supp_code" value="<?php echo isset($arr_att['0']['itemdetails']['alt_supp_code']) ? $arr_att['0']['itemdetails']['alt_supp_code'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label  style="text-align:left;"  class="col-md-4 control-label" >Package</label>
+                                        <div class="col-md-7">
+                                            <select id="package" name="package" class="form-control">
+                                                <option value="">---select---</option>
+                                                <?php
+                                                foreach ($all_package as $package) {
+                                                    //debug($package);
+                                                    $selected = ($arr_att['0']['itemdetails']['package'] == $package['PackageMaster']['package_pkey'] ) ? 'selected="selected"' : '';
+                                                    echo '<option value="' . $package['PackageMaster']['package_pkey'] . '" ' . $selected . '>' . $package['PackageMaster']['package_code'] . ' ' . $package['PackageMaster']['package_type'] . '    </option>';
+                                                }
+                                                ?>
+                                            </select>
+            <!--                                    <input id="package" name="package" value="<?php //echo  isset($arr_att['0']['itemdetails']['package']) ? $arr_att['0']['itemdetails']['package'] :'';  ?>" type="text"  class="form-control input-md" >-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label  style="text-align:left;"  class="col-md-4 control-label" >Unit of Measurement</label>
+                                        <div class="col-md-7">
+                                            <select id="uom" name="uom" class="form-control">
+                                                <option value="">---select---</option>
+                                                <?php
+                                                foreach ($all_measurement as $measurement) {
+                                                    //debug($package);
+                                                    $selected = ($arr_att['0']['itemdetails']['uom'] == $measurement['UoMaster']['uom_pkey']) ? 'selected="selected"' : '';
+
+                                                    echo '<option value="' . $measurement['UoMaster']['uom_pkey'] . '" ' . $selected . '>' . $measurement['UoMaster']['unit_per_pack'] . ' </option>';
+                                                }
+                                                ?>
+                                            </select>
+            <!--                                    <input id="uom" name="uom" value="<?php //echo  isset($arr_att['0']['itemdetails']['uom']) ? $arr_att['0']['itemdetails']['uom'] : '' ; ?>" type="text"  class="form-control input-md" >-->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label  style="text-align:left;"  class="col-md-4 control-label" for="thickness">Thickness</label>
+                                        <div class="col-md-7">
+                                            <input id="thickness" name="thickness" value="<?php echo isset($arr_att['0']['itemdetails']['thickness']) ? $arr_att['0']['itemdetails']['thickness'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label  style="text-align:left;"  class="col-md-4 control-label" for="dimension">Dimension</label>
+                                        <div class="col-md-7">
+                                            <input id="dimension" name="dimension" value="<?php echo isset($arr_att['0']['itemdetails']['dimension']); ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label  style="text-align:left;"  class="col-md-4 control-label" for="density">Density</label>
+                                        <div class="col-md-7">
+                                            <input id="density" name="density" value="<?php echo isset($arr_att['0']['itemdetails']['density']) ? $arr_att['0']['itemdetails']['density'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="sumit" id="btn-submit"  class="btn btn-primary">Save</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+                            </div>
+
+
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="div-quantitydetails" name="quantitydetails">
+
+
+                            <div class="modal-body">
+
+                                <div class="form-group" style="display: none; ">
+                                    <input type="hidden" value="<?php echo isset($arr_att['0']['qtydetails']['quantity_details_pkey']) ? $arr_att['0']['qtydetails']['quantity_details_pkey'] : ''; ?>" id="quantity_details_pkey" name="quantity_details_pkey">    
+                                    <input type="hidden" value="<?php echo isset($arr_att['0']['qtydetails']['item_master_fkey']) ? $arr_att['0']['qtydetails']['item_master_fkey'] : ''; ?>" id="item_master_fkey" name="item_master_fkey">   
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="item_balance">Item Balance</label>
+                                        <div class="col-md-7">
+                                            <input id="item_balance" name="item_balance" value="<?php echo isset($arr_att['0']['qtydetails']['item_balance']) ? $arr_att['0']['qtydetails']['item_balance'] : ''; ?>" type="number"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="display: none; ">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="in_stock">In Stock</label>
+                                        <div class="col-md-7">
+                                            <input id="in_stock" name="in_stock" value="<?php echo isset($arr_att['0']['qtydetails']['in_stock']) ? $arr_att['0']['qtydetails']['in_stock'] : ''; ?>" type="number"  class="form-control input-md" >
+                                        </div> 
+                                    </div>
+                                </div>
+                                <div class="form-group" style="display: none; ">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="stock_on_hand">Stock On Hand</label>
+                                        <div class="col-md-7">
+                                            <input id="stock_on_hand" name="stock_on_hand" value="<?php echo isset($arr_att['0']['qtydetails']['stock_on_hand']) ? $arr_att['0']['qtydetails']['stock_on_hand'] : ''; ?>" type="number"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div><div class="form-group" style="display: none; ">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="qty_commit">Quantity committed</label>
+                                        <div class="col-md-7">
+                                            <input id="qty_commit" name="qty_commit" value="<?php echo isset($arr_att['0']['qtydetails']['qty_commit']) ? $arr_att['0']['qtydetails']['qty_commit'] : ''; ?>" type="number"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="qty_on_order">Minimum Order Qty</label>
+                                        <div class="col-md-7">
+                                            <input id="qty_on_order" name="qty_on_order" value="<?php echo isset($arr_att['0']['qtydetails']['qty_on_order']) ? $arr_att['0']['qtydetails']['qty_on_order'] : ''; ?>" type="number"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="re_order_level">Re-order Level</label>
+                                        <div class="col-md-7">
+                                            <input id="re_order_level" name="re_order_level" value="<?php echo isset($arr_att['0']['qtydetails']['re_order_level']) ? $arr_att['0']['qtydetails']['re_order_level'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="economic_order">Economic Order</label>
+                                        <div class="col-md-7">
+                                            <input id="economic_order" name="economic_order" value="<?php echo isset($arr_att['0']['qtydetails']['economic_order']) ? $arr_att['0']['qtydetails']['economic_order'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="monthly_demand">Monthly Demand</label>
+                                        <div class="col-md-7">
+                                            <input id="monthly_demand" name="monthly_demand" value="<?php echo isset($arr_att['0']['qtydetails']['monthly_demand']) ? $arr_att['0']['qtydetails']['monthly_demand'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="modal-footer">
+                                    <button type="submit" id="btn-submit" class="btn btn-primary">Save</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div role="tabpanel" class="tab-pane" id="div-warrantydetails">
+
+                            <div class="modal-body">
+                                <input type="hidden" value="<?php echo isset($arr_att['0']['warrantydetails']['waranty_details_pkey']) ? $arr_att['0']['warrantydetails']['waranty_details_pkey'] : ''; ?>" id="waranty_details_pkey" name="waranty_details_pkey">    
+                                <input type="hidden" value="<?php echo isset($arr_att['0']['warrantydetails']['item_master_fkey']) ? $arr_att['0']['warrantydetails']['item_master_fkey'] : ''; ?>" id="item_master_fkey" name="item_master_fkey">   
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="mfg_model">Manufacture Model</label>
+                                        <div class="col-md-7">
+                                            <input id="mfg_model" name="mfg_model" value="<?php echo isset($arr_att['0']['warrantydetails']['mfg_model']) ? $arr_att['0']['warrantydetails']['mfg_model'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="item_mfg_date">Item Manufacture Date</label>
+                                        <div class="col-md-7">
+                                            <input id="manu_date" name="item_mfg_date" placeholder="Enter Date" value="<?php echo isset($arr_att['0']['warrantydetails']['item_mfg_date']) ? $arr_att['0']['warrantydetails']['item_mfg_date'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div> 
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="engineering_no">Engineering No</label>
+                                        <div class="col-md-7">
+                                            <input id="engineering_no" name="engineering_no" value="<?php echo isset($arr_att['0']['warrantydetails']['engineering_no']) ? $arr_att['0']['warrantydetails']['engineering_no'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="waranty_id">Warranty ID</label>
+                                        <div class="col-md-7">
+                                            <input id="waranty_id" name="waranty_id" value="<?php echo isset($arr_att['0']['warrantydetails']['waranty_id']) ? $arr_att['0']['warrantydetails']['waranty_id'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="waranty_begin_date">Warranty Begin Date</label>
+                                        <div class="col-md-7">
+                                            <input id="start_date" name="waranty_begin_date" placeholder="Start Date" value="<?php echo isset($arr_att['0']['warrantydetails']['waranty_begin_date']) ? $arr_att['0']['warrantydetails']['waranty_begin_date'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="waranty_end_date">Warranty End Date</label>
+                                        <div class="col-md-7">
+                                            <input id="end_date" name="waranty_end_date"  placeholder=" End Date" value="<?php echo isset($arr_att['0']['warrantydetails']['waranty_end_date']) ? $arr_att['0']['warrantydetails']['waranty_end_date'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="waranty_period">Warranty Period</label>
+                                        <div class="col-md-7">
+                                            <input id="waranty_period" name="waranty_period" value="<?php echo isset($arr_att['0']['warrantydetails']['waranty_period']) ? $arr_att['0']['warrantydetails']['waranty_period'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="waranty_notes" >Warranty Notes</label>
+                                        <div class="col-md-7">
+                                            <input id="waranty_notes" name="waranty_notes" value="<?php echo isset($arr_att['0']['warrantydetails']['waranty_notes']) ? $arr_att['0']['warrantydetails']['waranty_notes'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="item_notes">Item Notes</label>
+                                        <div class="col-md-7">
+                                            <input id="item_notes" name="item_notes" value="<?php echo isset($arr_att['0']['warrantydetails']['item_notes']) ? $arr_att['0']['warrantydetails']['item_notes'] : ''; ?>" type="text"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="modal-footer">
+                                    <button type="submit" id="btn-submit" class="btn btn-primary">Save</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+                                </div>
+                            </div>
+
+
+                        </div>   
+
+
+                        <div role="tabpanel" class="tab-pane active" id="div-additionaldetails">
+
+                            <div class="modal-body">
+                                <input type="hidden" value="<?php echo isset($arr_att['0']['additionaldetails']['additonal_details_pkey']) ? $arr_att['0']['additionaldetails']['additonal_details_pkey'] : ''; ?>" id="additonal_details_pkey" name="additonal_details_pkey">    
+                                <input type="hidden" value="<?php echo isset($arr_att['0']['additionaldetails']['item_master_fkey']) ? $arr_att['0']['additionaldetails']['item_master_fkey'] : ''; ?>" id="item_master_fkey" name="item_master_fkey">   
+
+                                <div class="form-group" style="display: none; ">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="minimum_qty">Minimum Qty</label>
+                                        <div class="col-md-7">
+                                            <input id="minimum_qty" name="minimum_qty" value="<?php echo isset($arr_att['0']['additionaldetails']['minimum_qty']) ? $arr_att['0']['additionaldetails']['minimum_qty'] : ''; ?>" type="number"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="display: none; ">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="maximum_qty">Maximum Qty</label>
+                                        <div class="col-md-7">
+                                            <input id="maximum_qty" name="maximum_qty" value="<?php echo isset($arr_att['0']['additionaldetails']['maximum_qty']) ? $arr_att['0']['additionaldetails']['maximum_qty'] : ''; ?>" type="number"  class="form-control input-md" >
+                                        </div> 
+                                    </div>
+                                </div>
+                                <div class="form-group" style="display: none; ">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="safety_stock">Safety Stock</label>
+                                        <div class="col-md-7">
+                                            <input id="safety_stock" name="safety_stock" value="<?php echo isset($arr_att['0']['additionaldetails']['safety_stock']) ? $arr_att['0']['additionaldetails']['safety_stock'] : ''; ?>" type="number"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div><div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="unit_price">Unit Cost</label>
+                                        <div class="col-md-7">
+                                            <input id="unit_price" name="unit_price" value="<?php echo isset($arr_att['0']['additionaldetails']['unit_price']) ? $arr_att['0']['additionaldetails']['unit_price'] : ''; ?>" type="number"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="sales_price">Sales Price</label>
+                                        <div class="col-md-7">
+                                            <input id="sales_price" name="sales_price" value="<?php echo isset($arr_att['0']['additionaldetails']['sales_price']) ? $arr_att['0']['additionaldetails']['sales_price'] : ''; ?>" type="number"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="display: none; ">
+                                    <div class="col-md-10">
+                                        <label style="text-align:left;" class="col-md-4 control-label" for="vendor_price">Vendor Price</label>
+                                        <div class="col-md-7">
+                                            <input  name="vendor_price" value="<?php echo isset($arr_att['0']['additionaldetails']['vendor_price']) ? $arr_att['0']['additionaldetails']['vendor_price'] : ''; ?>" type="number"  class="form-control input-md" >
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="modal-footer">
+                                    <button type="submit" id="btn-submit" class="btn btn-primary">Save</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+
+
+
+
+                    </div>
+                </form>
+                <!-- Tax Head Detail Form -->
+
+            </div>
+
+
+
+            <!-- form ends-->
+        </div>
+
+    </div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        $('#start_date').datepicker({
+            dateFormat: 'yyyy-mm-dd'
+        });
+        $('#end_date').datepicker({
+            dateFormat: 'yyyy-mm-dd'
+        });
+        $('#manu_date').datepicker({
+            dateFormat: 'yyyy-mm-dd'
+        });
+    });
+</script>

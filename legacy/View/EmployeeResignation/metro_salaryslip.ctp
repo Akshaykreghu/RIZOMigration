@@ -1,0 +1,402 @@
+<div class="box box-default collapsed-box box-solid">
+    <div class="box-header with-border">
+        <h3 class="box-title">Complete</h3>
+
+        <div class="box-tools pull-right">
+            <button onclick="toggleExpandable(this, 'contain3')" type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+            </button>
+        </div>
+        <!-- /.box-tools -->
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body" id="contain3">
+        <legend>Full And Final Settlement Of <?php echo $details['0']['EmployeeInfo']['EmpName']; ?></legend>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- DIRECT CHAT DANGER -->
+                <div class="box box-body" style="display:block; ">
+                    <!-- /.box-header -->
+                    <div class="box-body" style="display:block; ">
+                        <div class="col-md-12">
+
+                            <h2 style="text-align:center; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; //$this->session->read('company_code'); 
+                                                            ?></h2>
+                            <h4 style="text-align:center; ">Full and Final Settlement Slip</h4>
+                            <br>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="col-md-6">
+                                        <label class="col-md-6 control-label">Employee Name </label>
+                                        <div class="col-md-6">
+                                            <label class="col-md-12 control-label">:<?php echo $details['0']['EmployeeInfo']['EmpName']; ?></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="col-md-6 control-label">Employee ID </label>
+                                        <div class="col-md-6">
+                                            <label class="col-md-12 control-label">:<?php echo $details['0']['EmployeeInfo']['employee_id']; ?></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <div class="col-md-6">
+                                        <label class="col-md-6 control-label">Joining Date </label>
+                                        <div class="col-md-6">
+                                            <label class="col-md-12 control-label">:<?php echo date('d-m-Y', strtotime($details['0']['EmployeeInfo']['joining_date'])); ?></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="col-md-6 control-label">Branch </label>
+                                        <div class="col-md-6">
+                                            <label class="col-md-12 control-label">:<?php echo $details['0']['EmployeeInfo']['branch']; ?></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <div class="col-md-6">
+                                        <label class="col-md-6 control-label">Department </label>
+                                        <div class="col-md-6">
+                                            <label class="col-md-12 control-label">:<?php echo $details['0']['EmployeeInfo']['department']; ?></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="col-md-6 control-label">Designation </label>
+                                        <div class="col-md-6">
+                                            <label class="col-md-12 control-label">:<?php echo $details['0']['EmployeeInfo']['designation']; ?></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <!-- Edited by Akshay on 20-3-2024 -->
+                                <div class="form-group">
+                                    <div class="col-md-6">
+                                        <label class="col-md-6 control-label">Resignation Submitted Date </label>
+                                        <div class="col-md-6">
+                                            <label class="col-md-12 control-label">:<?php echo date('d-m-Y', strtotime($details['0']['Termination']['submitted_date'])); ?></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="col-md-6 control-label">Last working Date(asper notice days)</label>
+                                        <div class="col-md-6">
+                                            <label class="col-md-12 control-label">:<?php echo date('d-m-Y', strtotime($details['0']['Termination']['last_working_date'])); ?></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <div class="col-md-6">
+                                        <label class="col-md-6 control-label">Relieving Date </label>
+                                        <div class="col-md-6">
+                                            <label class="col-md-12 control-label">:<?php echo date('d-m-Y', strtotime($details['0']['Termination']['act_last_working_day'])); ?></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="col-md-6 control-label">Notice Period </label>
+                                        <div class="col-md-6">
+                                            <label class="col-md-12 control-label">:<?php echo $notice = isset($details['0']['Termination']['notice_period']) ? $details['0']['Termination']['notice_period'] : 0; ?></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <div class="col-md-6">
+                                        <label class="col-md-6 control-label">Resignation Period Working Days </label>
+                                        <div class="col-md-6">
+                                            <?php
+                                            $submitted_date = $details['0']['Termination']['submitted_date'];
+                                            $last_working_date = $details['0']['Termination']['last_working_date'];
+                                            $submitted_timestamp = strtotime($submitted_date);
+                                            $last_working_timestamp = strtotime($last_working_date);
+                                            $difference_seconds = $last_working_timestamp - $submitted_timestamp;
+                                            $difference_days = floor($difference_seconds / (60 * 60 * 24));
+                                            ?>
+                                            <!-- <label class="col-md-12 control-label" id="resg_per_wd">:<?php echo (($difference_days + 1) != 0) ? $working_days = (($difference_days + 1) - $offs_actual) : $working_days = 0; ?></label> -->
+                                            <label class="col-md-12 control-label" id="resg_per_wd"></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="col-md-6 control-label">Resignation Period Present Days </label>
+                                        <div class="col-md-6">
+                                            <?php
+                                            // debug($diff);
+                                            // debug($days_after_resignation_att);
+                                            // debug($offs);
+                                            ?>
+                                            <!-- <label class="col-md-12 control-label" id="resig_perd_prd">:<?php echo ($diff != 0) ? $diff - ($days_after_resignation_att + $offs) : 0; ?></label> -->
+                                            <label class="col-md-12 control-label" id="resig_perd_prd">:</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+
+                                <div class="form-group" style="margin-top: 10px;">
+                                    <div class="col-md-6">
+                                        <label class="col-md-6 control-label">Balance Working Days </label>
+                                        <div class="col-md-6">
+                                            <!-- <label class="col-md-12 control-label">:<?php echo ($diff != 0) ? ($diff - $offs) - ($diff - ($days_after_resignation_att + $offs)) : 0; ?></label> -->
+                                            <?php ($diff != 0) ? $present_days = ($diff - ($days_after_resignation_att + $offs)) : $present_days = 0; ?>
+                                            <!-- Edited by Aklshay on 12-7-2024 -->
+                                            <!-- <label  id="valueDisplay" class="col-md-12 control-label">:<?php echo $working_days - $present_days - $leave_balance; ?></label> -->
+                                            <label id="valueDisplay" class="col-md-12 control-label"></label>
+                                            <!-- End -->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="col-md-6 control-label">Encashed Leaves </label>
+                                        <div class="col-md-6">
+                                            <!-- Edited by Akshay on 24-7-2024 -->
+                                            <label class="col-md-12 control-label" id="encashable_leave_days"></label>
+                                            <!-- End -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div><!-- /.box-body -->
+                    <div class="col-md-12">
+
+                        <table class="table table-bordered" style="border:1px solid #3C8DBC">
+                            <thead>
+                                <tr>
+                                    <th colspan="2" style="text-align: center; ">ADDITIONS</th>
+                                    <th colspan="2" style="text-align: center; ">DEDUCTIONS</th>
+                                </tr>
+                                <th>Item</th>
+                                <th>Amount</th>
+                                <th>Item</th>
+                                <th>Amount</th>
+                            </thead>
+                            <?php $sum_add = 0;  ?>
+                            <?php $sum_ded = 0;  ?>
+                            <tbody>
+
+                                <?php if (count($arr_emp_settle['payd_additional']) > count($arr_emp_settle['payd_deductions'])) {
+                                    $great = 'payd_additional';
+                                } else {
+                                    $great = 'payd_deductions';
+                                }
+                                // debug($arr_emp_settle['payd_additional']); 
+                                foreach ($arr_emp_settle[$great] as $key => $val) { ?>
+                                    <tr>
+                                        <td><?php
+                                            $string = isset($arr_emp_settle['payd_additional'][$key]['emp_settle_slip']['salary_head_item_desc'])
+                                                ? $arr_emp_settle['payd_additional'][$key]['emp_settle_slip']['salary_head_item_desc']
+                                                : '';
+
+                                            // Regular expression to match the date in 'yyyy-mm' format at the end of the string
+                                            $pattern = '/(\d{4})-(\d{2})$/';
+
+                                            // Check if the string matches the pattern
+                                            if (preg_match($pattern, $string, $matches)) {
+                                                // Extract year and month from the matched date
+                                                $year = $matches[1];
+                                                $month = $matches[2];
+
+                                                // Replace the matched date with 'mm-yyyy' format
+                                                $new_date = "$month-$year";
+
+                                                // Replace the matched part of the string with the new date
+                                                $string = preg_replace($pattern, $new_date, $string);
+                                            }
+                                            $substring_to_remove = "for the month";
+                                            $substring_position = strstr($string, $substring_to_remove);
+                                            if ($substring_position !== false) {
+                                                $string = str_replace($substring_position, "", $string);
+                                            }
+                                            echo $string ?></td>
+
+                                        <!-- <td><?php echo isset($arr_emp_settle['payd_additional'][$key]['sums']['total_salary_amount']) ? $arr_emp_settle['payd_additional'][$key]['sums']['total_salary_amount'] : ''; ?></td> -->
+                                        <!-- Edited by Akshay on 12-6-2024 -->
+                                        <td><?php echo isset($arr_emp_settle['payd_additional'][$key]['sums']['total_salary_amount']) ? $arr_emp_settle['payd_additional'][$key]['sums']['total_salary_amount'] : (isset($arr_emp_settle['payd_additional'][$key][0]['salary_amount']) ? $arr_emp_settle['payd_additional'][$key][0]['salary_amount'] : ''); ?></td>
+                                        <!-- End -->
+
+                                        <td><?php
+                                            // Assuming $arr_emp_settle['payd_deductions'][$key]['emp_settle_slip']['salary_head_item_desc'] contains the string
+                                            $salary_head_item_desc = isset($arr_emp_settle['payd_deductions'][$key]['emp_settle_slip']['salary_head_item_desc']) ?
+                                                $arr_emp_settle['payd_deductions'][$key]['emp_settle_slip']['salary_head_item_desc'] : '';
+
+                                            $position = strpos($salary_head_item_desc, 'for the month');
+
+                                            // Check if "for the month" is found
+                                            if ($position !== false) {
+                                                // Remove "for the month" and everything after it
+                                                $salary_head_item_desc_trimmed = substr($salary_head_item_desc, 0, $position);
+                                            } else {
+                                                // "for the month" not found, keep the original string
+                                                $salary_head_item_desc_trimmed = $salary_head_item_desc;
+                                            }
+
+                                            // Output the trimmed description
+                                            echo $salary_head_item_desc_trimmed;
+                                            ?>
+                                        </td>
+                                        <!-- <td><?php echo isset($arr_emp_settle['payd_deductions'][$key]['sums']['total_salary_amount']) ?
+                                                        $arr_emp_settle['payd_deductions'][$key]['sums']['total_salary_amount'] : ''; ?></td> -->
+
+                                        <?php
+                                        // $adds = isset($arr_emp_settle['payd_additional'][$key]['sums']['total_salary_amount']) ?
+                                        //     $arr_emp_settle['payd_additional'][$key]['sums']['total_salary_amount'] : 0;
+                                        ?>
+
+                                        <!-- Edited by Akshay on 12-6-2024 -->
+                                        <td><?php echo isset($arr_emp_settle['payd_deductions'][$key]['sums']['total_salary_amount']) ?
+                                                $arr_emp_settle['payd_deductions'][$key]['sums']['total_salary_amount'] : (isset($arr_emp_settle['payd_deductions'][$key][0]['salary_amount']) ? $arr_emp_settle['payd_deductions'][$key][0]['salary_amount'] : ''); ?></td>
+                                        <?php
+                                        $deds = isset($arr_emp_settle['payd_deductions'][$key]['sums']['total_salary_amount']) ?
+                                            $arr_emp_settle['payd_deductions'][$key]['sums']['total_salary_amount'] : (isset($arr_emp_settle['payd_deductions'][$key][0]['salary_amount']) ? $arr_emp_settle['payd_deductions'][$key][0]['salary_amount'] : 0);
+                                        ?>
+
+                                        <?php $sum_ded = $sum_ded + $deds; ?>
+                                        <?php if (isset($arr_emp_settle['payd_additional'][$key])) { ?>
+                                            <?php $adds = isset($arr_emp_settle['payd_additional'][$key]['sums']['total_salary_amount']) ?
+                                                $arr_emp_settle['payd_additional'][$key]['sums']['total_salary_amount'] : (isset($arr_emp_settle['payd_additional'][$key][0]['salary_amount']) ? $arr_emp_settle['payd_additional'][$key][0]['salary_amount'] : 0); ?>
+                                            <?php $sum_add = $sum_add + $adds; ?>
+                                        <?php } ?>
+                                        <!-- End -->
+                                    </tr>
+                                <?php } ?>
+                                <tr>
+                                    <td>Total</td>
+                                    <td><?php echo '<b>' .  $sum_add . '</b>'; ?></td>
+                                    <td>Total</td>
+                                    <td><?php echo '<b>' . $sum_ded . '</b>'; ?></td>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                <?php
+                                //Edited by Akshay on 15-3-2024 Amt paid by employee
+                                // debug($details) ;
+                                if (isset($details[0]['Termination']['amt_paid_by_empdeduction']) && $details[0]['Termination']['amt_paid_by_empdeduction'] > 0) {
+                                    $arr_emp_settle['Extra_deductions'][]['emp_settle_slip']['salary_head_item_desc'] = 'Amount paid by the employee';
+                                    $position = count($arr_emp_settle['Extra_deductions']);
+                                    $arr_emp_settle['Extra_deductions'][$position - 1]['emp_settle_slip']['salary_amount'] = round(0 - ($details[0]['Termination']['amt_paid_by_empdeduction']));
+                                } 
+                                //Edited by Akshay on 06-9-2024
+                                if (isset($details[0]['Termination']['amt_paid_by_empaddition']) && $details[0]['Termination']['amt_paid_by_empaddition'] > 0) {
+                                    $arr_emp_settle['Extra_additions'][]['emp_settle_slip']['salary_head_item_desc'] = 'Amount paid by the employee';
+                                    $position = count($arr_emp_settle['Extra_additions']);
+                                    $arr_emp_settle['Extra_additions'][$position - 1]['emp_settle_slip']['salary_amount'] = round(($details[0]['Termination']['amt_paid_by_empaddition']));
+                                }
+
+                                //Edited by Akshay on 13-3-2024 Notice pay
+                                if (count($arr_emp_settle['Extra_deductions']) > 0 && ($str_company_code == 'DEMO' || $str_company_code == 'KWMT' || $str_company_code == 'GLET' )) {
+                                    // $arr_emp_settle['Extra_deductions'][]['emp_settle_slip']['salary_head_item_desc'] = 'Notice Pay';
+                                    // $position = count($arr_emp_settle['Extra_deductions']);
+                                    // $work = isset($details['0']['Termination']['payroll_days']) ? $details['0']['Termination']['payroll_days'] : 0;
+                                    // $leave = isset($details[0]['Termination']['leave_balance']) ? ($details[0]['Termination']['leave_balance']) : 0;
+                                  
+                                    // $leave_balance_total = isset($details[0]['EmpSettleSlip']['leave_total']) ? $details[0]['EmpSettleSlip']['leave_total'] : 0;
+                                 
+                                    // $working_days_settled = isset($details['0']['Termination']['working_days_settled']) ? $details['0']['Termination']['working_days_settled'] : 0;
+                                    // $notice_period_served = $working_days_settled; //Edited by Akshay on 19-6-2024
+                                    // $leave_balance = isset($details['0']['Termination']['leave_balance']) ? $details['0']['Termination']['leave_balance'] : 0;
+                                    // if ($notice_period_served > $notice) {
+                                    //     $notice_period_served = $notice;
+                                    // }
+
+                                    // if ($notice > 0) {
+                                    //     $after_adjustment = $notice_period - $offs_actual - $working_days_settled - $leave_balance;
+                                       
+                                    // } else {
+                                    //     $after_adjustment = 0;
+                                    // }
+                                    // if ($after_adjustment < 0) {
+                                    //     $after_adjustment = 0;
+                                    // }
+                                  
+                                    // $arr_emp_settle['Extra_deductions'][$position - 1]['emp_settle_slip']['salary_amount'] = round(0 - ($after_adjustment * $per_day_salary));
+                                }
+                                if (count($arr_emp_settle['Extra_additions']) > count($arr_emp_settle['Extra_deductions'])) {
+                                    $great = 'Extra_additions';
+                                } else {
+                                    $great = 'Extra_deductions';
+                                }
+                                ?>
+                                <tr>
+                                    <th colspan="4">
+                                        Others
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: center; ">ADDITIONS</th>
+                                    <th colspan="2" style="text-align: center; ">DEDUCTIONS</th>
+                                </tr>
+                                <?php foreach ($arr_emp_settle[$great] as $key => $val) { ?>
+                                    <tr>
+                                        <td><?php echo isset($arr_emp_settle['Extra_additions'][$key]['emp_settle_slip']['salary_head_item_desc'])
+                                                ? $arr_emp_settle['Extra_additions'][$key]['emp_settle_slip']['salary_head_item_desc'] : ''; ?></td>
+                                        <td><?php echo isset($arr_emp_settle['Extra_additions'][$key]['emp_settle_slip']['salary_amount']) ? $arr_emp_settle['Extra_additions'][$key]['emp_settle_slip']['salary_amount'] : ''; ?></td>
+
+                                        <td><?php echo isset($arr_emp_settle['Extra_deductions'][$key]['emp_settle_slip']['salary_head_item_desc']) ?
+                                                $arr_emp_settle['Extra_deductions'][$key]['emp_settle_slip']['salary_head_item_desc'] : ''; ?></td>
+                                        <td><?php echo isset($arr_emp_settle['Extra_deductions'][$key]['emp_settle_slip']['salary_amount']) ?
+                                                $arr_emp_settle['Extra_deductions'][$key]['emp_settle_slip']['salary_amount'] : ''; ?></td>
+
+                                        <?php $adds = isset($arr_emp_settle['Extra_additions'][$key]['emp_settle_slip']['salary_amount']) ?
+                                            $arr_emp_settle['Extra_additions'][$key]['emp_settle_slip']['salary_amount'] : 0; ?>
+
+                                        <?php $sum_add = $sum_add + $adds; ?>
+                                        <?php if (isset($arr_emp_settle['Extra_deductions'][$key])) { ?>
+                                            <?php $deds = isset($arr_emp_settle['Extra_deductions'][$key]['emp_settle_slip']['salary_amount']) ?
+                                                $arr_emp_settle['Extra_deductions'][$key]['emp_settle_slip']['salary_amount'] : 0; ?>
+                                            <?php $sum_ded = $sum_ded + $deds; ?>
+                                        <?php } ?>
+                                    </tr>
+                                <?php } ?>
+                                <tr>
+                                    <td>Total</td>
+                                    <td><?php echo '<b>' . $sum_add . '</b>'; ?></td>
+                                    <td>Total</td>
+                                    <td><?php echo '<b>' . $sum_ded . '</b>'; ?></td>
+                                </tr>
+                                <tr><?php $sum = $sum_add + $sum_ded; ?>
+                                    <td colspan="3"><b>Net Salary</b></td>
+                                    <td><?php echo '<b>' . $sum . '</b>'; ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                        <div class="col-md-12">
+                            <!--  <button class="btn btn-warning pull-right" onclick="printslip(); " style="    margin-left: 12px; " >Print Slip</button> -->
+                            <button class="btn btn-danger pull-right" onclick="Removeemps(); ">Submit Termination </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--    <button class="btn btn-primary pull-right">Approve Payroll</button>
+    <button class="btn btn-warning" onclick="next(2)">I Need to Re-Work</button>-->
+        </div>
+        <form id="form-showreport" method="post" action=""></form>
+    </div>
+</div>
+
+<script>
+    function printslip() {
+        var employee = $('#employee').val();
+        var dayss = $('#present_days_after_resg').html();
+        var leaves = $('#encashable_leavebal').html();
+        var grativity = 0;
+        $('#form-showreport').attr('action', livesite + 'EmployeeResignation/downloads/' + employee + '/' + dayss + '/' + leaves + '/' + grativity);
+        $('#form-showreport').submit();
+
+
+    }
+    $(document).ready(function() {
+        var balanceWorkingDays = $('#balance_working_days').html();
+        var encashableType = $('#leave_adjusted').val();
+        var valueDisplay = balanceWorkingDays - encashableType;
+        valueDisplay = (valueDisplay >= 0)? valueDisplay: 0 ; 
+        $('#valueDisplay').text(':'+valueDisplay);
+        var resgPerWd = $('#total_working').html();
+        $('#resg_per_wd').text(':'+resgPerWd)
+        var resigPerdPrd = $('#present_days_after_resg').html();
+        $('#resig_perd_prd').text(':'+resigPerdPrd);
+        var balaceAfterAdjustment = $('#balance_after_adjustment').val()
+        balaceAfterAdjustment = (balaceAfterAdjustment === '')? 0 :balaceAfterAdjustment;
+        $('#encashable_leave_days').text(':'+ balaceAfterAdjustment);
+    });
+</script>

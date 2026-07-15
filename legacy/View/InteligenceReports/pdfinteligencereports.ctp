@@ -1,0 +1,1823 @@
+<style>
+    /* #payrolltable1{
+        table-layout:fixed;
+    } */
+
+    #payrolltable1 td,
+    th,
+    td {
+
+        border: 1px solid black;
+        word-wrap: break-word;
+    }
+
+    #payrolltable1 td,
+    #payrolltable1 th {
+        border: 1px solid black;
+    }
+
+    #payrolltable2 td,
+    th,
+    td {
+
+        border: 1px solid black;
+        word-wrap: break-word;
+    }
+
+    #payrolltable2 td,
+    #payrolltable2 th {
+        border: 1px solid black;
+    }
+
+    .modal-content {
+        width: 125% !important;
+
+    }
+
+    table {
+        page-break-inside: avoid;
+    }
+
+    th,
+    td {
+        page-break-inside: avoid;
+        word-wrap: break-word;
+    }
+
+    #payrolltable1 th {
+        border: 1px solid black;
+    }
+
+    #payrolltable2 th {
+        border: 1px solid black;
+    }
+
+    #payrolltable1 td {
+        border: 1px solid black;
+    }
+
+    #payrolltable2 td {
+        border: 1px solid black;
+    }
+
+    #payrolltable1 tr {
+        border: 1px solid black;
+    }
+
+    #payrolltable2 tr {
+        border: 1px solid black;
+    }
+
+    .border-bottom {
+        border-bottom: white;
+    }
+</style>
+
+<?php
+//  debug($arr_leavesummary_for_template); exit;
+?>
+
+<!-- pdf report  -->
+<?php if ($mode == 'pdf') { ?>
+    <div class="modal-body" style=" padding-left:1%; padding-bottom:1%; display: flex; justify-content: center;">
+        <h2 align="center"><b><?php echo "Intelligence and Non Compliance Report for " . $year . "-"  . $mname ?></b> </h2>
+        <h2 style="font-weight: bold;text-align: center;font-size: 19px;  margin-top: 0px;"><?php echo "(Report Run by " . $user_id . " at " . $date_time . ")" ?></h2>
+        <?php
+
+        if (true) { ?>
+            <?php if (count($arr_leavesummary_for_template) <= 0) { ?>
+                <div style="font-size: 16px;text-align:left;">
+                    No data available under the selected criteria
+                </div>
+            <?php } else {
+            ?>
+
+                <?php if (isset($needBranchWiseReport) && $needBranchWiseReport == true) { //do branchwise listing 
+                    //  debug($needBranchWiseReport); exit;
+                ?>
+
+
+
+                    <table class="table " id="payrolltable1" style="overflow-x: auto; margin: auto; border: 1px solid black;border-collapse: collapse;width:100%; ">
+                        <!-- <thead> -->
+                        <tr>
+                            <th colspan="7" style="text-align: center; border: 1px solid black; border-bottom: 1px solid black;">Details</th>
+                        </tr>
+                        <!-- </thead> -->
+                        <!-- Minimum Wages Non Compliance -->
+                        <tbody>
+                            <!-- <tr>
+                                <?php
+                                $min_color = '#FF0000';
+                                if (count($arr_leavesummary_for_template['minwages_noncompliance']) <= 0) {
+                                    $min_color = '#000000';
+                                ?>
+                                <?php
+
+                                }
+                                ?>
+                                <th colspan="7" style="color: <?php echo $min_color; ?>; text-align: center; border: 1px solid black; border-bottom: none; background-color: #F2DCDB;" class="min-wages">Minimum Wages Non Compliance</th>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="text-align: center;border-bottom: 1px solid black; background-color: #F2DCDB; border-top: none;">(Employees who has got Standard Salary less than 12500/Month)</td>
+                            </tr> -->
+                            <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['minwages_noncompliance']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB;width:100%;" class="esi-tobe"><b style="color:<?php echo $hcolor; ?>;" class="esi-tobe">Minimum Wages Non Compliance</b><br>(Employees who has got Standard Salary less than 12500/Month)</td>
+                            </tr>
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center; border-top:1px solid black;">Sl No</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee ID</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee Name</th>
+                                <th style=" text-align: center; border:1px solid black;">Joining Date </th>
+                                <th style=" text-align: center; border:1px solid black;">Branch</th>
+                                <th style=" text-align: center; border:1px solid black;">Designation</th>
+                                <th style=" text-align: center; border:1px solid black;">Standard Gross Salary</th>
+
+                            </tr>
+
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['minwages_noncompliance']) > 0) {
+                                foreach ($arr_leavesummary_for_template['minwages_noncompliance'] as $unit) {
+                                    foreach ($unit as $emp) {
+                                        $i++;
+                                        if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                            $status = '';
+                                        } else {
+                                            $status = '(Resigned)';
+                                        }
+                                        if (isset($emp['ect']['emp_anual_ctc'])) {
+                                            $gross = isset($emp['ect']['emp_anual_ctc']) ? ($emp['ect']['emp_anual_ctc']) / 12 : 0;
+                                        } else {
+                                            $gross = isset($emp['es']['emp_anual_ctc']) ? ($emp['es']['emp_anual_ctc']) / 12 : 0;
+                                        }
+                            ?>
+                                        <tr>
+                                            <td style="text-align: center;"><?php echo isset($i) ? $i : ''; ?></td>
+                                            <td style="text-align: center;"><?php echo isset($emp['ei']['employee_id']) ? $emp['ei']['employee_id'] : ''; ?></td>
+                                            <td style="text-align: center;">
+                                                <?php echo isset($emp['ei']['EmpName']) ? ($emp['ei']['EmpName'] . " " . $status) : ''; ?>
+                                            </td>
+                                            <td style="text-align: center;"><?php echo isset($emp['ei']['joining_date']) ? $emp['ei']['joining_date'] : ''; ?></td>
+                                            <td style="text-align: center;"><?php echo isset($emp['ei']['branch']) ? $emp['ei']['branch'] : ''; ?></td>
+                                            <td style="text-align: center;"><?php echo isset($emp['ei']['designation']) ? $emp['ei']['designation'] : ''; ?></td>
+                                            <td style=" text-align: center;"><?php echo abs(round($gross, 0)); ?></td>
+
+                                        </tr>
+                                <?php
+                                    }
+                                }
+                            } else {
+                                ?>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none; border-bottom: 1px solid black; "></th>
+                            </tr>
+
+
+
+                            <!-- PF Short Deduction -->
+                            <!-- <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['pf_short_deduction']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <th colspan="7" style=" background-color: #F2DCDB;color:<?php echo $hcolor; ?>; text-align: center;border: 1px solid black; border-bottom: none;" class="pf-short">PF Short Deduction</th>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="text-align: center;border-bottom: 1.5px solid black;width: 980px; background-color: #F2DCDB; border-top: none;">(Employees Standard salary PF deduction and if any employees PF deduction is below 1380 )</td>
+                            </tr> -->
+                            <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['pf_short_deduction']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB;" class="esi-tobe"><b style="color:<?php echo $hcolor; ?>;" class="esi-tobe">PF Short Deduction</b><br>(Employees Standard salary PF deduction and if any employees PF deduction is below 1380 )</td>
+                            </tr>
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center; border-top:1px solid black;">Sl No</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee ID</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee Name</th>
+                                <th style=" text-align: center; border:1px solid black;">Joining Date </th>
+                                <th style=" text-align: center; border:1px solid black;">Branch</th>
+                                <th style=" text-align: center; border:1px solid black;">Designation</th>
+                                <th style=" text-align: center; border:1px solid black;">PF Deduction</th>
+
+                            </tr>
+                            <!-- </thead> -->
+
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['pf_short_deduction']) > 0) {
+                                foreach ($arr_leavesummary_for_template['pf_short_deduction'] as $unit) {
+                                    foreach ($unit as $emp) {
+                                        $i++;
+                                        if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                            $status = '';
+                                        } else {
+                                            $status = '(Resigned)';
+                                        }
+
+                                        if (isset($emp['ectc']['structure_det_value'])) {
+                                            $pf_ded = $emp['ectc']['structure_det_value'];
+                                        } else {
+                                            $pf_ded = $emp['es']['structure_det_value'];
+                                        }
+                            ?>
+                                        <tr>
+                                            <td style=" text-align: center;"><?php echo $i; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['branch']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                            <td style=" text-align: center;"><?php echo abs(round($pf_ded, 0)); ?></td>
+                                        </tr>
+                                <?php
+                                    }
+                                }
+                            } else { ?>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none; border-bottom: .9px solid black; "></th>
+                            </tr>
+
+                            <!-- PF Non Compliance   -->
+                            <!-- <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['pf_noncompliance']) <= 0) {
+                                    $hcolor = '#000000';
+                                }
+                                ?>
+                                <th colspan="7" style=" background-color: #F2DCDB;color: <?php echo $hcolor; ?>; text-align: center; border-bottom: 1px solid black;border-bottom: none;" class="pf-non">PF Non Compliance</th>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="text-align: center;border-bottom: 1.5px solid black;width: 980px; background-color: #F2DCDB; border-top: none;">(Check all employees who got Standard salary below 15001 and report employees who does not have any PF deductions)</td>
+                            </tr> -->
+                            <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['pf_noncompliance']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB;" class="esi-tobe"><b style="color:<?php echo $hcolor; ?>;" class="esi-tobe">PF Non Compliance</b><br>(Employees who got Standard salary below 15001 and employees who does not have any PF deductions)</td>
+                            </tr>
+
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center; border:1px solid black;">Sl No</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee ID</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee Name</th>
+                                <th style=" text-align: center; border:1px solid black;">Joining Date </th>
+                                <th style=" text-align: center; border:1px solid black;">Branch</th>
+                                <th style=" text-align: center; border:1px solid black;">Designation</th>
+                                <th style=" text-align: center; border:1px solid black;">Standard Gross Salary</th>
+
+                            </tr>
+                            <!-- </thead> -->
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['pf_noncompliance']) > 0) {
+                                foreach ($arr_leavesummary_for_template['pf_noncompliance'] as $unit) {
+                                    foreach ($unit as $emp) {
+                                        $i++;
+                                        if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                            $status = '';
+                                        } else {
+                                            $status = '(Resigned)';
+                                        }
+
+                                        if (isset($emp['ect']['emp_anual_ctc'])) {
+                                            $gross = isset($emp['ect']['emp_anual_ctc']) ? ($emp['ect']['emp_anual_ctc']) / 12 : 0;
+                                        } else {
+                                            $gross = isset($emp['es']['emp_anual_ctc']) ? ($emp['es']['emp_anual_ctc']) / 12 : 0;
+                                        }
+                            ?>
+                                        <tr>
+                                            <td style=" text-align: center;"><?php echo $i; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['branch']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                            <td style=" text-align: center;"><?php echo abs(round($gross, 0)); ?></td>
+                                        </tr>
+                                <?php
+                                    }
+                                }
+                            } else { ?>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none; border-bottom: 1px solid black; "></th>
+                            </tr>
+
+
+                            <!-- ESI Non Compliance branch wise -->
+                            <!-- <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['esi_noncompliance']) <= 0) {
+                                    $hcolor = '#000000';
+                                }
+                                ?>
+                                <th colspan="7" style=" background-color: #F2DCDB;color:<?php echo $hcolor; ?>; text-align: center;border-bottom: none;" class="esi-non">ESI Non Compliance</th>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="text-align: center;border-bottom: 1.5px solid black;width: 980px; background-color: #F2DCDB; border-top: none;">(Check all employees who got Standard salary below 21001 and report employees who does not have ESI deductions)</td>
+                            </tr> -->
+                            <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['esi_noncompliance']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB;" class="esi-tobe"><b style="color:<?php echo $hcolor; ?>;" class="esi-tobe">ESI Non Compliance</b><br>(Employees who got Standard salary below 21001 and employees who does not have ESI deductions)</td>
+                            </tr>
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center; border:1px solid black;">Sl No</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee ID</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee Name</th>
+                                <th style=" text-align: center; border:1px solid black;">Joining Date </th>
+                                <th style=" text-align: center; border:1px solid black;">Branch</th>
+                                <th style=" text-align: center; border:1px solid black;">Designation</th>
+                                <th style=" text-align: center; border:1px solid black;">Standard Gross Salary</th>
+
+                            </tr>
+                            <!-- </thead> -->
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['esi_noncompliance']) > 0) {
+                                foreach ($arr_leavesummary_for_template['esi_noncompliance'] as $unit) {
+                                    foreach ($unit as $emp) {
+                                        $i++;
+                                        if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                            $status = '';
+                                        } else {
+                                            $status = '(Resigned)';
+                                        }
+
+                                        if (isset($emp['ect']['emp_anual_ctc'])) {
+                                            $gross = isset($emp['ect']['emp_anual_ctc']) ? ($emp['ect']['emp_anual_ctc']) / 12 : 0;
+                                        } else {
+                                            $gross = isset($emp['es']['emp_anual_ctc']) ? ($emp['es']['emp_anual_ctc']) / 12 : 0;
+                                        }
+                            ?>
+                                        <tr>
+                                            <td style=" text-align: center;"><?php echo $i; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['branch']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                            <td style=" text-align: center;"><?php echo abs(round($gross, 0)); ?></td>
+                                        </tr>
+                                <?php
+                                    }
+                                }
+                            } else { ?>
+
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none; border-bottom: 1px solid black; "></th>
+                            </tr>
+
+
+                            <!-- WWF/LWF Deductions -->
+
+                            <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['wwf_lwf_deductions']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB;" class="esi-tobe"><b style="color:<?php echo $hcolor; ?>;" class="esi-tobe">WWF/LWF Deductions</b><br>(Employees who does not have WWF/LWF deductions)</td>
+                            </tr>
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center; border:1px solid black;">Sl No</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee ID</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee Name</th>
+                                <th style=" text-align: center; border:1px solid black;">Joining Date </th>
+                                <th style=" text-align: center; border:1px solid black;">Branch</th>
+                                <th style=" text-align: center; border:1px solid black;">Designation</th>
+                                <th style=" text-align: center; border:1px solid black;">Standard Gross Salary</th>
+
+                            </tr>
+
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['wwf_lwf_deductions']) > 0) {
+                                foreach ($arr_leavesummary_for_template['wwf_lwf_deductions'] as $unit) {
+                                    foreach ($unit as $emp) {
+                                        $i++;
+                                        if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                            $status = '';
+                                        } else {
+                                            $status = '(Resigned)';
+                                        }
+
+                                        $gross = isset($emp[0]['standard_salary']) ? $emp[0]['standard_salary'] : 0;
+                            ?>
+                                        <tr>
+                                            <td style=" text-align: center;"><?php echo $i; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['branch']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                            <td style=" text-align: center;"><?php echo abs(round($gross, 0)); ?></td>
+                                        </tr>
+                                <?php
+                                    }
+                                }
+                            } else { ?>
+                                <style>
+                                    .wwf-lwf {
+                                        color: #000000 !important;
+                                    }
+                                </style>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+
+                            <?php } ?>
+
+                            <tr style="page-break-before: auto;">
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none;  "></th>
+                            </tr>
+
+
+                            <!-- Professional Tax Deductions -->
+
+
+
+                            <!-- PF Deductions -->
+
+
+
+
+                            <!-- ESI Deductions -->
+
+
+
+
+
+
+                            <!--Attendance Details -->
+                            <!-- <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['payroll_details']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB;" class="esi-tobe"><b style="color:<?php echo $hcolor; ?>;" class="esi-tobe">Attendance Details<</b><br>(Employees data where payroll is Processed and Approved and does not have attendance from Mobile or Biometric)</td>
+                            </tr>
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center;">Sl No</th>
+                                <th style=" text-align: center;">Employee ID</th>
+                                <th style=" text-align: center;">Employee Name</th>
+                                <th style=" text-align: center;">Joining Date </th>
+                                <th style=" text-align: center;">Branch</th>
+                                <th style=" text-align: center;">Designation</th>
+                                <th style=" text-align: center;">Attendance Type</th>
+
+                            </tr>
+
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['payroll_details']) > 0) {
+                                foreach ($arr_leavesummary_for_template['payroll_details'] as $unit) {
+                                    foreach ($unit as $emp) {
+                                        $i++;
+                                        if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                            $status = '';
+                                        } else {
+                                            $status = '(Resigned)';
+                                        }
+
+
+                                        $c2 = isset($emp['da']['C2']) ? $emp['da']['C2'] : null;
+                                        $c3 = isset($emp['da']['C3']) ? $emp['da']['C3'] : null;
+                                        $att_type = '';
+                                        if ($c2 === null && $c3 === null) {
+                                            $att_type = "Device";
+                                        } elseif ($c2 === null && $c3 != null) {
+                                            $att_type = "Edit punch";
+                                        } elseif (trim($c2) === "" && trim($c3) == 'Uploaded attandance') {
+                                            $att_type = "Uploaded attandance";
+                                        }
+
+                            ?>
+                                        <tr>
+                                            <td style=" text-align: center;"><?php echo $i; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['branch']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $att_type; ?></td>
+                                        </tr>
+                                <?php
+                                    }
+                                }
+                            } else { ?>
+                                <style>
+                                    .attendance {
+                                        color: #000000 !important;
+                                    }
+                                </style>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 5px; border-right:none; border-left:none;"></th>
+                            </tr> -->
+
+
+                            <!--Salary Details -->
+                            <?php
+                            $i = 0;
+                            $hcolor = '#FF0000';
+                            if (count($arr_leavesummary_for_template['salary_details']) > 0) {
+                                foreach ($arr_leavesummary_for_template['salary_details'] as $unit) {
+                                    foreach ($unit as $emp) {
+
+                                        if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                            $status = '';
+                                        } else {
+                                            $status = '(Resigned)';
+                                        }
+
+                                        $old_sal = isset($emp[0]['old_salary']) ? $emp[0]['old_salary'] : '';
+                                        $new_sal = isset($emp[0]['new_salary']) ? $emp[0]['new_salary'] : '';
+                                        if ($old_sal != '' && $new_sal != '' && $old_sal != $new_sal && $old_sal != null && $new_sal != null) {
+                                            $i++;
+                            ?>
+
+                                    <?php
+                                        }
+                                    }
+                                }
+
+                                if ($i == 0) {
+                                    $hcolor = '#000000';
+                                    ?>
+
+                                <?php }
+                            } else {
+                                $hcolor = '#000000';
+                                ?>
+
+                            <?php } ?>
+
+
+                            <tr>
+                                <?php
+                                // $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['salary_details']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <th colspan="7" style="font-weight: normal; text-align: center;background-color: #F2DCDB;border-top: 1px solid black;" class="esi-tobe"><b style="color:<?php echo $hcolor; ?>;" class="esi-tobe">Salary Details</b><br>(Take out all employees data whoes salary get changed [Standard Salary] in this month)</th>
+                            </tr>
+
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center;">Sl No</th>
+                                <th style=" text-align: center;">Employee ID</th>
+                                <th style=" text-align: center;">Employee Name</th>
+                                <th style=" text-align: center;">Joining Date </th>
+                                <th style=" text-align: center;">Designation</th>
+                                <th style=" text-align: center;">Previous Salary</th>
+                                <th style=" text-align: center;">New Salary</th>
+
+                            </tr>
+                            
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['salary_details']) > 0) {
+                                foreach ($arr_leavesummary_for_template['salary_details'] as $unit) {
+                                    foreach ($unit as $emp) {
+
+                                        if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                            $status = '';
+                                        } else {
+                                            $status = '(Resigned)';
+                                        }
+
+                                        $old_sal = isset($emp[0]['old_salary']) ? $emp[0]['old_salary'] : '';
+                                        $new_sal = isset($emp[0]['new_salary']) ? $emp[0]['new_salary'] : '';
+                                        if ($old_sal != '' && $new_sal != '' && $old_sal != $new_sal && $old_sal != null && $new_sal != null) {
+                                            $i++;
+                            ?>
+                                            <tr>
+                                                <td style=" text-align: center;"><?php echo $i; ?></td>
+                                                <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                                <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                                <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                                <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                                <td style=" text-align: center;"><?php echo $old_sal; ?></td>
+                                                <td style=" text-align: center;"><?php echo $new_sal; ?></td>
+                                            </tr>
+                                    <?php
+                                        }
+                                    }
+                                }
+
+                                if ($i == 0) { ?>
+                                    <tr>
+                                        <style>
+                                            .salary-details {
+                                                color: #000000 !important;
+                                            }
+                                        </style>
+                                        <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                    </tr>
+                                <?php }
+                            } else { ?>
+                                <style>
+                                    .salary-details {
+                                        color: #000000 !important;
+                                    }
+                                </style>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none;"></th>
+                            </tr>
+
+
+                            <!--Variable Details -->
+                            <!-- <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['variable_details']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <th colspan="7" style=" background-color: #F2DCDB;color: <?php echo $hcolor; ?>; text-align: center; background-color: #F2DCDB;border: 1px solid black;border-bottom: none;" class="variable">Variable Details</th>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="text-align: center;border-bottom: 1.5px solid black;width: 980px; background-color: #F2DCDB; border-top: none;">(Take out all employees data who has get any variable component uploaded)</td>
+                            </tr> -->
+                            <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['variable_details']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <th colspan="7" style="font-weight: normal; text-align: center;background-color: #F2DCDB;border-top: 1px solid black;" class="esi-tobe"><b style="color:<?php echo $hcolor; ?>;" class="esi-tobe">Variable Details</b><br>(Take out all employees data who has get any variable component uploaded)</th>
+                            </tr>
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center; border:1px solid black;">Sl No</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee ID</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee Name</th>
+                                <th style=" text-align: center; border:1px solid black;">Joining Date </th>
+                                <th style=" text-align: center; border:1px solid black;">Designation</th>
+                                <th style=" text-align: center; border:1px solid black;">Variable</th>
+                                <th style=" text-align: center; border:1px solid black;">Amount</th>
+
+                            </tr>
+                            <!-- </thead> -->
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['variable_details']) > 0) {
+                                foreach ($arr_leavesummary_for_template['variable_details'] as $unit) {
+                                    foreach ($unit as $emp) {
+
+                                        if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                            $status = '';
+                                        } else {
+                                            $status = '(Resigned)';
+                                        }
+
+                                        $variable = isset($emp['evu']['salary_head_item_desc']) ? $emp['evu']['salary_head_item_desc'] : '';
+                                        $amount = isset($emp['evu']['uploaded_amount']) ? $emp['evu']['uploaded_amount'] : '';
+
+                                        $i++;
+                            ?>
+                                        <tr>
+                                            <td style=" text-align: center;"><?php echo $i; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $variable; ?></td>
+                                            <td style=" text-align: center;"><?php echo $amount; ?></td>
+                                        </tr>
+                                <?php
+
+                                    }
+                                }
+                            } else { ?>
+
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none; border-top:none;"></th>
+                            </tr>
+
+
+                            <!--PF To Be Covered Employees-->
+                            <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['pf_to_be_covered']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+
+                                <th colspan="7" style="font-weight: normal; text-align: center;background-color: #F2DCDB;border-top: 1px solid black;" class="esi-tobe"><b style="color:<?php echo $hcolor; ?>;" class="esi-tobe">PF To Be Covered Employees</b><br>(When PF deduction is not there and Standard Salary [gross]-HRA is below 15001)</th>
+                            </tr>
+                            <tr style="background-color:  #D9D9D9;">
+                                <th style=" text-align: center;">Sl No</th>
+                                <th style=" text-align: center;">Employee ID</th>
+                                <th style=" text-align: center;">Employee Name</th>
+                                <th style=" text-align: center;">Joining Date </th>
+                                <th style=" text-align: center;">Branch</th>
+                                <th style=" text-align: center;">Designation</th>
+                                <th style=" text-align: center;">PF Salary (Standard Salary - HRA)</th>
+
+                            </tr>
+                            <!-- </thead> -->
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['pf_to_be_covered']) > 0) {
+                                foreach ($arr_leavesummary_for_template['pf_to_be_covered'] as $unit) {
+                                    foreach ($unit as $emp) {
+
+                                        if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                            $status = '';
+                                        } else {
+                                            $status = '(Resigned)';
+                                        }
+
+                                        $branch = isset($emp['ei']['branch']) ? $emp['ei']['branch'] : '';
+
+                                        $annual_salary = isset($emp['ect']['emp_anual_ctc']) ? $emp['ect']['emp_anual_ctc'] : 0;
+                                        $std_sal = $annual_salary / 12;
+                                        $hra = isset($emp['ectc']['structure_det_value']) ? $emp['ectc']['structure_det_value'] : 0;
+                                        $pf_sal = $std_sal - $hra;
+
+                                        if ($pf_sal < 15001) {
+                                            $i++;
+                            ?>
+                                            <tr>
+                                                <td style=" text-align: center;"><?php echo $i; ?></td>
+                                                <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                                <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                                <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                                <td style=" text-align: center;"><?php echo $branch ?></td>
+                                                <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                                <td style=" text-align: center;"><?php echo round($pf_sal, 0); ?></td>
+                                            </tr>
+                                    <?php
+                                        }
+                                    }
+                                }
+                                if ($i == 0) { ?>
+                                    <tr>
+                                        <style>
+                                            .pf-tobe {
+                                                color: #000000 !important;
+                                            }
+                                        </style>
+                                        <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                    </tr>
+                                <?php  }
+                            } else { ?>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none;"></th>
+                            </tr>
+
+
+                            <!--ESI To Be Covered Employees-->
+                            <!-- <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['esi_to_be_covered']) <= 0) {
+                                    $hcolor = '#000000';
+
+                                ?>
+                                <?php } 
+                                                                    $i = 0;
+                                                                    if (count($arr_leavesummary_for_template['esi_to_be_covered']) > 0) {
+                                                                        foreach ($arr_leavesummary_for_template['esi_to_be_covered'] as $unit) {
+                                                                            foreach ($unit as $emp) {
+                                                                                $std_sal = isset($emp[0]['standard_salary']) ? $emp[0]['standard_salary'] : "0";
+                                                                                $conveyance = isset($emp[0]['conveyance_allowance']) ? $emp[0]['conveyance_allowance'] : 0;
+                                                                                $washing = isset($emp[0]['washing_allowance']) ? $emp[0]['washing_allowance'] : 0;
+                                                                                $pf_sal = $std_sal - ($conveyance + $washing);
+                                                                                if ($pf_sal < "21001") {
+                                                                                    $i++;
+                                                                                }
+                                                                            }}}
+                                                                            if($i == 0){
+                                                                                $hcolor = '#000000';
+                                                                            }
+                                ?>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB;border-top:1px solid black;" class="esi-tobe"><b style="color:<?php echo $hcolor; ?>;" class="esi-tobe">ESI To Be Covered Employees</b><br>(When ESI deduction is not there and Standard Gross - [Conveyance+Washing Allowance] is below 21001)</td>
+                            </tr>
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center;">Sl No</th>
+                                <th style=" text-align: center;">Employee ID</th>
+                                <th style=" text-align: center;">Employee Name</th>
+                                <th style=" text-align: center;">Joining Date </th>
+                                <th style=" text-align: center;">Branch</th>
+                                <th style=" text-align: center;">Designation</th>
+                                <th style=" text-align: center;">ESI Salary (Standard Salary -[Conveyance+Washing Allowance])</th>
+
+                            </tr>
+
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['esi_to_be_covered']) > 0) {
+                                foreach ($arr_leavesummary_for_template['esi_to_be_covered'] as $unit) {
+                                    foreach ($unit as $emp) {
+
+                                        if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                            $status = '';
+                                        } else {
+                                            $status = '(Resigned)';
+                                        }
+
+                                        $branch = isset($emp['ei']['branch']) ? $emp['ei']['branch'] : '';
+                                        $emp_name = isset($emp['ei']['EmpName']) ? $emp['ei']['EmpName'] : '';
+                                        $annual_salary = isset($emp['ect']['emp_anual_ctc']) ? $emp['ect']['emp_anual_ctc'] : 0;
+                                        $std_sal = isset($emp[0]['standard_salary']) ? $emp[0]['standard_salary'] : "0";
+                                        
+                                        $conveyance = isset($emp[0]['conveyance_allowance']) ? $emp[0]['conveyance_allowance'] : 0;
+                                        $washing = isset($emp[0]['washing_allowance']) ? $emp[0]['washing_allowance'] : 0;
+                                        $pf_sal = $std_sal - ($conveyance + $washing);
+                                        
+
+                                        if ($pf_sal < "21001") {
+                                            $i++;
+                            ?>
+                                            <tr>
+                                                <td style=" text-align: center;"><?php echo $i; ?></td>
+                                                <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                               
+                                                <td style=" text-align: center;"><?php echo $emp_name . " " . $status; ?></td>
+                                                <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                                <td style=" text-align: center;"><?php echo $branch ?></td>
+                                                <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                                <td style=" text-align: center;"><?php echo $pf_sal; ?></td>
+                                            </tr>
+                                    <?php
+                                        }
+                                    }
+                                }
+                                if ($i == 0) { ?>
+                                    <style>
+                                        .esi-tobe {
+                                            color: #000000 !important;
+                                        }
+                                    </style>
+                                    <tr>
+                                        <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                    </tr>
+                                <?php  }
+                            } else { ?>
+                                <style>
+                                    .esi-tobe {
+                                        color: #000000 !important;
+                                    }
+                                </style>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?> -->
+
+                        </tbody>
+                    </table>
+
+
+                    <br>
+
+                <?php } else {
+                    $hcolor = '#FF0000';
+                    //debug($arr_leavesummary_for_template); exit;
+                ?>
+
+                    <!-- Minimum Wages Non Compliance Employee wise -->
+
+
+                    <table class="table  " id="payrolltable1" style="overflow-x: auto; margin: auto; border: 1px solid black; border-collapse: collapse; width:100%;">
+                        <!-- <thead> -->
+                        <tr>
+                            <th colspan="7" style="text-align: center;">Details</th>
+                        </tr>
+                        <!-- </thead> -->
+                        <tbody>
+                            <!-- <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['minwages_noncompliance']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <th colspan="7" style=" background-color: #F2DCDB;color: <?php echo $hcolor; ?>; text-align: center; border-bottom:none;" class="min-wage">Minimum Wages Non Compliance</th>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="text-align: center;border-bottom: 1.5px solid black;width: 980px; background-color: #F2DCDB; border-top:none;">(Employees who has got Standard Salary less than 12500/Month)</td>
+                            </tr> -->
+                            <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['minwages_noncompliance']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB;width:100%;" class="esi-tobe"><b style="color: <?php echo $hcolor; ?>;" class="esi-tobe">Minimum Wages Non Compliance</b><br>(Employees who has got Standard Salary less than 12500/Month)</td>
+                            </tr>
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center; border:1px solid black;">Sl No</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee ID</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee Name</th>
+                                <th style=" text-align: center; border:1px solid black;">Joining Date </th>
+                                <th style=" text-align: center; border:1px solid black;">Branch</th>
+                                <th style=" text-align: center; border:1px solid black;">Designation</th>
+                                <th style=" text-align: center; border:1px solid black;">Standard Gross Salary</th>
+
+                            </tr>
+
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['minwages_noncompliance']) > 0) {
+                                foreach ($arr_leavesummary_for_template['minwages_noncompliance'] as $emp) {
+                                    //foreach($unit as $emp){
+                                    $i++;
+                                    if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                        $status = '';
+                                    } else {
+                                        $status = '(Resigned)';
+                                    }
+                                    if (isset($emp['ect']['emp_anual_ctc'])) {
+                                        $gross = isset($emp['ect']['emp_anual_ctc']) ? ($emp['ect']['emp_anual_ctc']) / 12 : 0;
+                                    } else {
+                                        $gross = isset($emp['es']['emp_anual_ctc']) ? ($emp['es']['emp_anual_ctc']) / 12 : 0;
+                                    }
+                            ?>
+                                    <tr>
+                                        <td style=" text-align: center;"><?php echo $i; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['branch']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                        <td style=" text-align: center;"><?php echo abs(round($gross, 0)); ?></td>
+                                    </tr>
+                                <?php
+                                    // }
+                                }
+                            } else { ?>
+
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none; border-bottom: 1px solid black; "></th>
+                            </tr>
+
+                            <!-- PF Short Deduction -->
+                            <!-- <thead> -->
+                            <!-- <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['pf_short_deduction']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <th colspan="7" style=" background-color: #F2DCDB;color: <?php echo $hcolor; ?>; text-align: center; border-bottom:none;" class="pf-ded">PF Short Deduction</th>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="text-align: center;border-bottom: 1.5px solid black;width: 980px; background-color: #F2DCDB; border-top:none;">(Employees Standard salary PF deduction and if any employees PF deduction is below 1380 )</td>
+                            </tr> -->
+                            <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['pf_short_deduction']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB;" class="esi-tobe"><b style="color: <?php echo $hcolor; ?>;" class="esi-tobe">PF Short Deduction</b><br>(Employees Standard salary PF deduction and if any employees PF deduction is below 1380 )</td>
+                            </tr>
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center; border:1px solid black;">Sl No</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee ID</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee Name</th>
+                                <th style=" text-align: center; border:1px solid black;">Joining Date </th>
+                                <th style=" text-align: center; border:1px solid black;">Branch</th>
+                                <th style=" text-align: center; border:1px solid black;">Designation</th>
+                                <th style=" text-align: center; border:1px solid black;">PF Deduction</th>
+
+                            </tr>
+                            <!-- </thead> -->
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['pf_short_deduction']) > 0) {
+                                foreach ($arr_leavesummary_for_template['pf_short_deduction'] as $emp) {
+                                    //foreach($unit as $emp){
+                                    $i++;
+                                    if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                        $status = '';
+                                    } else {
+                                        $status = '(Resigned)';
+                                    }
+                                    if (isset($emp['ectc']['structure_det_value'])) {
+                                        $det_val = isset($emp['ectc']['structure_det_value']) ? $emp['ectc']['structure_det_value'] : 0;
+                                    } else {
+                                        $det_val = isset($emp['es']['structure_det_value']) ? $emp['es']['structure_det_value'] : 0;
+                                    }
+                            ?>
+                                    <tr>
+                                        <td style=" text-align: center;"><?php echo $i; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['branch']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                        <td style=" text-align: center;"><?php echo abs(round($det_val, 0)); ?></td>
+                                    </tr>
+                                <?php
+                                    // }
+                                }
+                            } else { ?>
+                                <style>
+                                    .pf-ded {
+                                        color: #000000 !important;
+                                    }
+                                </style>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none; border-bottom: .9px solid black; "></th>
+                            </tr>
+
+                            <!-- PF Non Compliance Employee wise -->
+                            <!-- <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['pf_noncompliance']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <th colspan="7" style=" background-color: #F2DCDB;color: <?php echo $hcolor; ?>; text-align: center; border-bottom:none;" class="pf-non">PF Non Compliance</th>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="text-align: center;border-bottom: 1.5px solid black; padding:10px; width: 980px; background-color: #F2DCDB; border-top:none; ">(Check all employees who got Standard salary below 15001 and report employees who does not have any PF deductions)</td>
+                            </tr> -->
+                            <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['pf_noncompliance']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB;" class="esi-tobe"><b style="color: <?php echo $hcolor; ?>;" class="esi-tobe">PF Non Compliance</b><br>(Employees who got Standard salary below 15001 and employees who does not have any PF deductions)</td>
+                            </tr>
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center; border:1px solid black;">Sl No</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee ID</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee Name</th>
+                                <th style=" text-align: center; border:1px solid black;">Joining Date </th>
+                                <th style=" text-align: center; border:1px solid black;">Branch</th>
+                                <th style=" text-align: center; border:1px solid black;">Designation</th>
+                                <th style=" text-align: center; border:1px solid black;">Standard Gross Salary</th>
+
+                            </tr>
+                            <!-- </thead> -->
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['pf_noncompliance']) > 0) {
+                                foreach ($arr_leavesummary_for_template['pf_noncompliance'] as $emp) {
+                                    //foreach($unit as $emp){
+                                    $i++;
+                                    if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                        $status = '';
+                                    } else {
+                                        $status = '(Resigned)';
+                                    }
+
+                                    if (isset($emp['ect']['emp_anual_ctc'])) {
+                                        $gross = isset($emp['ect']['emp_anual_ctc']) ? ($emp['ect']['emp_anual_ctc']) / 12 : 0;
+                                    } else {
+                                        $gross = isset($emp['es']['emp_anual_ctc']) ? ($emp['es']['emp_anual_ctc']) / 12 : 0;
+                                    }
+                            ?>
+                                    <tr>
+                                        <td style=" text-align: center;"><?php echo $i; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['branch']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                        <td style=" text-align: center;"><?php echo abs(round($gross, 0)); ?></td>
+                                    </tr>
+                                <?php
+                                    // }
+                                }
+                            } else { ?>
+                                <style>
+                                    .pf-non {
+                                        color: #000000 !important;
+                                    }
+                                </style>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none; border-bottom: 1px solid black; "></th>
+                            </tr>
+
+                            <!-- ESI Non Compliance Report -->
+                            <!-- <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['esi_noncompliance']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <th colspan="7" style=" background-color: #F2DCDB;color: <?php echo $hcolor; ?>; text-align: center; border-bottom:none;" class="esi-non">ESI Non Compliance</th>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="text-align: center;border-bottom: 1.5px solid black;width: 980px; background-color: #F2DCDB; border-top:none;">(Check all employees who got Standard salary below 21001 and report employees who does not have ESI deductions)</td>
+                            </tr> -->
+                            <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['esi_noncompliance']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB;" class="esi-tobe"><b style="color: <?php echo $hcolor; ?>;" class="esi-tobe">ESI Non Compliance</b><br>(Employees who got Standard salary below 21001 and employees who does not have ESI deductions)</td>
+                            </tr>
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center; border:1px solid black;">Sl No</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee ID</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee Name</th>
+                                <th style=" text-align: center; border:1px solid black;">Joining Date </th>
+                                <th style=" text-align: center; border:1px solid black;">Branch</th>
+                                <th style=" text-align: center; border:1px solid black;">Designation</th>
+                                <th style=" text-align: center; border:1px solid black;">Standard Gross Salary</th>
+
+                            </tr>
+                            <!-- </thead> -->
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['esi_noncompliance']) > 0) {
+                                foreach ($arr_leavesummary_for_template['esi_noncompliance'] as $emp) {
+                                    //foreach($unit as $emp){
+                                    $i++;
+                                    if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                        $status = '';
+                                    } else {
+                                        $status = '(Resigned)';
+                                    }
+
+                                    if (isset($emp['ect']['emp_anual_ctc'])) {
+                                        $gross = isset($emp['ect']['emp_anual_ctc']) ? ($emp['ect']['emp_anual_ctc']) / 12 : 0;
+                                    } else {
+                                        $gross = isset($emp['es']['emp_anual_ctc']) ? ($emp['es']['emp_anual_ctc']) / 12 : 0;
+                                    }
+                            ?>
+                                    <tr>
+                                        <td style=" text-align: center;"><?php echo $i; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['branch']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                        <td style=" text-align: center;"><?php echo abs(round($gross, 0)); ?></td>
+                                    </tr>
+                                <?php
+                                    // }
+                                }
+                            } else { ?>
+                                <style>
+                                    .esi-non {
+                                        color: #000000 !important;
+                                    }
+                                </style>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none; border-bottom: .9px solid black; "></th>
+                            </tr>
+
+
+                            <!-- WWF LWF Report Employee wise -->
+                            
+                            <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['wwf_lwf_deductions']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB;" class="esi-tobe"><b style="color: <?php echo $hcolor; ?>;" class="esi-tobe">WWF/LWF Deductions</b><br>(Employees who does not have WWF/LWF deductions)</td>
+                            </tr>
+
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center; border:1px solid black;">Sl No</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee ID</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee Name</th>
+                                <th style=" text-align: center; border:1px solid black;">Joining Date </th>
+                                <th style=" text-align: center; border:1px solid black;">Branch</th>
+                                <th style=" text-align: center; border:1px solid black;">Designation</th>
+                                <th style=" text-align: center; border:1px solid black;">Standard Gross Salary</th>
+
+                            </tr>
+                            <!-- </thead> -->
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['wwf_lwf_deductions']) > 0) {
+                                foreach ($arr_leavesummary_for_template['wwf_lwf_deductions'] as $emp) {
+                                    //foreach($unit as $emp){
+                                    $i++;
+                                    if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                        $status = '';
+                                    } else {
+                                        $status = '(Resigned)';
+                                    }
+
+                                    $gross = isset($emp[0]['standard_salary']) ? $emp[0]['standard_salary'] : 0;
+                            ?>
+                                    <tr>
+                                        <td style=" text-align: center;"><?php echo $i; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['branch']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                        <td style=" text-align: center;"><?php echo abs(round($gross, 0)); ?></td>
+                                    </tr>
+                                <?php
+                                    // }
+                                }
+                            } else { ?>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none; border-bottom: .9px solid black; border-top:none;"></th>
+                            </tr>
+
+
+
+                            <!-- Professional Tax Deductions -->
+
+
+
+                            <!-- PF Deductions -->
+
+
+
+
+                            <!-- ESI Deductions -->
+
+
+
+                            <!-- Attendance Details -->
+                            <!-- <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['payroll_details']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB;" class="esi-tobe"><b style="color:<?php echo $hcolor; ?>;" class="esi-tobe">Attendance Details</b><br>(Employees data where payroll is Processed and Approved and does not have attendance from Mobile or Biometric )</td>
+                            </tr>
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center;">Sl No</th>
+                                <th style=" text-align: center;">Employee ID</th>
+                                <th style=" text-align: center;">Employee Name</th>
+                                <th style=" text-align: center;">Joining Date </th>
+                                <th style=" text-align: center;">Branch</th>
+                                <th style=" text-align: center;">Designation</th>
+                                <th style=" text-align: center;">Attendance Type</th>
+
+                            </tr>
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['payroll_details']) > 0) {
+                                foreach ($arr_leavesummary_for_template['payroll_details'] as $emp) {
+                                    //foreach($unit as $emp){
+                                    $i++;
+                                    if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                        $status = '';
+                                    } else {
+                                        $status = '(Resigned)';
+                                    }
+
+                                    $c2 = isset($emp['da']['C2']) ? $emp['da']['C2'] : null;
+                                    $c3 = isset($emp['da']['C3']) ? $emp['da']['C3'] : null;
+                                    $att_type = '';
+                                    if ($c2 === null && $c3 === null) {
+                                        $att_type = "Device";
+                                    } elseif ($c2 === null && $c3 != null) {
+                                        $att_type = "Edit punch";
+                                    } elseif (trim($c2) === "" && trim($c3) == 'Uploaded attandance') {
+                                        $att_type = "Uploaded attandance";
+                                    }
+                            ?>
+                                    <tr>
+                                        <td style=" text-align: center;"><?php echo $i; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['branch']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $att_type; ?></td>
+                                    </tr>
+                                <?php
+                                    // }
+                                }
+                            } else { ?>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 5px; border-right:none; border-left:none;"></th>
+                            </tr> -->
+
+
+
+                            <!-- Salary Details -->
+                            <?php
+                            $hcolor = '#FF0000';
+                            if (count($arr_leavesummary_for_template['salary_details']) > 0) {
+
+                                foreach ($arr_leavesummary_for_template['salary_details'] as $emp) {
+                                    //foreach($unit as $emp){
+                                    // debug($emp);  
+                                    if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                        $status = '';
+                                    } else {
+                                        $status = '(Resigned)';
+                                    }
+
+                                    $old_sal = isset($emp[0]['old_salary']) ? $emp[0]['old_salary'] : '';
+                                    $new_sal = isset($emp[0]['new_salary']) ? $emp[0]['new_salary'] : '';
+                                    if ($old_sal != '' && $new_sal != '' && $old_sal != $new_sal) {
+                                        $i++;
+
+                            ?>
+
+                                    <?php
+                                    }
+                                }
+                                if ($i == 0) {
+                                    $hcolor = ' #000000';
+                                    ?>
+                                    <style>
+                                        .salary {
+                                            color: #000000 !important;
+                                        }
+                                    </style>
+                                <?php }
+                            } else {
+                                $hcolor = ' #000000';
+                                ?>
+                                <style>
+                                    .salary {
+                                        color: #000000 !important;
+                                    }
+                                </style>
+                            <?php } ?>
+                           
+                                <?php
+
+                                if (count($arr_leavesummary_for_template['salary_details']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                            
+
+                            <tr>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB;" class="esi-tobe"><b style="color:<?php echo $hcolor;?>;" class="esi-tobe">Salary Details</b><br>(Take out all employees data whoes salary get changed [Standard Salary] in this month)</td>
+                            </tr>
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center;">Sl No</th>
+                                <th style=" text-align: center;">Employee ID</th>
+                                <th style=" text-align: center;">Employee Name</th>
+                                <th style=" text-align: center;">Joining Date </th>
+                                <th style=" text-align: center;">Designation</th>
+                                <th style=" text-align: center;">Previous Salary</th>
+                                <th style=" text-align: center;">New Salary</th>
+
+                            </tr>
+                            
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['salary_details']) > 0) {
+                                foreach ($arr_leavesummary_for_template['salary_details'] as $emp) {
+                                    //foreach($unit as $emp){
+
+                                    if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                        $status = '';
+                                    } else {
+                                        $status = '(Resigned)';
+                                    }
+
+                                    $old_sal = isset($emp[0]['old_salary']) ? $emp[0]['old_salary'] : '';
+                                    $new_sal = isset($emp[0]['new_salary']) ? $emp[0]['new_salary'] : '';
+                                    if ($old_sal != '' && $new_sal != '' && $old_sal != $new_sal && $old_sal != null && $new_sal != null) {
+                                        $i++;
+                            ?>
+                                        <tr>
+                                            <td style=" text-align: center;"><?php echo $i; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $old_sal; ?></td>
+                                            <td style=" text-align: center;"><?php echo $new_sal; ?></td>
+                                        </tr>
+                                    <?php
+                                    }
+                                }
+                                if ($i == 0) { ?>
+                                    <tr>
+                                        <style>
+                                            .salary-details {
+                                                color: #000000 !important;
+                                            }
+                                        </style>
+                                         <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                    </tr>
+                                <?php }
+                            } else { ?>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none;"></th>
+                            </tr>
+                            
+                            <!-- Variable Details -->
+                            <?php
+                            $hcolor = '#FF0000';
+                            if (count($arr_leavesummary_for_template['variable_details']) <= 0) {
+                                $hcolor = '#000000';
+                            ?>
+                            <?php }
+                            ?>
+
+                            <tr>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB; border-top: 1px solid #000000;" class="esi-tobe"><b style="color:<?php echo $hcolor; ?>;" class="esi-tobe">Variable Details</b><br>(Take out all employees data who has get any variable component uploaded)</td>
+                            </tr>
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center; border:1px solid black;">Sl No</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee ID</th>
+                                <th style=" text-align: center; border:1px solid black;">Employee Name</th>
+                                <th style=" text-align: center; border:1px solid black;">Joining Date </th>
+                                <th style=" text-align: center; border:1px solid black;">Designation</th>
+                                <th style=" text-align: center; border:1px solid black;">Variable</th>
+                                <th style=" text-align: center; border:1px solid black;">Amount</th>
+
+                            </tr>
+                            <!-- </thead> -->
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['variable_details']) > 0) {
+                                foreach ($arr_leavesummary_for_template['variable_details'] as $emp) {
+                                    //foreach($unit as $emp){
+
+                                    if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                        $status = '';
+                                    } else {
+                                        $status = '(Resigned)';
+                                    }
+
+                                    $variable = isset($emp['evu']['salary_head_item_desc']) ? $emp['evu']['salary_head_item_desc'] : '';
+                                    $amount = isset($emp['evu']['uploaded_amount']) ? $emp['evu']['uploaded_amount'] : '';
+
+                                    $i++;
+                            ?>
+                                    <tr>
+                                        <td style=" text-align: center;"><?php echo $i; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                        <td style=" text-align: center;"><?php echo $variable; ?></td>
+                                        <td style=" text-align: center;"><?php echo $amount; ?></td>
+                                    </tr>
+                                <?php
+
+                                }
+                            } else { ?>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none; "></th>
+                            </tr>
+
+
+
+                            <!--PF To Be Covered Employees -->
+                            <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['pf_to_be_covered']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                ?>
+                                <?php
+                                $i = 0;
+                                if (count($arr_leavesummary_for_template['pf_to_be_covered']) > 0) {
+                                    foreach ($arr_leavesummary_for_template['pf_to_be_covered'] as $emp) {
+                                        $annual_salary = isset($emp['ect']['emp_anual_ctc']) ? $emp['ect']['emp_anual_ctc'] : 0;
+                                        $std_sal = $annual_salary / 12;
+                                        $hra = isset($emp['ectc']['structure_det_value']) ? $emp['ectc']['structure_det_value'] : 0;
+                                        $pf_sal = $std_sal - $hra;
+
+                                        if ($pf_sal < 15001) {
+                                            $i++;
+                                        }
+                                    }
+                                    if ($i == 0) {
+                                        $hcolor = '#000000';
+                                    }
+                                } ?>
+                                <th colspan="7" style="font-weight: normal; text-align: center;background-color: #F2DCDB;border-top: 1px solid black;" class="esi-tobe"><b style="color:<?php echo $hcolor; ?>;" class="esi-tobe">PF To Be Covered Employees</b><br>(When PF deduction is not there and Standard Salary [gross]-HRA is below 15001)</th>
+                            </tr>
+
+                            <tr style="background-color: #D9D9D9;;">
+                                <th style=" text-align: center;">Sl No</th>
+                                <th style=" text-align: center;">Employee ID</th>
+                                <th style=" text-align: center;">Employee Name</th>
+                                <th style=" text-align: center;">Joining Date </th>
+                                <th style=" text-align: center;">Branch</th>
+                                <th style=" text-align: center;">Designation</th>
+                                <th style=" text-align: center;">PF Salary (Standard Salary - HRA)</th>
+
+                            </tr>
+                            <!-- </thead> -->
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['pf_to_be_covered']) > 0) {
+                                foreach ($arr_leavesummary_for_template['pf_to_be_covered'] as $emp) {
+                                    //foreach($unit as $emp){
+
+                                    if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                        $status = '';
+                                    } else {
+                                        $status = '(Resigned)';
+                                    }
+
+                                    $branch = isset($emp['ei']['branch']) ? $emp['ei']['branch'] : '';
+
+                                    $annual_salary = isset($emp['ect']['emp_anual_ctc']) ? $emp['ect']['emp_anual_ctc'] : 0;
+                                    $std_sal = $annual_salary / 12;
+                                    $hra = isset($emp['ectc']['structure_det_value']) ? $emp['ectc']['structure_det_value'] : 0;
+                                    $pf_sal = $std_sal - $hra;
+
+                                    if ($pf_sal < 15001) {
+                                        $i++;
+                            ?>
+                                        <tr>
+                                            <td style=" text-align: center;"><?php echo $i; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['EmpName'] . " " . $status; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $branch ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                            <td style=" text-align: center;"><?php echo round($pf_sal, 0); ?></td>
+                                        </tr>
+                                    <?php
+                                    }
+                                }
+                                if ($i == 0) { ?>
+                                    <tr>
+                                        <style>
+                                            .pf-tobe {
+                                                color: #000000 !important;
+                                            }
+                                        </style>
+                                        <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                    </tr>
+                                <?php  }
+                            } else { ?>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?>
+
+                            <tr>
+                                <th colspan="7" style="text-align: left; height: 15px; border-right:none; border-left:none; "></th>
+                            </tr>
+
+
+
+
+                            <!--ESI To Be Covered Employees -->
+                            <!-- <tr>
+                                <?php
+                                $hcolor = '#FF0000';
+                                if (count($arr_leavesummary_for_template['esi_to_be_covered']) <= 0) {
+                                    $hcolor = '#000000';
+                                ?>
+                                <?php }
+                                $i = 0;
+                                if (count($arr_leavesummary_for_template['esi_to_be_covered']) > 0) {
+                                   
+                                    foreach ($arr_leavesummary_for_template['esi_to_be_covered'] as $emp) {
+                                        $std_sal = isset($emp[0]['standard_salary']) ? $emp[0]['standard_salary'] : "0";
+                                        
+                                        $conveyance = isset($emp[0]['conveyance_allowance']) ? $emp[0]['conveyance_allowance'] : "0";
+                                        $washing = isset($emp[0]['washing_allowance']) ? $emp[0]['washing_allowance'] : "0";
+                                        $pf_sal = $std_sal - ($conveyance + $washing);
+
+                                        if ($pf_sal < "21001") {
+                                            $i++;
+                                        }
+                                    }}
+
+                                    if($i == 0){
+                                        $hcolor = '#000000';
+                                    }
+                                ?>
+                                <td colspan="7" style=" text-align: center;background-color: #F2DCDB;border-top:1px solid black;" class="esi-tobe"><b style="color: <?php echo $hcolor;?>;" class="esi-tobe">ESI To Be Covered Employees</b><br>(When ESI deduction is not there and Standard Gross - [Conveyance+Washing Allowance] is below 21001)</td>
+                            </tr>
+                            <tr style="background-color: #D9D9D9;">
+                                <th style=" text-align: center;">Sl No</th>
+                                <th style=" text-align: center;">Employee ID</th>
+                                <th style=" text-align: center;">Employee Name</th>
+                                <th style=" text-align: center;">Joining Date </th>
+                                <th style=" text-align: center;">Branch</th>
+                                <th style=" text-align: center;">Designation</th>
+                                <th style=" text-align: center;">ESI Salary (Standard Salary -[Conveyance+Washing Allowance])</th>
+
+                            </tr>
+
+                            <?php
+                            $i = 0;
+                            if (count($arr_leavesummary_for_template['esi_to_be_covered']) > 0) {
+                               
+                                foreach ($arr_leavesummary_for_template['esi_to_be_covered'] as $emp) {
+                                  
+
+                                    if (isset($emp['ei']['emp_status']) && $emp['ei']['emp_status'] == 1) {
+                                        $status = '';
+                                    } else {
+                                        $status = '(Resigned)';
+                                    }
+
+                                    $branch = isset($emp['ei']['branch']) ? $emp['ei']['branch'] : '';
+                                    $emp_name = isset($emp['ei']['EmpName']) ? $emp['ei']['EmpName'] : '';
+                                    $annual_salary = isset($emp['ect']['emp_anual_ctc']) ? $emp['ect']['emp_anual_ctc'] : 0;
+                                    $std_sal = isset($emp[0]['standard_salary']) ? $emp[0]['standard_salary'] : "0";
+                                   
+                                    $conveyance = isset($emp[0]['conveyance_allowance']) ? $emp[0]['conveyance_allowance'] : "0";
+                                    $washing = isset($emp[0]['washing_allowance']) ? $emp[0]['washing_allowance'] : "0";
+                                    $pf_sal = $std_sal - ($conveyance + $washing);
+                                   
+
+                                    if ($pf_sal < "21001") {
+                                        $i++;
+                            ?>
+                                        <tr>
+                                            <td style=" text-align: center;"><?php echo $i; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['employee_id']; ?></td>
+                                            
+                                            <td style=" text-align: center;"><?php echo $emp_name . " " . $status; ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['joining_date']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $branch ?></td>
+                                            <td style=" text-align: center;"><?php echo $emp['ei']['designation']; ?></td>
+                                            <td style=" text-align: center;"><?php echo $pf_sal; ?></td>
+                                        </tr>
+                                    <?php
+                                    }
+                                    
+                                }
+                                if ($i == 0) { ?>
+                                    <style>
+                                        .esi-tobe {
+                                            color: #000000 !important;
+                                        }
+                                    </style>
+                                    <tr>
+                                        <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                    </tr>
+                                <?php  }
+                            } else { ?>
+                                <style>
+                                    .esi-tobe {
+                                        color: #000000 !important;
+                                    }
+                                </style>
+                                <tr>
+                                    <td colspan="7" style=" text-align: center; height: 45px;vertical-align: middle;">No data available under the selected criteria</td>
+                                </tr>
+                            <?php } ?> -->
+
+
+                        </tbody>
+                    </table>
+
+
+
+                <?php
+                } ?>
+               
+            <?php } ?> 
+
+
+
+
+        <?php } ?>
+    </div>
+<?php  } else { ?>
+
+
+<?php  } ?>

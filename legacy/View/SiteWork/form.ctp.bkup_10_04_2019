@@ -1,0 +1,354 @@
+<style>
+    @keyframes FadeIn {
+        from {
+            background-color: #7bebbd;
+        }
+
+        to {
+            background-color: white;
+        }
+    }
+
+    .FoodConsumptionTable tr {
+        background-color: white;
+        animation: FadeIn 1.75s ease-in-out forwards;
+    }
+</style>
+<script>
+    var options = {
+        success: function (resp) {
+            $('#largeModalForm').modal('hide');
+            $('#att_table').datagrid('reload');
+            $.notify("Success", {
+                type: 'success',
+                allow_dismiss: false
+            });
+        }  // post-submit callback
+    };
+    $('#itemform').on('submit', function (event) {
+
+        event.preventDefault();
+        if (confirm("Do You Want To Save The Form")) {
+            $('#itemform').ajaxSubmit(options);
+        }
+    });
+</script>
+<div class="modal-dialog" style="width: 100%; ">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title" style="    margin: 5px 28px 0; "><b>SITE MASTER</b> </h4>
+        </div>
+        <div class="modal-body">
+            <!-- Form starts -->
+            <div id="empsetup-save-response" class="">
+                <form class="form-horizontal"  method="post" action="<?php echo $this->webroot; ?>SiteWork/saveSite" id="itemform" name="itemform">
+
+                    <ul class="nav nav-tabs" role="tablist" >
+                        <li role="presentation" class="active">
+                            <a href="#div-itemdetails" aria-controls="div-empsetuppersonal" role="tab" data-toggle="tab" id="items">Site Details</a>
+                        </li>
+<!--                                                <li role="presentation">
+                                                    <a href="#div-quantitydetails" id="contct_details" aria-controls="div-empsetupprofessional" role="tab" data-toggle="tab">Equipments Details</a>
+                                                </li>-->
+                        <!--        <li role="presentation">
+                                    <a href="#div-warrantydetails" aria-controls="div-empsetuptaxation" role="tab" data-toggle="tab">Warranty Details</a>
+                                </li>-->
+
+                    </ul>
+
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="div-itemdetails" name="itemdetails">
+
+                            <div class="modal-body">
+                                <input type="hidden" value="<?php echo isset($arr_sites['0']['efsr_site']['efsr_ssite_pkey']) ? $arr_sites['0']['site']['efsr_ssite_pkey'] : ''; ?>" id="item_master_pkey" name="site_pkey">    
+                                <input type="hidden" value="<?php echo isset($arr_sites['0']['efsr_site']['organization_id']) ? $arr_sites['0']['site']['organization_id'] : ''; ?>" id="organization_id" name="organization_id">    
+
+                                <div class="form-group form-group-sm">
+                                    <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label" >Site Name<lable style="color:red">*</lable></label>
+                                        <div class="col-sm-7">
+                                            <input class="form-control" placeholder="Please Enter Site Name" type="text" value="<?php echo isset($arr_sites['0']['efsr_site']['site_name']) ? $arr_sites['0']['efsr_site']['site_name'] : ''; ?>" name="site_name" id="site_name" required="required" >
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label" for="item_desc">Site Code<lable style="color:red">*</lable></label>
+                                        <div class="col-sm-7">
+                                            <input class="form-control" placeholder="Please Enter a Site Code" type="text" value='<?php echo isset($arr_sites["0"]["efsr_site"]["site_id"]) ? $arr_sites["0"]["efsr_site"]["site_id"] : ""; ?>' name="site_id" id="site_id" required="required" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-sm">
+                                    <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label" for="item_desc">SAP ID<label style="color:red">*</label></label>
+                                        <div class="col-sm-7">
+                                            <input style="    width: 207px;  " class="form-control" placeholder="Type SAP" id="sap_site_id" name="sap_site_id" type="text" value='<?php echo isset($arr_sites["0"]["efsr_site"]["sap_site_id"]) ? $arr_sites["0"]["efsr_site"]["sap_site_id"] : ""; ?>' required="required" >
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label" for="item_desc">Tenancy<label style="color:red">*</label></label>
+                                        <div class="col-sm-7">
+                                            <input class="form-control" placeholder="Type Tenancy" type="tenancy" name="tenancy" id="eb_dg_status" required="required" value="<?php echo isset($arr_sites["0"]["efsr_site"]["eb_dg_status"]) ? $arr_sites["0"]["efsr_site"]["eb_dg_status"] : ""; ?>" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-sm">
+                                    <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label" for="item_desc">Latitude<lable style="color:red">*</lable></label>
+                                        <div class="col-sm-7">
+                                            <input class="form-control" placeholder="Please Enter a Latitude" type="number" value='<?php echo isset($arr_sites["0"]["efsr_site"]["latitude"]) ? $arr_sites["0"]["efsr_site"]["latitude"] : ""; ?>' name="latitude" id="latitude" required="required" >
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label" for="item_desc">Longitude<lable style="color:red">*</lable></label>
+                                        <div class="col-sm-7">
+                                            <input class="form-control" placeholder="Please Enter a Longitude" type="number" value='<?php echo isset($arr_sites["0"]["efsr_site"]["longitude"]) ? $arr_sites["0"]["efsr_site"]["longitude"] : ""; ?>' name="longitude" id="longitude" required="required" >
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="form-group form-group-sm">
+                                    <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label" for="item_desc">Address<lable style="color:red">*</lable></label>
+                                        <div class="col-sm-7">
+                                            <input class="form-control" placeholder="Enter The Address" type="text" value='<?php echo isset($arr_sites["0"]["efsr_site"]["address"]) ? $arr_sites["0"]["efsr_site"]["address"] : ""; ?>' name="address" id="address" required="required" >
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label" for="item_desc">Special Remark<lable style="color:red">*</lable></label>
+                                        <div class="col-sm-7">
+                                            <input class="form-control" placeholder="Enter Special Remark" type="text" value='<?php echo isset($arr_sites["0"]["efsr_site"]["special_remarks"]) ? $arr_sites["0"]["efsr_site"]["special_remarks"] : ""; ?>' name="special_remarks" id="special_remarks" required="required" >
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-group-sm">
+                                    <!--                                    <div class="col-sm-6">
+                                                                            <label class="col-sm-4 control-label" for="item_desc">Branch Jurisdiction<label style="color:red">*</label></label>
+                                                                            <div class="col-sm-7">
+                                                                                <input class="form-control" placeholder="Branch Jurisdiction" type="text" value='<?php echo isset($arr_sites["0"]["efsr_site"]["jurisdiction"]) ? $arr_sites["0"]["efsr_site"]["jurisdiction"] : ""; ?>' name="jurisdiction" id="item_desc" required="required" >
+                                                                            </div>
+                                                                        </div>-->
+                                    <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label" for="item_desc">Site Manager<label style="color:red">*</label></label>
+                                        <div class="col-sm-7">
+<!--                                            <input style="    width: 207px;  " class="form-control" placeholder="Type to Search Employee" id="hierarch" name="hierarch1" type="text" value='<?php echo isset($arr_sites["0"]["0"]["manager"]) ? $arr_sites["0"]["0"]["manager"] : ""; ?>' name="" required="required" >
+                                            <input type="hidden" id="superviser_pkey" name="superviser_pkey"  class="form-control strict-field" value="<?php echo isset($arr_sites["0"]["efsr_site"]['user_pkey']) ? $arr_sites["0"]["efsr_site"]['user_pkey'] : ''; ?>" style="width:234px; ">-->
+                                            <select id="superviser_pkey" class="form-control js-example-basic-single" style="width: 100%" name="superviser_pkey" required="required" >
+                                                <option value="">[--Select--]</option>
+                                                <?php if (isset($arr_sites["0"]["efsr_site"]['superviser_pkey'])) { ?>
+                                                    <option selected="selected" value="<?php echo $arr_sites["0"]["efsr_site"]['superviser_pkey']; ?>"><?php echo $arr_leaveupoload['0']['Employee']['first_name'] . ' ' . $arr_leaveupoload['0']['Employee']['last_name']; ?></option>
+                                                <?php } ?>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label" for="item_desc">	jurisdiction <label style="color:red">*</label></label>
+                                        <div class="col-sm-7">
+                                            <input class="form-control" placeholder="	jurisdiction" type="text" name="jurisdiction" id="contact_name" required="required" value="<?php echo isset($arr_sites["0"]["efsr_site"]["jurisdiction"]) ? $arr_sites["0"]["efsr_site"]["jurisdiction"] : ""; ?>" >
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                                <div class="form-group form-group-sm">
+                                    <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label" for="item_desc">Site Technician<label style="color:red">*</label></label>
+                                        <div class="col-sm-7">
+                                            <select id="technician_pkey" class="form-control js-example-basic-single" style="width: 100%" name="technician_pkey" required="required" >
+                                                <option value="">[--Select--]</option>
+                                                <?php if (isset($arr_sites["0"]["site"]['technician_pkey'])) { ?>
+                                                    <option selected="selected" value="<?php echo $arr_sites["0"]["site"]['technician_pkey']; ?>"><?php echo $arr_leaveupoload['0']['Employee']['first_name'] . ' ' . $arr_leaveupoload['0']['Employee']['last_name']; ?></option>
+                                                <?php } ?>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label" for="item_desc">Customer <label style="color:red">*</label></label>
+                                        <div class="col-sm-7">
+                                            <select id="customer_contact" class="form-control js-example-basic-single" style="width: 100%" name="customer_contact" required="required" >
+                                                <option value="">[--Select--]</option>
+                                                <?php if (isset($arr_sites["0"]["site"]['technician_pkey'])) { ?>
+                                                    <option selected="selected" value="<?php echo $arr_sites["0"]["site"]['technician_pkey']; ?>"><?php echo $arr_leaveupoload['0']['Employee']['first_name'] . ' ' . $arr_leaveupoload['0']['Employee']['last_name']; ?></option>
+                                                <?php } ?>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-sm">
+                                    <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label" for="item_desc">GBT RTT<label style="color:red">*</label></label>
+                                        <div class="col-sm-7">
+                                            <input style="    width: 207px;  " class="form-control" placeholder="Type GBT" id="gbt_rtt" name="gbt_rtt" type="text" value='<?php echo isset($arr_sites["0"]["efsr_site"]["gbt_rtt"]) ? $arr_sites["0"]["efsr_site"]["gbt_rtt"] : ""; ?>' required="required" >
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label" for="item_desc">EB DB Status<label style="color:red">*</label></label>
+                                        <div class="col-sm-7">
+                                            <input class="form-control" placeholder="Type EB DB Status" type="text" name="eb_dg_status" id="eb_dg_status" required="required" value="<?php echo isset($arr_sites["0"]["efsr_site"]["eb_dg_status"]) ? $arr_sites["0"]["efsr_site"]["eb_dg_status"] : ""; ?>" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--<input class="form-control" placeholder="Contact Person Name" type="text" name="customer_name" id="customer_name" required="required" >-->
+
+
+                            </div>
+                            <div class="modal-body">
+                                <div class="pull-right" >
+                                    <!--<a onclick="next();" class="btn btn-default " ><li class="fa fa-step-backward "></li></a>-->
+                                    <button class="btn btn-primary" type="submit">Save</button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                                                <div role="tabpanel" class="tab-pane" id="div-quantitydetails" name="quantitydetails">
+                        
+                        
+                                                    <div class="modal-body">
+                        
+                                                        
+                                                        
+                        
+                        
+                        
+                                                        <div class="pull-right" style="margin-top: 34px; ">
+                                                            <a onclick="next(1);" class="btn btn-default " > Back&nbsp; &nbsp; <li class="fa fa-step-backward "></li></a>
+                                                            <a onclick="next(3);" class="btn btn-default " >Next&nbsp; &nbsp; <li class="fa fa-step-forward "></li></a>
+                                                        </div>
+                                                    </div>
+                        
+                        
+                                                </div>
+
+
+
+                        <!-- Tax Head Detail Form -->
+
+                    </div>
+
+
+
+                </form>
+                <!-- form ends-->
+            </div>
+
+        </div>
+
+    </div>
+    <script>
+       
+        $(document).ready(function () {
+
+        $(".js-example-basic-single").select2(
+                    {
+                        //closeOnSelect:false,
+                        placeholder: "All",
+                        allowClear: true,
+                        ajax: {
+                            url: livesite + "Attendanceregister/jsons/" ,
+                            dataType: 'json',
+                            delay: 250,
+                            data: function (params) {
+                                return {
+                                    q: params.term, // search term
+                                    page: params.page
+                                };
+                            },
+                            processResults: function (data, params) {
+                                // parse the results into the format expected by Select2
+                                // since we are using custom formatting functions we do not need to
+                                // alter the remote JSON data, except to indicate that infinite
+                                // scrolling can be used
+                                params.page = params.page || 1;
+
+                                return {
+                                    results: data.items,
+                                    pagination: {
+                                        more: (params.page * 30) < data.total_count
+                                    }
+                                };
+                            }
+                        },
+                        escapeMarkup: function (markup) {
+                            return markup;
+                        }
+                    });
+                    
+                    
+                    $("#customer_contact").select2(
+                    {
+                        //closeOnSelect:false,
+                        placeholder: "All",
+                        allowClear: true,
+                        ajax: {
+                            url: livesite + "SiteWork/jsons/" ,
+                            dataType: 'json',
+                            delay: 250,
+                            data: function (params) {
+                                return {
+                                    q: params.term, // search term
+                                    page: params.page
+                                };
+                            },
+                            processResults: function (data, params) {
+                                // parse the results into the format expected by Select2
+                                // since we are using custom formatting functions we do not need to
+                                // alter the remote JSON data, except to indicate that infinite
+                                // scrolling can be used
+                                params.page = params.page || 1;
+
+                                return {
+                                    results: data.items,
+                                    pagination: {
+                                        more: (params.page * 30) < data.total_count
+                                    }
+                                };
+                            }
+                        },
+                        escapeMarkup: function (markup) {
+                            return markup;
+                        }
+                    });
+                    
+            var branch = $('#filterby_branch').val()
+            $('#contact_name').val(branch);
+
+
+            var usershierarchyoptions = {
+                url: function (phrase) {
+                    var emp = $('#empsetuppersonal #emp_pkey').val();
+                    return livesite + "Employee/getautohierarchycompletionsvgfs?username=" + phrase + "&emp=" + emp;
+                    ;
+                },
+                getValue: "emp_name",
+                list: {
+                    onClickEvent: function () {
+                        var selectedItem = $('#hierarch').getSelectedItemData();
+                        var site_pkey = selectedItem.emp_pkey;
+                        $('#hierarch1').val(site_pkey);
+                    },
+                    onKeyEnterEvent: function () {
+    //                filterAttendanceautocomplete($('#hid_filterby_employees').val());
+                    },
+                    onSelectItemEvent: function () {
+    //                var selectedItem = $('#hierarch').getSelectedItemData();
+    //                var site_pkey = selectedItem.emp_pkey;
+    //                $('#hierarch1').val(site_pkey);
+                    }
+                }
+            };
+
+            $('#hierarch').easyAutocomplete(usershierarchyoptions);
+
+
+        });
+    </script>

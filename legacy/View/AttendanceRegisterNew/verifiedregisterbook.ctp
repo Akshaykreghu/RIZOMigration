@@ -1,0 +1,1066 @@
+<?php
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+?>
+<style>
+    table.dataTable thead>tr>th {
+        padding-right: 8px;
+        text-align: center;
+        color: #013f62;
+        vertical-align: middle;
+    }
+
+
+    table.dataTable tbody>tr>td {
+        text-align: center;
+        
+    }
+    .btn {
+    padding: 3px 12px;
+    }
+    div.dataTables_filter label {
+    font-weight: bold;
+    }
+    
+  td{
+    font-size:11px !important;
+  }
+
+    /* Existing styles... */
+
+
+    .custom-btn {
+    background-color: #fff !important;
+    border: 1px solid #e0e0e0 !important;
+    color: #555 !important;
+    padding: 3px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    transition: all 0.2s;
+    margin-top: 12px;
+}
+
+
+
+/* Existing styles... */
+    
+
+    .btn .btn-success{
+     padding: 3px 12px;   
+     margin-top: 4px;
+    }
+    .form-control {
+    border-radius: 3px !important;
+    }
+    @media (min-width: 768px){
+     .form-inline .form-control {
+    width: 150px;}}
+    div.dataTables_filter {
+        margin-top: 0px;
+        position: absolute;
+        top: 8px;
+        right: 75px;
+    }
+
+    .dt-buttons {
+        position: absolute;
+        top: 8px;
+        right: 20px;
+    }
+
+    .pagination{
+        position: absolute;
+    right: 30px;
+    margin: 20px 0 !important;
+    }
+
+    .calendercolor {
+        background: #cfe3ef;
+    }
+
+    .presentcolor {
+        background: #a7e7a3;
+    }
+
+    .lopcolor {
+        background: #ef6b6b;
+    }
+
+    /* Edited by Akshay on 22-4-2024 */
+    .headcol {
+        position: sticky;
+        /* Adjust background color as needed */
+        z-index: 2;
+        /* Ensure it's above other elements */
+    }
+   /* edited by athira on 01-04-2025 */
+    .left1 {
+        left: 0px;
+        width: 14px !important;
+        background-color: #f2f2f2;
+        /* border-left: 1px solid black; */
+    }
+
+
+    .left2 {
+        left: 31px;
+        width: 20px !important;
+        background-color: #f2f2f2;
+    }
+
+    .left3 {
+        left: 67px;
+        width: 150px !important;
+        background-color: #f2f2f2;
+    }
+
+    .left4 {
+        left: 234px;
+        width:50px !important;
+       
+    }
+
+    .left5 {
+        left: 301px;
+        width:50px !important;
+       
+    }
+
+    .left6 {
+        left: 368px;
+        width:50px !important;
+       
+    }
+
+    .left7 {
+        left: 435px;
+        width:50px !important;
+       
+    }
+
+    .left8 {
+        left: 502px;
+        width:50px !important;
+       
+    }
+
+    .left9 {
+        left: 569px;
+        width:50px !important;
+       
+    }
+
+    .left10 {
+        left: 636px;
+        width:50px !important;
+       
+    }
+
+    .left11 {
+        left: 893px;
+    }
+    table{
+        table-layout:fixed;
+        width:100%;
+    }
+    .sorting_disabled{
+        width:55px ;
+
+    }
+  /* end */
+    .table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td {
+    border: 1px solid #b8b8b8;
+    }
+    /* Media query for smaller screens */
+    @media (max-width: 768px) {
+
+        .table th,
+        .table td {
+            padding: 6px;
+            /* Adjust padding for smaller screens */
+        }
+    }
+
+    /* Media query for even smaller screens */
+    @media (max-width: 576px) {
+
+        .table th,
+        .table td {
+            padding: 4px;
+            /* Further adjust padding for even smaller screens */
+        }
+    }
+
+   .div-top{
+    margin-top: -2px;
+}
+td.hide-att, th.hide-att {
+    display: none;
+}
+td.hide-id, th.hide-id {
+    display: none;
+}
+
+</style>
+
+
+<!-- <div class="" style="margin-top: 20px;margin-left:20px;padding-left:10px;display:flex;justify-content:left;align-items:center;">
+ 
+  <div style="display:flex; align-items:center;">
+    <label for="shift1combo" class="control-label shiftonelabel" style="white-space:nowrap;">
+        Status <span style="padding-left:10px;padding-right:10px;">:</span>
+    </label>
+    
+    <select id="shift1combo" class="form-control" style="width:150px;">
+        <option value="0">Select</option>
+        <option value="P/P">P/P</option>
+        <option value="P/A">P/A</option>
+        <option value="A/P">A/P</option>
+        <option value="LOP">LOP</option>
+    </select>
+</div>
+
+
+<div style="display:flex; align-items:center;padding-left:10px;">
+    <label for="option" class="control-label shiftonelabel" style="white-space:nowrap;">
+        Option <span style="padding-left:10px;padding-right:10px;">:</span>
+    </label>
+
+    <select id="option" class="form-control" style="width:150px;">
+        <option value="all">All Dates</option>
+        <option value="blank">Blank Dates</option>
+    </select>
+</div>
+
+
+  
+  <div class="col-md-3 col-sm-6">
+    <button class="btn  w-100" style="background-color:#1e516e;border-color:#1e516e;color:#ffffff;" onclick="updateselecteditem()">Bulk Update</button>
+  </div>
+</div>
+-->
+
+
+<section class="content" style="padding-left:15px;margin-bottom:8px;">
+    <div style="display:flex;justify-content:left;align-items:center;">
+    <button type="button" id="btn-remove" class="custom-btn"  >
+        <i class="fa fa-times" aria-hidden="true" style="color:#dc1010;"></i>Remove
+    </button>
+       <button id="toggleAttendanceCols2" class="btn" style="margin-left: 138px;margin-top: 14px;font-size: 17px;padding:0px 14px;background-color:#1e516e;color:white;">+</button>
+     
+</div>
+
+
+
+
+    <!-- <div data-options="iconCls:'icon-save'" style="overflow:auto;padding:0px;" class="table table-responsive"> -->
+      
+
+
+
+    <div style="max-height: 1000px; overflow-x: auto;">
+
+      
+        <table class="table table-bordered" id="LeaveDetailsReports2">
+            <thead>
+                <th class="headcol left1"> <input type="checkbox" id="selectAll2" onclick="toggleAllCheckboxes2()"></th>
+                <th class="headcol left2">SN.</th>
+                <th class="headcol left3" style="white-space: nowrap;"> &nbsp; &nbsp; &nbsp;Employee Name &nbsp; &nbsp; &nbsp;</th>
+                <th class="hide-id">Employee ID</th>
+                <th class="calendercolor headcol left4">Calendar Days</th>
+                <th class="calendercolor headcol left5">Week Off</th>
+                <th class="calendercolor headcol left6">Holiday</th>
+                <th class="calendercolor headcol left7">Working Days</th>
+                <th class="presentcolor headcol left8">Present Days</th>
+                <th class="presentcolor headcol left9">Leaves</th>
+                <th class="lopcolor headcol left10">LOP</th>
+
+                                <?php
+if (!empty($att_startdate2) && !empty($att_enddate2)) {
+    $start = new DateTime($att_startdate2);
+    $end = new DateTime($att_enddate2);
+
+    while ($start <= $end) {
+        echo '<th class="day-header">' . $start->format('d') . '</th>';
+        $start->modify('+1 day');
+    }
+}
+?>
+                <?php
+                // if (isset($employee_attendance) && count($employee_attendance) > 0) {
+                  
+                //     $date = current($employee_attendance);
+                //     foreach ($date as $vals) {
+                // ?>
+                        <!-- <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo substr($vals['emp_detail_timeattandance']['att_date'], 8, 2); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th> -->
+                 <?php
+                //     }
+                // }
+                ?>
+            </thead>
+            <tbody>
+
+                <?php
+                $j = 1;
+                foreach ($employee_attendance as $val) {
+                    // debug($val);
+                    // $i += 1;
+                    // $name = $val['0']['empdetails']['first_name'] . ' '. $val['0']['empdetails']['middile_name'] .' ' . $val['0']['empdetails']['last_name'];
+                    $name = $val['0']['emp_detail_timeattandance']['emp_name'] ;
+                    //Edited by Akshay on 22-4-2024
+                    $pkey = isset($val['0']['emp_detail_timeattandance']['emp_pkey']) ? $val['0']['emp_detail_timeattandance']['emp_pkey'] : (isset($val['0']['emp']['emp_fkey']) ? $val['0']['emp']['emp_fkey'] : 0);
+                    // $edta_pkey =  isset($val['0']['emp_detail_timeattandance']['emp_detail_timeattandance_pkey']) ? $val['0']['emp_detail_timeattandance']['emp_detail_timeattandance_pkey'] : 0;
+                ?>
+                    <div title="expand" data-options="iconCls:'icon-save'">
+                        <tr>
+                            <!-- <td class="headcol left1"> <input type="checkbox" class="otherCheckboxes" value="<?php echo $edta_pkey ?>" id="select<?php echo $pkey ?>" onclick="updateSelectAll()"></td> -->
+                            <td class="headcol left1"> <input type="checkbox" class="otherCheckboxes" value="" id="verify<?php echo $pkey ?>" onclick="updateSelectAll2()"></td>
+                            <td class="headcol left2"><?php echo $j; ?></td>
+
+                            <!-- edited by athira on 01-04-2025 -->
+                            
+                             <td class="headcol left3" title="<?php echo $name ?>" style="max-width: 136px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <span>
+                                    <?php 
+
+                                    // $first_name = $val['0']['empdetails']['first_name'];
+                                    // $middle_name = $val['0']['empdetails']['middile_name'];
+                                    // $last_name = $val['0']['empdetails']['last_name'];
+
+                                    // $full_name = trim($first_name . ' ' . $middle_name);
+
+                                    $full_name=$val['0']['emp_detail_timeattandance']['emp_name'];
+                                    // Check if the length exceeds 20 characters
+                                    if (strlen($full_name) > 20) {
+                                        $trimmed = substr($full_name, 0, 20);
+                                        $last_space_index = strrpos($trimmed, " ");
+                                        
+                                        if ($last_space_index !== false) {
+                                            // Trim at the last space to avoid cutting the middle of a word
+                                            $emp_name = substr($trimmed, 0, $last_space_index);
+                                        } else {
+                                            // If no space found, just take the first 20 characters
+                                            $emp_name = $trimmed;
+                                        }
+                                    } else {
+                                        // If first + middle name is within 20 characters, use it as is
+                                        $emp_name = $full_name;
+                                    }
+
+                                    echo $emp_name;
+                                    ?>
+                                <!-- end   -->
+                                </span>
+                                 <i class="fa fa-angle-down pull-right" onclick="showEditOnPopupOption('<?php echo trim($name); ?>', '<?php echo trim($pkey); ?>')" ></i> 
+                                </div>
+                            </td>
+                            <td class="hide-id"><?php echo $val[0]['emp_detail_timeattandance']['emp_company_id']; ?></td>
+                            
+                            <td class="calendercolor headcol left4"><?php echo $val[0]['emp_detail_timeattandance']['calander_days']; ?></td>
+                            <td class="calendercolor headcol left5"><?php echo $val[0]['emp_detail_timeattandance']['weekoff_total']; ?></td>
+                            <td class="calendercolor headcol left6"><?php echo $val[0]['emp_detail_timeattandance']['holiday_total']; ?></td>
+                            <td class="calendercolor headcol left7"><?php echo $val[0]['emp_detail_timeattandance']['working_days']; ?></td>
+                            <td class="presentcolor headcol left8"><?php echo $val[0]['emp_detail_timeattandance']['presant_total']; ?></td>
+                            <td class="presentcolor headcol left9"><?php echo $val[0]['emp_detail_timeattandance']['leave_total']; ?></td>
+                            <!-- edited by athira on 13-04-2026 -->
+                            <td class="lopcolor headcol left10"><?php echo ($val[0]['emp_detail_timeattandance']['prorate_code'] == 2) ? (isset($val[0]['emp_detail_timeattandance']['wd_lop_total']) ? $val[0]['emp_detail_timeattandance']['wd_lop_total'] : 0) : (isset($val[0]['emp_detail_timeattandance']['lop_total']) ? $val[0]['emp_detail_timeattandance']['lop_total'] : 0); ?></td>
+                            <!-- ended by athira on 13-04-2026 -->
+                            <?php
+
+
+
+$dates = [];
+$start = new DateTime($att_startdate2);
+$end = new DateTime($att_enddate2);
+while ($start <= $end) {
+    $dates[] = $start->format('Y-m-d');
+    $start->modify('+1 day');
+}
+for ($i = 1; $i <= count($dates); $i++) {
+    $field = "FIELD" . $i;
+
+    if (isset($val[0]['emp_detail_timeattandance'][$field])) {
+        $value = trim($val[0]['emp_detail_timeattandance'][$field]);
+        $emp_pkey = $val[0]['emp_detail_timeattandance']['emp_pkey'];
+        $att_date = isset($dates[$i - 1]) ? $dates[$i - 1] : ''; // ✅ use directly
+
+        // Basic styles
+        $style = "text-align:center;white-space:nowrap;font-weight:bold;";
+
+        // Detect if each half is a Policy leave or Indirect status
+        $parts = explode('/', $value);
+        $w = count($parts) > 1 ? 0.5 : 1;
+        $fh_is_policy = false;
+        $sh_is_policy = false;
+        
+        $m = isset($lop_leave_map[$emp_pkey][$att_date]) ? $lop_leave_map[$emp_pkey][$att_date] : [];
+        if (!is_array($m)) $m = [];
+
+        // FH check
+        $p1 = strtoupper(trim($parts[0]));
+        if (strpos($p1, 'LOP') !== false) {
+             if (in_array(1, $m) || in_array(3, $m)) $fh_is_policy = true;
+        } elseif (!in_array($p1, ['P','A','WO','HO','NA',''])) {
+             $fh_is_policy = true;
+        }
+
+        // SH check
+        $p2 = isset($parts[1]) ? strtoupper(trim($parts[1])) : $p1;
+        if (strpos($p2, 'LOP') !== false) {
+             if (in_array(2, $m) || in_array(3, $m)) $sh_is_policy = true;
+        } elseif (!in_array($p2, ['P','A','WO','HO','NA',''])) {
+             $sh_is_policy = true;
+        }
+        
+        // Single flag for overall styling
+        $isPolicyLeaveOnThisDate = ($fh_is_policy || $sh_is_policy);
+
+        if ($value == 'P' || $value == 'P/P') {
+            $style .= "color:white;background-color:#06a226;";
+        } elseif (in_array($value, ['A', 'A/A', 'P/A', 'A/P'])) {
+            $style .= "color:white;background-color:#06a226;";
+        } elseif (!$isPolicyLeaveOnThisDate && ($value === 'LOP/LOP' || $value === 'LOP')) { // 🔴 Exact match for Indirect LOP
+            $style .= "color:white;background-color:#e02429;";
+        } elseif (!$isPolicyLeaveOnThisDate && strpos($value, 'LOP') !== false) { // 🟠 Full day Indirect combinations/half day
+            $style .= "color:white;background-color:#ef8656;"; // choose your color
+        }elseif ($value == 'WO' || $value =='WO/WO') {
+            $style .= "color:white;background-color:#dcdc00;";
+        } elseif ($value == 'HO' || $value=='HO/HO') {
+            $style .= "color:white;background-color:#2d2df4;";
+        } elseif (trim($value) == '') {
+            $style .= "color:white;background:#ebebeb";
+        }
+
+        $displayValue = trim($value);
+        $fhStr = ($fh_is_policy ? 'true' : 'false');
+        $shStr = ($sh_is_policy ? 'true' : 'false');
+        $isPolicyAttr = "data-ispolicy='{$fhStr},{$shStr}'";
+
+        echo "<td style='{$style}'>";
+        echo "<span id='{$emp_pkey}_column_{$i}' {$isPolicyAttr} style='display:inline-block;'>{$displayValue}</span>";
+
+        // ✅ pass att_date directly to JS
+        // echo "<i class='fa fa-angle-down pull-right' 
+        //      style='cursor:pointer;margin-left:4px;'
+        //      onclick='attendanceModal(\"{$month}\", \"{$emp_pkey}\", \"{$i}\", \"{$att_date}\")'></i>";
+
+        echo "</td>";
+    } else {
+        echo "<td style='text-align:center;'>-</td>";
+    }
+}
+
+
+
+                                
+
+
+
+
+                                
+                            // foreach($arr_dates as $val){
+                            //     debug($val);
+                            // }
+                            // foreach ($val as $value) {
+                            //     debug($val);
+                            // }
+                               
+                            //     $newstatus = isset($value['eup']['main_status'])?trim($value['eup']['main_status']):trim($value['status']);
+                                
+                                
+                                
+                            // ?>
+                               <!-- <td <?php if ($newstatus == 'WO') { ?> style="color:#e5e50c;white-space: nowrap;font-weight:bold;"  <?//php } ?>  -->
+                                   <?//php if ($newstatus == 'HO') { ?> style="color:blue;white-space: nowrap;font-weight:bold;" <?//php } ?> 
+                                   <?//php if ($newstatus == 'A/A') {  ?> style="color:red;white-space: nowrap;font-weight:bold;" <?//php } ?> 
+                                   <?//php if ($newstatus == '') {  ?> style="background:#ebebeb;white-space: nowrap;font-weight:bold;" <?//php } ?> 
+                                   <?//php if ($newstatus == 'P/P' || strpos($newstatus, 'P/P') !== false) {  ?> style="color:green;white-space: nowrap;font-weight:bold;" <?php }; ?> 
+                                   <?//php if ($newstatus == 'P/A') {  ?> style="color:red;white-space: nowrap;font-weight:bold;" <?//php }; ?> 
+                                   <?//php if ($newstatus == 'LOP/A') {  ?> style="color:red;white-space: nowrap;font-weight:bold;" <?//php }; ?> 
+                                   <?//php if ($newstatus == 'A/LOP' || $newstatus == 'P/LOP') { ?> style="color:red;white-space: nowrap;font-weight:bold;" <?//php }; ?> 
+                                   <?//php if ($newstatus == 'LOP/LOP' || $newstatus == 'LOP' || strpos($newstatus, 'LOP') !== false) { ?> style="color:red;white-space: nowrap;font-weight:bold;" <?//php }; ?> 
+                                   <?//php if ($newstatus == 'A/P') { ?> style="color:red;white-space: nowrap;font-weight:bold; " <?//php }; ?>>
+                                   <!-- <span id="<?//php echo  $value['emp_detail_timeattandance']['emp_pkey'] . '_column' ?>" style="display: inline-block;"><?php echo $newstatus; ?></span> -->
+                                   <?php // if ($value['editable'] == true) { ?>
+                                     <!-- <i style="display: inline-block;" onclick="attendanceModal(<?php echo $month; ?>,<?php echo $value['emp_detail_timeattandance']['emp_pkey']; ?>, <?php echo $value['emp_detail_timeattandance']['emp_pkey'] ?> )" class="fa fa-angle-down pull-right"></i> -->
+                                     <?php //}else{?>
+                              <!-- <span onclick="alert('Attendance Verified');"><i class="fa fa-angle-down pull-right"></i></span> -->
+                                 <?php //} ?>
+                            <!--      </td> -->
+                            <?php
+                            // }
+                            ?>
+                        </tr>
+                    </div>
+                     <tr class="<?php echo trim($name).'in'; ?> expand-row expand-<?php echo $pkey; ?>" 
+    id="<?php echo $pkey.'_in'; ?>" style="display:none;">
+
+    <td class="headcol left1"></td>
+    <td class="headcol left2"></td>
+    <td class="headcol left3" style="text-align:right;">IN</td>
+    <td class="hide-id"></td>
+    <td class="headcol left4 calendercolor"></td>
+    <td class="headcol left5 calendercolor"></td>
+    <td class="headcol left6 calendercolor"></td>
+    <td class="headcol left7 calendercolor"></td>
+    <td class="headcol left8 presentcolor"></td>
+    <td class="headcol left9 presentcolor"></td>
+    <td class="headcol left10 lopcolor"></td>
+
+    <?php
+    for ($i = 1; $i <= count($dates); $i++) {
+        $timein = isset($val[0]['emp_detail_timeattandance']['att_in'][$i])
+            ? $val[0]['emp_detail_timeattandance']['att_in'][$i]
+            : '';
+        echo "<td>{$timein}</td>";
+    }
+    ?>
+</tr>
+
+<tr class="<?php echo trim($name).'out'; ?> expand-row expand-<?php echo $pkey; ?>" 
+    id="<?php echo $pkey.'_out'; ?>" style="display:none;">
+
+    <td class="headcol left1"></td>
+    <td class="headcol left2"></td>
+    <td class="headcol left3" style="text-align:right;">OUT</td>
+    <td class="hide-id"></td>
+    <td class="headcol left4 calendercolor"></td>
+    <td class="headcol left5 calendercolor"></td>
+    <td class="headcol left6 calendercolor"></td>
+    <td class="headcol left7 calendercolor"></td>
+    <td class="headcol left8 presentcolor"></td>
+    <td class="headcol left9 presentcolor"></td>
+    <td class="headcol left10 lopcolor"></td>
+
+    <?php
+    for ($i = 1; $i <= count($dates); $i++) {
+        
+        $timeout = isset($val[0]['emp_detail_timeattandance']['att_out'][$i])
+            ? ($val[0]['emp_detail_timeattandance']['att_out'][$i])
+            : '';
+        echo "<td>{$timeout}</td>";
+    }
+    ?>
+</tr>
+<tr class="<?php echo trim($name).'duration'; ?> expand-row expand-<?php echo $pkey; ?>" 
+    id="<?php echo $pkey.'_duration'; ?>" style="display:none;">
+
+    <td class="headcol left1"></td>
+    <td class="headcol left2"></td>
+    <td class="headcol left3" style="text-align:right;">Duration</td>
+    <td class="hide-id"></td>
+    <td class="headcol left4 calendercolor"></td>
+    <td class="headcol left5 calendercolor"></td>
+    <td class="headcol left6 calendercolor"></td>
+    <td class="headcol left7 calendercolor"></td>
+    <td class="headcol left8 presentcolor"></td>
+    <td class="headcol left9 presentcolor"></td>
+    <td class="headcol left10 lopcolor"></td>
+
+    <?php
+    for ($i = 1; $i <= count($dates); $i++) {
+        $minutes = isset($val[0]['emp_detail_timeattandance']['duration'][$i])
+            ? $val[0]['emp_detail_timeattandance']['duration'][$i]
+            : '';
+        echo "<td>{$minutes}</td>";
+    }
+    ?>
+</tr>
+                <?php
+                $j++;
+                }
+                ?>
+            </tbody>
+
+
+        </table>
+        
+    </div>
+    <!--  <div id="aa" class="easyui-accordion" style="width:300px;height:200px;">
+     <div title="Title1" data-options="iconCls:'icon-save'" style="overflow:auto;padding:10px;">
+         <h3 style="color:#0099FF;">Accordion for jQuery</h3>
+         <p>Accordion is a part of easyui framework for jQuery. 
+         It lets you define your accordion component on web page more easily.</p>
+     </div>
+     <div title="Title2" data-options="iconCls:'icon-reload',selected:true" style="padding:10px;">
+         content2
+     </div>
+     <div title="Title3">
+         content3
+     </div>
+ </div> -->
+</section>
+
+<script type="text/javascript">
+    function applyCellColor(emp, day, value, isPolicyLeave) {
+    let cell = $("#" + emp + "_column_" + day).closest("td");
+
+    // Reset cell color
+    cell.css({ "color": "", "background-color": "" });
+    if (!value) return;
+    value = value.toString().trim();
+
+    // ✅ Special handling for Direct LOP (if updated via policy)
+    if (isPolicyLeave && value.includes("LOP")) {
+        return; // skip red background
+    }
+
+    // ✅ Full day Present
+    if (value == "P/P") {
+        cell.css({ "color": "white", "background-color": "#06a226" });
+    }
+    // ✅ Full day Absent
+    else if (value === "A") {
+        cell.css({ "color": "white", "background-color": "#06a226" });
+    }
+    // ✅ Full day LOP (Indirect)
+    else if (value === "LOP/LOP" || value === "LOP") {
+        cell.css({ "color": "white", "background-color": "#e02429" });
+    }
+    // 🟠 Any Half LOP (Indirect)
+    else if (value.includes("LOP")) {
+        cell.css({ "color": "white", "background-color": "#ef8656" }); 
+    }
+    // ✅ Full day Weekly Off
+    else if (value === "WO"|| value === "WO/WO") {
+        cell.css({ "color": "white", "background-color": "#dcdc00" });
+    }
+    // ✅ Full day Holiday
+    else if (value === "HO" || value ==="HO/HO") {
+        cell.css({ "color": "white", "background-color": "#2d2df4" });
+    }
+    // ✅ Empty
+    else if (value.trim() === "") {
+        cell.css({ "color": "white", "background": "#ebebeb" });
+    }
+}
+
+//     function verifySelectedEmployees() {
+//     var checkedRowsData = [];
+
+//     // Collect selected employees
+//     $('input[type="checkbox"]:checked').not('#selectAll2').each(function() {
+//         var row = $(this).closest('tr');
+//         var emp_id = $(this).val(); // emp_detail_timeattandance_pkey
+//         var empPkey = $(this).attr('id').replace("verify", "");
+
+//         // Collect daily statuses for this employee
+//         var timesheet = {};
+//         row.find('td').each(function(index) {
+//             if (index > 9) { // skip first 10 columns (SN, Name, totals)
+//                 timesheet[index-9] = $(this).text().trim();
+//             }
+//         });
+
+//         checkedRowsData.push({
+//             emp_id: emp_id,
+//             empPkey: empPkey,
+//             timesheet: timesheet
+//         });
+//     });
+
+//     if (checkedRowsData.length === 0) {
+//         alert('Please select at least one employee to verify.');
+//         return;
+//     }
+
+//     $.ajax({
+//         type: "POST",
+//         url: livesite + "AttendanceRegisterNew/verifyAttendance",
+//         data: {
+//             emp_data: checkedRowsData,
+//             branch_code: $("#filterby_branch").val(),
+//             month_year: $("#filterby_month").val()
+//         },
+//         dataType: 'json',
+//         success: function(resp) {
+//             if (resp.success) {
+//                 $.notify('Selected employee(s) verified successfully!', {
+//                     type: 'success',
+//                     allow_dismiss: false
+//                 });
+//                  filterRegister('Y', false,'Y');
+//             } else {
+//                 $.notify('Error verifying attendance!', {
+//                     type: 'danger',
+//                     allow_dismiss: false
+//                 });
+//             }
+//         }
+//     });
+// }
+
+
+// Attach to your verify button
+// $('#btn-verify').on('click', verifySelectedEmployees);
+
+    $('#aa').accordion({
+        animate: true
+    });
+
+    $(document).ready(function() {
+        $('.in').hide();
+        $('.out').hide();
+        $('.duration').hide();
+        $('.tabset0').pwstabs({
+            effect: 'scale', // You can change effects of your tabs container: scale / slideleft / slideright / slidetop / slidedown / none
+            defaultTab: 1, // The tab we want to be opened by default
+            containerWidth: '100%', // Set custom container width if not set then 100% is used
+            tabsPosition: 'horizontal', // Tabs position: horizontal / vertical
+            horizontalPosition: 'top', // Tabs horizontal position: top / bottom
+            verticalPosition: 'left', // Tabs vertical position: left / right
+            responsive: true, // Make tabs container responsive: true / false - boolean
+            theme: '',
+            rtl: false // Right to left support: true/ false
+        });
+        /*$('#togglechartweek').on('click', function () {
+         $("weekChartRow").show();
+         $("monthChartRow").hide();
+         
+         })
+         $('#togglechartmonth').on('click', function () {
+         $("weekChartRow").hide();
+         $("monthChartRow").show();
+         })*/
+
+         if ($.fn.DataTable.isDataTable('#LeaveDetailsReports2')) {
+    $('#LeaveDetailsReports2').DataTable().destroy();
+}
+        $('#LeaveDetailsReports2').DataTable({
+            "paging": true,
+            "pageNumber": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": false,
+            "info": false,
+            dom: 'Bfrtip',
+            buttons: [
+                //                {
+                //                    extend: 'print',
+                //                    messageTop: 'My Payroll Master  Employees Attendance Register.',
+                //                    messageBottom: null,
+                //                    title: 'My Payroll Master - Attendance Register'
+                //                },
+                {
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: function (idx) {
+                            if (idx === 0) return false;          // skip vacant column A
+                            if (idx === 3) return true;           // include Employee ID
+                            if (idx >= 4 && idx <= 10) return false; // skip totals
+                            return true;
+                        }
+                    },
+                    messageTop: 'My Payroll Master  Employees Attendance Register.',
+                    messageBottom: null,
+                    title: 'My Payroll Master  - Attendance Register'
+                }
+            ],
+            "autoWidth": false,
+            "lengthMenu": [
+                [40, 50, -1],
+                [40, 50, "All"]
+            ]
+        });
+
+         $('#LeaveDetailsReports2').on('draw.dt', function() {
+    // Hide Employee ID & hide totals (index 4-10) again after redraw
+    $("#LeaveDetailsReports2 thead th").eq(3).addClass('hide-id');
+    $("#LeaveDetailsReports2 thead th").slice(4, 11).addClass('hide-att');
+    $("#LeaveDetailsReports2 tbody tr").each(function() {
+        $(this).find('td').eq(3).addClass('hide-id');
+        $(this).find('td').slice(4, 11).addClass('hide-att');
+    });
+
+    // Reset toggle button icon
+    $("#toggleAttendanceCols2").text("+");
+});
+
+        $('.buttons-print').ready(function() {
+            $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');;
+        });
+        $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');;
+        $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+
+        // Event listener to the two range filtering inputs to redraw on input
+        $('#leaverequests-emp-filter, #leaverequests-month-filter').change(function() {
+            empleaverequeststable.search(this.value).draw();
+        });
+    });
+
+
+//        $('#LeaveDetailsReports2').on('draw.dt', function () {
+//     // Uncheck all checkboxes on every page
+//     $('#LeaveDetailsReports2').find('input[type="checkbox"]').prop('checked', false);
+
+//     // Also reset your "select all"
+//     $('#selectAll2').prop('checked', false);
+
+//     // Your other code (hide columns)
+//     $("#LeaveDetailsReports2 thead th").slice(3, 10).addClass('hide-att');
+//     $("#LeaveDetailsReports2 tbody tr").each(function() {
+//         $(this).find('td').slice(3, 10).addClass('hide-att');
+//     });
+
+//     $("#toggleAttendanceCols2").text("+");
+// });
+
+    //Edited by Akshay on 21-4-2024
+    function attendanceModal(month, emp_pkey, dayIndex, att_date) {
+//         var currentStatuses = $('#'+edtPkey+'_column').val();
+// console.log(currentStatuses);
+//         if(currentStatuses =='NA'){
+//                    alert("Status cannot change.");
+//                    return false;
+//           }
+        if (true) {
+            showSmallModalForm(livesite + 'AttendanceRegisterNew/editpunch/' + month + '/' + emp_pkey + '/' + dayIndex + '/' + att_date );
+        } else {
+            alert("Please select a record!")
+        }
+    }
+
+    // function showEditOnPopupOption(name, emp_pkey) {
+    //     //Edited by Akshay on 22-4-2024
+    //     var id1 = '#' + emp_pkey + "_in";
+    //     var id2 = '#' + emp_pkey + "_out";
+    //     var id3 = '#' + emp_pkey + "_duration";
+    //     // console.log('id1', id1);
+    //     $(id1).toggle();
+    //     $(id2).toggle();
+    //     $(id3).toggle();
+    // }
+
+      function showEditOnPopupOption(name, emp_pkey) {
+    // IDs of the rows to toggle
+    var idIn = '#' + emp_pkey + "_in";
+    var idOut = '#' + emp_pkey + "_out";
+    var idDuration = '#' + emp_pkey + "_duration";
+
+    // Collapse all other expanded rows first
+    $('.expand-row').not(idIn).not(idOut).not(idDuration).hide();
+
+    // Toggle the selected employee's rows
+    $(idIn).toggle();
+    $(idOut).toggle();
+    $(idDuration).toggle();
+}
+
+    // function updateselecteditem() {
+    //     var status = $("#shift1combo").val();
+
+    //     if ($('input[type="checkbox"]:checked').not('#selectAll2').length === 0) {
+    //         alert('Please choose any employee.');
+    //         return;
+    //     }
+
+    //     if (status === '0') {
+    //         alert('Please choose any status.');
+    //         return;
+    //     }
+    //     var checkedRowsData = []; // Create an array to store the data of checked rows
+    //     // Find all checkboxes that are checked (excluding the one with id "selectAll2")
+    //     $('input[type="checkbox"]:checked').not('#selectAll2').each(function() {
+    //         // Get the closest row to the checked checkbox
+    //         var row = $(this).closest('tr');
+
+    //         // Retrieve data from the row and create a rowData object
+    //         var rowData = {
+    //             // Customize these based on your table structure
+    //             'edtaPkey': row.find('.headcol.left1 input[type="checkbox"]').val().trim(),
+    //             'empPkey': row.find('.headcol.left1 input[type="checkbox"]').attr('id').replace("verify", "")
+    //             // 'SN': row.find('.headcol.left2').text().trim(),
+    //             // 'EmployeeName': row.find('.headcol.left3').text().trim(),
+    //             // 'CalendarDays': row.find('.calendercolor.headcol.left4').text().trim(),
+    //             // 'WeekOff': row.find('.calendercolor.headcol.left5').text().trim(),
+    //             // Add more properties as needed
+    //         };
+
+    //         var shift = $('#shift1combo').val();
+
+    //         // Push the rowData object to the checkedRowsData array
+    //         checkedRowsData.push(rowData);
+    //     });
+
+
+    //     $.ajax({
+    //         type: "POST",
+    //         url: livesite + "AttendanceRegisterNew/bulkipdatestatus",
+    //         data: {
+    //             device_attandance_seq: checkedRowsData,
+    //             adstatus: $("#option").val(),
+    //             status: status,
+    //             monthYear: $("#filterby_month").val()
+    //         },
+    //         dataType: 'json',
+    //         success: function(resp) {
+    //             // console.log(resp);
+                 
+    //                         // filterRegister();
+    //                          filterRegister('Y', false,'Y');
+    //             //$('#editpunches').datagrid('deleteRow', getRowIndex(target));
+    //             if (resp.success == true) {
+    //                 $.notify('Status updated successfully. Process attendance again.', {
+    //                             type: 'success',
+    //                             allow_dismiss: false
+    //                         });
+    //             } else {
+    //                 $.notify('Attendance Verified. Cannot update status.', {
+    //                             type: 'danger',
+    //                             allow_dismiss: false
+    //                         });
+    //                 //$.messager.alert('Failed', "Error occured while removing record", 'info');
+    //             }
+    //         }
+    //     });
+    // }
+
+    function removeSelectedEmployees() {
+
+    var checkedRowsData = [];
+
+    $('input[type="checkbox"]:checked').not('#selectAll2').each(function () {
+        var row = $(this).closest('tr');
+        var emp_id = $(this).val();
+        var empPkey = $(this).attr('id').replace("verify", "");
+
+        var timesheet = {};
+        row.find('td').each(function (index) {
+            if (index > 10) {
+                timesheet[index - 10] = $(this).text().trim();
+            }
+        });
+
+        checkedRowsData.push({
+            emp_id: emp_id,
+            empPkey: empPkey,
+            timesheet: timesheet
+        });
+    });
+
+    if (checkedRowsData.length === 0) {
+        $.notify('Please select at least one employee to remove.', {
+            type: 'danger',
+            allow_dismiss: false
+        });
+        return;
+    }
+
+    $.ajax({
+        type: "POST",
+        url: livesite + "AttendanceRegisterNew/removeAttendance",
+        data: {
+            emp_data: checkedRowsData,
+            branch_code: $("#filterby_branch").val(),
+            month_year: $("#filterby_month").val()
+        },
+        dataType: 'json',
+        success: function (resp) {
+
+            // ✅ Success message
+            if (resp.success && resp.msg) {
+                $.notify(resp.msg, {
+                    type: 'success',
+                    allow_dismiss: false
+                });
+            }
+
+            // ⚠️ Warning message
+            if (resp.warning) {
+                $.notify(resp.warning, {
+                    type: 'danger',
+                    allow_dismiss: false
+                });
+            }
+
+            // ❌ Error message
+            if (!resp.success) {
+                $.notify(resp.msg || 'Unable to remove employees.', {
+                    type: 'danger',
+                    allow_dismiss: false
+                });
+            }
+
+            // 🔄 Refresh only if something was removed
+            if (resp.removed_count && resp.removed_count > 0) {
+                filterRegister('N', false, 'Y');
+            }
+        }
+    });
+}
+
+
+
+// Attach to your verify button
+$('#btn-remove').on('click', removeSelectedEmployees);
+
+    function toggleAllCheckboxes2() {
+        // Get the value of the "Select All" checkbox
+        var isChecked = $('#selectAll2').prop('checked');
+
+        // Set the value of all other checkboxes to match the "Select All" checkbox
+        $('.otherCheckboxes').prop('checked', isChecked);
+    }
+
+    function updateSelectAll2() {
+        // Check if all other checkboxes are checked
+        var allChecked = $('.otherCheckboxes:checked').length === $('.otherCheckboxes').length;
+        //console.log('allChecked', allChecked);
+        // Update the "Select All" checkbox accordingly
+        $('#selectAll2').prop('checked', allChecked);
+    }
+    $('#shift1combo').select2();
+    $('#option').select2();
+
+
+
+// hide columns initially
+$("#LeaveDetailsReports2 thead th").eq(3).addClass('hide-id');
+$("#LeaveDetailsReports2 thead th").slice(4, 11).addClass('hide-att');
+$("#LeaveDetailsReports2 tbody tr").each(function() {
+    $(this).find('td').eq(3).addClass('hide-id');
+    $(this).find('td').slice(4, 11).addClass('hide-att');
+});
+
+
+$("#toggleAttendanceCols2").click(function() {
+    let isHidden = $("#LeaveDetailsReports2 thead th.hide-att").length > 0;
+
+    if (isHidden) {
+        // Show columns 4-11 (skip index 3)
+        $("#LeaveDetailsReports2 thead th.hide-att, #LeaveDetailsReports2 tbody td.hide-att")
+            .removeClass('hide-att');
+        $(this).text("-");
+    } else {
+        // Hide columns 4–11 again
+        $("#LeaveDetailsReports2 thead th").slice(4, 11).addClass('hide-att');
+        $("#LeaveDetailsReports2 tbody tr").each(function() {
+            $(this).find('td').slice(4, 11).addClass('hide-att');
+        });
+        $(this).text("+");
+    }
+});
+
+var dataRows = $('#LeaveDetailsReports2 tbody tr').filter(function () {
+    return $(this).find('td').length > 1; // real data row
+}).length;
+
+if (dataRows === 0) {
+    // No real data
+    $('#selectAll2').prop('disabled', true);
+    $('#LeaveDetailsReports2 tbody input[type="checkbox"]').prop('disabled', true);
+} else {
+    // Real data is present
+    $('#selectAll2').prop('disabled', false);
+    $('#LeaveDetailsReports2 tbody input[type="checkbox"]').prop('disabled', false);
+}
+</script>

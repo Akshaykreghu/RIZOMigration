@@ -1,0 +1,318 @@
+<?php if ($mode == '') { ?>
+    <div class="modal-body" style="overflow-y:initial; padding-left:3%; padding-right:3%; padding-bottom:3%;" >
+        <?php $i = 0;
+foreach ($arr_stocksummary_for_template as $value) {
+                        foreach ($value as $valuees) {
+//                             debug($valuees);
+                             if (!empty($valuees)) {
+                                 $i++;
+                             }
+                             }
+                             }
+                             if($i <= '0'){ ?>
+                    <div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+        There is no data available</div>
+                             <?php } else {?>
+        <h3 align="center" ><legend>UNIFORM ALLOCATION REPORT - <?php echo $from; ?> to <?php echo $otdate;?> (<?php echo isset($user_id) ? "Report run by ".($user_id)." - ".$date_time : ''; ?>)</legend></h3>
+        <div class="row">
+            <div class="col-md-12">
+
+                <?php
+                $i = 0;
+                foreach ($arr_stocksummary_for_template as $value) {
+                    if (count($value) !== 0) {
+                        $i += 1;
+                        ?>
+
+                        <fieldset> 
+
+
+                            <legend> <?php
+                            if($type == 'EmployeeDetails'){
+                        echo isset($value['0']['employee_info']['EmpName']) ? "Allocation Report of - " . $value['0']['employee_info']['EmpName'] : '';
+                    }else{
+                        echo isset($value['0']['store_master']['store_location']) ? "Allocation Report of - " . $value['0']['store_master']['store_location'] : '';
+                    }
+                        echo ' ';
+                        ?> 
+                            </legend>
+
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <br>
+                        <fieldset>
+
+
+                            <table class="table table-bordered " >
+                                <thead>
+                                    <tr>
+
+                                        <th>Sl No.</th>
+                                        <th>Employee ID </th>
+                                        <th>Employee Name </th>
+                                        <th>Designation </th>
+                                        <th>Department </th>
+                                        <th>Branch </th>
+                                        <th>Date Of Join </th>
+                                        <th>Item Name</th>
+                                        <th>Store Name</th>
+                                        <th>Issued Date</th>
+                                        <th>Issued Qty</th>
+                                        <th>Returned Qty</th>
+                                        <th>Balance Qty</th>
+                                        <th>Value</th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                        <?php $arr_data = $value; ?>
+                                        <?php if (count($arr_data) >= 0) {
+                                            $i = 0;
+                                            $sum = 0; ?>
+                                            <?php foreach ($arr_data as $val) { ?>
+                                            <tr>
+                                                <?php $i = $i + 1;
+                                                $sum += round($val['additional_details']['amount'] * ($val['allocate_details']['qty'] - $val['allocate_details']['returned_qty']));?>
+                                                <td><?php echo $i;
+//                                                    $PO_Status = $val['po']['grn_status'];
+//                                                    $string_po = '';
+//                                                    switch ($PO_Status){
+//                                                        case "0": $string_po = "GRN Received";
+//                                                            break;
+//                                                        case "1": $string_po = "PO Ordered";
+//                                                            break;
+//                                                        case "2": $string_po = "Finalised";
+//                                                            break;
+//                                                        default : $string_po = "PO";
+//                                                            break;
+//                                                    }
+                                                ?></td>
+                                                <td><?php echo $val['employee_info']['employee_id']; ?></td>
+                                                <td><?php echo $val['employee_info']['EmpName']; ?></td>
+                                                <td><?php echo $val['employee_info']['designation']; ?></td>
+                                                <td><?php echo $val['employee_info']['department']; ?></td>
+                                                <td><?php echo $val['employee_info']['branch']; ?></td>
+                                                <td><?php echo $val['employee_info']['joining_date']; ?></td>
+                                                <td><?php echo $val['item_master']['item_desc']; ?></td>
+                                                <td><?php echo $val['store_master']['store_location']; ?></td>
+                                                <td><?php echo $val['itm_allocation']['date_allocated']; ?></td>
+                                                <td><?php echo $val['allocate_details']['qty']; ?></td>
+                                                <td><?php echo $val['allocate_details']['returned_qty']; ?></td>
+                                                <td><?php echo $val['allocate_details']['qty'] - $val['allocate_details']['returned_qty']; ?></td>
+                                                <td><?php echo round($val['additional_details']['amount'] * ($val['allocate_details']['qty'] - $val['allocate_details']['returned_qty'])); ?></td>
+                                            </tr>
+                                         
+
+
+
+
+                                        <?php } ?>
+                                           <tr>
+                                                <td colspan="13">
+                                                    Total Value
+                                                </td>
+                                                <td>
+                                                    <?php echo $sum; ?>
+                                                </td>
+                                            </tr>
+                                        <?php } else { ?>
+                                        <tr>
+                                            <td colspan="4">No Orders found under this data</td>
+                                        </tr>  
+                                        <?php } ?>
+
+
+                                </tbody>
+                            </table>
+
+                        </fieldset>
+                        <br>
+
+
+        <?php }
+    } ?> <!-- /.box-body -->
+
+            </div>
+        </div>  
+        <!--div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel </button>  
+        </div-->
+        <!---<div class="row">
+              <div class="form-group">
+                  <div class="col-md-12" align="right">
+                      <a href="#" class="btn btn-default" onclick="downloadReport('salarystructure','pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                      <a href="#" class="btn btn-default" onclick="downloadReport('salarystructure','excel');"><i class="icon-file"></i>Download As Excel</a>
+                  </div>
+              </div>
+          </div> -->
+    </div>
+
+<?php } } else { ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';  ?>
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+        .row {
+            height: 32px;
+        }
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+        table {
+            border: 2px solid #f4f4f4;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        td, th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            font-size: 10px;
+            border: 1px solid #B2B2B2;
+        }
+    </style>
+
+
+    <?php
+    $i = 0;
+    foreach ($arr_stocksummary_for_template as $value) {
+        if (count($value) !== 0) {
+            $i += 1;
+            ?>
+            <?php
+            echo $this->element('reportadminheader', array(
+                'title' => 'Uniform Allocation Report'));
+            ?>
+
+
+            <h3 style="text-align: left;padding-bottom: 0px;padding-top: 10px;"> <?php
+             if($type == 'EmployeeDetails'){
+                        echo isset($value['0']['employee_info']['EmpName']) ? "Allocation Report of - " . $value['0']['employee_info']['EmpName'] : '';
+                    }else{
+                        echo isset($value['0']['store_master']['store_location']) ? "Allocation Report of - " . $value['0']['store_master']['store_location'] : '';
+                    }
+                    ?>
+            </h3>
+
+
+            <hr>
+
+            <br>
+
+
+
+            <table class="table">
+                            <thead>
+                                <tr>
+
+                                    <th>Sl No.</th>
+                                    <th>Employee<br> ID </th>
+                                    <th>Employee<br> Name </th>
+                                    <th>Designation </th>
+                                    <th>Department </th>
+                                    <th>Branch </th>
+                                    <th>Date of<br> Join </th>
+                                    <th>Item<br> Name</th>
+                                    <th>Store<br> Name</th>
+                                    <th>Issued<br> Date</th>
+                                    <th>Issued <br>Qty</th>
+                                    <th>Returned <br>Qty</th>
+                                    <th>Balance <br>Qty</th>
+                                    <th>Value</th>
+
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <?php $arr_data = $value; ?>
+                                <?php
+                                if (count($arr_data) >= 0) {
+                                    $i = 0;
+                                    $sum = 0;
+                                    ?>
+                                        <?php foreach ($arr_data as $val) { ?>
+                                        <tr>
+                                                <?php $i = $i + 1;
+                                               $sum += round($val['additional_details']['amount'] * ($val['allocate_details']['qty'] - $val['allocate_details']['returned_qty']));?>
+                                                <td><?php echo $i;
+//                                                    $PO_Status = $val['po']['grn_status'];
+//                                                    $string_po = '';
+//                                                    switch ($PO_Status){
+//                                                        case "0": $string_po = "GRN Received";
+//                                                            break;
+//                                                        case "1": $string_po = "PO Ordered";
+//                                                            break;
+//                                                        case "2": $string_po = "Finalised";
+//                                                            break;
+//                                                        default : $string_po = "PO";
+//                                                            break;
+//                                                    }
+                                                ?></td>
+                                                <td><?php echo $val['employee_info']['employee_id']; ?></td>
+                                                <td><?php echo $val['employee_info']['EmpName']; ?></td>
+                                                <td><?php echo $val['employee_info']['designation']; ?></td>
+                                                <td><?php echo $val['employee_info']['department']; ?></td>
+                                                <td><?php echo $val['employee_info']['branch']; ?></td>
+                                                <td><?php echo $val['employee_info']['joining_date']; ?></td>
+                                                <td><?php echo $val['item_master']['item_desc']; ?></td>
+                                                <td><?php echo $val['store_master']['store_location']; ?></td>
+                                                <td><?php echo $val['itm_allocation']['date_allocated']; ?></td>
+                                                <td><?php echo $val['allocate_details']['qty']; ?></td>
+                                                <td><?php echo $val['allocate_details']['returned_qty']; ?></td>
+                                                <td><?php echo $val['allocate_details']['qty'] - $val['allocate_details']['returned_qty']; ?></td>
+                                                <td><?php echo round($val['additional_details']['amount'] * ($val['allocate_details']['qty'] - $val['allocate_details']['returned_qty'])); ?></td>
+                                            </tr>
+
+
+
+
+
+                <?php } ?>
+                                            <tr>
+                                                <td colspan="13">
+                                                    Total Value
+                                                </td>
+                                                <td>
+                                                    <?php echo $sum; ?>
+                                                </td>
+                                            </tr>
+
+                                <?php } else { ?>
+                                    <tr>
+                                        <td colspan="4">No Orders found under this data</td>
+                                    </tr>  
+            <?php } ?>
+
+
+                            </tbody>
+                        </table>
+
+
+            <br>
+
+
+        <?php }
+    } ?> <!-- /.box-body -->
+
+<?php } ?>

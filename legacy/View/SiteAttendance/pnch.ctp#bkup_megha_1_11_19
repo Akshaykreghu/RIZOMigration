@@ -1,0 +1,235 @@
+
+    <script type="text/javascript" src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
+    
+   
+    
+  <section class="content-header">
+    <h1 style="text-align:left; font-size: 3em;"> Site Punch   </h1>
+</section>
+    
+    <section class="content "> 
+       <div class="box box-body col-md-12">
+           
+        <div class="row"  style="margin:20px 0 20px 0;">
+            <div  style="text-align: center; " >
+            <div class="box-body col-md-12" style="text-align: center;margin:0 0 20px 0; ">
+<!--                <h4>Please Choose or change a Site to load the Data</h4>-->
+            </div>
+        </div>
+        <div class="col-md-12">
+             
+          
+<!--        <div class="col-md-6">
+            <label class="col-sm-4 control-label" for="filterby_branch">Choose Month</label>
+            <div class="col-md-6">
+                <select id="filterby_month" name="filterby_month" class="form-control js-example-basic-single" onchange="changes();" style="width: 100% ;">
+                    <?php  //$start_month = strtotime(date('Y-m', strtotime("+1 month", strtotime(date('Y-m')))));
+                            //for ($i = 0; $i < 12; $i++) {
+                                //$month = date('Y-m', strtotime("-$i month", $start_month));
+                               // if ($month == date('Y-m')) {
+                                   // echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                               // } else {
+                                 //   echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                               // }
+                          //  }?>
+                </select>
+            </div>
+        </div>-->
+        <div class="col-md-4">
+            <label class="col-sm-4 control-label" for="filterby_branch">Choose Site</label>
+            <div class="col-md-8">
+                <select id="filterby_branch" name="filterby_branch" class="form-control js-example-basic-single" onchange="changes();" style="width: 100% ;">
+                    <!--<option value="">All</option>-->
+                    <?php foreach ($site_data as $key => $value) { ?>                              
+                        <option  value="<?php echo $value['site']['site_pkey']; ?>"><?php echo $value['site']['site_name']; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label class="col-sm-4 control-label" for="filterby_branch">Choose Date</label>
+            <div class="col-md-8">
+                <input type="text" id="filterby_date" onchange="changes();" style="width: 100% ;" >
+            </div>
+        </div>
+<!--            <hr>-->
+       
+        <div class="col-md-4">
+            <label class="col-sm-4 control-label" for="filterby_branch">Choose Shift</label>
+            <div class="col-md-8">
+                <select id="filterby_shift" name="filterby_shift" onchange=" lod_desig()" class="js-example-basic-employee js-example-basic-single" style="width: 100% ; " >;
+                </select>
+            </div>
+        </div>
+         </div>
+        </div>
+           <div class="clearfix"></div>
+        <div id="containerSite" style="text-align: center;margin:30px 0 20px 0; ">
+            <div class="box-body col-md-12" style="text-align: center; ">
+            </div>
+        </div>
+           <!-- Shift close Button  start -->
+         <div id="Shift" style="text-align: center;margin:30px 0 20px 0; ">
+        </div> 
+           <!-- Shift close Button end -->
+    </div>
+    
+    <input type="hidden" value="" id="designation_code"> 
+</section>
+
+<script>
+  
+    function filtersitemonth(month){
+         var month = $('#filterby_date').val();
+         var site = $('#filterby_branch').val();    
+        //alert(branch);
+        $(".js-example-basic-employee").select2(
+                {
+                    //closeOnSelect:false,
+                    placeholder: "Select Shift",
+                    allowClear: true,
+                    ajax: {
+                        url: livesite + "SiteAttendance/get_shift/" + month + '/' + site,
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+                           
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        }
+                    },
+                   escapeMarkup: function (markup) {
+                        return markup;
+                    }
+                });
+    }
+  
+    function changes(){
+        filterdatesitemonth();     
+        filtersitemonth();
+        if($('#filterby_date').val() == null || $('#filterby_shift').val() == null){
+            return false;
+        }
+        lod_desig();   
+//        load_data();
+    }
+    
+    function set_desig(s){
+        $('#designation_code').val(s);
+        load_data();
+        $('#'+s+' button').addClass('bg-green');
+        $('#'+s+' button').removeClass('bg-maroon');
+        $('#'+s).siblings().find('button').addClass('bg-maroon');
+        $('#'+s).siblings().find('button').removeClass('bg-green');
+    }
+    
+    function filterdatesitemonth(){   
+        // var month = $('#filterby_month').val();
+         var site = $('#filterby_branch').val();
+         $.ajax({
+                    url: livesite + 'SiteAttendance/get_incompleteDate/' +  site,
+                    method:'POST',
+                    data:{site:site },
+                    success: function (resp) {
+                        var response = JSON.parse(resp);
+                        if(response.success == 0){
+                            
+                        }else{
+//                            alert(response.first);
+                            $('#filterby_date').datepicker('setStartDate', response.first);
+                        }
+                        
+                    }
+                });
+    }
+    
+    function lod_desig(){
+        var site = $('#filterby_branch').val();
+        var shift = $('#filterby_shift').val();
+        if($('#filterby_shift').val() == ''){
+           alert("Please Choose a Shift Type");
+           lod_desig();
+            //$('#containerSite').load(livesite+'SiteAttendance/load_sites/'+site+'/'+shift);  
+          // return false;
+       }
+        $('#containerSite').html('<li class="fa fa-spin fa-spinner" style="font-size: x-large;" ></li>');
+        $('#containerSite').load(livesite+'SiteAttendance/load_sites/'+site+'/'+shift);  
+         closure_shift();
+    }
+ 
+    $(document).ready(function(){
+        $('#close_shift').hide();
+       $('.js-example-basic-single').select2();
+       $('#filterby_date').datepicker({
+            format: 'yyyy-mm-dd',       
+            autoclose: true,
+            endDate: '+4d',
+            startDate: '-4d'
+
+        });
+    });
+    
+    function add_site(){
+        var site = $('#filterby_branch').val();
+        var shift = $('#filterby_shift').val();
+        var att_date = $('#filterby_date').val();
+        showLargeModalForm(livesite + 'SiteAttendance/add_site/'+site+'/'+shift+'/'+att_date);
+    }
+    
+ 
+    function load_data(s){
+        $('#container_data').html('<li class="fa fa-spin fa-spinner" style="font-size: x-large;" ></li>');
+        var att_date = $('#filterby_date').val();
+        var desig = $('#designation_code').val();
+        var site = $('#filterby_branch').val();
+        var site_fkey = $('#filterby_branch').val();
+        var day_time_seq_fkey = $('#filterby_shift').val();
+        var designation_id = $('#designation_code').val();
+        
+        $('#container_data').load(livesite+'SiteAttendance/data_site',{att_date:att_date,desig:desig,site:site,day_time_seq_fkey:day_time_seq_fkey}); 
+    }
+    function closure_shift(){ 
+        var site = $('#filterby_branch').val();
+        var shift = $('#filterby_shift').val();
+        var att_date = $('#filterby_date').val();
+        $('#Shift').load(livesite + 'SiteAttendance/close_shift/'+site+'/'+shift+'/'+att_date);
+//         $.ajax({
+//                    url: livesite + 'SiteAttendance/close_shift/' + site + '/' + shift + '/' + att_date,
+//                    method:'POST',
+//                    data:{site:site,shift:shift,att_date:att_date },
+//                    success: function (resp) {
+//                        //alert(resp);
+//                        var response = JSON.parse(resp);
+//                        alert(response.message);
+//                        if(response.success === 'NO'){
+//                            // return false;
+//                             $('#close_shift').hide();
+//                        }else{
+//                            $('#close_shift').show();
+//                            //alert(response);
+//                        }
+//                        
+//                    }
+//                });
+     
+    }
+    $("#filterby_branch").change(function(){
+        $('#filterby_shift').val(''); 
+        lod_desig();
+    });
+</script>

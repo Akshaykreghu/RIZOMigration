@@ -1,0 +1,183 @@
+<style>
+    .form-horizontal .control-label{
+
+        text-align: left;
+
+    }
+</style>
+<section class="content-header">
+    <h1 style="text-align:left; font-size: 3em;"> Tickets Details   </h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box ">
+                <br>
+                <div class="box-body">
+                    <form class="form-horizontal" method="post" action=""  id="tickets_form" name="tickets_form"> 
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-sm-3">
+                                    <label class="col-sm-3 control-label" for="sites">Site</label>
+                                    <div class="col-md-9">
+                                        <select id="sites" name="sites" class="form-control js-example-basic-single" onchange="fillFilters(this);" >
+                                            <option value="">All</option>
+                                            <?php foreach ($sites as $key => $value) { 
+                                            ?>                              
+                                                <option  value="<?php echo $value['efsr_site']['efsr_site_pkey']; ?>">
+                                                    <?php echo $value['efsr_site']['site_name']; ?>
+                                                </option>
+                                            <?php 
+                                                } 
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="col-sm-5 control-label" for="equipment">Equipments</label>
+                                    <div class="col-md-7">
+                                        <select id="equipment" name="equipment" class="form-control js-example-basic-single" onchange="filterTickets(this);" >
+                                            <option value="">All</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="col-sm-5 control-label" for="Technician">Technician</label>
+                                    <div class="col-md-7">
+                                        <select id="technician" name="technician" class="form-control js-example-basic-single" onchange="filterTickets(this);" >
+                                            <option value="">All</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="col-sm-5 control-label" for="Technician">Status</label>
+                                    <div class="col-md-7">
+                                        <select id="status" name="status" class="form-control js-example-basic-single" onchange="filterTickets(this);" >
+                                            <option value="0">All</option>
+                                            
+                                            <?php 
+                                            $statusText = array('','Generated','To be approved','Approved and Closed');
+                                            foreach ($status as $key => $value) { 
+                                            ?>                              
+                                                <option  value="<?php echo $value['efsr_tickets']['status']; ?>">
+                                                    <?php echo $statusText[$value['efsr_tickets']['status']]; ?>
+                                                </option>
+                                            <?php 
+                                                } 
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                                                    
+                            </div>
+                        </div>
+                    </form>
+                    <div class="box-body">
+                        <table id="tickets_table" class="table table-bordered table-hover">
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div><!-- /.box-body -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    temp = '';
+    function fillFilters(obj){
+        var site_id     = $('#tickets_form #sites').val();
+        
+         $.ajax({
+         url:'Survey/getEquipments',
+           type: 'POST',
+           data: {
+               site_id: site_id
+           },
+           success: function (resp)
+           {
+                var data = $.parseJSON(resp);
+                var equipments = data.equipments;
+                var technicians = data.technicians;
+
+                var equipmentsHtml = '<option value="" selected="selected">All</option>';
+                var techniciansHtml = '<option value="" selected="selected">All</option>';
+                if(equipments.length > 0){
+                    for (i in equipments){
+                        equipmentsHtml +="<option  value="+equipments[i].equipment_pkey+">"+equipments[i].equipments_name +" | "+  equipments[i].manufacturer +"</option>";
+                    }
+                }
+                if(technicians.length > 0){
+                    for (i in technicians){
+                        techniciansHtml +="<option  value="+technicians[i].emp_pkey+">"+technicians[i].first_name +"</option>";
+                    }
+                }
+                
+                $('#tickets_form #equipment').html(equipmentsHtml);
+                $('#tickets_form #technician').html(techniciansHtml);
+      
+                filterTickets();
+           }
+       });
+    }
+    function filterTickets() {
+        var site          = $('#tickets_form #sites').val();
+        var equipment     = $('#tickets_form #equipment').val();
+        var technician    = $('#tickets_form #technician').val();
+        var status        = $('#tickets_form #status').val();
+        
+    
+    
+        $('#tickets_table').datagrid('load', {
+            site_id: site,
+            equipment: equipment,
+            technician: technician,
+            status: status
+        });
+    }
+    jQuery(document).ready(function () {
+        var site          = $('#tickets_form #sites').val();
+        var equipment     = $('#tickets_form #equipment').val();
+        var technician    = $('#tickets_form #technician').val();
+
+        $('#tickets_table').datagrid({
+            url: livesite + "Survey/getTickets",
+            queryParams: {
+                site_id: site,
+                equipment: equipment,
+                technician: technician
+            },
+            pagination: true,
+            singleSelect: true,
+            rownumbers: true,
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            columns: [[
+                    {field: 'ticket_no', title: 'Ticket No', width: "10%"},
+                    {field: 'site_name', title: 'Site Name', width: "10%"},
+                    {field: 'type_name', title: 'Survey Type Name', width: "30%"},
+                    {field: 'equipments_name', title: 'Equipments Name', width: "30%"},
+                    {field: 'first_name', title: 'Technician', width: "10%"},
+                    {field: 'approved_by', title: 'Approved By', width: "10%"},
+                    
+                ]],
+            onDblClickRow: function(index,row){
+                showLargeModalForm(livesite + 'Survey/preview/'+row.ticket_no);  
+            },
+            rowStyler:function(index,row){
+                if (row.status == 1){
+                    return 'background-color:#2ecc72;color:white;';
+                }else if (row.status ==2){
+                    return 'background-color:#EEC213;color:white;';
+                }else if( row.status == 3){
+                    return 'background-color:#E44236;color:white;';
+                }
+            }
+        });
+    });
+
+</script>

@@ -1,0 +1,572 @@
+<style>
+    #reportto {
+        margin-left: 10px;
+    }
+
+    #btn-submit4 {
+        display: none;
+    }
+</style>
+<?php if (isset($arr_reportcriterias)) { ?>
+    <script>
+        //jQuery(document).ready(function() {
+        //  $('#reportfrom').datepicker({
+        //       format: 'yyyy-mm-dd HH:MM:ss'
+        //  })
+        // $("#reportfrom").inputmask("yyyy-mm-dd");
+        // $('#reportto').datepicker({
+        //      format: 'yyyy-mm-dd HH:MM:ss'
+        //    })
+        // $("#reportto").inputmask("yyyy-mm-dd");
+        //});
+    </script>
+
+    <form class="form-horizontal" method="post" action="" id="form-showreport">
+        <input type="hidden" id="hidden-report-type" name="hidden-report-type" value="<?php echo $type; ?>" />
+
+        <input type="hidden" id="hidden-criterias-count" name="hidden-criterias-count" value="1" />
+        <input type="hidden" id="hidden-reportfields" name="hidden-reportfields" value="" />
+        <div class="form-group" id="div-criteria1">
+
+            <!--   <div class="col-md-5">
+               <label class="col-md-4 control-label" for="reportfrom">From:</label>
+               <div class="col-md-6">
+                   <input class="form-control input-md" id="reportfrom" name="reportfrom" value="" type="text" >
+               </div>
+           </div>
+           <div class="col-md-5">
+               <label class="col-md-4 control-label" for="reportto">To:</label>
+               <div class="col-md-6">
+                   <input class="form-control input-md" id="reportto" name="reportto" value="" type="text" >
+               </div>
+           </div>
+            -->
+
+
+            <?php if ($type != "OT_MONTHWISE") { ?>
+                <div class="col-md-1"><b>Month &nbsp;:</b></div>
+            <?php } ?>
+            <!-- Edited by Akshay on 31-7-2024 -->
+            <?php if ($type != "OT_MONTHWISE") { ?>
+                <div class="col-md-2">
+                <?php } else { ?>
+                    <div class="col-md-4">
+                    <?php } ?>
+                    <!-- End -->
+                    <?php if ($type == "Dashboard" || $type == "regularisation" || $type == "AttendanceMovements" || $type == "movements") {  ?>
+
+                        <div class="col-md-12" style="padding-left:  0px; padding-right:  0px; ">
+                            <div class="col-md-6" style="padding-left:  0px; padding-right:  0px; ">
+                                <input type="text" id="reportsfrom" name="reportfrom" class="form-control pickerDate" value="<?php echo date("Y-m-d"); ?>" />
+                            </div>
+                            <div class="col-md-6" style="padding-left:  0px; padding-right:  0px; ">
+                                <input type="text" id="reportto" name="reportto" class="form-control pickerDate" value="<?php echo date("Y-m-d"); ?>" />
+                            </div>
+                        </div>
+
+                    <?php } elseif ($type != "OT_MONTHWISE") { ?>
+
+                        <select id="reportfrom" name="reportfrom" class="form-control">
+
+
+                            <?php
+                            /*
+                         * By santhosh on 27 Dec 2015
+                         */
+                            $start_month = strtotime(date('Y-m', strtotime("+1 month", strtotime(date('Y-m')))));
+                            for ($i = 0; $i < 18; $i++) {
+                                $month = date('Y-m', strtotime("-$i month", $start_month));
+                                if ($month == date('Y-m')) {
+                                    echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                } else {
+                                    echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+
+                    <?php } ?>
+                    <?php if ($type == "OT_MONTHWISE") { ?>
+                        <div class="col-md-12" style="padding: 0; display: flex; align-items: center;">
+                            <div class="col-md-2" style="flex: 0 0 auto; padding: 0;"><b>From:</b></div>
+                            <div class="col-md-4" style="flex: 1; padding: 0 10px;">
+                                <select id="reportstartfrom" name="reportstartfrom" class="form-control">
+                                    <?php
+                                    $start_month = strtotime(date('Y-m', strtotime("+1 month", strtotime(date('Y-m')))));
+                                    for ($i = 0; $i < 60; $i++) {
+                                        $month = date('Y-m', strtotime("-$i month", $start_month));
+                                        if ($month == date('Y-m')) {
+                                            echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                        } else {
+                                            echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="col-md-1" style="flex: 0 0 auto; padding: 0;"><b>To:</b></div>
+                            <div class="col-md-4" style="flex: 1; padding: 0 10px;">
+                                <select id="reportsto" name="reportsto" class="form-control">
+                                    <?php
+                                    $start_month = strtotime(date('Y-m', strtotime("+1 month", strtotime(date('Y-m')))));
+                                    for ($i = 0; $i < 60; $i++) {
+                                        $month = date('Y-m', strtotime("-$i month", $start_month));
+                                        if ($month == date('Y-m')) {
+                                            echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                        } else {
+                                            echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                    <?php } ?>
+
+
+                    </div>
+
+
+
+
+
+
+                    <input type="hidden" class="hidden-criterias" id="hidden-criteria1" name="hidden-criteria1" value="" />
+                    <div class="col-md-1"><b>Criteria &nbsp;:</b></div>
+                    <div class="col-md-3">
+                        <select id="select-criteria1" name="select-criteria1" style="width: 240px;" class="form-control" onchange="loadCriteriaItems(1);">
+                            <option value="">--Choose criteria--</option>
+                            <?php
+                            foreach ($arr_reportcriterias as $key => $value) {
+                                echo '<option value="' . $value['reportcriteria'] . '">' . $value['reportcriteria_desc'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-4" id="div-items-criteria1">
+
+                    </div>
+                    <!--        <div class="col-md-1">
+                        <a onclick="addOneReportCriteria(1);"><i class="fa fa-plus-circle"></i></a>
+                        a onclick="removeThisCriteria(1);"><i class="fa fa-minus-circle"></i></a
+                    </div>-->
+
+
+                </div>
+
+
+
+                <div class="form-group" id="div-criteria1">
+
+                </div>
+
+                <?php if ($type == 'employee') { ?>
+                    <div class="row">
+                        <div class="col-sm-2">
+                        </div>
+                        <div class="col-sm-4">
+                            <div id="allempfields" style="width:100%; height:270px; background-color:white;"></div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div id="reportfields" style="width:100%; height:270px; background-color:white;"></div>
+                        </div>
+                        <div class="col-sm-2">
+                        </div>
+                    </div>
+                <?php } ?>
+
+                <div id="printPanel" class="form-group">
+                    <div class="col-md-12" align="right">
+
+                        <button type="button" onclick="viewReport();" id="btn-submit" class="btn btn-primary">
+                            <li class="fa fa-eye"></li>
+                        </button>
+                        <?php if ($type != "Dashboard") { ?>
+                            <!--//edited by amal on 08/08/2019 hide pdf-->
+                            <?php if ($type != "VerifiedAttendance" && $type != "DetailedAttendance") {
+                                if ($type != "OvertimeReport" || $type == "Overtime_Synthiet" || $type == "OT_SYNTHIET" || $type == "OT_MONTHWISE") { ?>
+                                    <button type="button" onclick="downloadReport('pdf');" id="btn-submit1" class="btn btn-danger">
+                                        <li class="fa fa-file-pdf-o"></li>
+                                    </button>
+                            <?php }
+                            } ?>
+                            <button type="button" onclick="downloadReport('excel');" id="btn-submit2" class="btn btn-success">
+                                <li class="fa fa-file-excel-o"></li>
+                            </button>
+                        <?php } ?>
+
+                        <?php if ($type == "Overtime_Synthiet" || $type == "OT_MONTHWISE") { ?>
+                            <button type="button" id="btn-submit4" class="btn btn-info">
+                                <li class="fa fa-print"></li>
+                            </button>
+                        <?php } ?>
+                    </div>
+
+                </div>
+
+                <div id="reportCon" class="box box-body">
+
+                </div>
+    </form>
+    <div id="largeModalForm1" class="modal fade">
+        <div class="modal-dialog modal-lg" style="width: 90%">
+            <div class="modal-content" id="largeModalForm-content1">
+                <!-- Content will be loaded here from "remote.php" file -->
+            </div>
+        </div>
+    </div>
+    <script>
+        function loadCriteriaItems(index) {
+            var criteria = $('#select-criteria' + index).val();
+            $('#hidden-criteria' + index).val(criteria);
+            $('#div-items-criteria' + index).load(livesite + 'Overtime/loadcriteriaitems/' + index + '/' + criteria);
+        }
+
+        function downloadReport(mode) {
+            var type = $('#hidden-report-type').val();
+            var criteria = $('#select-criteria1').val();
+            var selectany = false;
+            $('.checkw').each(function() {
+                if ($(this).prop('checked') == true) {
+                    selectany = true;
+                }
+            });
+            //        return false;
+            if (selectany) {
+
+            } else {
+                alert("Please Choose Criteria items First");
+                return false;
+            }
+            if (criteria) {
+                //Edited by Akshay on 2-8-2024
+                var skip = false;
+                var monthLimit = false;
+                if (type == 'OT_MONTHWISE') {
+                    var startValue = $('#reportstartfrom').val();
+                    var endValue = $('#reportsto').val();
+                    var startDate = new Date(startValue + '-01');
+                    var endDate = new Date(endValue + '-01');
+                    if (startDate > endDate) {
+                        skip = true;
+                    }
+                    if (!skip) {
+                        var months;
+                        months = (endDate.getFullYear() - startDate.getFullYear()) * 12;
+                        months -= startDate.getMonth();
+                        months += endDate.getMonth() + 1;
+                        monthLimit = (months > 12) ? true : false;
+                    }
+                }
+                if (!skip && !monthLimit) {
+                    $('#form-showreport').attr('action', livesite + 'Overtime/generatereport/' + type + '/' + mode);
+                    $('#form-showreport').submit();
+                    loadCriteriaItems(1);
+                } else {
+                    if (skip) {
+                        alert('To date is not after From date');
+                    } else {
+                        alert('Limit of 12 months exceeded')
+                    }
+                }
+                //End
+            } else {
+                alert("Please select a criteria first");
+            }
+
+
+
+
+
+        }
+        <?php if ($type == 'employee') { ?>
+            var allempfields;
+            allempfields = new dhtmlXGridObject('allempfields');
+            allempfields.selMultiRows = true;
+            allempfields.setHeader("Fields");
+            allempfields.setInitWidths("*");
+            allempfields.setColAlign("left");
+            allempfields.setColSorting("str");
+            allempfields.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+                /*var currentReportFields = $('#hidden-reportfields').val().split(',').filter(function(v){return v!==''});
+                 var arrSelectedFields = sId.split(',');
+                 var difference = [];
+                 $.grep(arrSelectedFields, function(el) {
+                 console.log(el);
+                 if ($.inArray(el, currentReportFields) == -1) difference.push(el);
+                 })
+                 var newReportFields = $.unique(difference);
+                 console.log(newReportFields);
+                 //$('#hidden-reportfields').val(newReportFields.join(','));*/
+                return true;
+            });
+            allempfields.setMultiLine(false);
+            allempfields.enableDragAndDrop(true);
+            allempfields.init();
+            allempfields.clearAndLoad("<?php echo $this->webroot; ?>Overtime/listemployeefields", "json");
+
+            var reportfields;
+            reportfields = new dhtmlXGridObject('reportfields');
+            reportfields.selMultiRows = true;
+            reportfields.setHeader("Report Fields");
+            reportfields.setInitWidths("*");
+            reportfields.setColAlign("left");
+            reportfields.setColSorting("str");
+            reportfields.setMultiLine(false);
+            reportfields.enableDragAndDrop(true);
+            reportfields.init();
+            reportfields.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+                /*var currentReportFields = $('#hidden-reportfields').val().split(',').filter(function(v){return v!==''});
+                 var arrSelectedFields = sId.split(',');
+                 var newReportFields = $.unique($.merge(arrSelectedFields, currentReportFields));
+                 $('#hidden-reportfields').val(newReportFields.join(','));*/
+                return true;
+            });
+        <?php } ?>
+
+        jQuery(document).ready(function() {
+            //Edited by Akshay on 9-8-2024
+            // $('#reportstartfrom').on('change', function() {
+            //     var selectedFromDate = $(this).val();
+            //     $('#reportsto').val(selectedFromDate);
+            //     $('#reportsto').prop('min', selectedFromDate);
+            // });
+            var type = $('#hidden-report-type').val();
+            if (type == 'OT_MONTHWISE') {
+                $('#reportstartfrom').on('change', function() {
+                var selectedFromDate = $(this).val();
+                $('#reportsto').val(selectedFromDate);
+                var selectedYear = selectedFromDate.substring(0, 4);
+                var selectedMonth = selectedFromDate.substring(5, 7);
+                $('#reportsto option').prop('disabled', false);
+                $('#reportsto option').each(function() {
+                    var optionYear = $(this).val().substring(0, 4);
+                    var optionMonth = $(this).val().substring(5, 7);
+                    if ((optionYear < selectedYear) || (optionYear == selectedYear && optionMonth < selectedMonth)) {
+                        $(this).prop('disabled', true);
+                    }
+                });
+            });
+            }
+
+            //End
+
+            // Set the maximum date to today
+            var maxDate = new Date();
+
+            // Set the minimum date to 31 days ago
+            var minDate = new Date();
+            minDate.setDate(minDate.getDate() - 31);
+
+            //            $('input[name="reportfrom"]').daterangepicker();
+
+            $('#reportsfrom').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                maxDate: maxDate,
+                minDate: minDate,
+                // startView: "months",
+                // minViewMode: "months"
+            }).on('changeDate', function(e) {
+                var selected = $("#reportsfrom").val();
+                var sdt = new Date(selected);
+                var selectenddate = $("#reportto").val();
+                var edt = new Date(selectenddate);
+
+                // Calculate the difference in days
+                //var dayDifference = Math.ceil((edt - sdt) / (1000 * 60 * 60 * 24));
+
+                // Check if the date range is not 30 or 31 days
+                //if (dayDifference !== 30 && dayDifference !== 31) {
+                //   alert("Date range should be exactly 30 or 31 days.");
+                //  $("#reportsfrom").val('');
+                // }
+
+                if (edt < sdt) {
+                    alert("From date should be less than To date");
+                    $("#reportsfrom").val('');
+                }
+
+                var dayDifference = Math.ceil((edt - sdt) / (1000 * 60 * 60 * 24));
+                //console.log(dayDifference);
+                if (dayDifference > 31) {
+                    alert("Date range should be less than  31 days.");
+                    $("#reportsfrom").val('');
+
+                }
+
+            });
+
+            $('#reportto').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                maxDate: maxDate,
+                minDate: minDate,
+                // startView: "months",
+                // minViewMode: "months"
+            }).on('changeDate', function(e) {
+                var selected = $("#reportto").val();
+                var edt = new Date(selected);
+                var selectsdate = $("#reportsfrom").val();
+                var sdt = new Date(selectsdate);
+
+                if (edt < sdt) {
+                    alert("To date should be greater than From date");
+                    $("#reportto").val('');
+                    return false;
+                }
+                var dayDifference = Math.ceil((edt - sdt) / (1000 * 60 * 60 * 24));
+                // console.log(dayDifference);
+                if (dayDifference > 31) {
+                    alert("Date range should be less than  31 days.");
+                    $("#reportsfrom").val('');
+
+                }
+            });
+
+
+            $('#form-showreport').parsley();
+
+
+        });
+        //        edited by sinisya on 08-07-2024
+        function viewReport() {
+            var selectany = false;
+            $('.checkw').each(function() {
+                if ($(this).prop('checked') == true) {
+                    selectany = true;
+                }
+            });
+
+            if (selectany) {
+                var type = $('#hidden-report-type').val();
+                //Edited by Akshay on 2-8-2024
+                var skip = false;
+                var monthLimit = false;
+                if (type == 'OT_MONTHWISE') {
+                    var startValue = $('#reportstartfrom').val();
+                    var endValue = $('#reportsto').val();
+                    var startDate = new Date(startValue + '-01');
+                    var endDate = new Date(endValue + '-01');
+                    if (startDate > endDate) {
+                        skip = true;
+                    }
+                    if (!skip) {
+                        var months;
+                        months = (endDate.getFullYear() - startDate.getFullYear()) * 12;
+                        months -= startDate.getMonth();
+                        months += endDate.getMonth() + 1;
+                        monthLimit = (months > 12) ? true : false;
+                    }
+                }
+                if (!skip && !monthLimit) {
+                    // Criteria items selected, proceed with report generation
+                    $('#loaders').show();
+                    var container = $("#reportCon");
+                    var url = livesite + 'Overtime/generatereport/' + type;
+
+                    var arrReportFieldsChosen = [];
+                    $('#hidden-reportfields').val(arrReportFieldsChosen.join(','));
+                    toggleItemsDisplay(1);
+                    $('body').addClass('sidebar-collapse');
+
+                    container.load(url, $('#form-showreport').serialize(), function() {
+                        $('#loaders').hide();
+                        // Show the print button if report type matches
+                        if (type === "Overtime_Synthiet" || type == "OT_MONTHWISE") {
+                            $('#btn-submit4').show();
+                        }
+                    });
+                } else {
+                    if (skip) {
+                        alert('To date is not after From date');
+                    } else {
+                        alert('Limit of 12 months exceeded')
+                    }
+                }
+                //End
+            } else {
+                alert("Please Choose Criteria items First");
+                return false;
+            }
+        }
+        $(document).ready(function() {
+
+            $('#btn-submit4').click(function() {
+                //Edited by Akshay on 5-8-2024
+                var type = $('#hidden-report-type').val();
+                if (type == "OT_MONTHWISE") {
+                    // var content = $('#printOTSummarySynthite').html();
+                    var content = $('#reportCon').html();
+                } else {
+                    var content = $('#printovertimeContent').html();
+                }
+                //End
+                printovertimeContent(content);
+                //Edited by Akshay on 5-8-2024
+                $(this).hide();
+                //End
+            });
+        });
+
+        function printovertimeContent(content) {
+            var printWindow = window.open('', '_blank', 'height=600,width=900');
+            printWindow.document.write('<html><head><title>Print Document</title>');
+            printWindow.document.write('<style>');
+            printWindow.document.write('body { font-size: 12pt; margin: 0; padding: 0; visibility: hidden; }');
+            printWindow.document.write('table { width: 100%; border-collapse: collapse; margin: 0; padding: 0; border: 1px solid black; }');
+            printWindow.document.write('th, td { padding: 7px; text-align: left; border: 1px solid black; word-wrap: break-word; }');
+            printWindow.document.write('th { background-color: #f2f2f2; text-align: center; }');
+            printWindow.document.write('tr, th, td { border: 1px solid black; }'); // Ensure all borders are set to solid black
+            printWindow.document.write('.single-line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }'); // Ensure single-line text doesn't overflow
+            printWindow.document.write('.align-left { text-align: left !important; padding-left: 50px !important; }'); // Align left and add padding
+            printWindow.document.write('.align-nodataleft { text-align: left !important; padding-left: 0px !important; }');
+            printWindow.document.write('.align-nodata { font-weight: bold; }');
+            printWindow.document.write('@media print { body { visibility: visible; } }'); // Show content for print
+            printWindow.document.write('@page { size: A4; margin: 2mm; zoom: 0.9; }'); // Hide browser default headers/footers     //edited by ASHIN on 09-08-24
+            printWindow.document.write('</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(content);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+
+            printWindow.onload = function() {
+                printWindow.print();
+                printWindow.close();
+            };
+        }
+
+
+        function addOneReportCriteria(index) {
+            var type = $('#hidden-report-type').val();
+
+            var currentcriteriaschosen = '';
+            $('#form-showreport .hidden-criterias').each(function() {
+                currentcriteriaschosen += (currentcriteriaschosen == '') ? this.value : ',' + this.value;
+            });
+            $('#form-showreport .link-removecriterias').remove();
+            var newIndex = index + 1;
+            $('<div class="form-group" id="div-criteria' + newIndex + '"></div>').insertAfter($('#div-criteria' + index));
+            $('#div-criteria' + newIndex).load(livesite + 'Overtime/addreportcriteria/' + type + '/' + newIndex + '/' + currentcriteriaschosen);
+
+            var count = $('#hidden-criterias-count').val();
+            if (count >= 1) {
+                $('#hidden-criterias-count').val(parseInt(count) + 1);
+            }
+        }
+
+        function removeThisCriteria(index) {
+            var count = $('#hidden-criterias-count').val();
+            $('#hidden-criterias-count').val(parseInt(count) - 1);
+            $('#div-criteria' + index).remove();
+        }
+    </script>
+<?php } ?>
+<style>
+    td,
+    th,
+    table {
+        border-style: none;
+        border: none;
+    }
+</style>

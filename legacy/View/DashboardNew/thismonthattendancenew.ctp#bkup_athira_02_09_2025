@@ -1,0 +1,46 @@
+
+<div class="attendance-table-wrapper" >
+<div style="display:flex;justify-content:space-between;align-items:center;margin:30px 0 24px 0;">
+<div>
+    <legend style="border:none;margin:0px;">This Month Attendance </legend>
+</div>
+<div>
+        <!-- Add Buttons Here -->
+        <button style="background: rgba(220, 38,38, 1); margin-left: 5px; padding: 5px 20px;font-size:14px;" 
+                type="button" onclick="Modal('Latein','LastMonth')" 
+                class="btn btn-linkedin btn-xs">Late In</button>
+
+        <button style="background: rgba(5,150,108,1); margin-left: 5px; padding: 5px 20px;font-size:14px;" 
+                type="button" onclick="Modal('Earlyin','LastMonth')"  
+                class="btn btn-linkedin btn-xs">Early In</button>
+
+        <button style="background:rgba(5,150,108,1);  margin-left: 5px; padding: 5px 20px;font-size:14px;" 
+                type="button" onclick="Modal('Lateout','LastMonth')" 
+                class="btn btn-linkedin btn-xs">Late Out</button>
+
+        <button style="background: rgba(220,38,38,1);margin-left: 5px; padding: 5px 20px;font-size:14px;" 
+                type="button" onclick="Modal('Earlyout','LastMonth')"  
+                class="btn btn-linkedin btn-xs">Early Out</button>
+   
+
+</div>
+</div>
+    <div class="table-responsive" style="margin-top: -12px;">
+        <table class="table no-margin" id="thismonthattandence">
+            <thead>
+                <tr>
+                    <th style=" background-color: #0c5e8e;color: white;text-align: center;">Sl No</th>
+                    <th style=" background-color: #0c5e8e;color: white;text-align: center;">Name</th>
+                    <th style=" background-color: #0c5e8e;color: white;text-align: center;">Employee ID</th>
+                    <th style=" background-color: #0c5e8e;color: white;text-align: center;">Branch</th>
+                    <th style=" background-color: #0c5e8e;color: white;text-align: center;">Date</th>
+                    <th style=" background-color: #0c5e8e;color: white;text-align: center;">Time</th>
+                    <th style=" background-color: #0c5e8e;color: white;text-align: center;">Check-In/Out</th>
+                    <th style=" background-color: #0c5e8e;color: white;text-align: center;">Location</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>

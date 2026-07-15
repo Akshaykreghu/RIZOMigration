@@ -1,0 +1,357 @@
+<script>
+    $.validate({
+        form: '#attendanceuploadtable'
+    });
+    var options = {
+        success: function (resp) {
+            $('#modalForm').modal('hide');
+            $('#att_table').datagrid('reload');
+            $('#attdatacsv').val('');
+            $("#filterby_branch").select2("val", "");
+            $("#emp_fkey").select2("val", "");
+            $.notify($.parseJSON(resp).msg, {
+                type: 'success',
+                allow_dismiss: false
+            });
+        }  // post-submit callback
+    };
+
+
+    $('#attendanceuploadtable').on('submit', function (event) {
+        event.preventDefault();
+        if (confirm(" Do You Want  To Save The Form")) {
+            $('#attendanceuploadtable').ajaxSubmit(options)
+        }
+    });
+
+
+</script>
+<div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header" style="background: #00659f;color: white">
+            <h4 class="modal-title"> Employee Advance Form</h4>  
+        </div>
+        <div class="modal-body">
+            <!-- Form starts -->
+
+            <form class="form-horizontal" id="attendanceuploadtable" action="<?php echo $this->webroot; ?>Employeeadvance/employeeloansave" method="POST">
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-md-4 control-label">Choose Employee<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+<!--                          <select id="emp_fkey" class="form-control" name="emp_fkey" onchange="loadExistingCTCInfo();" >-->
+                                <select id="emp_fkey1" class="form-control" name="emp_fkey"  onchange="findextingsalary();" onchange="findsalary();" required="required" style="width: 100%;">
+                                    <option value="">[--Select--]</option>
+                                    <?php
+                                    //edited by arul on 12/12/2019 Employee company id added
+//                                    foreach ($arr_employees as $value) {
+//                                        $selected = ($data['emp_fkey'] == $value['EmployeeDetails']['emp_pkey']) ? 'selected="selected"' : '';
+//
+//                                        echo '<option value="' . $value['EmployeeDetails']['emp_pkey'] . '" ' . $selected . '>' . $value['EmployeeDetails']['first_name'] . ' ' . $value['EmployeeDetails']['last_name'] . ' - ' .$value['EmployeeDetails']['emp_id']. '</option>';
+//                                    }
+                                    foreach ($arr_employees as $value) {
+                                        $selected = ($data['emp_fkey'] == $value['emp_details']['emp_pkey']) ? 'selected="selected"' : '';
+                                        echo '<option value="' . $value['emp_details']['emp_pkey'] . '" ' . $selected . '>' . $value['emp_details']['first_name'] . ' ' . $value['emp_details']['last_name'] . ' - ' . $value['emp_proff']['emp_company_id'] . '</option>';
+                                    }
+                                    //end Employee company id added
+                                    ?>
+                                </select>
+                            </div>    
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_time" class="col-md-4 control-label">Affected Month<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input type="text" required="required" class="form-control date-picker "  onchange="findextingsalary();" onchange="findsalary();" value="<?php echo isset($data['affected_month']) ? $data['affected_month'] : ""; ?>"name="affected_month" name="affected_month" id="affected_month" >
+
+<!--                                <select class="form-control" name="affected_month" id="affected_month" onchange="findextingsalary();" required="required" onchange="findsalary();">
+                                    //<?php
+                                // for ($i = 0; $i < 12; $i++) {
+                                //     echo '<option value="' . date('Y-m', strtotime("+$i month", strtotime(date('M-Y')))) . '">' . date('M-Y', strtotime("+$i month", strtotime(date('M-Y')))) . '</option>';
+                                // }
+                                // 
+                                ?>
+                                    ?>
+                                </select>    -->
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-md-4 control-label">Advance Amount<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input  type="number" required="required" class="form-control" value="<?php echo $data['advance_amount'] ?>"name="advance_amount" onmouseenter="findextingsalary();"onblur="findamount();" id="advance_amount" >
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="Remarks" class="col-md-4 control-label">Remarks</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input type="text" id="remarks" name="remarks" value="<?php echo $data['remarks'] ?>" class="form-control">
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group" id="totel_salary" name style="display:none">
+                        <div class="col-md-12">
+                            <label for="balancE_leave" class="col-md-4 control-label" style="color:#890AEC;">Maximum  Amount</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="totel_amount" name="totel_amount" value="<?php echo $data['advance_amount'] ?>" disabled class="form-control">
+
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" required="required" class="form-control" value="<?php echo $data['emp_advance_pkey'] ?>" name="emp_advance_pkey">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        <button type="submit" name="btn-submit" id="btn-submit" class="btn btn-primary">Save</button>
+
+                    </div>
+
+
+
+                </div>
+
+
+
+            </form>
+            <!-- Tax Head Detail Form -->
+
+
+
+
+
+            <!-- form ends-->
+        </div>
+
+    </div>
+
+</div>
+<script type="text/javascript">
+    $('#emp_fkey1').select2();//This is to search employee and company id. By ***ARUL P DAS on 20/12/2019
+    //salary check 
+    function findsalary() {
+        var month = $('#affected_month').val();
+        var emp_fkey = $('#emp_fkey1').val();
+        var url = 'Employeeadvance/salary';
+//value passiing ajax   
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: {
+                month_year: month,
+                empid: emp_fkey
+            },
+            success: function (resp) {
+                var salary = $.parseJSON(resp);
+                $("#totel_salary").show();
+                $("#totel_amount").val(salary);
+            }
+        });
+    }
+
+
+//check salaryslip
+    function findextingsalary() {
+//same function call to time       
+        findsalary();
+        //alert('fdfd')
+        var month = $('#affected_month').val();
+        var emp_fkey = $('#emp_fkey1').val();
+
+
+        // alert(emp_fkey);
+        //alert(month);
+
+        var url = 'Employeeadvance/salarycheck';
+//value passiing ajax   
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: {
+                month_year: month,
+                empid: emp_fkey,
+//                     //   active:active
+            },
+            success: function (resp) {
+                //alert(resp);
+                var json_obj = $.parseJSON(resp);
+
+                if (json_obj.rows.length > 0) {
+                    $.notify(json_obj.msg, {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                    $("#btn-submit").hide();
+                    $("#advance_amount").val('');
+                    $('#advance_amount').attr('readonly', true);
+
+
+                    //alert('hide');
+
+                } else {
+                    //alert('hi');
+                    // $.notify("BOOM!", "error");
+                    $("#btn-submit").show();
+                    $('#advance_amount').attr('readonly', false);
+                }
+            }
+        });
+    }
+    //validation form amount
+    function findamount() {
+        var rate = $('#advance_amount').val();
+        var emp_salary = parseInt($('#totel_amount').val());
+        // var one_amonu = parseInt(1);
+        //var salary = emp_salary + one_amonu;
+        if (rate > emp_salary) {
+            alert("Please enter amount lesser then Maximum Amount");
+            $("#advance_amount").val('');
+        }
+//checking validation on enter number        
+        ///^[1-9][0-9\.]{0,15}$/
+        if (rate.match(/^[1-9][0-9\.]{0,15}$/)) {
+            if (rate < 1)
+            {
+                alert('Please Enter A Valid Amount')
+                $("#advance_amount").val('');
+            }
+        } else {
+            $("#advance_amount").val('');
+        }
+
+    }
+    $(document).ready(function () {
+
+        //$("#pincode").inputmask("999");
+        // $('#attendanceuploadtable').parsley();
+        var options = {
+//      success:function(responseText, statusText, xhr, $form){
+//        alert("Employee Uploaded Successfully");
+//	closeModal('att_table');
+//}
+        };
+
+        // bind to the form's submit event 
+//    $('#attendanceuploadtable').submit(function() { 
+//        $(this).ajaxSubmit(options);         
+//        return false;
+//    });
+
+        $('#affected_month').datepicker({
+            format: 'yyyy-mm',
+            autoclose: true,
+            startView: "months",
+            minViewMode: "months",
+            numberOfMonths: 3,
+            showButtonPanel: true
+
+
+
+
+        })
+
+        $("#yin_time").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            showButtonPanel: true,
+            dateFormat: 'MM yy',
+            onClose: function (dateText, inst) {
+                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(this).datepicker('setDate', new Date(year, month, 1));
+            },
+            beforeShow: function (input, inst) {
+                if ((datestr = $(this).val()).length > 0) {
+                    year = datestr.substring(datestr.length - 4, datestr.length);
+                    month = jQuery.inArray(datestr.substring(0, datestr.length - 5), $(this).datepicker('option', 'monthNames'));
+                    $(this).datepicker('option', 'defaultDate', new Date(year, month, 1));
+                    $(this).datepicker('setDate', new Date(year, month, 1));
+                }
+
+                var option = this.id == "in_time" ? "maxDate" : "minDate";
+                if ((selectedDate = $(other).val()).length > 0) {
+                    year = selectedDate.substring(selectedDate.length - 4, selectedDate.length);
+                    month = jQuery.inArray(selectedDate.substring(0, selectedDate.length - 5), $(this).datepicker('option', 'monthNames'));
+                    $(this).datepicker("option", option, new Date(year, month, 1));
+                }
+            }
+        });
+//       $("#btnShow").click(function(){ 
+//       if ($("#in_time").val().length == 0 ){
+//           alert('All fields are required');
+//       }
+//       else{
+//           alert('Selected Month Range :'+ $("#in_time").val();
+//           }
+//       })
+//    $(function() {
+//$('.date-picker').datepicker( {
+//    changeMonth: true,
+//    changeYear: true,
+//    showButtonPanel: true,
+//    dateFormat: 'MM yy',
+//    onClose: function(dateText, inst) { 
+//        var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+//        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+//        $(this).datepicker('setDate', new Date(year, month, 1));
+//    }
+//});
+//});
+//
+//        var currentTime = new Date();
+//// First Date Of the month 
+//        var startDateFrom = new Date(currentTime.getFullYear(), currentTime.getMonth(), 1);
+//// Last Date Of the Month 
+//        var startDateTo = new Date(currentTime.getFullYear(), currentTime.getMonth() + 1, 0);
+//        var d = new Date();
+//d.setMonth(1);
+//        $("#in_time").datepicker({
+//            dateFormat: 'YYYY.mm',
+//            minDate: startDateFrom,
+//            maxDate: startDateTo,
+//              defaultDate: d,
+//        });
+
+//        $('#in_time').datepicker({
+//            format: 'yyyy-mm-dd',
+//            onSelect: function (selected) {
+//                var esdt = new Date(selected);
+//                var selectedenddate = $("#out_date").val();
+//                var ecdt = new Date(selectedenddate);
+//                if (esdt > ecdt) {
+//                    alert('Expected In Date Should Be Less Than Expected Out Date');
+//                    $("#in_date").val('');
+//                }
+//
+//            }
+//        })
+        $('#out_time').datepicker({
+            format: 'yyyy-mm-dd',
+            onSelect: function (selected) {
+                var ecdt = new Date(selected);
+                var selectedstartdate = $("#in_date").val();
+                var esdt = new Date(selectedstartdate);
+                if (esdt > ecdt) {
+                    alert('Expected Out Date Should Be Greater Than Expected In Date');
+                    $("#out_date").val('');
+                }
+
+            }
+        })
+        $("#out_date").inputmask("yyyy-mm-dd");
+    });
+</script>
+
+
+

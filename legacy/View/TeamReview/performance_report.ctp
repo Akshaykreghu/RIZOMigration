@@ -1,0 +1,538 @@
+    <style>
+        td,
+        th {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
+
+        /* .page-container {
+            margin: 0mm 15mm 15mm 15mm;
+        } */
+
+        .page-header {
+            margin-bottom: 20px;
+            min-height: 70px;
+        }
+
+        .header-logo-container {
+            text-align: right;
+        }
+
+        .header-logo {
+            width: 150px;
+            height: 100px;
+            display: block;
+        }
+
+        .company-name {
+            font-size: 14pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+
+        .report-main-title {
+            font-size: 10pt;
+            font-weight: bold;
+            margin: 0 0 4px 0;
+            text-align: center;
+        }
+
+        .report-period {
+            font-size: 9pt;
+            text-align: center;
+        }
+
+        .section-main-title {
+            font-weight: bold;
+            font-size: 12pt;
+            margin-top: 30px;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        .section-sub-title {
+            font-weight: bold;
+            font-size: 11pt;
+            text-align: center;
+            margin: 5px 0 2px;
+        }
+
+        .section-instruction {
+            font-size: 9pt;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .personal-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10pt;
+            line-height: 1.8;
+        }
+
+        .personal-data-table td {
+            border: none;
+            vertical-align: top;
+            padding: 6px 0;
+        }
+
+        .label-col {
+            width: 55%;
+        }
+
+        .colon-col {
+            width: 3%;
+            text-align: left;
+        }
+
+        .value-col {
+            width: 42%;
+        }
+
+        .table-sub-note {
+            padding-left: 25px;
+            font-size: 9pt;
+            line-height: 1.2;
+        }
+
+        .appraisal-question {
+            font-size: 10pt;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+
+
+        .appraisal-answer-space {
+            width: 100%;
+            max-width: 180mm;
+            /* Edited by Akshay on 13-8-2025 */
+            margin-bottom: 15px;
+            padding: 5px 12px;
+            box-sizing: border-box;
+            font-size: 10pt;
+            text-align: justify;
+            min-height: 50px;
+            /* Edited by Akshay on 13-8-2025 */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            white-space: normal;
+            margin: 0;
+            /* End */
+        }
+
+        .part3-main-instruction {
+            font-size: 10pt;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .part3-textarea-label {
+            font-size: 11pt;
+            margin-bottom: 5px;
+            margin-top: 10px;
+        }
+
+        .part3-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 5px;
+            font-size: 11pt;
+            margin-bottom: 15px;
+
+        }
+
+        .attributes-table {
+            width: 100%;
+            font-size: 10pt;
+            margin-top: 5px;
+            margin-bottom: 0px !important;
+            border-collapse: collapse;
+        }
+
+        .attributes-table tr {
+            page-break-inside: avoid;
+        }
+
+
+        .attributes-table th,
+        .attributes-table td {
+            border: 1px solid #000;
+            padding: 6px 4px;
+            vertical-align: middle;
+        }
+
+        .attributes-table th {
+            background-color: #f0f0f0;
+            padding: 15px 0;
+            border: 1px solid #000;
+        }
+
+        .attribute-name {
+            text-align: left;
+        }
+
+        .grading-header {
+            font-size: 11pt;
+            font-weight: bold;
+            /* margin-top: 8px; */
+        }
+
+        .grading-list {
+            list-style-type: disc;
+            /* padding-left: 20px; */
+            padding-left: 0px;
+            margin-left: 0;
+            font-size: 10pt;
+            margin-bottom: 5px;
+        }
+
+        .grading-list li {
+            margin: 5px 0;
+            padding-left: 0px;
+        }
+
+        .grading-note {
+            font-size: 11pt;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        .final-assessment-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10pt;
+            margin-top: 5px;
+        }
+
+        .final-assessment-table th {
+            border: 1px solid #000;
+            padding: 15px 4px;
+
+        }
+
+        .final-assessment-table td {
+            border: 1px solid #000;
+
+        }
+
+        .final-assessment-table th {
+            background-color: #f0f0f0;
+        }
+
+        .grading-container {
+            page-break-before: auto;
+            page-break-inside: avoid;
+        }
+    </style>
+
+    <page backtop="2mm" backbottom="0mm" backleft="10mm" backright="10mm" size="A4" style="font-family:times;">
+        <div class="page-header">
+            <?php if (!empty($arr_comp_contact_info['CompanyContactInfo']['logo'])): ?>
+                <div class="header-logo-container">
+                    <img src="<?= htmlspecialchars($arr_comp_contact_info['CompanyContactInfo']['logo']) ?>" class="header-logo">
+                </div>
+            <?php endif; ?>
+            <div class="company-name">
+                <?= htmlspecialchars($arr_comp_contact_info['CompanyContactInfo']['business_name']); ?>
+            </div>
+            <div class="report-main-title">ANNUAL PERFORMANCE ASSESSMENT OF EXECUTIVES & SUPERVISORS</div>
+            <!-- edited by athira on 04-06-2025 -->
+            <div class="report-period">
+                Report for the year/period ending <?= htmlspecialchars($emp_data[0]['s']['fin_year']) . '-' . (htmlspecialchars($emp_data[0]['s']['fin_year']) + 1); ?>
+            </div>
+            <!-- end -->
+        </div>
+
+        <!-- PART I -->
+        <div class="section-main-title">PART - I</div>
+        <div class="section-sub-title">PERSONAL DATA</div>
+        <div class="section-instruction">(To be filled by the HR Department)</div>
+
+        <table class="personal-data-table">
+            <tr>
+                <td class="label-col">1. Name of the Employee</td>
+                <td class="colon-col">:</td>
+                <td class="value-col"><?= htmlspecialchars($emp_data[0]['e']['EmpName']) ?></td>
+            </tr>
+            <tr>
+                <td>2. Designation/Post held</td>
+                <td>:</td>
+                <td><?= htmlspecialchars($emp_data[0]['s']['designation']) ?></td>
+            </tr>
+            <!-- edited by athira on 30-05-2025 -->
+            <tr>
+                <td>3. Date of birth</td>
+                <td>:</td>
+                <td><?= date('d-m-Y', strtotime($emp_data[0]['s']['dob'])) ?></td>
+            </tr>
+            <tr>
+                <td>4. Date of Joining</td>
+                <td>:</td>
+                <td><?= date('d-m-Y', strtotime($emp_data[0]['s']['doj'])) ?></td>
+            </tr>
+            <tr>
+                <td>5. Date of entry into present grade</td>
+                <td>:</td>
+                <td><?= date('d-m-Y', strtotime($emp_data[0]['s']['grade_entry_date'])) ?></td>
+            </tr>
+            <!-- end -->
+            <tr>
+                <td>6. Whether Permanent/Fixed Term Employment</td>
+                <td>:</td>
+                <td><?= htmlspecialchars($emp_data[0]['s']['employment_type']) ?></td>
+            </tr>
+            <tr>
+                <td>7. Department/Section in which served during the year</td>
+                <td>:</td>
+                <td><?= htmlspecialchars($emp_data[0]['s']['department']) ?></td>
+            </tr>
+            <tr>
+                <td>8. Period of absence from duty</td>
+                <td>:</td>
+                <td><?= htmlspecialchars($emp_data[0]['s']['absence_period']) ?></td>
+            </tr>
+            <tr>
+                <td colspan="3" class="table-sub-note">(without pay) during the year:</td>
+            </tr>
+        </table>
+
+        <!-- PART II -->
+        <?php
+        $dutyDesc = trim($emp_data[0]['s']['duty_desc']);
+        $workDoneDesc = trim($emp_data[0]['s']['work_done_desc']);
+
+        if (($dutyDesc !== '' || $workDoneDesc !== '') && ($status != 'Draft') && ($status != 'Reporting Person Rejected the Appraisal')):
+        ?>
+            <div class="section-main-title">PART - II</div>
+            <div class="section-sub-title">SELF APPRAISAL</div>
+            <div class="section-instruction">(To be filled by the Employee)</div>
+
+            <p>1. Brief description of duties</p>
+            <p class="part3-textarea" style="padding:0 12px;"><?= nl2br(htmlspecialchars($emp_data[0]['s']['duty_desc'])) ?></p>
+
+            <p>2. Brief resume of the work done by you bringing out any special achievements during the year/period under review. In the &nbsp;&nbsp;&nbsp;&nbsp;event of shortfall in achievement furnish reasons. (The resume to be furnished within the space provided limited &nbsp;&nbsp;&nbsp;&nbsp;to 100 &nbsp;&nbsp;&nbsp;&nbsp;words and is required to be signed)</p>
+            <p class="part3-textarea" style="padding:0 12px;"><?= nl2br(htmlspecialchars($emp_data[0]['s']['work_done_desc'])) ?></p>
+        <?php endif; ?>
+
+        <!-- Existing PART III ends here -->
+
+        <!-- ADDITIONAL PART III SECTION (New Page) -->
+        <?php
+        $reportingData = null;
+        $reviewingData = null;
+        if (!empty($executive_summary)) {
+            foreach ($executive_summary as $summary) {
+                $officerId = $summary['assessment_summary_executive']['officer_fkey']; // from assessment_summary_executive table
+
+                // Common employee info
+                $empName = $summary['ei']['EmpName'];
+                $designation = $summary['ei']['designation'];
+
+                if ($role === 'reporting_officer' && $officerId == $loggedInOfficerId) {
+                    $reportingData = $summary['assessment_summary_executive'];
+                    $reportingData['EmpName'] = $empName;
+                    $reportingData['designation'] = $designation;
+                } elseif ($role === 'reviewing_officer') {
+                    if ($officerId == $reportingOfficerId) {
+                        $reportingData = $summary['assessment_summary_executive'];
+                        $reportingData['EmpName'] = $empName;
+                        $reportingData['designation'] = $designation;
+                    } elseif ($officerId == $reviewingOfficerId) {
+                        $reviewingData = $summary['assessment_summary_executive'];
+                        $reviewingData['EmpName'] = $empName;
+                        $reviewingData['designation'] = $designation;
+                    }
+                }
+            }
+        }
+        ?>
+
+        <?php if (!empty($attributeMarks) && ($status != 'Reviewing Person Rejected the Appraisal' && $status != 'Reporting Person Drafted the Appraisal' && $status != 'Reporting Person Rejected the Appraisal' && $status != 'Draft' && $status != 'Applied')): ?>
+
+            <div class="section-main-title">PART - III</div>
+            <div class="section-sub-title">ASSESSMENT OF THE REPORTING & REVIEWING OFFICER</div>
+            <div class="part3-main-instruction">
+                <p style="margin:3px 0 0 0;padding:0;"><i>(Please assess the employee objectively based on overall performance during the period.</i>
+                <p style="margin:3px 0 0 0;padding:0;"><i>Each attribute carries 5 marks)</i></p>
+                </p>
+
+            </div>
+
+            <p class="part3-textarea-label">1. Does the Reporting Officer agree with the statement made in PART II? If not, the extent of disagreement and &nbsp;&nbsp;&nbsp;&nbsp;reasons thereof. </p>
+            <!-- Edited by Akshay on 22-7-2025 -->
+            <p class="part3-textarea" style="padding:0 12px;"><?= htmlspecialchars($reportingData['agreement_comment']); ?></p>
+            <!-- End -->
+
+            <?php
+            $colCount = ($role === 'reviewing_officer') ? 3 : 2;
+
+            if ($colCount == 2) {
+                $colWidths = ['70%', '30%'];
+            } else {
+                $colWidths = ['60%', '20%', '20%'];
+            }
+            ?>
+
+            <div class="part3-textarea-label">2. Attributes assessment</div>
+            <table class="attributes-table">
+                <thead>
+                    <tr>
+                        <th style="text-align:center;width:<?= $colWidths[0] ?>;"><b>Attributes</b></th>
+                        <th style="text-align:center;width:<?= $colWidths[1] ?>"><b>Reporting Officer</b></th>
+                        <?php if ($role === 'reviewing_officer'): ?>
+                            <th style="text-align:center;width:<?= $colWidths[2] ?>"><b>Reviewing Officer</b></th>
+                        <?php endif; ?>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <?php if (!empty($attributeMarks)):
+                        foreach ($attributeMarks as $i => $attr):
+                            // 'd' contains details, 'a' contains attribute label
+                            $attributeDetails = $attr['d'];
+                            $attributeLabel = $attr['a']['attributes'];
+
+                            $reportingMark = isset($attributeDetails['reporting_officer_marks']) ? $attributeDetails['reporting_officer_marks'] : ' ';
+                            $reviewingMark = isset($attributeDetails['reviewing_officer_marks']) ? $attributeDetails['reviewing_officer_marks'] : ' ';
+
+                    ?>
+                            <tr>
+                                <td style="width:<?= $colWidths[0] ?>" class="attribute-name">
+                                    <?= ($i + 1) . '. ' . htmlspecialchars($attributeLabel) ?>
+                                </td>
+                                <td style="text-align:center;width:<?= $colWidths[1] ?>">
+                                    <?= htmlspecialchars($reportingMark) ?>
+                                </td>
+                                <?php if ($role === 'reviewing_officer'): ?>
+                                    <td style="text-align:center;width:<?= $colWidths[2] ?>">
+                                        <?php if ($status == 'Reviewing Person submitted the Appraisal'): ?>
+                                            <?= htmlspecialchars($reviewingMark) ?>
+                                        <?php endif; ?>
+                                    </td>
+                                <?php endif; ?>
+                            </tr>
+
+                    <?php endforeach;
+                    endif; ?>
+
+
+
+                    <tr>
+                        <td style="text-align:center;background-color:#f0f0f0;"><b>Total Marks</b></td>
+                        <td style="text-align:center;background-color:#f0f0f0;"><b> <?= htmlspecialchars($reportingData['total_marks']); ?></b></td>
+                        <?php if ($role === 'reviewing_officer'): ?>
+                            <td style="text-align:center;background-color:#f0f0f0;"><b>
+                                    <?php if ($status == 'Reviewing Person submitted the Appraisal'): ?>
+                                        <?= htmlspecialchars($reviewingData['total_marks']); ?>
+                                    <?php endif; ?>
+                                </b></td>
+                        <?php endif; ?>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;background-color:#f0f0f0;"><b>Grade</b></td>
+                        <td style="text-align:center;background-color:#f0f0f0;"><b> <?= htmlspecialchars($reportingData['grade']); ?></b></td>
+                        <?php if ($role === 'reviewing_officer'): ?>
+                            <td style="text-align:center;background-color:#f0f0f0;"><b>
+                                    <?php if ($status == 'Reviewing Person submitted the Appraisal'): ?>
+                                        <?= htmlspecialchars($reviewingData['grade']); ?>
+                                    <?php endif; ?>
+                                </b></td>
+                        <?php endif; ?>
+                    </tr>
+                    <?php if ($role === 'reviewing_officer'): ?>
+                        <tr>
+                            <td style="text-align:center;background-color:#f0f0f0;"><b>Final Marks and Grade (Reviewing Officer)</b></td>
+                            <td colspan="2" style="text-align:center;background-color:#f0f0f0;">
+                                <b>
+                                    <?php if ($status == 'Reviewing Person submitted the Appraisal'): ?>
+                                        <?= htmlspecialchars($reviewingData['total_marks']) . ', ' . htmlspecialchars($reviewingData['grade']); ?>
+                                    <?php endif; ?>
+                                </b>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+
+            </table>
+
+
+
+            <?php
+            $colCount = ($role === 'reviewing_officer') ? 3 : 2;
+
+            if ($colCount == 2) {
+                $colWidths = ['50%', '50%'];
+            } else {
+                $colWidths = ['40%', '30%', '30%'];
+            }
+            ?>
+
+            <div class="page-container grading-container" style="font-family: times;margin-top:6mm; margin-BOTTOM:2mm;">
+                <div class="grading-header">Grading</div>
+                <ul class="grading-list">
+                    <li>Outstanding &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Above 90 </li>
+                    <li>Very Good &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;Above 80 upto 90</li>
+                    <li>Good &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;Above 60 upto 80</li>
+                    <li>Average &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;Above 40 upto 60</li>
+                    <li>Below Average &nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;&nbsp;Upto 40</li>
+                </ul>
+                <div class="grading-note">
+                    ( An employee should not be graded outstanding unless exceptional qualities and performance have been noticed.
+                    Grounds for giving outstanding / below average grading should be clearly brought out).
+                </div>
+            </div>
+
+                <div class="page-container grading-container" style="font-family: times;margin-top:6mm; margin-BOTTOM:2mm;">
+                <table class="final-assessment-table" cellspacing="0" cellpadding="6" style="width:100%; border-collapse: collapse; margin-top:6mm; margin-BOTTOM:2mm;">
+                        <tr>
+                            <th style="height: 10px; vertical-align: middle; width:<?= $colWidths[0] ?>;">Description</th>
+                            <th style="height: 10px; vertical-align: middle; text-align:center; width:<?= $colWidths[1] ?>;">Reporting Officer</th>
+                            <?php if ($role === 'reviewing_officer'): ?>
+                                <th style="height: 10px; vertical-align: middle; text-align:center; width:<?= $colWidths[2] ?>;">Reviewing Officer</th>
+                            <?php endif; ?>
+                        </tr>
+                    <?php
+                    $rows = [
+                        'Training Need Assessment' => ['reportingData' => $reportingData['training_need'], 'reviewingData' => $reviewingData['training_need']],
+                        'Comments & Recommendation based on overall performance' => ['reportingData' => $reportingData['comments_recommendation'], 'reviewingData' => $reviewingData['comments_recommendation']],
+                        'Signature' => ['reportingData' => '', 'reviewingData' => ''],
+                        'Name' => ['reportingData' => $reportingData['EmpName'], 'reviewingData' => $reviewingData['EmpName']],
+                        'Designation' => ['reportingData' => $reportingData['designation'], 'reviewingData' => $reviewingData['designation']],
+                        // edited by athira on 02-06-2025
+                        'Date' => ['reportingData' => $reportingDate, 'reviewingData' => $reviewingDate],
+                        //end
+                    ];
+
+                    foreach ($rows as $label => $data):
+                        $rowHeight = in_array($label, ['Comments & Recommendation based on overall performance']) ? '100px' : '40px';
+                    ?>
+                        <tr>
+                            <td style="padding:5px;word-wrap: break-word; white-space: normal;min-height: <?= $rowHeight ?>;width:<?= $colWidths[0] ?>; vertical-align: top;"><?= $label ?></td>
+                            <td style="padding:5px; word-wrap:break-word; white-space:pre-line; vertical-align:top; width:<?= $colWidths[1] ?>;">
+                                <?= nl2br(htmlspecialchars($data['reportingData'])) ?>
+                            </td>
+
+                            <?php if ($role === 'reviewing_officer'): ?>
+                                <td style="padding:5px; word-wrap:break-word; white-space:pre-line; vertical-align:top; width:<?= $colWidths[2] ?>;">
+                                    <?php if ($status == 'Reviewing Person submitted the Appraisal'): ?>
+                                        <?= nl2br(htmlspecialchars($data['reviewingData'])) ?>
+                                    <?php endif; ?>
+                                </td>
+                            <?php endif; ?>
+                        </tr>
+                    <?php endforeach; ?>
+
+                </table>
+
+</div>
+        <?php endif; ?>
+
+    </page>

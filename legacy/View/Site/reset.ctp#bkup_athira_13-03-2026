@@ -1,0 +1,138 @@
+<!--<div class="row" style="margin-top: 50px;">
+    <div class="col-md-5  col-md-offset-3">
+         Horizontal Form 
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">Password Reset</h3>
+            </div> /.box-header 
+             form start 
+            <form class="form-horizontal" method="post"  >
+                <div class="box-body">
+                    <?php if (isset($msg)) { ?>
+                        <div class="alert alert-danger alert-dismissable">
+                            <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                            <p><?php echo $msg;  ?></p>
+                        </div>
+                    <?php } ?>  
+                    <div class="form-group">
+
+                        <label for="password" class="col-sm-6 control-label" style="text-align:left;">Current Password</label>
+                        <div class="col-sm-6">
+                            <input type="password" class="form-control" data-validation="length" data-validation-length="min6" name="oldpassword" id="oldpassword" placeholder="Current Password" >
+                        </div>
+                    </div>
+                    <div class="form-group">
+
+                        <label for="password" class="col-sm-6 control-label" style="text-align:left;">New Password</label>
+                        <div class="col-sm-6">
+                            <input type="password" class="form-control" data-validation="length" data-validation-length="min6" name="password" id="password" placeholder="New Password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password_confirm" class="col-sm-6 control-label" style="text-align:left;">Confirm Password</label>
+                        <div class="col-sm-6">
+                            <input type="password" data-validation-error-msg="Password is not matching" data-validation="confirmation" data-validation-confirm="password" class="form-control" id="password_confirm" name="password_confirm" placeholder="Confirm Password">
+                        </div>
+                    </div>
+
+
+                </div> /.box-body 
+                <div class="box-footer">
+                    <a  href="<?php echo $this->webroot; ?>" class="btn btn-primary">Cancel</a>
+                    <button type="submit" class="btn btn-info pull-right">Reset Password</button>
+                </div> /.box-footer 
+            </form>
+        </div>
+
+
+
+    </div>
+</div>-->
+<div class="form-body">
+        <div class="website-logo">
+            <a href="index.html">
+                <div class="logo">
+                    <img class="logo-size" src="images/logo-light.svg" alt="">
+                </div>
+            </a>
+        </div>
+        <div class="row">
+            <div class="img-holder">
+                <div class="bg"></div>
+                <div class="info-holder">
+
+                </div>
+            </div>
+            <div class="form-holder">
+                <div class="form-content">
+                    <div class="form-items">
+                        <h3>Password Reset</h3>
+<form class="form-horizontal" method="post"  >
+                <div class="box-body">
+                    <?php if (isset($msg)) { ?>
+                        <div class="alert alert-danger alert-dismissable">
+<!--                            <h4><i class="icon fa fa-ban"></i> Error!</h4>-->
+                            <p><?php echo $msg;  ?></p>
+                        </div>
+                    <?php } ?>  
+                    <div class="form-group">
+
+                        <label for="password" class="col-sm-6 control-label" style="text-align:left;">Current Password</label>
+                        
+                            <input type="password" class="form-control" data-validation="length" data-validation-length="min6" name="oldpassword" id="oldpassword" placeholder="Current Password" >
+                      
+                    </div>
+                    <div class="form-group">
+
+                        <label for="password" class="col-sm-6 control-label" style="text-align:left;">New Password</label>
+                   
+                            <input type="password" class="form-control" data-validation="length" data-validation-length="min6" name="password" id="password" placeholder="New Password">
+                       
+                    </div>
+                    <div class="form-group">
+                        <label for="password_confirm" class="col-sm-6 control-label" style="text-align:left;">Confirm Password</label>
+                       
+                            <input type="password" data-validation-error-msg="Password is not matching" data-validation="confirmation" data-validation-confirm="password" class="form-control" id="password_confirm" name="password_confirm" placeholder="Confirm Password">
+                     
+                    </div>
+
+
+                </div><!-- /.box-body -->
+                <div class="form-button ">
+                   <a  href="<?php echo $this->webroot; ?>" class="ibtn">Cancel</a>
+                    <button type="submit" class="ibtn pull-right">Reset Password</button>
+                </div><!-- /.box-footer -->
+             
+            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.validate({
+            modules: 'location, date, security, file',
+        });
+
+
+    });
+    function  chkPassword()
+    {
+        var oldpassword = $('#oldpassword').val();
+        $.ajax({
+            url: 'UserCredentials/chekPassword/'+oldpassword,
+            success: function (response) {
+             //var data = $.parseJSON(response);
+             alert(response);
+//             if(parseInt(req) > data){
+//               //alert("Insufficient Stock");
+//               $("#errormsg1").html("You don't have enough stock for this transaction. Please select a lesser quantity and try again!!!");
+//               $('#return_qty1').val('');
+//             }else{
+//               $("#errormsg1").html("");
+//             }
+            }
+        });
+    }
+</script>

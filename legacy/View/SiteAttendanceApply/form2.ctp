@@ -1,0 +1,254 @@
+<div class="form-group form-group-sm">
+    <input type="hidden" id ="transaction_key" value="<?php echo isset($arr_policy['0']['site_transactions']['site_transactions_pkey']) ? $arr_policy['0']['site_transactions']['site_transactions_pkey'] : ""; ?>">
+    <div class="col-sm-6">
+        <label class="col-sm-4 control-label" for="item_desc">Select Shift<label style="color:red">*</label></label>
+        <div class="col-sm-7">
+            <select id="item_specification" name="item_specification" class="form-control" <?php echo isset($arr_policy['0']['site_transactions']['site_transactions_pkey']) ?  "disabled": ""; ?>>
+                <option value="">---select---</option>
+                <?php
+                foreach ($arr_shifts as $val) {
+                    $selected = ($arr_policy['0']['site_transactions']['day_time_seq_fkey'] == $val['working_day_time_procedures']['day_time_seq']) ? 'selected="selected"' : '';
+                    echo '<option value="' . $val['working_day_time_procedures']['day_time_seq'] . '" ' . $selected . '>' . $val['working_day_time_procedures']['day_time_desc'] . ' </option>';
+                }
+                ?>
+
+            </select>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <label class="col-sm-4 control-label" for="item_desc">Designation<label style="color:red">*</label></label>
+        <div class="col-sm-7">
+            <select id="desig" name="item_specification" class="form-control">
+                <option value="">---select---</option>
+                <?php
+                foreach ($arr_designations as $val) {
+                    $selected = ($arr_policy['0']['site_transactions']['designation_id'] == $val['designation']['id']) ? 'selected="selected"' : '';
+                    echo '<option value="' . $val['designation']['id'] . '" ' . $selected . '>' . $val['designation']['desig_name'] . ' </option>';
+                }
+                ?>
+            </select>
+        </div>
+    </div>
+
+</div>
+<div class="form-group form-group-sm">
+
+    <div class="col-sm-6">
+        <label class="col-sm-4 control-label" for="item_desc">Sales Rate<label style="color:red">*</label></label>
+        <div class="col-sm-7">
+            <input class="form-control" placeholder="Sales Rate" type="number" value='<?php echo isset($arr_policy['0']['site_transactions']['srate']) ? $arr_policy['0']['site_transactions']['srate'] : " "; ?>' name="item_desc" id="sales_price" autocomplete="off">
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <label class="col-sm-4 control-label" for="item_desc">Expense Rate<label style="color:red">*</label></label>
+        <div class="col-sm-7">
+            <input class="form-control" placeholder="Expense Rate" type="number" value='<?php echo isset($arr_policy['0']['site_transactions']['eratess']) ? $arr_policy['0']['site_transactions']['eratess'] : ""; ?>' name="item_desc" id="expense_rate" autocomplete="off">
+        </div>
+    </div>
+
+</div>
+
+<div class="form-group form-group-sm">
+
+
+    <div class="col-sm-6">
+        <label class="col-sm-4 control-label" for="item_desc">Start Date <label style="color:red">*</label></label>
+        <div class="col-sm-7">
+            <input class="form-control" placeholder="Start date" type="text" value='<?php echo isset($arr_policy['0']['site_transactions']['start_date_effective']) ? $arr_policy['0']['site_transactions']['start_date_effective'] : ""; ?>' name="item_desc" id="STDE" autocomplete="off" >
+        </div>
+    </div> 
+    <!-- Providing mandatory notation for start date and end date Start -->
+
+
+    <div class="col-sm-6">
+        <label class="col-sm-4 control-label" for="item_desc">End Date <label style="color:red">*</label></label>
+        <div class="col-sm-7">
+            <input class="form-control" placeholder="End date" type="text" value='<?php echo isset($arr_policy['0']['site_transactions']['end_date_effective']) ? $arr_policy['0']['site_transactions']['end_date_effective'] : ""; ?>' name="item_desc" id="ENDE" autocomplete="off">
+        </div>
+    </div>
+</div>
+
+<div class="form-group form-group-sm">
+
+
+    <div class="col-sm-6">
+        <label class="col-sm-4 control-label" for="item_desc">Number of Employees<label style="color:red">*</label></label>
+        <div class="col-sm-7">
+            <input class="form-control" placeholder="Number of Employees" type="number" value='<?php echo isset($arr_policy['0']['site_transactions']['emp_count']) ? $arr_policy['0']['site_transactions']['emp_count'] : " "; ?>' name="item_desc" id="count" autocomplete="off">
+        </div>
+    </div>
+    <!-- Providing mandatory notation for start date and end date End -->
+
+    <div class="col-sm-6">
+        <button style="margin-right: 3px;margin-bottom: 14px; margin-right: 50px;" type="button" class="btn btn-success pull-right" onclick="addtolist();" id="saveBtn">Save </button>
+
+    </div>
+</div>
+
+
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $('#STDE').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+
+        });
+
+        $('#ENDE').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+
+        });
+
+    });
+
+
+    $('#STDE').datepicker().on('changeDate', function () {
+        var site_transaction_pkey =<?php echo isset($arr_policy['0']['site_transactions']['site_transactions_pkey']) ? $arr_policy['0']['site_transactions']['site_transactions_pkey'] : "" ?> + "";
+        if (site_transaction_pkey != 0) {
+            $("#saveBtn").prop('disabled', true);
+            var siteKey = "<?php echo isset($arr_policy['0']['site_transactions']['site_fkey']) ? $arr_policy['0']['site_transactions']['site_fkey'] : '' ?>" + "";
+            var dayTimeSeq = "<?php echo isset($arr_policy['0']['site_transactions']['day_time_seq_fkey']) ? $arr_policy['0']['site_transactions']['day_time_seq_fkey'] : '' ?>" + "";
+            $.ajax({
+                url: livesite + 'SiteAttendanceApply/check_start_date/' + $(this).val() + '/' + site_transaction_pkey + '/' + siteKey + '/' + dayTimeSeq,
+                success: function (responseText, statusText, xhr, $form) {
+                    var response = JSON.parse(responseText);
+                    if (response.success == true) {
+                        alert(response.msg);
+                        $('#STDE').val('');
+                        $("#saveBtn").prop('disabled', true);
+                    } else {
+                        $("#saveBtn").prop('disabled', false);
+                    }
+                }
+            });
+        }
+    });
+
+    $('#ENDE').datepicker().on('changeDate', function () {
+        var site_transaction_pkey =<?php echo isset($arr_policy['0']['site_transactions']['site_transactions_pkey']) ? $arr_policy['0']['site_transactions']['site_transactions_pkey'] : "" ?> + "";
+        if (site_transaction_pkey != 0) {
+            $("#saveBtn").prop('disabled', true);
+            var siteKey = "<?php echo isset($arr_policy['0']['site_transactions']['site_fkey']) ? $arr_policy['0']['site_transactions']['site_fkey'] : '' ?>" + "";
+            var dayTimeSeq = "<?php echo isset($arr_policy['0']['site_transactions']['day_time_seq_fkey']) ? $arr_policy['0']['site_transactions']['day_time_seq_fkey'] : '' ?>" + "";
+            $.ajax({
+                url: livesite + 'SiteAttendanceApply/check_end_date/' + $(this).val() + '/' + site_transaction_pkey + '/' + siteKey + '/' + dayTimeSeq,
+                success: function (responseText, statusText, xhr, $form) {
+                    var response = JSON.parse(responseText);
+                    if (response.success == true) {
+                        alert(response.msg);
+                        $('#ENDE').val('');
+                        $("#saveBtn").prop('disabled', true);
+                    } else {
+                        $("#saveBtn").prop('disabled', false);
+                    }
+                }
+            });
+        }
+    });
+
+
+
+    function addtolist(s) {
+        var policy = $('#item_specification option:selected').text();
+        if (policy == '---select---') {
+            alert("Please Select any Shift Policy ");
+            return false;
+        }
+
+        var policy_fkey = $('#item_specification').val();
+
+        var desig = $('#desig option:selected').text();
+
+        if (desig == '---select---') {
+            alert("Please Select any Designation ");
+            return false;
+        }
+
+        var count = $('#count').val();
+
+        if (count == '') {
+            alert("Please Enter Number of Employees ");
+            return false;
+        }
+        var desig_pkey = $('#desig').val();
+        //edited by arul on 11/12/2019 included decimal values
+        // var sales_price = parseInt($('#sales_price').val());
+        var sales_price = parseFloat($('#sales_price').val());
+
+        if ($('#sales_price').val() == '') {
+            alert("Please Enter Sales Rate ");
+            return false;
+        }
+        //edited by arul on 11/12/2019 included decimal values
+        //var expense_rate = parseInt($('#expense_rate').val());
+        var expense_rate = parseFloat($('#expense_rate').val());
+
+        if ($('#expense_rate').val() == '') {
+            alert("Please Enter Expense Rate ");
+            return false;
+        }
+
+        if (expense_rate > sales_price) {
+            alert("Sales rate should be greater than Expense rate.");
+            return false;
+        }
+
+        var stdE = $('#STDE').val();
+        var start_date = new Date(stdE);
+        var endse = $('#ENDE').val();
+        var todate = new Date(endse);
+        var transaction_key = $('#transaction_key').val();
+
+        if (stdE == '') {
+            alert("Please Enter Start Date ");
+            return false;
+        }
+        if (endse == '') {
+            alert("Please Enter End Date ");
+            return false;
+        }
+        //  if(endse!=''){
+        if (stdE > endse) {
+            alert("Please Choose Correct Date Range ");
+            $('#ENDE').val('');
+            return false;
+        }
+        //} 
+
+
+        $('#form2').find('input').val('');
+        if (transaction_key == '') {
+            //edited by megha on 01/07/2019 edit button removed from add new form
+            var append = '<tr style="background:#541545;"><input type="hidden" value=" " id="siteid" name="site_transaction_fkey[]"><input type="hidden" value="0" name="editkey[]"><input type="hidden" value="1" name="status[]" ><td id="TdDayTime"><input name="TdDayTime[]" type="hidden" value="' + policy_fkey + '" >' + policy + '</td><td id="TdDesg"><input name="TdDesg[]" type="hidden" value="' + desig_pkey + '" >' + desig + '</td><td id="TdCount"><input name="TdCount[]" type="hidden" value="' + count + '" >' + count + '</td><td id="TdSRate"><input name="TdSRate[]" type="hidden" value="' + sales_price + '" >' + sales_price + '</td><td id="Rate"><input name="Rate[]" type="hidden" value="' + expense_rate + '" >' + expense_rate + '</td><td id="StDE"><input name="StDE[]" type="hidden" value="' + stdE + '" >' + stdE + '</td><td id="EtDE"><input name="EtDE[]" type="hidden" value="' + endse + '" >' + endse + '</td><td><li onclick="deletetable(this);" class="btn btn-danger">Delete </li></td></tr>';
+            //end
+            $('#tables').find('tbody').append(append);
+        } else {
+            // alert("jio");
+            $("#tables tbody tr ").each(function () {
+                var quantity1 = $(this).find("input").val();
+                console.log(quantity1);
+                if (quantity1 == transaction_key) {
+                    //console.log(quantity1);
+                    var append = '<input type="hidden" value="' + transaction_key + '" id="siteid" name="site_transaction_fkey[]"><input type="hidden" value="1" name="editkey[]"><input type="hidden" value="1" name="status[]" ><td id="TdDayTime"><input name="TdDayTime[]" type="hidden" value="' + policy_fkey + '" >' + policy + '</td><td id="TdDesg"><input name="TdDesg[]" type="hidden" value="' + desig_pkey + '" >' + desig + '</td><td id="TdCount"><input name="TdCount[]" type="hidden" value="' + count + '" >' + count + '</td><td id="TdSRate"><input name="TdSRate[]" type="hidden" value="' + sales_price + '" >' + sales_price + '</td><td id="Rate"><input name="Rate[]" type="hidden" value="' + expense_rate + '" >' + expense_rate + '</td><td id="StDE"><input name="StDE[]" type="hidden" value="' + stdE + '" >' + stdE + '</td><td id="EtDE"><input name="EtDE[]" type="hidden" value="' + endse + '" >' + endse + '</td><td><li onclick="deletetable(this);" class="btn btn-danger">Delete </li>&nbsp;&nbsp;<li onclick="edittable(this);" class="btn btn-info">Edit </li></td>';
+
+                    $(this).html(append);
+                }
+            });
+        }
+    }
+
+    function deletetable(s) {
+//        alert($(s).parent().parent().attr('class'));
+        $(s).parent().parent().remove();
+//            $(s).parent()
+    }
+    function edittable(s) {
+        var siteid = $(s).parent().siblings('#siteid').val();
+        // alert(siteid);
+        $('#form2').load(livesite + 'SiteAttendanceApply/form2/' + siteid);
+    }
+</script>

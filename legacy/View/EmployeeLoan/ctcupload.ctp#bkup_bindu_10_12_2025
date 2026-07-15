@@ -1,0 +1,670 @@
+<style>
+    .form-horizontal .control-label{
+
+        text-align: left;
+
+    }
+
+    legend{
+        /*padding-left: 13px;*/
+
+    }
+    label
+    {
+        font-size:15px;
+    }
+    .SelectedRowStyle{
+        background-color: #ffeb95;
+        font-size: 11px;
+        font-family: Arial;
+        text-decoration: none;
+        color: #5a5a5a;
+        height: 20px;
+        padding-left: 10px;
+        border: solid 1px #d7d8f0;
+    }
+</style>
+
+<section class="content-header">
+    <h1 style="text-align:left;" class="text-primary-18"> Employee Loan </h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- DIRECT CHAT DANGER -->
+            <div class="box ">
+
+                <div class="box-body">
+                    <br>
+                    <!-- Employee import form -->
+                    <form class="form-horizontal" method="post" action="" id="importemployeectcform">
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <!-- <input type="hidden" name="rsndempid" id="rsndempid" value="0"> -->
+                                    <label class="col-sm-5 control-label" for="filterby_branch"> Branch </label>
+                                    <div class="col-md-7">
+                                        <select id="filterby_branch" name="filterby_branch" class="form-control control-label js-example-basic-single" onchange="filterAttendanceupload(this);">
+                                            <!-- Edited by Akshay on 4-2-2025 -->
+                                            <?php
+                                          //  if ($is_ho == 1) { ?>
+                                                <option value="">All</option>
+                                            <?php //}
+                                            ?>
+                                            <!-- End    -->
+                                            <?php foreach ($arr_branches as $key => $value) { ?>
+                                                <option value="<?php echo $value['Units']['branch_code']; ?>"><?php echo $value['Units']['branch_name']; ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="col-sm-5 control-label" for="employee"> Employee</label>
+                                    <div class="col-md-7">
+                                        <!-- Edited by Akshay on 28-10-2025 -->
+                                        <select id="emp_fkey_2" class="form-control js-example-basic-single" name="emp_fkey" onchange="filterAttendanceupload(this);">
+                                            <!-- End     -->
+                                            <option value="">All</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="col-md-4 control-label" for="filterby_month">Month</label>
+                                    <div class="col-md-6">
+                                        <select id="filterby_month" name="filterby_month" class="form-control" onchange="filterAttendanceupload(this);">
+                                            <?php
+                                            $start_month = strtotime(date('Y-m', strtotime("+1 month", strtotime(date('Y-m')))));
+                                            echo '<option value="" selected="selected"> All </option>'; //This ALL menu edited by ARUL P DAS
+                                            for ($i = 0; $i < 12; $i++) {
+                                                $month = date('Y-m', strtotime("-$i month", $start_month));
+                                                if ($month == date('Y-m')) {
+                                                    echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                                } else {
+                                                    echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!--<div class="col-md-4">
+                                        <label class="col-sm-5 control-label" for="employee">Choose Employee</label>                        
+                                        <input type="radio" id="employeeview" name="employeeview" value="y">                    
+                                        <div class="col-md-7">
+                                            <select id="emp_fkey" class="form-control" name="emp_fkey" onchange="filterAttendanceupload(this);" >
+                                            <option value="">All</option>
+                                <?php //foreach ($arr_employees as $value) { 
+                                ?>
+                                            <option value="<?php //echo $value['EmployeeDetails']['emp_pkey'];              
+                                                            ?>"><?php echo $value['EmployeeDetails']['first_name']; ?><?php echo $value['EmployeeDetails']['last_name']; ?></option>
+                                <?php // } 
+                                ?>
+                                            </select>
+                                        </div>    
+                                    </div>    -->
+                            </div>
+                            <legend>Upload from File</legend>
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    <!--                                        <input  id="attdatacsv" name="attdatacsv" type="file"  >-->
+                                    <label class="col-sm-4"></label>
+                                    <button type="button" id="btn-uploadattdata" class="btn btn-danger col-md-8" onclick="downloadEmployeeCTCForm();">
+                                        <li class="fa fa-download"> Download</li>
+                                    </button>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="col-md-6 control-label" for="file" style="text-align: center;">Choose File</label>
+                                    <div class="col-md-6">
+                                        <input id="attdatacsv" class="form-control" name="attdatacsv" type="file">
+
+                                        <!--                                        <button type="button" id="btn-uploadattdata" class="btn btn-primary" onclick="uploadEmployeeCTC();" >Upload Loan</button>-->
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <!--                                    <label class="col-md-5 control-label" for="file"></label>-->
+                                    <button type="button" id="btn-uploademployeectc" class="btn btn-success col-md-8" onclick="uploadEmployeeCTC();">
+                                        <li class="fa fa-upload"> Upload</li>
+                                    </button>
+                                    <!--                                    <div class="col-md-7">
+                                        <button type="button" id="btn-uploadattdata" class="btn btn-danger col-md-11" onclick="downloadEmployeeCTCForm();" >Download  Format</button>
+                                        </div>-->
+
+                                    <!--<label class="col-md-5 control-label" for="file">Choose File</label>-->
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+            <div class="box ">
+                <div class="box-box primary">
+                    <table id="att_table" class="table table-bordered table-hover">
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div><!-- /.box-body -->
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+    //filtter using branch 
+    function filterEmployees_ctc(branch) {
+        var branch = $('#filterby_branch').val();
+        var month = $('#filterby_month').val();
+        //alert(branch);
+        $("#emp_fkey_2").select2( // Edited by Akshay on 28-10-2025
+            {
+                //closeOnSelect:false,
+                placeholder: "All",
+                allowClear: true,
+                ajax: {
+                    url: livesite + "EmployeeLoan/jsons/" + branch,
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            //                              month: params.month,
+                            q: params.term, // search term
+                            page: params.page
+                        };
+                    },
+                    processResults: function(data, params) {
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.items,
+                            pagination: {
+                                more: (params.page * 30) < data.total_count
+                            }
+                        };
+                    }
+                },
+                escapeMarkup: function(markup) {
+                    return markup;
+                }
+            });
+    }
+    // function setwidth(){
+
+    //     if ($('#checkrsgnd').length == 0) {
+    //   // exists.
+    //     $('.datagrid-toolbar').find('tr').append('<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="checkrsgnd" id="checkrsgnd" onclick="showrsgnd();" value="0">Include Completed </td>');
+
+    //     }
+    // }
+
+    // function showrsgnd(){
+    //     var branch = $('#filterby_branch').val();   
+    //     var employee = $('#filterby_employees').val();       
+    //     // var designation = $('#filterby_Designation').val();
+    //     if($('#checkrsgnd').is(":checked"))
+    //     {
+    //        $('#rsndempid').val('1');
+    //     }
+    //     else{
+    //          $('#rsndempid').val('0');
+
+    //     }
+    //     var name = $('#rsndempid').val();
+    //     var request = $.ajax({
+    //         url: "EmployeeLoan/employeeloanlist",
+    //         method: "POST",
+    //         data: {name:name},
+    //         dataType: "html"
+    //     });
+
+    //     request.done(function( msg ) {
+    //        // alert("dsads");
+    //     });
+
+    //     $('#emptable').datalist('load', {
+    //         name: $('#rsndempid').val(),
+    //         branch: branch,
+    //         employee: employee,
+    //         // designation:designation,
+    //     });
+    // }
+
+    function downloadEmployeeCTCForm() {
+        // alert ("Please enter EMI start month in the  following format (yyyy-mm)");
+        var ctcuploadtype = 3;
+        var branch = $('#importemployeectcform #filterby_branch').val();
+        var employee = $('#importemployeectcform #emp_fkey_2').val(); // Edited by Akshay on 28-10-2025
+        if (employee == "all") {
+            employee = '';
+        }
+        //commented by akshay 02-12-2025
+      //  if (branch == '') {
+      //      alert('Please select a branch');
+      //      return false;
+      //  }
+        if (ctcuploadtype == 3) {
+            window.open('<?php echo $this->webroot; ?>EmployeeLoan/downloadempctcformat/' + ctcuploadtype + '/' + branch + '/' + employee, '_blank');
+        } else {
+            return false;
+        }
+    }
+
+    //       function filterEmployeeloan(obj) {
+    //
+    //        var branch = $('#leaveuploadfilter #filterby_branch').val();
+    //        var employee = $('#leaveuploadfilter #emp_fkey').val();
+    //        var month = $('#filterby_month').val();
+    //        var url = 'EmployeeLoan/employeeloanlist';
+    //
+    //        $.ajax({
+    //            // alert('hi');
+    //            url: url,
+    //            type: 'post',
+    //            data: {
+    //                month: month
+    //                        // emp_id: emp_id,
+    ////                     //   active:active
+    //            }
+    //        });
+    //
+    //        $('#leave_table').datagrid('load', {
+    //            branch: branch,
+    //            employee: employee,
+    //            month: month
+    //        });
+    //        filterEmployees_ctc();
+    //    }
+
+    function filterAttendanceupload(obj) {
+        var branch = $('#importemployeectcform #filterby_branch').val();
+        var employee = $('#importemployeectcform #emp_fkey_2').val() // Edited by Akshay on 28-10-2025
+        var month = $('#filterby_month').val();
+        if (employee == 'all') {
+            employee = '';
+        }
+        $('#att_table').datagrid('load', {
+            branch: branch,
+            employee: employee,
+            month: month,
+        });
+        filterEmployees_ctc();
+    }
+
+    function uploadEmployeeCTC() {
+
+        var form = $('#importemployeectcform');
+        var fileSelect = document.getElementById('attdatacsv');
+        var ctcuploadtype = 3;
+
+        var files = fileSelect.files;
+
+        if (files.length == 0) {
+            $.notify("please choose any file to upload!", {
+                type: 'danger',
+                allow_dismiss: false
+            });
+            return false;
+        }
+
+        // The rest of the code will go here...
+        var files = fileSelect.files;
+        // Create a new FormData object.
+        var formData = new FormData();
+        // Loop through each of the selected files.
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            // Add the file to the request.
+            formData.append('empctc[]', file, file.name);
+        }
+
+        // Set up the request.
+        var xhr = new XMLHttpRequest();
+
+        // Open the connection.
+        xhr.open('POST', livesite + 'EmployeeLoan/uploadandsaveempctc/' + ctcuploadtype, true);
+        var url = livesite + 'EmployeeLoan/uploadandsaveempctc';
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: {
+                //   menu_id : menu_id,
+                //   user_pkey:user_pkey,
+                //   active:active
+            },
+            success: function(response) {
+                var resp = JSON.parse(response);
+                if (resp.success) {
+                    $('#attdatacsv').val("");
+                    //                if ($.parseJSON(resp).msg) {
+                    if (resp.success == 1) {
+                        $.notify(resp.msg, {
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+                    }
+                }
+                if (resp.success == 0) {
+                    //below code is to check wether the start month is less than current month. By ARUL P DAS on 19/11/2019
+                    if (resp.error == 'error') {
+                        $.notify(resp.msg, {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                        // $('#att_table').datagrid('reload');
+                    }
+                }
+                $('#att_table').datagrid('reload');
+                //                else{
+                //                     $('#att_table').datagrid('reload');
+                //                        $.notify(response.msg, {
+                //                            type: 'e',
+                //                            allow_dismiss: false
+                //                        });
+                //                }
+
+                //                $.notify($.parseJSON(resp).msg, {
+                //                    type: 'success',
+                //                    allow_dismiss: false
+                //                });
+                //                $('#att_table').datagrid('reload');
+            }
+
+        });
+
+        // Set up a handler for when the request finishes.
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // File(s) uploaded.
+
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    $('#att_table').datagrid('reload');
+                    $.notify(response.msg, {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                } else {
+                    $('#att_table').datagrid('reload');
+                    //                $.notify(response.msg, {
+                    //                    type: 'error',
+                    //                    allow_dismiss: false
+                    //                });
+                    ///////////THE BELOW CODE IS TO CHECK THE LOAN DATE,DUPLICATE ENTRY AND SALARY PREOCESSED OR NOT.///////////////////
+                    //////////By ***ARUL P DAS on 2/1/2020
+                    var op_msg = "";
+                    //                if(response.duplication_issue.success==0){
+                    //                    op_msg+="Duplicate entries found.\n";
+                    //                    for(var i=0;i<response.duplication_issue.data.length;i++){
+                    //                        op_msg+="Employee :"+response.duplication_issue.data[i]['name']+", Date:"+response.duplication_issue.data[i]['date']+"\n";
+                    //                    }
+                    //                }
+                    //                if(response.month_issue.success==0){
+                    //                    op_msg+="\n"+response.month_issue.msg+"\n";
+                    //                    for(var i=0;i<response.month_issue.data.length;i++){
+                    //                        op_msg+="Employee :"+response.month_issue.data[i]['name']+", Date:"+response.month_issue.data[i]['date']+"\n";
+                    //                    }
+                    //                }
+                    //                if(response.payroll_issue.success==0){
+                    //                    op_msg+="\nSalary already processed.\n";
+                    //                    for(var i=0;i<response.payroll_issue.data.length;i++){
+                    //                        op_msg+="Employee :"+response.payroll_issue.data[i]['name']+", Date:"+response.payroll_issue.data[i]['date']+"\n";
+                    //                    }
+                    //                }
+                    if (response.success == 0) {
+                        op_msg += "Found Invalid Entries " + response.error + "/" + response.total + "\n\n";
+                        var sl = 0;
+                        for (var i = 0; i < response.error; i++) {
+                            sl = i + 1;
+                            op_msg += sl + ".  " + response.data[i]['name'] + " - " + response.data[i]['id'] + "\n";
+                        }
+                    }
+                    alert(op_msg);
+
+                    //                //The new code for excel warning message By ****ARUL P DAS on 4/1/2020
+                    //                var arr=new Array();
+                    //                for(var i=0;i<response.error;i++){
+                    //                    arr[i]=response.data[i]['name']+"#"+response.data[i]['id'];
+                    //                }
+                    //                var employees = arr.join(',');
+                    //                if(response.error>0){
+                    //                    showModalForm(livesite+'EmployeeLoan/showimportresponse/' + response.error + '/'+ response.total + '/'+encodeURIComponent(employees));
+                    //                    // encodeURIComponent(JSON.stringify(response.data))
+                    //                }else{
+                    //                    alert('Success');
+                    //                }
+
+
+
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                }
+            } else {
+                alert("Employee CTC import failed, please check informations given or try again.");
+            }
+        };
+        $('#attdatacsv').val('');
+        $("#filterby_branch").select2("val", "");
+        $("#emp_fkey_2").select2("val", ""); // Edited by Akshay on 28-10-2025
+
+        // Send the Data.
+        xhr.send(formData);
+    }
+
+    jQuery(document).ready(function() {
+        filterEmployees_ctc();
+        $("#filterby_branch").select2();
+        $("#filterby_month").select2();
+
+        var employee = $('#attendanceuploadfilter #emp_fkey_2').val(); // Edited by Akshay on 28-10-2025
+
+        $('#att_table').datagrid({
+            url: livesite + "EmployeeLoan/employeeloanlist",
+            pagination: true,
+            singleSelect: true,
+            rownumbers: true,
+            queryParams: {
+                employee: employee,
+                branch: $("#filterby_branch").val()
+            },
+            rowStyler: function(index, row) {
+                var style = "";
+                if (row.is_completed == 'Y') {
+                    style += 'background-color:#be0b0b;color:#fff;'; //Loan completed employee background color.
+                }
+                return style;
+            },
+            //            onSelect: function (index, row) {
+            //                if (row.is_completed === 'Y') {
+            //                    console.log('row :'+index);
+            //                    console.log(row);
+            //                }else{
+            //                    console.log('row :'+index);
+            //                    console.log(row);
+            //                }
+            //            },
+            toolbar: [{
+                    text: 'New',
+                    iconCls: 'icon-add',
+                    handler: function() {
+                        showModalForm(livesite + 'EmployeeLoan/form')
+                    }
+                }
+                //                , '-', {
+                //                    iconCls: 'icon-edit',
+                //                    text: 'Edit',
+                //                    handler: function () {
+                //                        var row = $('#att_table').datagrid('getSelected');
+                //                        if (row) {
+                //
+                //                            showModalForm(livesite + 'EmployeeLoan/form?emp_loan_pkey=' + row.emp_loan_pkey)
+                //                        } else
+                //                            $.notify('Please Select A record to edit!', {
+                //                                type: 'danger',
+                //                                allow_dismiss: false
+                //                            });
+                //                    }
+                //                }
+                , '-', {
+                    iconCls: 'icon-edit',
+                    text: 'View Details',
+                    handler: function() {
+                        var row = $('#att_table').datagrid('getSelected');
+                        if (row) {
+
+                            showModalForm(livesite + 'EmployeeLoan/viewloan/' + row.emp_loan_pkey)
+                        } else
+                            $.notify('Please Select A record to View!', {
+                                type: 'danger',
+                                allow_dismiss: false
+                            });
+                    }
+                }, '-', {
+                    iconCls: 'icon-edit',
+                    text: 'Update Loan',
+                    handler: function() {
+                        var row = $('#att_table').datagrid('getSelected');
+                        if (row) {
+
+                            showModalForm(livesite + 'EmployeeLoan/update/' + row.emp_loan_pkey)
+                        } else
+                            $.notify('Please Select A record to edit!', {
+                                type: 'danger',
+                                allow_dismiss: false
+                            });
+                    }
+                }
+
+            ],
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            columns: [
+                [
+                    //  {field: '', title: 'Name', width: "15%"},
+                    //{field: 'emp_loan_pkey', title: '', width: "%"},
+                    {
+                        field: 'empname',
+                        title: 'Employee Name',
+                        width: "14%"
+                    },
+                    {
+                        field: 'empid',
+                        title: 'Employee ID',
+                        width: "12%"
+                    },
+                    {
+                        field: 'loan_amount',
+                        title: 'Loan Amount',
+                        width: "10%"
+                    },
+                    {
+                        field: 'intrest_rate',
+                        title: 'Interest Rate',
+                        width: '8%'
+                    },
+                    {
+                        field: 'tenure',
+                        title: 'Tenure',
+                        width: '6%'
+                    },
+                    {
+                        field: 'loan_paid',
+                        title: 'Paid Amount',
+                        width: '8%'
+                    },
+                    {
+                        field: 'balance_amount',
+                        title: 'Balance Amount',
+                        width: '11%'
+                    },
+                    {
+                        field: 'emi_amount',
+                        title: 'EMI Amount ',
+                        width: '8%'
+                    },
+                    {
+                        field: 'emi_start_month',
+                        title: 'Start Month',
+                        width: '11%'
+                    },
+                    {
+                        field: 'emi_end_month',
+                        title: 'End Month',
+                        width: '11%'
+                    },
+                    // {field: 'remarks', title: 'Remark', width: '12%'},
+                    //  {field: 'is_completed', title: 'Completed', width: '7%'},
+                ]
+            ],
+            onSearch: function(s) {
+
+                $('#emptable').datagrid('load', {
+                    emp: $('#searchqupo').val(),
+                    name: $('#rsndempid').val(),
+                    branch: $('#filterby_branch').val()
+                });
+            },
+            // onLoadSuccess: function () {
+            //            setwidth();
+            //        }
+        });
+
+    });
+
+    function myFunction() {
+        var expression = 1;
+
+        var refreshId = setInterval(function() {
+
+            if (expression == 8) {
+                clearInterval(refreshId);
+            }
+            switch (expression) {
+                case 1:
+                    // code block
+                    showModalForm(livesite + 'EmployeeLoan/form');
+                    break;
+                case 2:
+                    $('#emp_fkey1').val('3414');
+                    // code block
+                    break;
+                case 3:
+                    $('#loan_amount').val('20000');
+                    // code block
+                    break;
+                case 4:
+                    $('#tenure').val('4');
+                    $('#tenure').trigger('change');
+                    // code block
+                    break;
+                case 5:
+                    $('#remarks').val('MyPayrollMaster Bot Checking Loan Functionality ');
+                    // code block
+                    break;
+                case 6:
+                    //            alert("Re Checking Added Data ");
+                    $('.checkings').append('Re Checking Added Data <li class="fa fa-spinner fa-spin" ></li>')
+                    // code block
+                    break;
+                case 7:
+                    $('#btn-submit').trigger('click');
+                    // code block
+                    break;
+                case 2:
+                    // code block
+                    break;
+                default:
+                    // code block
+            }
+            expression++;
+        }, 3000);
+    
+    }
+</script>

@@ -1,0 +1,452 @@
+<style>
+div.inflow {
+
+}
+div.positioner {position: absolute; right: 0;} /*may not be needed: see below*/
+div.fixed {
+overflow: auto;
+
+}
+/*tr td.fix{
+    position:fixed;
+}*/
+</style>
+<?php if ($mode == '') { 
+     if($reporttype == 'Attendance'){
+        $reporttype = 'Attendance';
+    }else{
+       $reporttype = 'Muster Roll'; 
+    }
+    ?>
+    <div class="modal-body">
+        <legend style="text-align: center; "><b><?php echo $reporttype; ?> Register - <?php echo $report_month; ?></b></legend>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box ">
+                    <?php
+                    $i = 0;
+                  //  debug($arr_leavepolicydetails_for_template);
+                    if(count($arr_leavepolicydetails_for_template) == 0){ 
+                   echo '<div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+                   There is no data available under the selected criteria.</div>';
+                     die();
+                   }else{
+                    foreach ($arr_leavepolicydetails_for_template as $value) {
+                        $i += 1;
+                        if(!empty($value['summary']))
+                        {
+                        ?>
+                        
+                        <div class="box-body">
+                            <fieldset>
+                                <?php
+                                if($criteria == "Units")
+                                {
+                                ?>
+                                <legend><?php echo $reporttype; ?> Register of  <?php echo isset($value['summary']['0']['Branch']['branch_name']) ? $value['summary']['0']['Branch']['branch_name'] : '    (No Datas Found Under This Branch)'; ?>  </legend>
+                                <?php
+                                }
+                                else
+                                {
+                              $empstatus = (isset($value['summary']['0']['EmployeeDetails']['status'])) && $value['summary']['0']['EmployeeDetails']['status'] =="2" ? '  (Resigned)':'';
+                                    ?>
+                              
+                                    <legend><?php echo $reporttype; ?> Register of  <?php echo isset($value['summary']['0']['Info']['EmpName']) ? $value['summary']['0']['Info']['EmpName'].' '.$empstatus : '    (No Datas Found Under This Employees)'; ?>  </legend>
+                                <?php
+                                    }
+                                ?>
+                                <!--       <div class="row">
+                                           <div class="col-md-4">
+                                               Present Days : <?php // echo $val['AttendanceRegister']['days_present'];  ?>
+                                           </div>
+                                           <div class="col-md-4">
+                                               Leave days : <?php // echo $val['AttendanceRegister']['days_leave'];  ?>
+                                           </div>
+                                           <div class="col-md-4">
+                                               Holidays : <?php // echo $val['AttendanceRegister']['days_holidays'];  ?>
+                                           </div>
+                                       </div> -->
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                    </div>
+                                </div>
+
+
+                            </fieldset>
+                            <br>
+                            <fieldset>
+
+                                <div class="inflow">
+                                        <div class="fixed">
+                                <table class="table table-bordered" id="attendanceTable">
+                                    <thead>
+                                        <tr>
+                                           
+                                            <th colspan="2" rowspan="5"></th>
+                                           <!--  <th  rowspan="5"></th> -->
+                                            <th colspan="1"></th>
+                                            <th colspan="1"></th>
+                                            <th colspan="1"></th>
+                                            <th colspan="1"></th>
+                                             <th colspan="1"></th>
+                                               <th colspan="1"></th>
+                                            <th colspan="1">FORM VI</th>
+                                            <th colspan="37"></th>
+                                         </tr>
+                                          
+                                          <tr>
+                                           
+                                           <!--  <th colspan="2"></th> -->
+                                            <th colspan="1"></th>
+                                            <th colspan="5"></th>
+                                            <th colspan="1">(See Rule 11)</th>
+                                            <th colspan="38"></th>
+                                         </tr>
+                                         <tr>
+                                           <!--  <th colspan="2"></th> -->
+                                            <th colspan="1"></th>
+                                            <th colspan="2">Name of Establishment</th>
+                                            <th colspan="1"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];?></th>
+                                            <th colspan="1">Year</th>
+                                            <th colspan="1"><?php echo $year;?></th>
+                                            <th colspan="1">Muster Roll</th>
+                                            <th colspan="38"></th>
+                                         </tr>
+                                          <tr>
+                                            <!-- <th colspan="2"></th> -->
+                                            <th colspan="1"></th>
+                                            <th colspan="2">Place</th>
+                                            <th colspan="1"><?php echo $arr_comp_contact_info['CompanyContactInfo']['city'];?></th>
+                                            <th colspan="1">Month</th>
+                                            <th colspan="1"><?php echo $mname;?></th>
+                                            <th rowspan="2"></th>
+                                            <th colspan="37"></th>
+                                         </tr>
+                                         <tr>
+                                           <!--  <th colspan="2"></th> -->
+                                            <th colspan="1"></th>
+                                            <th colspan="2">District</th>
+                                            <th colspan="1"><?php echo $arr_comp_contact_info['CompanyContactInfo']['state'];?></th>
+                                            <th colspan="1"></th>
+                                            <th colspan="1"></th>
+                                            <!-- <th colspan="1"></th> -->
+                                            <th colspan="39"></th>
+                                         </tr>
+
+                                           
+                                        <tr>
+                                            <th>Sl No</th>
+                                            <th>Employee ID</th>
+                                            <th>Employee Name</th>
+                                            <th>Father/Husband Name</th>
+                                           
+                                            <th>Designation</th>
+                                             <th>Joining Date</th>
+                                            <th>Termination Date</th>
+                                            <th>Department</th>
+                                            <th>Branch</th>
+                                            <th>Present Days</th>
+                                            <th>Leave Days</th>
+                                            <th>Week Off</th>
+                                            <th>Holidays</th>
+                                            <th>Non Paying Days</th>
+
+                                           
+                                     
+                                            <?php
+                                            foreach ($arr_dates as $key => $date) {
+                                                ?>
+                                                <th><?php echo $date; ?></th>
+                                                <?php
+                                            }
+                                            ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $arr_data = $value['summary']; ?>
+        <?php if (count($arr_data) >= 0) { ?>
+            <?php
+            $k=1;
+            foreach ($arr_data as $val) { ?>
+                                                <tr> 
+                                                    <td><?php echo $k;?></td>
+                                                    <td><?php echo $val['Info']['employee_id']; ?></td>
+                                                    <td><?php echo $val['Info']['EmpName']; ?></td>
+                                                    <td><?php echo $val['EmployeeDetails']['guradian']; ?></td>
+                                                    <td><?php echo $val['Info']['designation']; ?></td>
+                                                     <td><?php echo $val['Info']['joining_date']; ?></td>
+                                                     <td><?php echo $val['Termination']['last_approved_working_date']; ?></td>
+                                                    <td><?php echo $val['Info']['department']; ?></td>
+                                                    <td><?php echo $val['Info']['branch']; ?></td>
+                                                    <td><?php echo $val['AttendanceRegister']['days_present'];?></td>
+                                                     <td><?php echo $val['AttendanceRegister']['days_leave']; ?></td>
+                                                    <td><?php echo $val['AttendanceRegister']['days_holidays']; ?></td>
+                                                    <td><?php echo $val['AttendanceRegister']['HO'];?></td>
+                                                     <td><?php echo $val['AttendanceRegister']['lops'];?></td>
+                                                    
+
+                                                    <?php
+                                                    foreach ($arr_dates as $key => $date) {
+                                                        ?>       
+                                                        <td> 
+                                                            <?php
+                                    $newIndex = 'FIELD' . ($key + 1);
+                                    $dta = $val['AttendanceRegister'][$newIndex];
+                                    $dta = str_replace("WFH","P",$dta);
+                                    $dta = str_replace("PL","L",$dta);
+                                    $dta = str_replace("SL","L",$dta);
+                                    $dta = str_replace("EL","L",$dta);
+                                    $dta = str_replace("CL","L",$dta);
+                                    $dta = str_replace("ML","L",$dta);
+                                    $dta = str_replace("PT","L",$dta);
+                                    $dta = str_replace("COFF","L",$dta); 
+                                    $dta = str_replace("AL","L",$dta);
+                                    if ($company_code == 'HRBL'){
+                                   // $dta = str_replace("P/P", "P", $dta);
+                                       $split = explode('/', $dta);
+                                       if (count($split) == 2 && $split[0] == $split[1]) {
+                                            $dta = $split[0];
+                                        }  
+                                        
+                                    }// Edited by Akshay on 5-12-2024
+                                    
+                                                           echo $dta; ?></td>                                          
+                                                <?php } ?>
+                                                </tr>
+            <?php 
+            $k++;
+                                                    } ?>
+        <?php } else { ?>
+                                            <tr>
+                                                <td colspan="4">No employees found under this shift</td>
+                                            </tr>  
+        <?php } ?>
+                                    </tbody>
+                                </table>
+                                        </div>
+                                </div>
+                            </fieldset>
+                            <br>
+                            <!-- <fieldset>
+                                 <legend>Employee List</legend>
+                                 <table class="table table-bordered">
+                                     <thead>
+                                       <tr>
+                                           <th>Name</th>
+                                           <th>Designation</th>
+                                           <th>Branch</th>
+                                       </tr>
+                                     </thead>
+                                     <tbody>
+                            <?php $arr_data = $value['employees']; ?>
+        <?php if (count($arr_data) >= 0) { ?>
+            <?php foreach ($arr_data as $val) { ?>
+                                                         <tr> 
+                                                             <td><?php echo $val['EmployeeDetails']['first_name'] . ' ' . $val['EmployeeDetails']['last_name']; ?></td>
+                                                             <td><?php echo $val['EmployeeProfessionalDetails']['designation']; ?></td>
+                                                             <td><?php echo $val['Units']['branch_name']; ?></td>
+                                                         </tr>
+            <?php } ?>
+        <?php } else { ?>
+                                                     <tr>
+                                                         <td colspan="4">No employees found under this shift</td>
+                                                     </tr>  
+        <?php } ?>
+                                     </tbody>
+                                 </table>
+                             </fieldset> -->
+                        </div>
+    <?php } } }?> <!-- /.box-body -->
+                </div>
+            </div>
+        </div>    
+<!--        <div class="row">
+            <div class="form-group">
+                <div class="col-md-12" align="right">
+                    <a href="#" class="btn btn-default" onclick="downloadReport('Attendance', 'pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                    <a href="#" class="btn btn-default" onclick="downloadReport('Attendance', 'excel');"><i class="icon-file"></i>Download As Excel</a>
+                </div>
+            </div>
+        </div>-->
+    </div>
+
+<script>
+
+//    $(document).ready(function () {
+//        var tables = $('.table-bordered').DataTable({
+//            "paging": true,
+//            "lengthChange": true,
+//            "searching": true,
+//            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+//            "ordering": true,
+//            "info": true,
+//            "autoWidth": true,
+//            "order": [[2, "desc"]],
+//            "initComplete": function () {
+//                $('.pws_tabs_container').find('a[data-tab-id="tab1"]').find('.fa').removeClass("fa-spin");
+//            },
+//            //             "createdRow": function ( row, data, index ) {
+//            //                if ( data[5].replace(/[\$,]/g, '') * 1 > 150000 ) {
+//            //                    $('td', row).eq(5).addClass('highlight');
+//            //                }
+//            //            },
+//            "scrollCollapse": true,
+//        });
+//         var eventFired = function ( type ) {
+//            var n = $('#demo_info')[0];
+//            var searchboxval = $('#attendanceTable_filter').find('input').val();;
+//            //n.innerHTML += '<div>'+type+' event - '+searchboxval+'</div>';
+//            $('#searchval').val(searchboxval);
+//            //n.scrollTop = n.scrollHeight;      
+//        }
+//        tables.on( 'search.dt', function () { eventFired( 'Search' ); } )
+//
+//    });
+</script>
+<?php } else { ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';  ?>
+
+
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+        .row {
+            height: 32px;
+        }
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+        table {
+            border: 1px solid #f4f4f4;
+            width: 100%;
+            max-width: 100%;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        td, th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border: 1px solid #B2B2B2;
+        }
+    </style>
+    <?php
+//    echo $this->element('reportadminheader', array(
+//        'title' => 'Attendance Register Report - '.$report_month));
+    ?>
+    <?php
+    $i = 0;
+    if(!empty($arr_leavepolicydetails_for_template))
+    {
+    foreach ($arr_leavepolicydetails_for_template as $value) {
+        $i += 1;
+        if(!empty($value['summary']))
+                        {
+        ?>
+        <?php
+                                if($criteria == "Units")
+                                {
+                                ?>
+                                <h3>Verified Attendance Register Report of  <?php echo isset($value['summary']['0']['Branch']['branch_name']) ? $value['summary']['0']['Branch']['branch_name'] : '    (No Datas Found Under This Branch)'; ?>  </h3>
+                                <?php
+                                }
+                                else
+                                {
+                                   // $empstatus = (isset($value['summary']['0']['EmployeeDetails']['status'])) && $value['summary']['0']['EmployeeDetails']['status'] =="2" ? '  (Resigned)':'';
+                                    ?>
+                                
+                                    <h3>Verified Attendance Register Report of  <?php echo isset($value['summary']['0']['Info']['EmpName']) ? $value['summary']['0']['Info']['EmpName'] : '    (No Datas Found Under This Employees)'; ?>  </h3>
+                                <?php
+                                    }
+                                ?><br>
+        <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Sl No</th>
+                                            <th>Employee ID</th>
+                                            <th>Employee Name</th>
+                                            <th>Date Of Joining</th>
+                                            <th>Branch</th>
+                                            <th>Present Days</th>
+                                            <th>Leave Days</th>
+                                            <th>Week off</th>
+                                            <th>Holidays</th>
+                                            <th>Non Paying Days</th>
+                                            <?php
+                                            foreach ($arr_dates as $key => $date) {
+                                                ?>
+                                                <th><?php echo $date; ?></th>
+                                                <?php
+                                            }
+                                            ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $arr_data = $value['summary']; ?>
+        <?php if (count($arr_data) >= 0) { ?>
+            <?php
+            $k=1;
+            foreach ($arr_data as $val) { ?>
+                                                <tr> 
+                                                    <td><?php echo $k;?></td>
+                                                    <td><?php echo $val['Info']['employee_id']; ?></td>
+                                                    <td><?php echo $val['Info']['EmpName']; ?></td>
+                                                    <!--<td><?php echo $val['Info']['designation']; ?></td>-->
+                                                    <td><?php echo $val['Info']['joining_date']; ?></td>
+                                                    <!--<td><?php echo $val['Info']['department']; ?></td>-->
+                                                    <td><?php echo $val['Info']['branch']; ?></td>
+                                                    <td><?php echo $val['AttendanceRegister']['days_present']; ?></td>
+                                                    <td> <?php echo $val['AttendanceRegister']['days_leave']; ?></td>
+                                                    <td> <?php echo $val['AttendanceRegister']['days_holidays']; ?></td>
+                                                    <td> <?php echo $val['AttendanceRegister']['HO']; ?></td>
+                                                    <td> <?php echo $val['AttendanceRegister']['lops']; ?></td>
+
+                                                    <?php
+                                                    foreach ($arr_dates as $key => $date) {
+                                                        ?>       
+                                                        <td> 
+                                                            <?php
+                                                            $newIndex = 'FIELD' . ($key + 1);
+                                                            echo $val['AttendanceRegister'][$newIndex];
+                                                            ?></td>                                          
+                                                <?php } ?>
+                                                </tr>
+            <?php 
+            $k++;
+                                                    } ?>
+        <?php } else { ?>
+                                            <tr>
+                                                <td colspan="4">No employees found under this shift</td>
+                                            </tr>  
+        <?php } ?>
+                                    </tbody>
+                                </table>
+    <?php } ?>        
+
+<?php }
+} else{
+        echo '<div style="font-size: 25px;margin-top:30px;text-align:center; background-color:#F7D3D2;">
+    There is no data available under the selected criteria.</div>';
+} }?>
+                                
+                                <div id="demo_info">
+                                    <!--<div>Search event - 1518605452094</div>-->
+                                </div>
+                                
+                                <input type="hidden" value="sanj" id="searchval">
+                                <input type="hidden" id="filterval">
+
+    

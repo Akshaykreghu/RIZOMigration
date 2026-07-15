@@ -1,0 +1,752 @@
+<style>
+   
+    .table , td, th{
+        border-style: solid;
+        border-color: #d4d4de;
+    }
+  
+</style>
+
+<?php  //debug($gross);   ?>
+<?php if ($mode == '') { ?>
+<div class="modal-body" style="overflow-y:auto; ">
+
+    <div class="row">
+        <div class="col-md-12">
+           
+                <?php if (count($gross) <= 0) { ?>
+                <div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+                    There is no data available with respect to your report</div>
+                <?php } else { ?>
+                <h2 align="center">Gross Salary Detailed Report -  <?php echo $month; ?></h2>
+                <!--  <h3>Month - <?php// echo $month;?></h3>-->
+                <?php $count1=isset($array_key['Addition'])?count($array_key['Addition']):0;
+                $count2=isset($array_key['Deduction'])?count($array_key['Deduction']):0;
+                $count3=isset($variable_key['VAddition'])?count($variable_key['VAddition']):0;
+                $count4=isset($standard_key['SAddition'])?count($standard_key['SAddition']):0;
+                $count5=isset($standard_key['SDeduction'])?count($standard_key['SDeduction']):0;
+                $count6=$count4+1+$count5;
+                $count7=$count3+1;
+                $count8=$count1+3+$count2;
+                ?>
+                <!--belongs to branch section added by megha end... view section-->
+                <?php if(isset($needBranchWiseReport) && $needBranchWiseReport == 1){ //do branchwise listing ?>
+                <?php foreach($gross as $branch => $brnch){ 
+                 //debug($brnch); 
+                    $branches = current($brnch);  ?>
+                <div class="box-body " style="overflow-y:auto; ">
+                    <fieldset>
+                        <legend><?php echo $branches['emp_info']['branch']; ?></legend>
+                    </fieldset>
+                    <br>
+                    <fieldset>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <!-- edited by athira on 09-07-2025 -->
+                             <?php  if($company_code =='DEMO' || $company_code =='SRTS' || $company_code=='GLET') { ?>
+                                <th colspan="14">Employee Details</th> 
+                                <?php } else{ ?>
+                                <th colspan="12">Employee Details</th> 
+                               <?php  } ?>
+                               <!-- end -->
+                            <th colspan="<?php echo $count6;?>">Standard Salary</th> 
+                            <?php if($count3 > 0){ ?>
+                            <th colspan="<?php echo $count7;?>">Other Salary</th> 
+                            <?php } ?>
+                            <th colspan="<?php echo $count8;?>">Actual Salary</th> 
+                            <th></th>
+
+                        </tr>
+                        <tr style="background-color:#f0f0ff;">
+                            <th>Sl No</th>
+                            <th>Employee ID</th>
+                            <!-- edited by athira on 09-07-2025 -->
+                            <?php  if($company_code =='DEMO' || $company_code =='SRTS' || $company_code=='GLET') { ?>
+                                            <th>Employee ID (US Format)</th>
+                                        <?php } ?>
+                                <!-- end -->
+                            <th>Name</th>
+                            <!-- edited by athira on 09-07-2025 -->
+                            <?php  if($company_code =='DEMO' || $company_code =='SRTS' || $company_code=='GLET') { ?>
+                                            <th>Employee Name (US Format)</th>
+                                        <?php } ?>
+                                        <!-- end -->
+                            <th>Joining Date</th>   <!--edited by ASHIN on 10-01-25--->																					   
+                            <th>Designation</th>
+                            <th>Department</th>
+                            <th>Branch</th>
+<!--                            <th>Total Days</th>
+                            <th>Days Type</th>-->
+                            <th>Present Days</th>
+                            <th>Overtime (In Hrs.)</th>
+                            <th>LOP Days</th>
+                            <th>Leave Days</th>
+                            <th>Week Off</th>
+                            <th>Holiday</th>
+                            <?php  
+                            $addition=$standard_key['SAddition'];
+                            foreach($addition as $value){ ?>
+                            <th><?php echo $value;?></th>
+                            <?php }?>   
+                            <th>Gross Salary</th>
+                            <?php  
+                            if(isset($standard_key['SDeduction'])){ 
+                            $deduction=$standard_key['SDeduction'];
+                            foreach($deduction as $valu){ ?>
+                            <th><?php echo $valu;?></th>
+                            <?php } } ?> 
+                            <?php  if($count3 > 0){
+                            $var_addition=$variable_key['VAddition'];
+                            foreach($var_addition as $value){ ?>
+                            <th><?php echo $value;?></th>
+                            <?php }?>
+                            <th>Total</th>
+                            <?php } ?>
+                            <?php  
+                            $addition=$array_key['Addition'];
+                            foreach($addition as $value){?>
+                            <th><?php echo $value;?></th>
+                            <?php }?> 
+                            <th>Gross Salary</th>
+                            <?php if(isset($array_key['Deduction'])){ ?>
+                            <?php    $deduction=$array_key['Deduction'];
+                            foreach($deduction as $value){
+                            ?>
+                            <th><?php echo $value;?></th>
+                            <?php } }
+                            ?> 
+                            <th>Total Deduction</th>
+                            <!--  //edited by megha on 13/11/2019 settlement amount 1-->
+                            <th>Settlement Amount</th>
+                            <th>Net Salary</th>
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $i=1;
+                        foreach($brnch as $val){
+                            //debug($val);
+                            if ($val['emp_info']['branch'] == $val['emp_info']['branch']){?>
+
+                        <tr>
+                            <td ><?php echo $i;?></td>
+                            <td><?php  echo $val['emp_info']['employee_id'];?></td>
+                            <!-- edited by athira on 09-07-2025 -->
+                            <?php  if($company_code =='DEMO' || $company_code =='SRTS' || $company_code=='GLET') { ?>
+                                             <td><?php echo $val['emp_info']['emp_us_id']; ?></td>
+                                        <?php } ?>
+                                    <!-- end -->
+          <!--edited by ASHIN on 10-01-25--->
+                            <!-- <td><//?php echo $val['emp_info']['EmpName'];?><//?php echo (isset($val['emp_details']['status'])) && $val['emp_details']['status'] =="2" ? '  (Resigned)':'';?></td> -->
+                            <td><?php if(!empty($val['payroll_master']['emp_name'])){
+                                echo $val['payroll_master']['emp_name'];
+                                }else{ 
+                                echo $val['emp_info']['EmpName'];}
+                                echo (isset($val['emp_details']['status'])) && $val['emp_details']['status'] =="2" ? '  (Resigned)':'';?></td>
+                                <!-- edited by athira on 09-07-2025 -->
+                                <?php  if($company_code =='DEMO' || $company_code =='SRTS' || $company_code=='GLET') { ?>
+                                             <td><?php echo $val['emp_info']['EmpUSName']; ?></td>
+                                        <?php } ?>
+                                        <!-- end -->
+
+                            <td><?php if(!empty($val['payroll_master']['joining_date'])){
+                                    echo date('d-m-Y', strtotime($val['payroll_master']['joining_date']));
+                            }else{
+                                    echo date('d-m-Y', strtotime($val['emp_info']['joining_date']));} ?></td>
+                          
+                            <!-- <td></?php  echo $val['emp_info']['designation'];?></td> -->
+                            <td><?php if(!empty($val['payroll_master']['desig'])){
+                                echo $val['payroll_master']['desig'];
+                            }else{
+                                echo $val['emp_info']['designation'];} ?></td>
+
+                            <!-- <td></?php echo $val['emp_info']['department'];?></td> -->
+                            <td><?php if(!empty($val['payroll_master']['departments'])){
+                               echo $val['payroll_master']['departments'];
+                            }else{
+                                echo $val['emp_info']['department'];} ?></td>
+
+                            <!-- <td></?php echo $val['emp_info']['branch'];?></td> -->
+                            <td><?php if(!empty($val['payroll_master']['branch_name'])){
+                                echo $val['payroll_master']['branch_name'];
+                            }else{
+                                echo $val['emp_info']['branch'];} ?></td>
+<!--                        <td><?php //echo $val['prodata']['days'];?></td>
+                            <td><?php //echo $val['prodata']['type'];?></td>
+                            <td><?php //echo $val['prodata']['present'];?></td>-->
+                            <td><?php echo $val['ar']['presant_total'];?></td>
+                            <td><?php echo isset($val['ot']) ? round(($val['ot'] / 60), 2) :0; ?></td>
+                             <td><?php echo isset($val['ectc']['lop_total']) ? $val['ectc']['lop_total'] : '';?></td>
+                             <td><?php echo $val['ar']['leave_total'];?></td>
+                             <td><?php echo $val['ar']['weekoff_total'];?></td>
+                             <td><?php echo $val['ar']['holiday_total'];?></td>
+                             <?php $count_addition= count($val['SAddition']['keys']); 
+                            $grss_amt = 0;
+                            for($m=0;$m<$count_addition;$m++)
+                            {
+                            $number=round($val['SAddition']['actual'][$m]);
+                            $grss_amt = $number + $grss_amt;
+                            ?> 
+                            <td><?php echo round($number,2);?></td>
+                            <?php }  ?> 
+                            <td><?php echo round($grss_amt,2);?></td>
+                            <?php  if(isset($standard_key['SDeduction'])){ 
+                            $count_addition= count($val['SDeduction']['keys']); 
+                            for($m=0;$m<$count_addition;$m++)
+                            {
+                            $number=$val['SDeduction']['actual'][$m];
+                            ?> 
+                            <td><?php echo round($number,2);?></td>
+                            <?php } } ?>
+                              
+                            <?php if($count3 > 0){ 
+                            $count_addition1= count($val['VAddition']['keys']); 
+                            $grss_amt1 = 0;
+                            for($m=0;$m<$count_addition1;$m++)
+                            {
+                            $number1=round($val['VAddition']['actual'][$m]);
+                            $grss_amt1 = $number1 + $grss_amt1;
+                            ?> 
+                            <td><?php echo round($number1,2);?></td>
+                            <?php }  ?> 
+                            <td><?php echo round($grss_amt1,2);?></td>
+                            <?php } ?>
+                               <?php $count_addition= count($val['Addition']['keys']); 
+                               $grss_amt=0;
+                               for($m=0;$m<$count_addition;$m++)
+                               {
+                               $number=round($val['Addition']['value'][$m]);
+                               $grss_amt=$number+$grss_amt; ?>
+                               <td><?php echo round($number);?></td>
+                               <?php } ?>
+                               <td><?php echo round($grss_amt); ?></td> 
+                               <?php $dd_amt=0; 
+                               if(isset($array_key['Deduction'])){ ?>
+                               <?php $count_addition= count($val['Deduction']['keys']); 
+                               
+                               for($m=0;$m<$count_addition;$m++)
+                               {
+                               $number=round($val['Deduction']['value'][$m],2);
+                               $dd_amt=$number+$dd_amt;
+                               ?>
+                               <td><?php echo round($number,2);?></td>
+                               <!--                            //edited by megha on 13/11/2019 settlement amount 2-->
+                               <?php } } $netamt=$grss_amt+$dd_amt+$val['settle']; ?>
+                               <td><?php echo round($dd_amt,2); ?></td>
+                               <!--                            //edited by megha on 13/11/2019 settlement amount 3-->
+                               <td><?php echo round($val['settle']); ?></td>
+                               <td><?php echo round($netamt); ?></td>
+                        </tr>
+
+
+                        <?php    $i++; }
+
+
+                        ?>
+
+                 
+  
+                        <?php  }?>
+                           </tbody>
+                </table>
+                    </fieldset>
+ </div>
+                
+                <?php } }else{?>
+                <!--belongs to branch section added by megha end...-->
+                   <div class="box-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <!-- edited by athira on 09-07-2025 -->
+                             <?php  if($company_code =='DEMO' || $company_code =='SRTS' || $company_code=='GLET') { ?>
+                                <th colspan="14">Employee Details</th> 
+                                <?php } else{ ?>
+                                <th colspan="12">Employee Details</th> 
+                               <?php  } ?>
+                               <!-- end -->
+                            <th colspan="<?php echo $count6;?>">Standard Salary</th> 
+                            <?php if($count3 > 0){ ?>
+                            <th colspan="<?php echo $count7;?>">Other Salary</th> 
+                            <?php } ?>
+                            <th colspan="<?php echo $count8;?>">Actual Salary</th> 
+                            <th></th>
+                        </tr>
+                        <tr style="background-color:#f0f0ff;">
+                            <th>Sl No</th>
+                            <th>Employee ID</th>
+                              <!-- edited by athira on 09-07-2025 -->
+                            <?php  if($company_code =='DEMO' || $company_code =='SRTS' || $company_code=='GLET') { ?>
+                                            <th>Employee ID (US Format)</th>
+                                        <?php } ?>
+                                        <!-- end -->
+                            <th>Name</th> 
+                             <!-- edited by athira on 09-07-2025 -->
+                            <?php  if($company_code =='DEMO' || $company_code =='SRTS' || $company_code=='GLET') { ?>
+                                            <th>Employee Name (US Format)</th>
+                                        <?php } ?>
+                                        <!-- end -->
+                            <th>Joining Date</th>  <!--edited by ASHIN on 10-01-25--->																					  
+                            <th>Designation</th>
+                            <th>Department</th>
+                            <th>Branch</th>
+<!--                            <th>Total Days</th>
+                            <th>Days Type</th>-->
+                            <th>Present Days</th>
+                            <th>Overtime (In Hrs.)</th>
+                            <th>LOP Days</th>
+                            <th>Leave Days</th>
+                            <th>Week Off</th>
+                            <th>Holiday</th>   
+                            <?php  
+                            $addition=$standard_key['SAddition'];
+                            foreach($addition as $value){ ?>
+                            <th><?php echo $value;?></th>
+                            <?php }?>   
+                            <th>Gross Salary</th>
+                            <?php  
+                            if(isset($standard_key['SDeduction'])){ 
+                            $deduction=$standard_key['SDeduction'];
+                            foreach($deduction as $valu){ ?>
+                            <th><?php echo $valu;?></th>
+                            <?php } } ?>  
+                            <?php  if($count3 > 0){
+                            $var_addition=$variable_key['VAddition'];
+                            foreach($var_addition as $value){ ?>
+                            <th><?php echo $value;?></th>
+                            <?php }?>
+                            <th>Total</th>
+                            <?php } ?>
+                            <?php  
+
+                            $addition=$array_key['Addition'];
+                            foreach($addition as $value){?>
+                            <th><?php echo $value;?></th>
+                            <?php }?> 
+                            
+                            <th>Gross Salary</th>
+                             <?php  if(isset($array_key['Deduction'])){ ?>
+                            <?php    $deduction=$array_key['Deduction'];
+                            foreach($deduction as $value){
+                            ?>
+                            <th><?php echo $value;?></th>
+                             <?php } }
+                            ?> 
+                            <th>Total Deduction</th>
+                            <!--                            //edited by megha on 13/11/2019 settlement amount 4-->
+                            <th>Settlement Amount</th>
+                            <th>Net Salary</th>
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $i=1;
+                         //debug($gross);
+                        foreach($gross as $val){?>
+
+                        <tr>
+                            <td ><?php echo $i;?></td>
+                            <td><?php  echo $val['emp_info']['employee_id'];?></td>
+                            <!-- edited by athira on 09-07-2025 -->
+                            <?php  if($company_code =='DEMO' || $company_code =='SRTS' || $company_code=='GLET') { ?>
+                                             <td><?php echo $val['emp_info']['emp_us_id']; ?></td>
+                                        <?php } ?>
+                                        <!-- end -->
+               <!---editedby ASHIN on 10-01-25--->             
+                            <!-- <td><//?php echo $val['emp_info']['EmpName'];?><//?php echo (isset($val['emp_details']['status'])) && $val['emp_details']['status'] =="2" ? '  (Resigned)':'';?></td> -->
+                            <td><?php if(!empty($val['payroll_master']['emp_name'])){
+                                echo $val['payroll_master']['emp_name'];
+                                }else{ 
+                                echo $val['emp_info']['EmpName'];}
+                                echo (isset($val['emp_details']['status'])) && $val['emp_details']['status'] =="2" ? '  (Resigned)':'';?></td>
+                                <!-- edited by athira on 09-07-2025 -->
+                                <?php  if($company_code =='DEMO' || $company_code =='SRTS' || $company_code=='GLET') { ?>
+                                             <td><?php echo $val['emp_info']['EmpUSName']; ?></td>
+                                        <?php } ?>
+                                        <!-- end -->
+
+
+                            <td><?php if(!empty($val['payroll_master']['joining_date'])){
+                                    echo date('d-m-Y', strtotime($val['payroll_master']['joining_date']));
+                            }else{
+                                    echo date('d-m-Y', strtotime($val['emp_info']['joining_date']));} ?></td>
+                           
+                           <!-- <td></?php  echo $val['emp_info']['designation'];?></td> -->
+                           <td><?php if(!empty($val['payroll_master']['desig'])){
+                                echo $val['payroll_master']['desig'];
+                            }else{
+                                echo $val['emp_info']['designation'];} ?></td>
+
+                            <!-- <td><//?php echo $val['emp_info']['department'];?></td> -->
+                            <td><?php if(!empty($val['payroll_master']['departments'])){
+                               echo $val['payroll_master']['departments'];
+                            }else{
+                                echo $val['emp_info']['department'];} ?></td>
+
+                            <!-- <td></?php echo $val['emp_info']['branch'];?></td> -->
+                            <td><?php if(!empty($val['payroll_master']['branch_name'])){
+                                echo $val['payroll_master']['branch_name'];
+                            }else{
+                                echo $val['emp_info']['branch'];} ?></td>
+
+<!--                        <td><?php //echo $val['prodata']['days'];?></td>
+                            <td><?php //echo $val['prodata']['type'];?></td>
+                            <td><?php //echo $val['prodata']['present'];?></td>-->
+                            <td><?php echo $val['ar']['presant_total'];?></td>
+                            <td><?php echo isset($val['ot']) ? round(($val['ot'] / 60), 2) :0; ?></td>
+                            <td><?php echo isset($val['ectc']['lop_total']) ? $val['ectc']['lop_total'] : '';?></td>
+                            <td><?php echo $val['ar']['leave_total'];?></td>
+                            <td><?php echo $val['ar']['weekoff_total'];?></td>
+                            <td><?php echo $val['ar']['holiday_total'];?></td>
+                            <?php $count_addition= count($val['SAddition']['keys']); 
+                            $grss_amt = 0;
+                            for($m=0;$m<$count_addition;$m++)
+                            {
+                            $number=round($val['SAddition']['actual'][$m]);
+                            $grss_amt = $number + $grss_amt;
+                            ?> 
+                            <td><?php echo round($number,2);?></td>
+                            <?php }  ?> 
+                            <td><?php echo round($grss_amt,2);?></td>
+<!--                            <td><?php //echo isset($val['emp_ctc_transaction']['emp_derived_anualctc']) ? $val['emp_ctc_transaction']['emp_derived_anualctc'] / 12 :0; ?></td>-->
+                            <?php  if(isset($standard_key['SDeduction'])){ 
+                            $count_addition= count($val['SDeduction']['keys']); 
+                            for($m=0;$m<$count_addition;$m++)
+                            {
+                            $number=$val['SDeduction']['actual'][$m];
+                            ?> 
+                            <td><?php echo round($number,2);?></td>
+                            <?php } } ?>
+                            
+                            <?php if($count3 > 0){ 
+                            $count_addition1= count($val['VAddition']['keys']); 
+                            $grss_amt1 = 0;
+                            for($m=0;$m<$count_addition1;$m++)
+                            {
+                            $number1=round($val['VAddition']['actual'][$m]);
+                            $grss_amt1 = $number1 + $grss_amt1;
+                            ?> 
+                            <td><?php echo round($number1,2);?></td>
+                            <?php }  ?> 
+                            <td><?php echo round($grss_amt1,2);?></td>
+                            <?php } ?>
+                            <?php $count_addition= count($val['Addition']['keys']); 
+                            $grss_amt=0;
+                            for($m=0;$m<$count_addition;$m++)
+                            {
+                            $number=round($val['Addition']['value'][$m]);
+                            $grss_amt=$number+$grss_amt;
+                            ?>
+                            <td><?php echo round($number);?></td>
+                            <?php } ?>
+                             
+                            <td><?php echo round($grss_amt,2); ?></td> 
+                             <?php $dd_amt=0;
+                             if(isset($array_key['Deduction'])){ ?>
+                            <?php $count_addition= count($val['Deduction']['keys']); 
+
+                            
+                            for($m=0;$m<$count_addition;$m++)
+                            {
+                            $number=round($val['Deduction']['value'][$m],2);
+                            $dd_amt=$number+$dd_amt;
+
+
+                            ?>
+                            <td><?php echo round($number,2);?></td>
+
+<!--                            //edited by megha on 13/11/2019 settlement amount 5-->
+                             <?php } }
+                             
+                            $netamt=$grss_amt+$dd_amt+$val['settle']; ?>
+                            <td><?php echo round($dd_amt,2); ?></td>
+                            <!-- //edited by megha on 13/11/2019 settlement amount 6-->
+                            <td><?php echo round($val['settle']); ?></td>
+                            <td><?php echo round($netamt); ?></td>
+                            </tr><?php    $i++; } ?>
+                        </tbody>
+                </table>
+               </div>
+               <?php   }?>
+        </div>
+    </div>    
+    <!--div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel </button>  
+    </div-->
+    <!----<div class="row">
+        <div class="form-group">
+            <div class="col-md-12" align="right">
+                <a href="#" class="btn btn-default" onclick="downloadReport('Grosssalary', 'pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                <a href="#" class="btn btn-default" onclick="downloadReport('Grosssalary', 'excel');"><i class="icon-file"></i>Download As Excel</a>
+            </div>
+        </div>
+    </div> --->
+</div>
+<?php }
+?>
+<?php }else{ ?>
+<?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>'; ?>
+<style type="text/css">
+    body {
+        line-height: 2em;
+    }
+    .block-container {
+        width: 95%;
+        padding: 20px;
+        border: #000000 solid thin;
+    }
+    .sub-head {
+        border-bottom: #000000 solid thin;
+    }
+    .row {
+        height: 32px;
+    }
+    .col-md-4 {
+        width: 33.33%;
+        float: left;
+    }
+    table {
+        border: 1px solid #f4f4f4;
+        width: 80%;
+        max-width: 80%;
+        margin-bottom: 20px;
+        background-color: transparent;
+        border-spacing: 0;
+        border-collapse: collapse;
+        
+    }
+    td, th {
+        text-align: left;
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border: 1px solid #B2B2B2;
+        width:55px;
+    }
+</style>
+
+<?php
+echo $this->element('reportadminheader',array(
+'title'=>'Gross Salary Detailed Report - '.$month));
+?>
+<?php if (count($gross) <= 0) { ?>
+<div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+    There is no data available with respect to your report</div>
+<?php } else { ?>
+<br><br>
+<!--<h3><?php //echo $month;?></h3>-->
+
+<?php  $coun1=isset($array_key['Addition'])?count($array_key['Addition']):0;
+$coun2=isset($array_key['Deduction'])?count($array_key['Deduction']):0;
+$cont=$coun1+$coun2+1;
+$cont2=$cont+3;
+
+?>
+<!--                belongs to branch section added by megha start... pdf view section-->
+                <?php if(isset($needBranchWiseReport) && $needBranchWiseReport == 1){ //do branchwise listing ?>
+                <?php foreach($gross as $branch => $brnch){ 
+                    $branches = current($brnch);  ?>
+                <div class="box-body " style="overflow-y:auto; ">
+                    <br>
+                       <h2>  <?php echo $branches['emp_info']['branch']; ?></h2>
+                    <br>
+<!--                    <fieldset>-->
+                 <table class="table">
+                    <thead>
+                        <tr>
+                            <th colspan="3">Employee Details</th> 
+                            <th colspan="<?php echo $cont2;?>">Actual Salary</th> 
+
+                        </tr>
+                        <tr style="background-color:#f0f0ff;">
+                            <th>Sl No</th>
+                            <th>Employee ID</th>
+                            <th>Name</th>
+<!--                            <th>Designation</th>
+                            <th>Department</th>
+                            <th>Branch</th>
+                            <th>Total Days</th>
+                            <th>Days Type</th>
+                            <th>Present Days</th>
+                            <th>Overtime (In Hrs.)</th>
+                            <th>LOP Days</th>-->
+                           
+                            <?php  
+
+                            $addition=$array_key['Addition'];
+                            //debug($addition);
+                            foreach($addition as $value){?>
+                            <th><?php echo $value;?></th>
+                            <?php }?> 
+                            <th>Gross Salary</th>
+                            <?php  if(isset($array_key['Deduction'])){ ?>
+                            <?php    $deduction=$array_key['Deduction'];
+                            foreach($deduction as $value){
+                            ?>
+                            <th><?php echo $value;?></th>
+                            <?php } }
+                            ?> 
+                            <th>Total Deduction</th>
+                            <th>Net Salary</th>
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $i=1;
+//                         debug($gross);
+
+
+                        foreach($brnch as $val){
+                            //debug($val);
+                            if ($val['emp_info']['branch'] == $val['emp_info']['branch']){?>
+
+                        <tr>
+                            <td ><?php echo $i;?></td>
+                            <td><?php  echo $val['emp_info']['employee_id'];?></td>
+                            <td><?php echo $val['emp_info']['EmpName'];?><?php echo (isset($val['emp_details']['status'])) && $val['emp_details']['status'] =="2" ? '  (Resigned)':'';?></td>
+
+                               <?php $count_addition= count($val['Addition']['keys']); 
+                               $grss_amt=0;
+                               for($m=0;$m<$count_addition;$m++)
+                               {
+                               $number=round($val['Addition']['value'][$m],2);
+                               $grss_amt=$number+$grss_amt; ?>
+                               <td><?php echo round($number);?></td>
+                               <?php } ?>
+                               <td><?php echo round($grss_amt); ?></td> 
+                               <?php  $dd_amt=0;
+                               if(isset($array_key['Deduction'])){ ?>
+                               <?php $count_addition= count($val['Deduction']['keys']); 
+                              
+                               for($m=0;$m<$count_addition;$m++)
+                               {
+                               $number=round($val['Deduction']['value'][$m],2);
+                               $dd_amt=$number+$dd_amt;
+                               ?>
+                               <td><?php echo round($number);?></td>
+                               <?php } } $netamt=$grss_amt+$dd_amt; ?>
+                               <td><?php echo round($dd_amt); ?></td>
+                               <td><?php echo round($netamt); ?></td>
+                        </tr>
+
+
+                        <?php    $i++; }
+
+
+                        ?>
+
+                 
+  
+                        <?php  }?>
+                           </tbody>
+                </table>
+<!--                    </fieldset>-->
+ </div>
+                
+                <?php } }else{?>
+<!--                belongs to branch section added by megha end...-->
+<div class="box-body">
+<table class="table table-bordered">
+
+    <tr>
+        <th colspan="3">Employee Details</th> 
+        <th colspan="<?php echo $cont2;?>">Actual Salary</th> 
+
+    </tr>
+    <tr style="background-color:#f0f0ff;">
+        <th style="width:20px;">Sl No</th>
+        <th style="width:70px;">Employee ID</th>
+        <th style="width:100px;">Name</th>
+       
+       
+        <?php  
+
+        $addition=$array_key['Addition'];
+        //debug($addition);
+        foreach($addition as $value){?>
+        <th><?php echo $value;?></th>
+        <?php }?> 
+        <th>Gross <br>Salary</th>
+        <?php  if(isset($array_key['Deduction'])){ ?>
+        <?php  $deduction=$array_key['Deduction'];
+        foreach($deduction as $value){
+        ?>
+        <th><?php echo $value;?></th>
+        <?php } }
+        ?> 
+        <th>Total <br> Deduction</th>
+        <th>Net <br>Salary</th>
+
+
+
+    </tr>
+
+    <tbody>
+        <?php 
+        $i=1;
+        // debug($gross);
+        foreach($gross as $val){?>
+
+        <tr>
+            <td><?php echo $i;?></td>
+            <td><?php  echo $val['emp_info']['employee_id'];?></td>
+            <td><?php echo $val['emp_info']['EmpName'];?> </td>
+           
+            <?php $count_addition= count($val['Addition']['keys']); 
+            $grss_amt=0;
+            for($m=0;$m<$count_addition;$m++)
+            {
+            $number=round($val['Addition']['value'][$m],2);
+            $grss_amt=$number+$grss_amt;
+
+
+            ?>
+            <td><?php echo round($number);?></td>
+
+
+            <?php } ?>
+            <td><?php echo round($grss_amt); ?></td> 
+            <?php  $dd_amt=0;
+                               if(isset($array_key['Deduction'])){ ?>
+            <?php $count_addition= count($val['Deduction']['keys']); 
+
+            for($m=0;$m<$count_addition;$m++)
+            {
+            $number=round($val['Deduction']['value'][$m],2);
+            $dd_amt=$number+$dd_amt;
+
+
+            ?>
+            <td><?php echo round($number);?></td>
+           <?php } }
+            $netamt=$grss_amt+$dd_amt;
+            ?>
+
+
+            <td><?php echo $dd_amt; ?></td>
+            <td><?php echo round($netamt); ?></td>
+
+
+        </tr>
+
+
+        <?php    $i++; }
+
+
+        ?>
+
+    </tbody>
+</table>
+</div>
+
+<?php } } }?>

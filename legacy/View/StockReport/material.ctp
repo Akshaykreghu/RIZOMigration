@@ -1,0 +1,298 @@
+<style>
+
+    .table , td, th,tr {
+        border-style: solid;
+        border-color: #d4d4de;
+
+
+    }
+
+</style>
+
+<?php // debug($arr_salary_for_template); ?>
+<?php if ($mode == '') { ?>
+    <div class="modal-body" style="overflow-y:initial; padding-left:3%; padding-right:3%; padding-bottom:3%;" >
+        <h3 align="center" style="font-weight:bold; font-size: 30px;">Material Report :<?php echo $month; ?></h3>
+        <h4 align="center" style="font-weight:bold;">(<?php echo isset($user_id) ? "Report run by " . ($user_id) . " - " . $date_time : ''; ?>)</h4>
+        <div class="row">
+            <div class="col-md-12">
+
+                <?php
+                $i = 0;
+                if (count($arr_stocksummary_for_template) == 0) {
+                    echo "<h2>No Data Available With The Selected Criteria</h2> ";
+                } else {
+                    foreach ($arr_stocksummary_for_template as $value) {
+                        if (count($value) !== 0) {
+                            $i += 1;
+                            ?>
+                            <legend>
+                                <?php
+                                echo isset($value['0']['sm']['store_location']) ? "Store - " . $value['0']['sm']['store_location'] : '';
+                                echo ' ';
+                                ?> 
+                            </legend>
+
+                            <?php
+                            $arr_mr = $value;
+                            foreach ($arr_mr as $val) {
+                                if (count($val['Items']) > 0) {
+                                    $po_state = isset($val['material_request']['po_status']) ? $val['material_request']['po_status'] : '';
+                                    switch ($po_state) {
+                                        case '1':$po_statu = "MATERIAL REQUESTED";
+                                            break;
+                                        case '2':$po_statu = "PO ORDERED";
+                                            break;
+                                        case '3':$po_statu = "GRN RECEIVED";
+                                            break;
+                                        default :$po_statu = "MATERIAL REQUESTED";
+                                            break;
+                                    }
+                                    ?>
+                                    <div class="col-md-12">
+                                        <fieldset> 
+
+
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">MR CODE : <?php echo isset($val['material_request']['mr_code']) ? $val['material_request']['mr_code'] : ''; ?>  </div>
+                                            <div class="col-md-4">MR DATE : <?php echo isset($val['material_request']['mr_date']) ? $val['material_request']['mr_date'] : ''; ?>  </div>
+                                            <!--<div class="col-md-4">CUSTOMER : <?php echo isset($val['material_request']['customer_name']) ? $val['material_request']['customer_name'] : ''; ?>  </div>-->
+                                            <div class="col-md-4">PO STATUS : <?php echo $po_statu; ?>  </div>
+
+
+                                        </fieldset>
+
+                                        <br>
+                                        <fieldset>
+
+
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+
+                                                                        <!--    <th>LEAVEPOLICY_GROUP_NAME</th> -->
+
+                                                        <th>Sl No</th>
+                                                        <th>Item Code</th>
+                                                        <th>Item Name</th>
+                                                        <!--<th>STORE CODE</th>-->
+                                                        <th>Quantity</th>
+                        
+
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <?php $arr_data = $val['Items']; ?>
+                                                    <?php
+                                                    if (count($arr_data) >= 0) {
+                                                        $i = 0;
+                                                        $sum = 0;
+                                                        ?>
+                                                        <?php foreach ($arr_data as $v) { ?>
+                                                            <tr>
+                                                                <?php $i = $i + 1; ?>
+                                                                <td><?php echo $i; ?></td>
+                                                                <td><?php echo $v['item_master']['item_code']; ?></td>
+                                                                <td><?php echo $v['item_master']['item_desc']; ?></td>
+                                                                <!--<td><?php echo $v['mr_details']['required_qty']; ?></td>-->
+                                                                <td><?php echo $v['mr_details']['required_qty']; ?></td>
+                                                            </tr>
+
+
+
+
+
+                                                        <?php } ?>
+
+                                                    <?php } else { ?>
+                                                        <tr>
+                                                            <td colspan="4">No Stocks found under this data</td>
+                                                        </tr>  
+                                                    <?php } ?>
+
+
+                                                </tbody>
+                                            </table>
+
+                                        </fieldset>
+                                        <br>
+
+                                    </div>
+                                    <?php
+                                }
+                            }
+                        }
+                    }
+                }
+                ?> <!-- /.box-body -->
+
+            </div>
+        </div>  
+        <!--div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel </button>  
+        </div-->
+        <!---<div class="row">
+              <div class="form-group">
+                  <div class="col-md-12" align="right">
+                      <a href="#" class="btn btn-default" onclick="downloadReport('salarystructure','pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                      <a href="#" class="btn btn-default" onclick="downloadReport('salarystructure','excel');"><i class="icon-file"></i>Download As Excel</a>
+                  </div>
+              </div>
+          </div> -->
+    </div>
+<?php } else { ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';   ?>
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+        .row {
+            height: 32px;
+        }
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+        table {
+            border: 2px solid #f4f4f4;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        td, th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border: 1px solid #B2B2B2;
+        }
+    </style>
+
+
+
+    <?php
+echo $this->element('reportadminheader',array(
+'title'=>'Material Report '.$month));
+    ?>
+
+    <h3 style="text-align:center"><?php echo isset($user_id) ? "Report run by " . ($user_id) . " - " . $date_time : ''; ?></h3>
+
+
+
+
+    <hr>
+    <?php
+    $i = 0;
+    if (count($arr_stocksummary_for_template) == 0) {
+        echo "<h2>No Data Available With The Selected Criteria</h2> ";
+    } else {
+        foreach ($arr_stocksummary_for_template as $value) {
+            if (count($value) !== 0) {
+                $i += 1;
+                ?>  
+                <h3 style="text-align: left;padding-bottom: 0px;padding-top: 10px;"> <?php echo isset($value['0']['sm']['store_location']) ? "Store - " . $value['0']['sm']['store_location'] : ''; ?>  
+                </h3>
+
+                <?php
+                $arr_mr = $value;
+                foreach ($arr_mr as $val) {
+                    if (count($val['Items']) > 0) {
+                        $po_state = isset($val['material_request']['po_status']) ? $val['material_request']['po_status'] : '';
+                        switch ($po_state) {
+                            case '1':$po_statu = "MATERIAL REQUESTED";
+                                break;
+                            case '2':$po_statu = "PO ORDERED";
+                                break;
+                            case '3':$po_statu = "GRN RECEIVED";
+                                break;
+                            default :$po_statu = "MATERIAL REQUESTED";
+                                break;
+                        }
+                        ?>
+                        <div style="width: 100%; ">
+
+                            <br>
+                            <div class="col-md-4">MR CODE : <?php echo isset($val['material_request']['mr_code']) ? $val['material_request']['mr_code'] : ''; ?>  </div>
+                            <div class="col-md-4">MR DATE : <?php echo isset($val['material_request']['mr_date']) ? $val['material_request']['mr_date'] : ''; ?>  </div>
+                            <!--<div class="col-md-4">CUSTOMER : <?php echo isset($val['material_request']['customer_name']) ? $val['material_request']['customer_name'] : ''; ?>  </div>-->
+                            <div class="col-md-4">PO STATUS : <?php echo $po_statu; ?>  </div>
+
+                            <br>
+                            <table class="table" align="left">
+                                <thead>
+                                    <tr>
+
+                                                                <!--    <th>LEAVEPOLICY_GROUP_NAME</th> -->
+
+                                        <th>Sl No</th>
+                                        <th>Item Code</th>
+                                        <th>Item Name</th>
+                                        <!--<th>STORE CODE</th>-->
+                                        <th>Quantity</th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <?php $arr_data = $val['Items']; ?>
+                                    <?php
+                                    if (count($arr_data) >= 0) {
+                                        $i = 0;
+                                        $sum = 0;
+                                        ?>
+                                        <?php foreach ($arr_data as $v) { ?>
+                                            <tr>
+                                                <?php $i = $i + 1; ?>
+                                                <td><?php echo $i; ?></td>
+                                                <td><?php echo $v['item_master']['item_code']; ?></td>
+                                                <td><?php echo $v['item_master']['item_desc']; ?></td>
+                                                <!--<td><?php echo $v['mr_details']['required_qty']; ?></td>-->
+                                                <td><?php echo $v['mr_details']['required_qty']; ?></td>
+                                            </tr>
+
+
+
+
+
+                                        <?php } ?>
+
+                                    <?php } else { ?>
+                                        <tr>
+                                            <td colspan="4">No Stocks found under this data</td>
+                                        </tr>  
+                                    <?php } ?>
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <br>
+
+
+                        <?php
+                    }
+                }
+            }
+        }
+    }
+    ?> <!-- /.box-body -->
+
+<?php } ?>

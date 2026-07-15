@@ -1,0 +1,160 @@
+<section class="content-header">
+    <h2 style="text-align:left;"> Project Income Master </h2>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- DIRECT CHAT DANGER -->
+            <div class="box ">
+                <div class="box-body">
+                    <!--    <div class="box-header with-border">
+                            <legend>Vehicle Master</legend>
+                            <div class="box-body" id="div-reportcriterias">
+        
+                             <form>
+        
+                             </div>
+                         </form>
+                     </div> -->
+                </div>
+                <div >
+                    <table id="projecttable">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    // $(document).ready(function () {
+//    function reloadDatagrid(vehicle_master_pkey)
+//    {
+//        $("#projecttable").datagrid('load', {
+//            vehicle_master_pkey: vehicle_master_pkey
+//        });
+//    }
+    $(document).ready(function () {
+//        var usersoptions = {
+//            url: function (phrase) {
+//                return "Vehicle/search?model_dec=" + phrase;
+//            },
+//            getValue: "model_dec",
+//            list: {
+//                onClickEvent: function () {
+//                    var selectedItem = $("#model_dec").getSelectedItemData();
+//                    var site_fkey = selectedItem.vehicle_master_pkey
+//                    reloadDatagrid(site_fkey);
+//                }
+//            },
+//            theme: "plate-dark",
+//            placeholder: "Search for Vehicle name or Reg. No."
+//        };
+//        $('#model_dec').easyAutocomplete(usersoptions);
+        $('#projecttable').datagrid();
+//        var vehicle_master_pkey = $('#model_dec').val();
+//        reloadDatagrid(vehicle_master_pkey);
+//        $('#model_dec').on('change', function () {
+//            var vehicle_master_pkey = $(this).val();
+//            reloadDatagrid(vehicle_master_pkey);
+//        });
+        // grid loading    
+        $("#projecttable").datagrid(
+                {
+                    title: "Project Income Master",
+                    rownumbers: true,
+                    itColumns: true,
+                    url: livesite + 'ProjectIncome/listproject',
+                    singleSelect: true,
+                    autoRowHeight: false,
+                    pagination: true,
+                    PostsearchFilter: true,
+                    width: '100%',
+                    pageSize: 10,
+                    toolbar: [
+                        {
+                            iconCls: 'icon-add',
+                            text: "New",
+                            handler: function () {
+                                var url = 'ProjectIncome/form';
+                                showModalForm(url);
+                            }
+                        }, '-',
+                        {
+                            iconCls: 'icon-edit',
+                            text: "Edit",
+                            handler: function () {
+                                var row = $('#projecttable').datagrid('getSelected');
+                                if (row) {
+                                    var project_income_pkey = row.project_income_pkey;
+
+                                    var url = 'ProjectIncome/form/' + project_income_pkey;
+                                    showModalForm(url);
+                                  
+                                }
+                                else
+                                {
+                                    alert("select a row first");
+                                }
+                            }
+                        }, '-',
+                        {
+                            iconCls: 'icon-cancel',
+                            text: "Remove",
+                            handler: function () {
+                                var row = $('#projecttable').datagrid('getSelected');
+                                if (row) {
+                                    var r = confirm("Do You Want To Remove The Selected Item")
+                                    if (r == true) {
+                                        var project_income_pkey = row.project_income_pkey;
+                                        $.ajax({
+                                            url: livesite + 'ProjectIncome/delete/' + project_income_pkey,
+                                            success: function (resp) {
+
+                                                //if (resp.msg) {
+                                                $.notify("Project Income Details Deleted.", {
+                                                    type: 'success',
+                                                    allow_dismiss: true
+
+                                                });
+                                                // }
+                                                $('#projecttable').datagrid('reload');
+                                            }
+                                        });
+                                    }
+                                    else
+                                    {
+                                        $.notify("Cancelled");
+                                    }
+                                }
+                                else
+                                {
+                                    alert("select a row first");
+                                }
+                            }
+                        }
+                    ],
+                    columns: [[
+                            {field: 'invoice_number', title: 'Invoice No.', width: "10%", sortable: true, order: 'asc'},
+                            {field: 'project', title: 'Project Name', width: "18%", sortable: true, order: 'asc'},
+                            {field: 'invoice_date', title: 'Invoice Date', width: "10%", sortable: true, order: 'asc'},
+                            {field: 'amount', title: 'Amount', width: "8%", sortable: true, order: 'asc'},
+                            {field: 'cgst', title: 'CGST', width: "7%", sortable: true, order: 'asc'},
+                            {field: 'sgst', title: 'SGST', width: "7%", sortable: true, order: 'asc'},
+                            {field: 'total', title: 'Total', width: "8%", sortable: true, order: 'asc'},
+                            {field: 'payments', title: 'Amount Received', width: "10%", sortable: true, order: 'asc'},
+                            {field: 'balance', title: 'Balance', width: "8%", sortable: true, order: 'asc'},
+                            {field: 'remarks', title: 'Remarks', width: "13%", sortable: true, order: 'asc'},
+                        ]]
+                    ,
+                    onSearch: function (s) {
+                        $('#projecttable').datagrid('load', {
+                            project: $('#searchqupo').val(),
+                            invoice_number: $('#searchqupo').val(),
+                            invoice_date: $('#searchqupo').val(),
+                            remarks: $('#searchqupo').val(),
+                            total: $('#searchqupo').val()
+                        });
+                    }
+                });
+    });
+</script>

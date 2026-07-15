@@ -1,0 +1,182 @@
+<script>
+	var controllerName = "<?php echo isset($hierarchy)?'Empattendance':'SiteAttendanceManage'; ?>";
+</script>
+<div class="row">
+    <div class="col-md-12">
+        <div class="datagrid-toolbar">
+            <table cellspacing="0" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <?php if($tab == 0){ ?>
+                        <td>
+                            <a href="javascript:void(0)" onclick="verifyRegisterEntries();" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                <span class="l-btn-left l-btn-icon-left">
+                                    <span class="l-btn-text">Verify</span>
+                                    <span class="l-btn-icon icon-ok">&nbsp;</span>
+                                </span>
+                            </a>
+                        </td>
+                        <?php $id = 'filterby_employee';}else{ $id = 'select_filterby_employee';} ?>
+                        <td>
+                            <select id="<?php echo $id; ?>" name="<?php echo $id; ?>" class="form-control" onchange="filterRegisterByEmployee(<?php echo $tab; ?>);" >
+                                <option value="">--All--</option>
+                                <?php
+                                  //Employee Company ID added by ***ARUL P DAS on 12/12/2019
+//                                foreach ($arr_employees as $key => $value) {
+//                                    echo '<option value="' . $value['emp_pkey'] . '">' . $value['emp_name'] . '</option>';
+//                                }
+                                foreach ($arr_employees as $value) {
+		                 echo '<option value="' . $value['emp_details']['emp_pkey'] . '">' . $value['emp_details']['first_name'] . ' ' . $value['emp_details']['last_name'] . ' - ' .$value['emp_proff']['emp_company_id']. '</option>';
+	                        }
+            //end Employee company id added
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <?php if($tab == 0){ ?>
+        <input type="hidden" id="hidden-start-date" value="<?php echo $date_start; ?>" />
+        <input type="hidden" id="hidden-end-date" value="<?php echo $date_end; ?>" />
+        <table id="attendanceregistertable" class="table table-bordered table-hover">
+            <thead frozen="true">
+                <tr>
+                    <th field="action_save" align="center" width="7%" formatter="showsavebutton">Save</th>
+                    <th field="action_verify" align="center" width="7%" formatter="showverifybutton">Verify</th>
+                    <th data-options="field:'emp_name',width:'10%'" formatter="formatEmployeeName" sortable="true">&nbsp;&nbsp;Employee name</th>
+                    <th data-options="field:'days_present',width:'5%'" formatter="formatEmployeeName">&nbsp;&nbsp;Present</th>
+                    <th data-options="field:'days_leave',width:'5%'" formatter="formatEmployeeName">&nbsp;&nbsp;Leave</th>
+                    <!--th data-options="field:'days_holidays',width:'10%'" formatter="formatEmployeeName">&nbsp;&nbsp;Holidays</th-->
+                    <th data-options="field:'days_lop',width:'5%'" formatter="formatEmployeeName">&nbsp;&nbsp;LOP/Blank</th>
+				</tr>
+			</thead>
+            <thead>
+                <tr>
+                    <?php $j = 1; foreach($arr_dates as $i) { ?>															
+						<!-- By santhosh on 27 Dec 2015 -->
+                        <!--th data-options="field:'<?php echo 'FIELD' . $j; ?>',width:'3%'" styler="styleDay"><?php echo $i; ?></th-->
+                        <!--th data-options="field:'<?php echo 'FIELD' . $i; ?>',width:'3%'" styler="styleDay"><?php echo $i; ?></th-->
+                        <!--th data-options="field:'<?php echo 'FIELD' . $i; ?>',width:'5%',align:'center'" formatter="formatRegisterEntry"><?php echo $i; ?></th-->
+                        <th data-options="field:'<?php echo 'FIELD' . $j; ?>',width:'5%',align:'center'" formatter="formatRegisterEntry"><?php echo $i; ?></th>
+                    <?php $j++; } ?>
+                </tr>
+            </thead>
+        </table>
+        <?php }else{ ?>
+        <table id="verifiedattendanceregistertable" class="table table-bordered table-hover">
+            <thead frozen="true">
+                <tr>
+                    <th data-options="field:'emp_name',width:'10%'" formatter="formatEmployeeName" sortable="true">&nbsp;&nbsp;Employee name</th>
+                    <th data-options="field:'days_present',width:'5%'" formatter="formatEmployeeName">&nbsp;&nbsp;Present</th>
+                    <th data-options="field:'days_leave',width:'5%'" formatter="formatEmployeeName">&nbsp;&nbsp;Leave</th>
+                    <!--th data-options="field:'days_holidays',width:'10%'" formatter="formatEmployeeName">&nbsp;&nbspHolidays</th-->
+                    <th data-options="field:'days_lop',width:'5%'" formatter="formatEmployeeName">&nbsp;&nbsp;LOP/Blank</th>
+				</tr>
+			</thead>
+            <thead>
+                <tr>
+                    <?php $j = 1; foreach($arr_dates as $i) { ?>															
+						<!-- By santhosh on 27 Dec 2015 -->
+                        <!--th data-options="field:'<?php echo 'FIELD' . $j; ?>',width:'3%'" styler="styleDay"><?php echo $i; ?></th-->
+                        <!--th data-options="field:'<?php echo 'FIELD' . $i; ?>',width:'3%'" styler="styleDay"><?php echo $i; ?></th-->
+                        <!--th data-options="field:'<?php echo 'FIELD' . $i; ?>',width:'5%',align:'center'" formatter="formatRegisterEntry"><?php echo $i; ?></th-->
+                        <th data-options="field:'<?php echo 'FIELD' . $j; ?>',width:'5%',align:'center'" formatter="formatRegisterEntry"><?php echo $i; ?></th>
+                    <?php $j++; } ?>
+                </tr>
+            </thead>
+        </table>
+        <?php } ?>
+    </div>
+</div>
+<?php if($tab == 0){ ?>
+<script>
+    function showverifybutton(val,row){
+        return '<a target="_blank" onclick="verifyRegisterEntries(' + row.registerid + ');"><button>Verify</button></a>';
+    }
+    function showsavebutton(val,row){
+        return '<a target="_blank" onclick="updateRegisterEntries(' + row.registerid + ');"><button>Update</button></a>';
+    }
+    var branch = $('#attendanceregisterfilter #filterby_branch').val();
+    var employee = $('#filterby_employee').val();
+    var month = $('#attendanceregisterfilter #filterby_month').val();
+    
+	$('#attendanceregistertable').datagrid({
+		view:scrollview,
+		rownumbers:true,
+		autoRowHeight: true,
+		pageSize:50,
+        width: '100%',
+        height: '350px',
+		
+        //width: '100%',
+        //toolbar: '#tb',
+        singleSelect: true,
+        url: livesite + controllerName + '/listregisterentries',
+        queryParams: {
+            branch: branch,
+            employee: employee,
+            month: month
+        },
+        
+		//fitColumns: true,
+        //pagination: true,
+        //pageList: [2, 5, 10, 20, 50, 100]
+    });
+</script>
+<?php }else{ ?>
+<script>
+    var branch = $('#attendanceregisterfilter #filterby_branch').val();
+    var employee = $('#attendanceregisterfilter filterby_employee').val();
+    var month = $('#attendanceregisterfilter #filterby_month').val();
+	
+    $('#verifiedattendanceregistertable').datagrid({
+		view:scrollview,
+		rownumbers:true,
+		autoRowHeight: true,
+		pageSize:50,
+        width: '100%',
+        height: '350px',
+		
+        //width: '100%',
+        //toolbar: '#tb',
+        singleSelect: true,
+        url: livesite + controllerName + '/listverifiedregisterentries',
+        queryParams: {
+            branch: branch,
+            employee: employee,
+            month: month
+        },
+        
+		//fitColumns: true,
+        //pagination: true,
+        //pageList: [2, 5, 10, 20, 50, 100]
+    });
+    
+    $('#filterby_employee').select2();
+    $('#select_filterby_employee').select2();
+</script>
+<?php } ?>
+<script>
+function filterRegisterByEmployee(tab){
+    if(tab == 1){
+        var branch = $('#attendanceregisterfilter #filterby_branch').val();
+        var employee = $('#select_filterby_employee').val();
+        var month = $('#attendanceregisterfilter #filterby_month').val();
+        $('#verifiedattendanceregistertable').datagrid('load', {
+            branch: branch,
+            employee: employee,
+            month: month
+        });
+    }else {
+        var branch = $('#attendanceregisterfilter #filterby_branch').val();
+        var employee = $('#filterby_employee').val();
+        var month = $('#attendanceregisterfilter #filterby_month').val();
+        $('#attendanceregistertable').datagrid('load', {
+            branch: branch,
+            employee: employee,
+            month: month
+        });
+    }
+}
+</script>

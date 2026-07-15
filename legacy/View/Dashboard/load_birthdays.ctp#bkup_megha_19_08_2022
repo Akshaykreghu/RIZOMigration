@@ -1,0 +1,120 @@
+<div class="row">
+        <div class="col-md-6">
+            <!-- USERS LIST -->
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Birthdays and Anniversaries</h3>
+
+                    <div class="box-tools pull-right">
+                        <span class="label label-danger"><?php echo count($arr_employees_pics); ?> Members</span>
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body no-padding">
+                    <ul class="users-list clearfix">
+                        <?php
+                        foreach ($arr_employees_pics as $val) {
+                            ?>
+                            <li>
+                                <img src="<?php echo isset($val['USC']['avatar']) ? $this->webroot . '/' . $val['USC']['avatar'] : $this->webroot . 'img/avatar5.png'; ?>" style="width:80px;height:80px;" alt="User Image">
+                                <a class="users-list-name" href="#"><?php echo $val['EmployeeDetails']['emp_name']; ?></a>
+                                <span class="users-list-date"><?php if (date("m-d", strtotime($val['EmployeeDetails']['date_of_birth'])) == date('m-d')) {
+                            echo "Birthday";
+                        } else {
+                            echo "Work Anniversary";
+                        } ?></span>
+                            </li>
+    <?php
+}
+?>
+                    </ul>
+                    <!-- /.users-list -->
+                </div>
+                <!-- /.box-body -->
+
+                <!-- /.box-footer -->
+            </div>
+            <!--/.box -->
+        </div>
+        <div class="col-md-6">
+            <div class="box box-info col-md-6">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Employees Location Updates</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table class="table no-margin" id="EmployeesUpdaets">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Location</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <!-- /.table-responsive -->
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer clearfix">
+
+                </div>
+                <!-- /.box-footer -->
+            </div>
+        </div>
+        <!-- /.box-footer -->
+    </div>
+
+<script>
+    $(document).ready(function () {
+        
+   $('#EmployeesUpdaets').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                     extend: 'print',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'pdf',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'excel',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                }
+            ],
+            "info": true,
+            "autoWidth": false,
+            "order": [[ 1, "desc" ]],
+            "ajax": livesite + "dashboard/LocationUpdates",
+        });
+        $('.buttons-print').ready(function(){
+            $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');;
+        });
+        $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');;
+        $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+        
+    });
+</script>

@@ -1,0 +1,3082 @@
+<?php if ($mode == '') { ?>
+    <style>
+        .model-content {
+            width: 104% !important;
+        }
+
+        .table,
+        td,
+        th,
+        tr {
+            border-style: 1px solid;
+            border-color: #cccccc;
+
+
+        }
+
+        .tds-border {
+            border-right-color: #cccccc !important;
+            border-left-color: #cccccc !important;
+        }
+
+        .amount {
+            text-align: center;
+        }
+
+        .value {
+            text-align: right;
+        }
+
+        .margin-zero {
+            margin: 0px;
+        }
+    </style>
+    <?php //debug(array_filter($arr_salary_for_template)); 
+    ?>
+    <div class="modal-body" style="overflow-y: auto;">
+        <div class="row">
+            <div class="col-md-12">
+                <div class=" ">
+                    <?php
+
+                    $i = 0;
+                    if ($cr == 'EmployeeDetails') {
+                        // debug(count($arr_salary_for_template)); exit;
+                        foreach ($arr_salary_for_template as $value) { ?>
+
+                            <?php
+                            if (count($value['summary']) != 0) {
+                                $i += 1;
+                            ?>
+
+
+                                <div>
+                                    <div>
+                                        <h3 style="font-size: 19px; text-align: center; color: #000066;font-weight:bold; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?></h3>
+                                        <h3 style="font-size: 15px; text-align:center; ">(A Govt. of Kerala Public Sector Undertaking)</h3>
+
+                                        <h3 style="font-size: 15px; text-align:center; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['address'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['city'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['pincode'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['state']; ?></h3>
+                                    </div>
+                                    <div style="text-align: center;align-items: center; border: 1px solid black; width:450px; margin-top: 0px;  margin-left:auto;float:center;margin-right: auto; height: 25px;">
+                                        <h3 style="padding: 0px 20px; margin: 0; font-size: 16px;font-weight: bold;">
+                                            Pay Slip for the month of <?php echo $mname1 . " / " . $y1; ?>
+                                        </h3>
+                                    </div>
+                                </div>
+
+
+                                <!--
+        
+
+    
+</table>-->
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px;">
+                                    <div class="col-md-2 " style="background-color:#cccccc;">
+                                        Emp No.
+                                    </div>
+                                    <?php $emp_pkey = isset($value['summary']['0']['ed']['emp_pkey']) ? $value['summary']['0']['ed']['emp_pkey'] : ''; ?>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; word-wrap: break-word; "> <?php echo isset($value['summary']['0']['ep']['emp_company_id']) ? $value['summary']['0']['ep']['emp_company_id'] : ''; ?> </span><span style="float: right ;"></span>
+                                    </div>
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        Division
+                                    </div>
+                                    <!--edited by sinsiya 23-03-2024-->
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ;  border-bottom: 0px solid white ; "> <?php
+                                                                                                                //edited by megha on 9_7_19 date format changed
+                                                                                                                if (!empty($value['summary']['0']['payroll_master']['division'])) {
+                                                                                                                    echo $value['summary']['0']['payroll_master']['division'];
+                                                                                                                } else {
+                                                                                                                    echo isset($value['summary']['0']['division']['div_name']) ? $value['summary']['0']['division']['div_name'] : '';
+                                                                                                                }
+                                                                                                                //echo isset($value['summary']['0']['ep']['joining_date']) ? $value['summary']['0']['ep']['joining_date'] : '';
+                                                                                                                ?> </span><span style="float: right ;"></span>
+                                    </div>
+                                </div>
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-left: 1px solid black;border: none;">
+
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        <span> Employee Name : </span><span></span>
+                                    </div>
+                                    <!--edited by sinsiya 23-03-2024-->
+                                    <div class="col-md-4 ">
+                                        <span style="text-align: right ; word-wrap: break-word; "> <?php
+                                                                                                    $empstatus = isset($value['summary']['0']['ed']['status']) && $value['summary']['0']['ed']['status'] == "2" ? '  (Resigned)' : '';
+                                                                                                    if (!empty($value['summary']['0']['payroll_master']['emp_name'])) {
+
+                                                                                                        echo $value['summary'][0]['payroll_master']['emp_name'] . ' ' . $empstatus;
+                                                                                                    } else {
+                                                                                                        echo isset($value['summary']['0']['ed']['first_name']) ? $value['summary']['0']['ed']['first_name'] : '';
+                                                                                                        echo ' ';
+                                                                                                        echo isset($value['summary']['0']['ed']['middile_name']) ? $value['summary']['0']['ed']['middile_name'] : '';
+                                                                                                        echo ' ';
+                                                                                                        echo isset($value['summary']['0']['ed']['last_name']) ? $value['summary']['0']['ed']['last_name'] : '';
+                                                                                                        echo ' ' . $empstatus;
+                                                                                                    }
+
+                                                                                                    ?> </span><span style="float: right ;"></span>
+                                    </div>
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        <span> PAN </span><span></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; word-wrap: break-word; "> <?php echo  wordwrap(isset($value['summary']['0']['ed']['pan_no']) ? strtoupper($value['summary']['0']['ed']['pan_no']) : '', 21, "<br>\n", TRUE); ?> </span><span style="float: right ;"></span>
+                                    </div>
+
+                                </div>
+
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        DOJ
+                                    </div>
+                                    <div class="col-md-4">
+                                        <!--           <span style="text-align: right ; ">: <?php //echo isset($value['empdet']['0']['payroll_master']['working_days']) ? $value['empdet']['0']['payroll_master']['working_days'] : ''; 
+                                                                                            ?>   </span><span style="float: right ;"></span>-->
+                                        <span style="text-align: right ; "> <?php if (!empty($value['summary']['0']['payroll_master']['joining_date']) && $value['summary']['0']['payroll_master']['joining_date'] != '0000-00-00') {
+                                                                                echo date('d-m-Y', strtotime($value['summary']['0']['payroll_master']['joining_date']));
+                                                                            } else {
+                                                                                echo isset($value['summary']['0']['ep']['joining_date']) ? date('d-m-Y', strtotime($value['summary']['0']['ep']['joining_date'])) : '';
+                                                                            } ?> </span><span style="float: right ;"></span>
+                                    </div>
+                                    <?php
+
+
+                                    $acc_number = '';
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    if ($acc_number == '') {
+                                        $acc_number = isset($value['summary']['0']['ed']['account_no']) ? $value['summary']['0']['ed']['account_no'] : '';
+                                    } ?>
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        <span style="text-align:  left ; ">Bank A/c </span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: left ;  border-right: 0px solid white; border-bottom: 0px solid white ; "> <?php echo $acc_number; ?> </span><span style="float: right ;"></span>
+
+                                    </div>
+
+
+                                </div>
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        <span style="text-align:  left ; ">Designation </span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "><?php if (!empty($value['summary']['0']['payroll_master']['desig'])) {
+                                                                                echo $value['summary']['0']['payroll_master']['desig'];
+                                                                            } else {
+                                                                                echo  wordwrap(isset($value['summary']['0']['desg']['desig_name']) ? $value['summary']['0']['desg']['desig_name'] : '', 30, "<br>\n", TRUE);
+                                                                            } ?></span>
+
+                                    </div>
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        <span> UAN </span><span></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "> <?php echo isset($value['summary']['0']['ed']['pf']) ? $value['summary']['0']['ed']['pf'] : ''; ?> </span><span style="float: right ;"></span>
+
+                                    </div>
+
+                                </div>
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        Department
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "><?php if (!empty($value['summary']['0']['payroll_master']['departments'])) {
+                                                                                echo $value['summary']['0']['payroll_master']['departments'];
+                                                                            } else {
+                                                                                echo  wordwrap(isset($value['summary']['0']['desg']['desig_name']) ? $value['summary']['0']['desg']['desig_name'] : '', 30, "<br>\n", TRUE);
+                                                                            } ?></span>
+
+                                    </div>
+                                    <!-- Edited by Akshay on 21-6-2024 -->
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        Grade
+                                    </div>
+                                    <?php $grade = (isset($value['summary']['0']['payroll_master']['grade']) && ($value['summary']['0']['payroll_master']['grade'] != '')) ? $value['summary']['0']['payroll_master']['grade'] : (isset($value['summary']['0']['grade']['grade_name']) ? $value['summary']['0']['grade']['grade_name'] : ''); ?>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "><?php echo $grade; ?></span>
+                                    </div>
+                                    <!-- End -->
+                                </div>
+                                <!-- Edited by Akshay on 21-6-2024 -->
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        Pay Scale
+                                    </div>
+                                    <!-- Edited by Akshay on 2-8-2024 -->
+                                    <?php $pay_scale = (isset($value['summary']['0']['payroll_master']['pay_scale']) && ($value['summary']['0']['payroll_master']['pay_scale'] != '')) ? $value['summary']['0']['payroll_master']['pay_scale'] : (isset($value['summary']['0']['grade']['pay_scale']) ? $value['summary']['0']['grade']['pay_scale'] : ''); ?>
+                                    <!-- End -->
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "><?php echo $pay_scale; ?></span>
+                                    </div>
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        ESI No
+                                    </div>
+                                    <div class="col-md-4">
+                                        <?php $esi = isset($value['summary']['0']['ed']['esi']) ? $value['summary']['0']['ed']['esi'] : ''; ?>
+                                        <span style="text-align: right ; "><?php echo $esi; ?></span>
+                                    </div>
+                                </div>
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        Pay Days
+                                    </div>
+                                    <?php
+                                    $leave = isset($value['summary']['0']['payroll_master']['days_leave']) ? $value['summary']['0']['payroll_master']['days_leave'] : '';
+                                    $present = isset($value['summary']['0']['payroll_master']['days_presant']) ? $value['summary']['0']['payroll_master']['days_presant'] : '';
+                                    $weekoff = isset($value['summary']['0']['ar']['weekoff_total']) ? $value['summary']['0']['ar']['weekoff_total'] : '';
+                                    $paydays = $leave + $present + $weekoff; ?>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "> <?php echo $paydays; ?> </span><span style="float: right ;"></span>
+                                    </div>
+                                </div>
+                                <!-- End -->
+                                <br>
+                                <table class="table table-bordered" align="center">
+                                    <tbody>
+                                        <tr>
+
+                                            <th>Earnings</th>
+                                            <th class="amount">Amount</th>
+                                            <th>Deductions</th>
+                                            <th class="amount">Amount</th>
+
+                                        </tr>
+                                        <?php $arr_data = $value['summary'];
+                                        $arr_withoutComponents = $value['withoutcomponent'];
+                                        ?>
+                                        <?php
+                                        if (count($arr_data) >= 0) {
+                                            $countss = count($arr_data);
+                                            if (count($arr_data) < count($arr_withoutComponents)) {
+                                                $countss = count($arr_withoutComponents);
+                                            }
+                                            $sum = 0;
+                                            $tot = 0;
+                                            $dd = 0;
+                                            $net = 0;
+                                        ?>
+                                            <?php for ($i = 0; $i < $countss; $i++) {
+                                            ?>
+                                                <tr> <?php
+                                                        $sum += isset($arr_data[$i]['ectc']['salary_amount']) ? round($arr_data[$i]['ectc']['salary_amount']) : 0;
+                                                        if (isset($arr_withoutComponents[$i]['ectc']))
+                                                            $dd += isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? round($arr_withoutComponents[$i]['ectc']['salary_amount']) : 0;
+                                                        ?>
+                                                    <!-- edited by megha on 30_05_19 round off  -->
+
+                                                    <td><?php echo isset($arr_data[$i]['ectc']['salary_head_item_desc']) ? $arr_data[$i]['ectc']['salary_head_item_desc'] : ''; ?></td>
+                                                    <!--<td><?php //echo isset($arr_data[$i]['ectc']['structure_det_value'])?round($arr_data[$i]['ectc']['structure_det_value'], 2):''; 
+                                                            ?></td>-->
+
+                                                    <td class="value"><?php echo isset($arr_data[$i]['ectc']['salary_amount']) ? formatIndianNumberslip(abs(round($arr_data[$i]['ectc']['salary_amount'])), 2) : ''; ?></td>
+
+                                                    <td><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_head_item_desc']) ? $arr_withoutComponents[$i]['ectc']['salary_head_item_desc'] : ''; ?></td>
+                                                    <!--<td><?php //echo round(isset($arr_withoutComponents[$i]['ectc']['structure_det_value']) ? $arr_withoutComponents[$i]['ectc']['structure_det_value'] : '', 2); 
+                                                            ?></td>-->
+                                                    <!-- edited by megha on 08_07_19 '0' values removed  -->
+                                                    <td class="value"><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? formatIndianNumberslip(abs(round($arr_withoutComponents[$i]['ectc']['salary_amount'])), 2) : ''; ?></td>
+
+                                                </tr>
+
+                                            <?php } ?>
+                                            <tr>
+                                                <th>Total</th>
+                                                <th class="value"><?php echo formatIndianNumberslip((abs(round($sum))), 2); ?></th>
+                                                <th>Total </th>
+                                                <th class="value"><?php echo formatIndianNumberslip((abs(round($dd))), 2); ?></th>
+                                            </tr>
+                                            <!-- edited by megha on 16/11/19 settlement amount  -->
+                                            <?php if ($value['summary']['0']['ed']['status'] == 2) { ?>
+                                                <!--                        <tr style="background: #cccccc ;" >
+                            <th style="text-align :center ; " colspan="3">Settlement Amount</th><th><?php echo $value['settle']; ?></th>
+                        </tr>-->
+                                            <?php } ?>
+                                            <!-- end -->
+                                            <!-- edited by megha on 30_05_19 round off, edited by megha on 16/11/19 settlement amount  -->
+
+                                            <!-- <tr style="background: #cccccc ;" > -->
+                                            <?php
+                                            $settle = isset($value['settle']) ? $value['settle'] : 0;
+                                            $netpay1 = (float)round($sum) + (float)round($dd) + (float)round($settle);
+                                            $netpay = $netpay1;
+                                            if ($netpay < 0) {
+                                                $direction = 'Negative';
+                                                $netpay = abs($netpay);
+                                            } else {
+                                                $direction = "";
+                                            }
+                                            $no = floor($netpay);
+                                            $point = round($netpay - $no, 2) * 100;
+                                            $hundred = null;
+                                            $digits_1 = strlen($no);
+                                            $i = 0;
+                                            $str = array();
+                                            $words = array(
+                                                '0' => '', '1' => 'one', '2' => 'two',
+                                                '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
+                                                '7' => 'seven', '8' => 'eight', '9' => 'nine',
+                                                '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
+                                                '13' => 'thirteen', '14' => 'fourteen',
+                                                '15' => 'fifteen', '16' => 'sixteen', '17' => 'seventeen',
+                                                '18' => 'eighteen', '19' => 'nineteen', '20' => 'twenty',
+                                                '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
+                                                '60' => 'sixty', '70' => 'seventy',
+                                                '80' => 'eighty', '90' => 'ninety'
+                                            );
+                                            $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
+                                            while ($i < $digits_1) {
+                                                $divider = ($i == 2) ? 10 : 100;
+                                                $netpay = floor($no % $divider);
+                                                $no = floor($no / $divider);
+                                                $i += ($divider == 10) ? 1 : 2;
+                                                if ($netpay) {
+
+                                                    $plural = (($counter = count($str)) && $netpay > 9) ? 's' : null;
+                                                    $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
+                                                    $str[] = ($netpay < 21) ? $words[$netpay] .
+                                                        " " . $digits[$counter] . $plural . " " . $hundred
+                                                        :
+                                                        $words[floor($netpay / 10) * 10]
+                                                        . " " . $words[$netpay % 10] . " "
+                                                        . $digits[$counter] . $plural . " " . $hundred;
+                                                } else $str[] = null;
+                                            }
+                                            $str = array_reverse($str);
+                                            $result = $direction . ' ' . implode('', $str);
+                                            ?>
+
+
+
+
+                                            <!-- </tr> -->
+                                            <?php $arr_withoutComponents = $value['withoutcomponent']; ?>
+
+                                            <?php if (count($arr_withoutComponents) > 0) {
+                                            ?>
+
+
+
+                                            <?php } ?>
+                                        <?php } else {
+                                        ?>
+                                            <tr>
+                                                <td colspan="4">No Components found under this data</td>
+                                            </tr>
+
+                                        <?php } ?>
+
+                                    </tbody>
+                                </table>
+                                <div style="text-align: left; font-size: 15px;"><b>Net Pay&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo formatIndianNumberslip($netpay1, 2); ?> </b></div>
+
+                                <div style="text-align: left; font-size: 15px;text-transform: capitalize;"><b>In Words Rupees <?php echo $result; ?> Only</b></div><br>
+                                <?php if ($value['regime'] == 'O') {
+                                    $option = 'Old';
+                                } else {
+                                    $option =  'New';
+                                } ?>
+                                <table class="table table-bordered" align="center">
+                                    <tbody>
+                                        <tr style="background-color: #cccccc;">
+                                            <!-- Edited by Akshay on 7-6-2024 -->
+                                            <th colspan="2" style="text-align:left;" class="tds-border"><?php echo $option; ?> Tax Regime Opted </th>
+                                            <!-- End -->
+                                            <th colspan="2" style="text-align:left;" class="tds-border">TDS Details</th>
+                                            <th colspan="4" style="text-align:right;">PAN : <?php echo isset($value['summary']['0']['ed']['pan_no']) ? $value['summary']['0']['ed']['pan_no'] : ''; ?></th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="col-md-6" style="padding-left:0px;padding-right:2px;margin-top:-12px;">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td style="text-align: center; " colspan="1"><b>Description</b></td>
+                                                <td style=" text-align: center; "><b>Gross</b></td>
+                                                <td style=" text-align: center; "><b>Exempt</b></td>
+                                                <td style=" text-align: center;"><b>Taxable</b></td>
+                                            </tr>
+                                            <?php
+                                            $taxable = '';
+                                            $excempt = '';
+                                            $values = '';
+                                            $count = 0;
+
+
+                                            $arr_data = isset($value['grossnew']) ? $value['grossnew'] : '';
+                                            $employee = $value;
+
+                                            if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                if (count($arr_data) >= 0) {
+                                                    foreach ($arr_data as $val) {
+                                                        $component = isset($val['SHI']['item']) ? $val['SHI']['item'] : '';
+                                                        if ($value['regime'] == 'N') {
+                                                            $values = isset($val['EmpTaxSalTransNew']['availed_salary']) ? $val['EmpTaxSalTransNew']['availed_salary'] : 0;
+                                                            $emp_fkey = isset($val['EmpTaxSalTransNew']['emp_fkey']) ? $val['EmpTaxSalTransNew']['emp_fkey'] : 0;
+                                                        } else {
+                                                            $values = isset($val['EmpTaxSalTrans']['availed_salary']) ? $val['EmpTaxSalTrans']['availed_salary'] : 0;
+                                                            $emp_fkey = isset($val['EmpTaxSalTrans']['emp_fkey']) ? $val['EmpTaxSalTrans']['emp_fkey'] : 0;
+                                                        }
+                                                        $taxable = $values - $excempt;
+
+                                                        if ($emp_fkey === $emp_pkey) {
+                                                            $count++;
+                                            ?>
+                                                            <tr>
+                                                                <td><?php echo $component; ?></td>
+                                                                <td style=" text-align: right;"><?php echo formatIndianNumberslip($values, 2); ?></td>
+                                                                <td style=" text-align: right;"><?php echo $excempt; ?></td>
+                                                                <td style=" text-align: right;"><?php echo formatIndianNumberslip($taxable, 2); ?></td>
+                                                            </tr>
+                                            <?php
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            ?>
+
+                                            <?php
+
+                                            // debug($count);
+                                            if ($count < 9) {
+                                                for ($k = 0; $k <= (8 - $count); $k++) { ?>
+                                                    <tr>
+                                                        <td><?php echo " &nbsp; "; ?></td>
+                                                        <td><?php echo "  &nbsp;"; ?></td>
+                                                        <td><?php echo "  &nbsp;"; ?></td>
+                                                        <td><?php echo "  &nbsp;"; ?></td>
+                                                    </tr>
+                                            <?php }
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6" style="padding-left:2px;padding-right:0px;margin-top:-12px;">
+                                    <table class="table table-bordered" style="margin:0;">
+                                        <tbody>
+                                            <tr>
+                                                <th colspan="2" style="text-align:center;"><b>Income Tax Deduction</b></th>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:29%">&nbsp;Gross Salary</td>
+                                                <?php
+                                                $arr_data = isset($value['gross']) ? $value['gross'] : '';
+                                                $gross = 0;
+                                                $std = 0;
+                                                $Income_from_Other_Source = 0;
+                                                $Taxable_Income = 0;
+                                                $Total_Tax = 0;
+                                                $Surcharge = 0;
+                                                $Tax_Deducted_Till_date = 0;
+                                                $Tax_to_be_Deducted = 0;
+                                                $Monthly_tax = 0;
+
+                                                if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                    if (count($arr_data) >= 0) {
+                                                        foreach ($arr_data as $val) {
+                                                            //$stdecn = 50000;
+                                                            $gross =  isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? $val['tax_computation_report']['Taxable_Income_from_Salary'] : 0;
+                                                            //$std =  isset($val['tax_computation_report']['Standard_deduction']) ? formatIndianNumberslip($val['tax_computation_report']['Standard_deduction'],2) : formatIndianNumberslip($stdecn,2);
+                                                            $Income_from_Other_Source = isset($val['tax_computation_report']['Taxable_Income_from_Other_Sources']) ? formatIndianNumberslip($val['tax_computation_report']['Taxable_Income_from_Other_Sources'], 2) : 0.00;
+                                                            $Taxable_Income =  isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? formatIndianNumberslip($val['tax_computation_report']['Taxable_Income_from_Salary'], 2) : 0.00;
+                                                            $Total_Tax =  isset($val['tax_computation_report']['Total_Tax']) ? formatIndianNumberslip($val['tax_computation_report']['Total_Tax'], 2) : 0.00;
+                                                            $Surcharge =  isset($val['tax_computation_report']['Surcharge']) ? formatIndianNumberslip($val['tax_computation_report']['Surcharge'], 2) : 0.00;
+                                                            $Tax_Deducted_Till_date = isset($val['tax_computation_report']['Tax_Deducted']) ? formatIndianNumberslip($val['tax_computation_report']['Tax_Deducted'], 2) : 0.00;
+                                                            $Tax_to_be_Deducted = isset($val['tax_computation_report']['Balance_Tax']) ? formatIndianNumberslip($val['tax_computation_report']['Balance_Tax'], 2) : 0.00;
+                                                            $Monthly_tax =  isset($val['tax_computation_report']['Monthly_Tax']) ? formatIndianNumberslip($val['tax_computation_report']['Monthly_Tax'], 2) : 0.00;
+                                                        }
+                                                    }
+                                                }
+
+                                                ?>
+
+                                                <?php
+
+                                                $totalValuesSum = 0;
+
+
+                                                $arr_data = isset($value['grossnew']) ? $value['grossnew'] : '';
+                                                $employee = $value;
+
+                                                if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                    if (count($arr_data) >= 0) {
+                                                        foreach ($arr_data as $employee => $val) {
+                                                            if ($value['regime'] == 'N') {
+                                                                $values = isset($val['EmpTaxSalTransNew']['availed_salary']) ? $val['EmpTaxSalTransNew']['availed_salary'] : 0;
+                                                            } else {
+                                                                $values = isset($val['EmpTaxSalTrans']['availed_salary']) ? $val['EmpTaxSalTrans']['availed_salary'] : 0;
+                                                            }
+                                                            $totalValuesSum += $values;
+                                                        }
+                                                    }
+                                                }
+                                                ?>
+                                                <td style="width:15%;text-align:right;"><?php echo formatIndianNumberslip($totalValuesSum, 2); ?></td>
+                                            </tr>
+                                            <?php
+                                            //                                            $pt = 0.00;									  
+                                            //                                                $arr_data = isset($value['withoutcomponent']) ? $value['withoutcomponent'] : '';
+                                            //                                                if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                            //                                                    if (count($arr_data) >= 0) {
+                                            //                                                        foreach ($arr_data as $val) {
+                                            //                                                            $pthead = isset($val['ectc']['salary_head_item_desc']) ? $val['ectc']['salary_head_item_desc'] : '';
+                                            //                                                            $ptAmount = isset($val['ectc']['salary_amount']) ? $val['ectc']['salary_amount'] : 0;
+                                            //                                                             if ($pthead == 'Professional Tax') {
+                                            //                                                                $pt = formatIndianNumberslip(abs($ptAmount), 2);
+                                            //                                                                break ;
+                                            //                                                            }
+                                            //                                                        }
+                                            //                                                    }
+                                            //                                                }
+                                            ?>
+                                            <?php
+                                            if ($value['regime'] == 'N') {
+                                                $other_ded = 0;
+                                                $standerd_deduction = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['standerd_deduction']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['standerd_deduction'] : 0;
+                                                $taxableincome = $totalValuesSum - $standerd_deduction - $other_ded + (isset($Income_from_Other_Source) ? floatval(str_replace(',', '', $Income_from_Other_Source)) : 0); //Edited by Akshay on 2-5-2024
+                                                $totalded = $standerd_deduction + $other_ded;
+                                                $Total_Tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_yearly']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_yearly'] : 0;
+                                                $Surcharge = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['surcharge']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['surcharge'] : 0;
+                                                $cess = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['cess']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['cess'] : 0;
+                                                $Surchargecess = formatIndianNumberslip($Surcharge + $cess, 2);
+                                                $Monthly_tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_monthly_proj']) ? formatIndianNumberslip($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_monthly_proj'], 2) : 0;
+                                                if ($taxableincome <= 700000) {
+                                                    $Total_Tax = 0;
+                                                    $Monthly_tax = 0;
+                                                }
+                                                $totalSum = 0.00;
+                                                $pt = 0.00;
+                                            } else {
+                                                $other_ded = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_heads_limitsum']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_heads_limitsum'] : 0;
+                                                $standerd_deduction = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['standerd_deduction']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['standerd_deduction'] : 0;
+                                                $taxableincome = $totalValuesSum - $standerd_deduction - $other_ded + (isset($Income_from_Other_Source) ? floatval(str_replace(',', '', $Income_from_Other_Source)) : 0); //Edited by Akshay on 2-5-2024
+                                                $totalded = $standerd_deduction + $other_ded;
+                                                $Total_Tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_yearly']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_yearly'] : 0;
+                                                $Surcharge = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['surcharge']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['surcharge'] : 0;
+                                                $cess = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['cess']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['cess'] : 0;
+                                                $Surchargecess = formatIndianNumberslip($Surcharge + $cess, 2);
+                                                $Monthly_tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_monthly_proj']) ? formatIndianNumberslip($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_monthly_proj'], 2) : 0;
+                                                if ($taxableincome <= 500000) {
+                                                    $Total_Tax = 0;
+                                                    $Monthly_tax = 0;
+                                                }
+                                                $totalSum = 0.00;
+
+                                                foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $heads) {
+                                                    $result = 0;
+
+                                                    foreach ($value['tax'] as $key => $val) {
+                                                        if ($heads['tax_heads_pkey'] == $key) {
+                                                            $result = $val['tax_value'];
+                                                        }
+                                                    }
+
+                                                    $totalSum += $result;
+                                                }
+                                                $totalSum = formatIndianNumberslip($totalSum, 2);
+                                                // $pt = isset($value['pt']) ? $value['pt'] : 0;
+                                                //Edited by Akshay on 1-8-2024
+                                                $pt = 2500;
+                                                //End
+                                                $pt = formatIndianNumberslip($pt, 2);
+                                            }
+                                            $taxableincome = formatIndianNumberslip($taxableincome, 2);
+                                            $totalded = formatIndianNumberslip($totalded, 2);
+                                            $taxtilldate = 0;
+                                            for ($i = 0; $i < 12; $i++) {
+                                                $taxtilldate =  $taxtilldate + (isset($value['taxdates'][$i]['tax']) ? $value['taxdates'][$i]['tax'] : 0);
+                                            }
+
+                                            $Surchargecess = str_replace(',', '', $Surchargecess); //Edited by Akshay on 10-5-2024
+                                            // $Tax_to_be_Deducted = abs($Total_Tax - $taxtilldate);
+                                            $Tax_to_be_Deducted = abs($Total_Tax - $taxtilldate + (isset($Surchargecess) ? floatval($Surchargecess) : 0)); //Edited by Akshay on 10-5-2024
+                                            ?>
+                                            <tr>
+                                                <td>&nbsp;Professional Tax</td>
+                                                <td style="text-align: right;"><?php echo $pt; ?></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>&nbsp;Other Ded. & Standard Ded.</td>
+                                                <td style="text-align: right;"><?php echo $totalded; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;House Property</td>
+                                                <?php
+                                                $TaxHead = 'House Property';
+                                                $houseProperty = 0.00;
+                                                $j = 0;
+                                                foreach ($arr_taxheadfields['Income']['tax_heads'] as $heads) {
+                                                    if ($heads['tax_name'] == $TaxHead) {
+
+                                                        foreach ($value['tax'] as $key => $val) {
+                                                            if ($heads['tax_heads_pkey'] == $key) {
+                                                                $houseProperty = formatIndianNumberslip($val['tax_value'], 2);
+                                                                break;
+                                                            }
+                                                        }
+                                                        break;
+                                                    }
+
+                                                    $j++;
+                                                } ?>
+                                                <td style="text-align: right;"><?php echo $houseProperty; ?></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>&nbsp;Income from Other Source</td>
+                                                <td style="text-align: right;"><?php echo $Income_from_Other_Source; ?></td>
+                                            </tr>
+                                            <tr>
+
+
+                                                <td>&nbsp;Total VI-A deduction</td>
+
+                                                <td style="text-align: right;"><?php echo $totalSum; ?></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>&nbsp;Taxable Income</td>
+                                                <td style="text-align: right;"><?php echo $taxableincome; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Total Tax</td>
+                                                <td style="text-align: right;"><?php echo isset($Total_Tax) ? formatIndianNumberslip($Total_Tax, 2) : 0; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Surcharge + Education Cess</td>
+                                                <td style="text-align: right;"><?php echo isset($Surchargecess) ? $Surchargecess : 0; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Tax Deducted(Prev.Emplr+Other)</td>
+                                                <td style="text-align: right;">0</td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Tax Deducted Till date</td>
+                                                <td style="text-align: right;"><?php echo isset($taxtilldate) ? formatIndianNumberslip($taxtilldate, 2) : 0; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Tax to be Deducted</td>
+                                                <td style="text-align: right;"><?php echo isset($Tax_to_be_Deducted) ? formatIndianNumberslip($Tax_to_be_Deducted, 2) : 0; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Monthly Projected Tax</td>
+                                                <td style="text-align: right;"><?php echo $Monthly_tax; ?></td>
+                                            </tr>
+                                            <?php $tax_count = count($arr_taxheadfields['Deductions']['tax_heads']);
+
+                                            // for ($k = 8; $k < $tax_count; $k++) {  
+                                            ?>
+                                            <!--                                    <tr>
+                                        <td style="height: 9px;"><?php echo "  "; ?></td>
+                                        <td style="height: 9px;"><?php echo "  "; ?></td>
+                                    </tr>-->
+                                            <?php // } 
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6" style="margin-top:-152px;padding-left:0px;padding-right:2px;">
+                                    <table class="table table-bordered margin-zero">
+                                        <tbody>
+                                            <tr>
+                                                <th colspan="2" style="text-align:center;"><b>Deduction Under Chapter VI-A</b></th>
+                                            </tr>
+
+                                            <?php $j = 0;
+                                            if ($option == 'Old') {
+                                                foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $heads) {  ?>
+                                                    <tr>
+                                                        <?php foreach ($value['tax'] as $key => $val) {
+                                                            if ($val['tax_value'] > 0) {
+                                                                if ($heads['tax_heads_pkey'] == $key) { ?>
+                                                                    <td style="width:298px;"> <?php echo $heads['tax_name']; ?></td>
+
+                                                                    <td style="width:67px; text-align: right;">
+                                                                        <?php $result = formatIndianNumberslip($val['tax_value'], 2);
+                                                                        echo $result; ?>
+                                                                    </td>
+                                                        <?php $j++;
+                                                                }
+                                                            }
+                                                        } ?>
+                                                    </tr>
+                                            <?php
+                                                }
+                                            } ?>
+                                            <?php for ($i = $j; $i < 8; $i++) {  ?>
+                                                <tr>
+                                                    <td style="width:298px;height:9px;">&nbsp;</td>
+                                                    <td style="width:67px;height:9px;">&nbsp;</td>
+                                                </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6" style="margin-top:-10px;padding-left: 2px;padding-right: 0px;">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th colspan="6" style="text-align:center;">Tax Paid Details</th>
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align:center;">APR</th>
+                                                <th style="text-align:center;">MAY</th>
+                                                <th style="text-align:center;">JUN</th>
+                                                <th style="text-align:center;">JUL</th>
+                                                <th style="text-align:center;">AUG</th>
+                                                <th style="text-align:center;">SEP</th>
+
+                                            </tr>
+                                            <tr>
+                                                <?php for ($i = 0; $i < 6; $i++) { ?>
+                                                    <td style="height:36px;text-align:center;"><?php echo ($value['taxdates'][$i]['tax']) ? formatIndianNumberslip($value['taxdates'][$i]['tax']) : 0; ?></td>
+                                                <?php } ?>
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align:center;">OCT</th>
+                                                <th style="text-align:center;">NOV</th>
+                                                <th style="text-align:center;">DEC</th>
+                                                <th style="text-align:center;">JAN</th>
+                                                <th style="text-align:center;">FEB</th>
+                                                <th style="text-align:center;">MAR</th>
+                                            </tr>
+                                            <tr>
+                                                <?php for ($i = 6; $i < 12; $i++) { ?>
+                                                    <td style="width:20px;text-align:center;">
+                                                        <?php
+                                                        echo (isset($value['taxdates'][$i]['tax']) && $value['taxdates'][$i]['tax'] != 0) ?
+                                                            formatIndianNumberslip($value['taxdates'][$i]['tax']) : 0;
+                                                        ?>
+                                                    </td>
+                                                <?php } ?>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                        <?php }
+                        } ?>
+                        <?php } else {
+                        // debug(($arr_salary_for_template)); exit;
+                        foreach ($arr_salary_for_template as $value) {
+                            if (count($value['summary']) != 0) {
+                                $i += 1;
+                        ?>
+                                <!-- <h3 align="center"><b><?php echo 'Salary Slip - ' . "$mname1-" . $y1; ?></b> </h3> -->
+                                <!-- <table class="table table-bordered" style="margin-top: 10px;margin-bottom:0px;text-align: center;"> -->
+                                <!-- <tbody> -->
+                                <tr style="width : 120% ;">
+                                    <!-- <legend style="text-align:left;font-size: 19px;font-weight: bold;"> <?php
+                                                                                                                $empstatus = isset($value['summary']['0']['ed']['status']) && $value['summary']['0']['ed']['status'] == "2" ? '  (Resigned)' : '';
+                                                                                                                if (!empty($value['summary']['0']['payroll_master']['emp_name'])) {
+                                                                                                                    $emp_name = $value['summary']['0']['payroll_master']['emp_name'] . $empstatus;
+                                                                                                                } else {
+                                                                                                                    $emp_name = $value['summary']['0']['ed']['first_name'] . $empstatus;
+                                                                                                                }
+                                                                                                                echo $emp_name; ?></legend> -->
+
+                                </tr>
+                                <!-- </tbody> -->
+                                <!-- </table> -->
+
+                                <div>
+                                    <h3 style="font-size: 19px; text-align: center; color: #000066;font-weight:bold; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?></h3>
+                                    <h3 style="font-size: 15px; text-align:center; ">(A Govt. of Kerala Public Sector Undertaking)</h3>
+                                    <h3 style="font-size: 15px; text-align:center; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['address'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['city'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['pincode'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['state']; ?></h3>
+                                </div>
+                                <div style="text-align: center;align-items: center; border: 1px solid black; width:450px; margin-top: 0px;  margin-left:auto;float:center;margin-right: auto; height: 25px;">
+                                    <h3 style="padding: 0px 20px; margin: 0; font-size: 16px;font-weight: bold;">
+                                        Pay Slip for the month of <?php echo $mname1 . " / " . $y1; ?>
+                                    </h3>
+                                </div>
+
+                                <!--
+        
+
+    
+</table>-->
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px;">
+                                    <div class="col-md-2 " style="background-color:#cccccc;">
+                                        Emp No.
+                                    </div>
+                                    <?php $emp_pkey = isset($value['summary']['0']['ed']['emp_pkey']) ? $value['summary']['0']['ed']['emp_pkey'] : ''; ?>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; word-wrap: break-word; "> <?php echo isset($value['summary']['0']['ep']['emp_company_id']) ? $value['summary']['0']['ep']['emp_company_id'] : ''; ?> </span><span style="float: right ;"></span>
+                                    </div>
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        Division
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ;  border-bottom: 0px solid white ; "> <?php
+                                                                                                                //edited by megha on 9_7_19 date format changed
+                                                                                                                if (!empty($value['summary']['0']['payroll_master']['division'])) {
+                                                                                                                    echo $value['summary']['0']['payroll_master']['division'];
+                                                                                                                } else {
+                                                                                                                    echo isset($value['summary']['0']['division']['div_name']) ? $value['summary']['0']['division']['div_name'] : '';
+                                                                                                                }
+                                                                                                                //echo isset($value['summary']['0']['ep']['joining_date']) ? $value['summary']['0']['ep']['joining_date'] : '';
+                                                                                                                ?> </span><span style="float: right ;"></span>
+                                    </div>
+                                </div>
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-left: 1px solid black;border: none;">
+
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        <span> Employee Name : </span><span></span>
+                                    </div>
+                                    <div class="col-md-4 ">
+                                        <span style="text-align: right ; word-wrap: break-word; "> <?php
+                                                                                                    $empstatus = isset($value['summary']['0']['ed']['status']) && $value['summary']['0']['ed']['status'] == "2" ? '  (Resigned)' : '';
+                                                                                                    if (!empty($value['summary']['0']['payroll_master']['emp_name'])) {
+
+                                                                                                        echo $value['summary']['0']['payroll_master']['emp_name'] . ' ' . $empstatus;
+                                                                                                    } else {
+                                                                                                        echo isset($value['summary']['0']['ed']['first_name']) ? $value['summary']['0']['ed']['first_name'] : '';
+                                                                                                        echo ' ';
+                                                                                                        echo isset($value['summary']['0']['ed']['middile_name']) ? $value['summary']['0']['ed']['middile_name'] : '';
+                                                                                                        echo ' ';
+                                                                                                        echo isset($value['summary']['0']['ed']['last_name']) ? $value['summary']['0']['ed']['last_name'] : '';
+                                                                                                        echo ' ' . $empstatus;
+                                                                                                    }
+
+                                                                                                    ?> </span><span style="float: right ;"></span>
+                                    </div>
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        <span> PAN </span><span></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; word-wrap: break-word; "> <?php echo  wordwrap(isset($value['summary']['0']['ed']['pan_no']) ? strtoupper($value['summary']['0']['ed']['pan_no']) : '', 21, "<br>\n", TRUE); ?> </span><span style="float: right ;"></span>
+                                    </div>
+
+                                </div>
+
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        DOJ
+                                    </div>
+                                    <div class="col-md-4">
+                                        <!--           <span style="text-align: right ; ">: <?php //echo isset($value['empdet']['0']['payroll_master']['working_days']) ? $value['empdet']['0']['payroll_master']['working_days'] : ''; 
+                                                                                            ?>   </span><span style="float: right ;"></span>-->
+                                        <span style="text-align: right ; "> <?php if (!empty($value['summary']['0']['payroll_master']['joining_date']) && $value['summary']['0']['payroll_master']['joining_date'] != '0000-00-00') {
+                                                                                echo date('d-m-Y', strtotime($value['summary']['0']['payroll_master']['joining_date']));
+                                                                            } else {
+                                                                                echo isset($value['summary']['0']['ep']['joining_date']) ? date('d-m-Y', strtotime($value['summary']['0']['ep']['joining_date'])) : '';
+                                                                            } ?> </span><span style="float: right ;"></span>
+                                    </div>
+                                    <?php
+
+
+                                    $acc_number = '';
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    if ($acc_number == '') {
+                                        $acc_number = isset($value['summary']['0']['ed']['account_no']) ? $value['summary']['0']['ed']['account_no'] : '';
+                                    } ?>
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        <span style="text-align:  left ; ">Bank A/c </span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: left ;  border-right: 0px solid white; border-bottom: 0px solid white ; "> <?php echo $acc_number; ?> </span><span style="float: right ;"></span>
+
+                                    </div>
+
+
+                                </div>
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        <span style="text-align:  left ; ">Designation </span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "><?php if (!empty($value['summary']['0']['payroll_master']['desig'])) {
+                                                                                echo $value['summary']['0']['payroll_master']['desig'];
+                                                                            } else {
+                                                                                echo  wordwrap(isset($value['summary']['0']['desg']['desig_name']) ? $value['summary']['0']['desg']['desig_name'] : '', 30, "<br>\n", TRUE);
+                                                                            } ?> </span><span style="float: right ;"></span>
+
+                                    </div>
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        <span> UAN </span><span></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "> <?php echo isset($value['summary']['0']['ed']['pf']) ? $value['summary']['0']['ed']['pf'] : ''; ?> </span><span style="float: right ;"></span>
+
+                                    </div>
+
+                                </div>
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        Department
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "><?php if (!empty($value['summary']['0']['payroll_master']['departments'])) {
+                                                                                echo $value['summary']['0']['payroll_master']['departments'];
+                                                                            } else {
+                                                                                echo  wordwrap(isset($value['summary']['0']['desg']['desig_name']) ? $value['summary']['0']['desg']['desig_name'] : '', 30, "<br>\n", TRUE);
+                                                                            } ?></span>
+
+                                    </div>
+                                    <!-- Edited by Akshay on 21-6-2024 -->
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        Grade
+                                    </div>
+                                    <?php $grade = (isset($value['summary']['0']['payroll_master']['grade']) && ($value['summary']['0']['payroll_master']['grade'] != '')) ? $value['summary']['0']['payroll_master']['grade'] : (isset($value['summary']['0']['grade']['grade_name']) ? $value['summary']['0']['grade']['grade_name'] : '');?>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "><?php echo $grade; ?></span>
+                                    </div>
+                                    <!-- End -->
+                                </div>
+                                <!-- Edited by Akshay on 21-6-2024 -->
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        Pay Scale
+                                    </div>
+                                    <!-- Edited by Akshay on 2-8-2024 -->
+                                    <?php $pay_scale = (isset($value['summary']['0']['payroll_master']['pay_scale']) && ($value['summary']['0']['payroll_master']['pay_scale'] != '')) ? $value['summary']['0']['payroll_master']['pay_scale'] : (isset($value['summary']['0']['grade']['pay_scale']) ? $value['summary']['0']['grade']['pay_scale'] : ''); ?>
+                                    <!-- End -->
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "><?php echo $pay_scale; ?></span>
+                                    </div>
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        ESI No
+                                    </div>
+                                    <div class="col-md-4">
+                                        <?php $esi = isset($value['summary']['0']['ed']['esi']) ? $value['summary']['0']['ed']['esi'] : ''; ?>
+                                        <span style="text-align: right ; "><?php echo $esi; ?></span>
+                                    </div>
+                                </div>
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        Pay Days
+                                    </div>
+                                    <?php
+                                    $leave = isset($value['summary']['0']['payroll_master']['days_leave']) ? $value['summary']['0']['payroll_master']['days_leave'] : '';
+                                    $present = isset($value['summary']['0']['payroll_master']['days_presant']) ? $value['summary']['0']['payroll_master']['days_presant'] : '';
+                                    $weekoff = isset($value['summary']['0']['ar']['weekoff_total']) ? $value['summary']['0']['ar']['weekoff_total'] : '';
+                                    $paydays = $leave + $present + $weekoff; ?>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "> <?php echo $paydays; ?> </span><span style="float: right ;"></span>
+                                    </div>
+                                </div>
+                                <!-- End -->
+                                <br>
+                                <table class="table table-bordered" align="center">
+                                    <tbody>
+                                        <tr>
+
+                                            <th>Earnings</th>
+                                            <th class="amount">Amount</th>
+                                            <th>Deductions</th>
+                                            <th class="amount">Amount</th>
+
+                                        </tr>
+                                        <?php $arr_data = $value['summary'];
+                                        $arr_withoutComponents = $value['withoutcomponent'];
+                                        ?>
+                                        <?php
+                                        if (count($arr_data) >= 0) {
+                                            $countss = count($arr_data);
+                                            if (count($arr_data) < count($arr_withoutComponents)) {
+                                                $countss = count($arr_withoutComponents);
+                                            }
+                                            $sum = 0;
+                                            $tot = 0;
+                                            $dd = 0;
+                                            $net = 0;
+                                        ?>
+                                            <?php for ($i = 0; $i < $countss; $i++) {
+                                            ?>
+                                                <tr> <?php
+                                                        $sum += isset($arr_data[$i]['ectc']['salary_amount']) ? round($arr_data[$i]['ectc']['salary_amount']) : 0;
+                                                        if (isset($arr_withoutComponents[$i]['ectc']))
+                                                            $dd += isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? round($arr_withoutComponents[$i]['ectc']['salary_amount']) : 0;
+                                                        ?>
+                                                    <!-- edited by megha on 30_05_19 round off  -->
+
+                                                    <td><?php echo isset($arr_data[$i]['ectc']['salary_head_item_desc']) ? $arr_data[$i]['ectc']['salary_head_item_desc'] : ''; ?></td>
+                                                    <!--<td><?php //echo isset($arr_data[$i]['ectc']['structure_det_value'])?round($arr_data[$i]['ectc']['structure_det_value'], 2):''; 
+                                                            ?></td>-->
+
+                                                    <td class="value"><?php echo isset($arr_data[$i]['ectc']['salary_amount']) ? formatIndianNumberslip(abs(round($arr_data[$i]['ectc']['salary_amount'])), 2) : ''; ?></td>
+
+                                                    <td><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_head_item_desc']) ? $arr_withoutComponents[$i]['ectc']['salary_head_item_desc'] : ''; ?></td>
+                                                    <!--<td><?php //echo round(isset($arr_withoutComponents[$i]['ectc']['structure_det_value']) ? $arr_withoutComponents[$i]['ectc']['structure_det_value'] : '', 2); 
+                                                            ?></td>-->
+                                                    <!-- edited by megha on 08_07_19 '0' values removed  -->
+                                                    <td class="value"><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? formatIndianNumberslip(abs(round($arr_withoutComponents[$i]['ectc']['salary_amount'])), 2) : ''; ?></td>
+
+                                                </tr>
+
+                                            <?php } ?>
+                                            <tr>
+                                                <th>Total</th>
+                                                <th class="value"><?php echo formatIndianNumberslip((abs(round($sum))), 2); ?></th>
+                                                <th>Total </th>
+                                                <th class="value"><?php echo formatIndianNumberslip((abs(round($dd))), 2); ?></th>
+                                            </tr>
+                                            <!-- edited by megha on 16/11/19 settlement amount  -->
+                                            <?php if ($value['summary']['0']['ed']['status'] == 2) { ?>
+                                                <!--                        <tr style="background: #cccccc ;" >
+                            <th style="text-align :center ; " colspan="3">Settlement Amount</th><th><?php echo $value['settle']; ?></th>
+                        </tr>-->
+                                            <?php } ?>
+                                            <!-- end -->
+                                            <!-- edited by megha on 30_05_19 round off, edited by megha on 16/11/19 settlement amount  -->
+
+                                            <!-- <tr style="background: #cccccc ;" > -->
+                                            <?php
+                                            $settle = isset($value['settle']) ? $value['settle'] : 0;
+                                            $netpay1 = (float)round($sum) + (float)round($dd) + (float)round($settle);
+                                            $netpay = $netpay1;
+                                            if ($netpay < 0) {
+                                                $direction = 'Negative';
+                                                $netpay = abs($netpay);
+                                            } else {
+                                                $direction = "";
+                                            }
+                                            $no = floor($netpay);
+                                            $point = round($netpay - $no, 2) * 100;
+                                            $hundred = null;
+                                            $digits_1 = strlen($no);
+                                            $i = 0;
+                                            $str = array();
+                                            $words = array(
+                                                '0' => '', '1' => 'one', '2' => 'two',
+                                                '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
+                                                '7' => 'seven', '8' => 'eight', '9' => 'nine',
+                                                '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
+                                                '13' => 'thirteen', '14' => 'fourteen',
+                                                '15' => 'fifteen', '16' => 'sixteen', '17' => 'seventeen',
+                                                '18' => 'eighteen', '19' => 'nineteen', '20' => 'twenty',
+                                                '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
+                                                '60' => 'sixty', '70' => 'seventy',
+                                                '80' => 'eighty', '90' => 'ninety'
+                                            );
+                                            $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
+                                            while ($i < $digits_1) {
+                                                $divider = ($i == 2) ? 10 : 100;
+                                                $netpay = floor($no % $divider);
+                                                $no = floor($no / $divider);
+                                                $i += ($divider == 10) ? 1 : 2;
+                                                if ($netpay) {
+
+                                                    $plural = (($counter = count($str)) && $netpay > 9) ? 's' : null;
+                                                    $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
+                                                    $str[] = ($netpay < 21) ? $words[$netpay] .
+                                                        " " . $digits[$counter] . $plural . " " . $hundred
+                                                        :
+                                                        $words[floor($netpay / 10) * 10]
+                                                        . " " . $words[$netpay % 10] . " "
+                                                        . $digits[$counter] . $plural . " " . $hundred;
+                                                } else $str[] = null;
+                                            }
+                                            $str = array_reverse($str);
+                                            $result = $direction . ' ' . implode('', $str);
+                                            ?>
+
+
+
+
+                                            <!-- </tr> -->
+                                            <?php $arr_withoutComponents = $value['withoutcomponent']; ?>
+
+                                            <?php if (count($arr_withoutComponents) > 0) {
+                                            ?>
+
+
+
+                                            <?php } ?>
+                                        <?php } else {
+                                        ?>
+                                            <tr>
+                                                <td colspan="4">No Components found under this data</td>
+                                            </tr>
+
+                                        <?php } ?>
+
+                                    </tbody>
+                                </table>
+                                <div style="text-align: left; font-size: 15px;"><b>Net Pay&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo formatIndianNumberslip($netpay1, 2); ?> </b></div>
+
+                                <div style="text-align: left; font-size: 15px;text-transform: capitalize;"><b>In Words Rupees <?php echo $result; ?> Only</b></div><br>
+                                <?php if ($value['regime'] == 'O') {
+                                    $option = 'Old';
+                                } else {
+                                    $option =  'New';
+                                } ?>
+                                <table class="table table-bordered" align="center">
+                                    <tbody>
+                                        <tr style="background-color: #cccccc;">
+                                            <!-- Edited by Akshay on 7-6-2024 -->
+                                            <th colspan="2" style="text-align:left;" class="tds-border"><?php echo $option; ?> Tax Regime Opted </th>
+                                            <!-- End -->
+                                            <th colspan="2" style="text-align:left;" class="tds-border">TDS Details</th>
+                                            <th colspan="4" style="text-align:right;">PAN : <?php echo isset($value['summary']['0']['ed']['pan_no']) ? $value['summary']['0']['ed']['pan_no'] : ''; ?></th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="col-md-6" style="padding-left:0px;padding-right:2px;margin-top:-12px;">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 144px; text-align: center; font-size: 12px;" colspan="1"><b>Description</b></td>
+                                                <td style="width: 70px; text-align: center; font-size: 12px;"><b>Gross</b></td>
+                                                <td style="width: 70px; text-align: center; font-size: 12px;"><b>Exempt</b></td>
+                                                <td style="width: 70px; text-align: center; font-size: 12px;"><b>Taxable</b></td>
+                                            </tr>
+                                            <?php
+                                            $taxable = '';
+                                            $excempt = '';
+                                            $values = '';
+                                            $count = 0;
+
+
+                                            $arr_data = isset($value['grossnew']) ? $value['grossnew'] : '';
+                                            $employee = $value;
+
+                                            if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                if (count($arr_data) >= 0) {
+                                                    foreach ($arr_data as $val) {
+                                                        $component = isset($val['SHI']['item']) ? $val['SHI']['item'] : '';
+                                                        if ($value['regime'] == 'N') {
+                                                            $values = isset($val['EmpTaxSalTransNew']['availed_salary']) ? $val['EmpTaxSalTransNew']['availed_salary'] : 0;
+                                                            $emp_fkey = isset($val['EmpTaxSalTransNew']['emp_fkey']) ? $val['EmpTaxSalTransNew']['emp_fkey'] : 0;
+                                                        } else {
+                                                            $values = isset($val['EmpTaxSalTrans']['availed_salary']) ? $val['EmpTaxSalTrans']['availed_salary'] : 0;
+                                                            $emp_fkey = isset($val['EmpTaxSalTrans']['emp_fkey']) ? $val['EmpTaxSalTrans']['emp_fkey'] : 0;
+                                                        }
+                                                        $taxable = $values - $excempt;
+
+                                                        if ($emp_fkey === $emp_pkey) {
+                                                            $count++;
+                                            ?>
+                                                            <tr>
+                                                                <td style=""><?php echo $component; ?></td>
+                                                                <td style=" text-align: right;"><?php echo formatIndianNumberslip($values, 2); ?></td>
+                                                                <td style=" text-align: right;"><?php echo $excempt; ?></td>
+                                                                <td style=" text-align: right;"><?php echo formatIndianNumberslip($taxable, 2); ?></td>
+                                                            </tr>
+                                            <?php
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            ?>
+
+                                            <?php
+
+
+                                            if ($count < 9) {
+                                                for ($k = 0; $k <= (8 - $count); $k++) { ?>
+                                                    <tr>
+                                                        <td><?php echo "&nbsp;  "; ?></td>
+                                                        <td><?php echo "&nbsp;  "; ?></td>
+                                                        <td><?php echo "&nbsp;  "; ?></td>
+                                                        <td><?php echo "&nbsp;  "; ?></td>
+                                                    </tr>
+                                            <?php }
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6" style="padding-left:2px;padding-right:0px;margin-top:-12px;">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th colspan="2" style="text-align:center;"><b>Income Tax Deduction</b></th>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:29%">&nbsp;Gross Salary</td>
+                                                <?php
+                                                $arr_data = isset($value['gross']) ? $value['gross'] : '';
+                                                $gross = 0;
+                                                $std = 0;
+                                                $Income_from_Other_Source = 0;
+                                                $Taxable_Income = 0;
+                                                $Total_Tax = 0;
+                                                $Surcharge = 0;
+                                                $Tax_Deducted_Till_date = 0;
+                                                $Tax_to_be_Deducted = 0;
+                                                $Monthly_tax = 0;
+
+                                                if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                    if (count($arr_data) >= 0) {
+                                                        foreach ($arr_data as $val) {
+                                                            //$stdecn = 50000;
+                                                            $gross =  isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? $val['tax_computation_report']['Taxable_Income_from_Salary'] : 0;
+                                                            //$std =  isset($val['tax_computation_report']['Standard_deduction']) ? formatIndianNumberslip($val['tax_computation_report']['Standard_deduction'],2) : formatIndianNumberslip($stdecn,2);
+                                                            $Income_from_Other_Source = isset($val['tax_computation_report']['Taxable_Income_from_Other_Sources']) ? formatIndianNumberslip($val['tax_computation_report']['Taxable_Income_from_Other_Sources'], 2) : 0.00;
+                                                            $Taxable_Income =  isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? formatIndianNumberslip($val['tax_computation_report']['Taxable_Income_from_Salary'], 2) : 0.00;
+                                                            $Total_Tax =  isset($val['tax_computation_report']['Total_Tax']) ? formatIndianNumberslip($val['tax_computation_report']['Total_Tax'], 2) : 0.00;
+                                                            $Surcharge =  isset($val['tax_computation_report']['Surcharge']) ? formatIndianNumberslip($val['tax_computation_report']['Surcharge'], 2) : 0.00;
+                                                            $Tax_Deducted_Till_date = isset($val['tax_computation_report']['Tax_Deducted']) ? formatIndianNumberslip($val['tax_computation_report']['Tax_Deducted'], 2) : 0.00;
+                                                            $Tax_to_be_Deducted = isset($val['tax_computation_report']['Balance_Tax']) ? formatIndianNumberslip($val['tax_computation_report']['Balance_Tax'], 2) : 0.00;
+                                                            $Monthly_tax =  isset($val['tax_computation_report']['Monthly_Tax']) ? formatIndianNumberslip($val['tax_computation_report']['Monthly_Tax'], 2) : 0.00;
+                                                        }
+                                                    }
+                                                }
+
+                                                ?>
+
+                                                <?php
+
+                                                $totalValuesSum = 0;
+
+
+                                                $arr_data = isset($value['grossnew']) ? $value['grossnew'] : '';
+                                                $employee = $value;
+
+                                                if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                    if (count($arr_data) >= 0) {
+                                                        foreach ($arr_data as $employee => $val) {
+                                                            if ($value['regime'] == 'N') {
+                                                                $values = isset($val['EmpTaxSalTransNew']['availed_salary']) ? $val['EmpTaxSalTransNew']['availed_salary'] : 0;
+                                                            } else {
+                                                                $values = isset($val['EmpTaxSalTrans']['availed_salary']) ? $val['EmpTaxSalTrans']['availed_salary'] : 0;
+                                                            }
+                                                            $totalValuesSum += $values;
+                                                        }
+                                                    }
+                                                }
+                                                ?>
+                                                <td style="width:15%;text-align:right;"><?php echo formatIndianNumberslip($totalValuesSum, 2); ?></td>
+                                            </tr>
+                                            <?php
+                                            //                                            $pt = 0.00;									  
+                                            //                                                $arr_data = isset($value['withoutcomponent']) ? $value['withoutcomponent'] : '';
+                                            //                                                if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                            //                                                    if (count($arr_data) >= 0) {
+                                            //                                                        foreach ($arr_data as $val) {
+                                            //                                                            $pthead = isset($val['ectc']['salary_head_item_desc']) ? $val['ectc']['salary_head_item_desc'] : '';
+                                            //                                                            $ptAmount = isset($val['ectc']['salary_amount']) ? $val['ectc']['salary_amount'] : 0;
+                                            //                                                             if ($pthead == 'Professional Tax') {
+                                            //                                                                $pt = formatIndianNumberslip(abs($ptAmount), 2);
+                                            //                                                                break ;
+                                            //                                                            }
+                                            //                                                        }
+                                            //                                                    }
+                                            //                                                }
+                                            ?>
+                                            <?php
+
+                                            if ($value['regime'] == 'N') {
+                                                $other_ded = 0;
+                                                $standerd_deduction = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['standerd_deduction']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['standerd_deduction'] : 0;
+                                                $taxableincome = $totalValuesSum - $standerd_deduction - $other_ded + (isset($Income_from_Other_Source) ? floatval(str_replace(',', '', $Income_from_Other_Source)) : 0); //Edited by Akshay on 2-5-2024
+                                                $totalded = $standerd_deduction + $other_ded;
+                                                $Total_Tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_yearly']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_yearly'] : 0;
+                                                $Surcharge = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['surcharge']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['surcharge'] : 0;
+                                                $cess = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['cess']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['cess'] : 0;
+                                                $Surchargecess = formatIndianNumberslip($Surcharge + $cess, 2);
+                                                $Monthly_tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_monthly_proj']) ? formatIndianNumberslip($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_monthly_proj'], 2) : 0;
+                                                if ($taxableincome <= 700000) {
+                                                    $Total_Tax = 0;
+                                                    $Monthly_tax = 0;
+                                                }
+                                                $totalSum = 0.00;
+                                                $pt = 0.00;
+                                            } else {
+                                                $other_ded = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_heads_limitsum']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_heads_limitsum'] : 0;
+                                                $standerd_deduction = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['standerd_deduction']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['standerd_deduction'] : 0;
+                                                $taxableincome = $totalValuesSum - $standerd_deduction - $other_ded + (isset($Income_from_Other_Source) ? floatval(str_replace(',', '', $Income_from_Other_Source)) : 0); //Edited by Akshay on 2-5-2024
+                                                $totalded = $standerd_deduction + $other_ded;
+                                                $Total_Tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_yearly']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_yearly'] : 0;
+                                                $Surcharge = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['surcharge']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['surcharge'] : 0;
+                                                $cess = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['cess']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['cess'] : 0;
+                                                $Surchargecess = formatIndianNumberslip($Surcharge + $cess, 2);
+                                                $Monthly_tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_monthly_proj']) ? formatIndianNumberslip($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_monthly_proj'], 2) : 0;
+                                                if ($taxableincome <= 500000) {
+                                                    $Total_Tax = 0;
+                                                    $Monthly_tax = 0;
+                                                }
+                                                $totalSum = 0.00;
+
+                                                foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $heads) {
+                                                    $result = 0;
+
+                                                    foreach ($value['tax'] as $key => $val) {
+                                                        if ($heads['tax_heads_pkey'] == $key) {
+                                                            $result = $val['tax_value'];
+                                                        }
+                                                    }
+
+                                                    $totalSum += $result;
+                                                }
+                                                $totalSum = formatIndianNumberslip($totalSum, 2);
+                                                $pt = 2500;
+                                                $pt = formatIndianNumberslip($pt, 2);
+                                            }
+                                            $taxableincome = formatIndianNumberslip($taxableincome, 2);
+                                            $totalded = formatIndianNumberslip($totalded, 2);
+                                            $taxtilldate = 0;
+                                            for ($i = 0; $i < 12; $i++) {
+                                                $taxtilldate =  $taxtilldate + $value['taxdates'][$i]['tax'];
+                                            }
+
+                                            $Surchargecess = str_replace(',', '', $Surchargecess); //Edited by Akshay on 10-5-2024
+                                            // $Tax_to_be_Deducted = abs($Total_Tax - $taxtilldate);
+                                            $Tax_to_be_Deducted = abs($Total_Tax - $taxtilldate + (isset($Surchargecess) ? floatval($Surchargecess) : 0)); //Edited by Akshay on 10-5-2024
+                                            ?>
+                                            <tr>
+                                                <td>&nbsp;Professional Tax</td>
+                                                <td style="text-align: right;"><?php echo $pt; ?></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>&nbsp;Other Ded. & Standard Ded.</td>
+                                                <td style="text-align: right;"><?php echo $totalded; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;House Property</td>
+                                                <?php
+                                                $TaxHead = 'House Property';
+                                                $houseProperty = 0.00;
+                                                $j = 0;
+                                                foreach ($arr_taxheadfields['Income']['tax_heads'] as $heads) {
+                                                    if ($heads['tax_name'] == $TaxHead) {
+
+                                                        foreach ($value['tax'] as $key => $val) {
+                                                            if ($heads['tax_heads_pkey'] == $key) {
+                                                                $houseProperty = formatIndianNumberslip($val['tax_value'], 2);
+                                                                break;
+                                                            }
+                                                        }
+                                                        break;
+                                                    }
+
+                                                    $j++;
+                                                } ?>
+                                                <td style="text-align: right;"><?php echo $houseProperty; ?></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>&nbsp;Income from Other Source</td>
+                                                <td style="text-align: right;"><?php echo $Income_from_Other_Source; ?></td>
+                                            </tr>
+                                            <tr>
+
+
+                                                <td>&nbsp;Total VI-A deduction</td>
+
+                                                <td style="text-align: right;"><?php echo $totalSum; ?></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>&nbsp;Taxable Income</td>
+                                                <td style="text-align: right;"><?php echo $taxableincome; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Total Tax</td>
+                                                <td style="text-align: right;"><?php echo isset($Total_Tax) ? formatIndianNumberslip($Total_Tax, 2) : 0; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Surcharge + Education Cess</td>
+                                                <td style="text-align: right;"><?php echo isset($Surchargecess) ? $Surchargecess : 0; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Tax Deducted(Prev.Emplr+Other)</td>
+                                                <td style="text-align: right;">0</td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Tax Deducted Till date</td>
+                                                <td style="text-align: right;"><?php echo isset($taxtilldate) ? formatIndianNumberslip($taxtilldate, 2) : 0; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Tax to be Deducted</td>
+                                                <td style="text-align: right;"><?php echo isset($Tax_to_be_Deducted) ? formatIndianNumberslip($Tax_to_be_Deducted, 2) : 0; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Monthly Projected Tax</td>
+                                                <td style="text-align: right;"><?php echo $Monthly_tax; ?></td>
+                                            </tr>
+                                            <?php $tax_count = count($arr_taxheadfields['Deductions']['tax_heads']);
+
+                                            // for ($k = 8; $k < $tax_count; $k++) {  
+                                            ?>
+                                            <!--                                    <tr>
+                                        <td style="height: 9px;"><?php echo "  "; ?></td>
+                                        <td style="height: 9px;"><?php echo "  "; ?></td>
+                                    </tr>-->
+                                            <?php // } 
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6" style="margin-top:-152px;padding-left:0px;padding-right:2px;">
+                                    <table class="table table-bordered margin-zero">
+                                        <tbody>
+                                            <tr>
+                                                <th colspan="2" style="text-align:center;"><b>Deduction Under Chapter VI-A</b></th>
+                                            </tr>
+
+                                            <?php $j = 0;
+                                            if ($option == 'Old') {
+                                                foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $heads) {  ?>
+                                                    <tr>
+                                                        <?php foreach ($value['tax'] as $key => $val) {
+                                                            if ($val['tax_value'] > 0) {
+                                                                if ($heads['tax_heads_pkey'] == $key) { ?>
+                                                                    <td style="width:298px;"> <?php echo $heads['tax_name']; ?></td>
+
+                                                                    <td style="width:67px; text-align: right;">
+                                                                        <?php $result = formatIndianNumberslip($val['tax_value'], 2);
+                                                                        echo $result; ?>
+                                                                    </td>
+                                                        <?php $j++;
+                                                                }
+                                                            }
+                                                        } ?>
+                                                    </tr>
+                                            <?php
+                                                }
+                                            } ?>
+                                            <?php for ($i = $j; $i < 8; $i++) {  ?>
+                                                <tr>
+                                                    <td style="width:298px;height:9px;">&nbsp;</td>
+                                                    <td style="width:67px;height:9px;">&nbsp;</td>
+                                                </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6" style="margin-top:-10px;padding-left: 2px;padding-right: 0px;">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th colspan="6" style="text-align:center;">Tax Paid Details</th>
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align:center;">APR</th>
+                                                <th style="text-align:center;">MAY</th>
+                                                <th style="text-align:center;">JUN</th>
+                                                <th style="text-align:center;">JUL</th>
+                                                <th style="text-align:center;">AUG</th>
+                                                <th style="text-align:center;">SEP</th>
+
+                                            </tr>
+                                            <tr>
+                                                <?php for ($i = 0; $i < 6; $i++) { ?>
+                                                    <td style="height:36px;text-align:center;"><?php echo ($value['taxdates'][$i]['tax'] != 0) ? $value['taxdates'][$i]['tax'] : 0; ?></td>
+                                                <?php } ?>
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align:center;">OCT</th>
+                                                <th style="text-align:center;">NOV</th>
+                                                <th style="text-align:center;">DEC</th>
+                                                <th style="text-align:center;">JAN</th>
+                                                <th style="text-align:center;">FEB</th>
+                                                <th style="text-align:center;">MAR</th>
+                                            </tr>
+                                            <tr>
+                                                <?php for ($i = 6; $i < 12; $i++) { ?>
+                                                    <td style="width:20px;text-align:center;"><?php echo ($value['taxdates'][$i]['tax'] != 0) ? $value['taxdates'][$i]['tax'] : 0; ?></td>
+                                                <?php } ?>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                        <?php }
+                        }
+                    }
+                    if ($i == '0') { ?>
+                        <page_header>
+
+                            <div>
+                                <h3 style="font-size: 19px; text-align: center; color: #000066;font-weight:bold; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?></h3>
+                                <h3 style="font-size: 15px; text-align:center; ">(A Govt. of Kerala Public Sector Undertaking)</h3>
+                                <h3 style="font-size: 15px; text-align:center; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['address'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['city'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['pincode'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['state']; ?></h3>
+                            </div>
+                            <div style="text-align: center;align-items: center; border: 1px solid black; width:450px; margin-top: 0px;  margin-left:auto;float:center;margin-right: auto; height: 25px;">
+                                <h3 style="padding: 0px 20px; margin: 0; font-size: 16px;font-weight: bold;">
+                                    Pay Slip for the month of <?php echo $mname1 . " / " . $y1; ?>
+                                </h3>
+                            </div>
+                        </page_header>
+                        <div style="font-size: 16px;text-align:left;">
+                            No data available under the selected criteria</div>
+                    <?php } ?>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+        </div>
+        <!--div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel </button>  
+    </div-->
+        <!--<div class="row">
+        <div class="form-group">
+            <div class="col-md-12" align="right">
+                <a href="#" class="btn btn-default" onclick="downloadReport('Salaryslip', 'pdf');" ><i class="icon-file"></i>Download As PDF</a>
+    <!--a href="#" class="btn btn-default" onclick="downloadReport('Salaryslip','excel');"><i class="icon-file"></i>Download As Excel</a>
+</div>
+</div>
+</div> -->
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?php } else { ?>
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            /*border: #000000 solid thin;*/
+        }
+
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+
+        .row {
+            height: 32px;
+        }
+
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+
+        table {
+            /*border: 1px solid #f4f4f4;*/
+            width: 80%;
+            max-width: 80%;
+            margin-bottom: 20px;
+            /*background-color: transparent;*/
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            text-align: left;
+            padding: 1px;
+            font-weight: normal;
+            /*font-size: 11px;*/
+            font-size: 12px;
+            /*font-family: serif;*/
+            line-height: 1.32857143;
+            word-wrap: break-word;
+            vertical-align: top;
+            color: black;
+            border: 1px solid;
+        }
+
+        .noborder th,
+        .noborder td {
+            border-left-style: hidden;
+            border-left: 0px solid white;
+            border-top-style: hidden;
+            border-top: 0px solid white;
+            border-bottom-style: hidden;
+            border-bottom: 0px solid white;
+            border-right-style: hidden;
+            border-right: 0px solid white;
+        }
+
+        /* Edited by Akshay on 6-7-2023 */
+        .table-no-row-borders tbody tr td {
+            border-top: none;
+            border-bottom: none;
+        }
+
+        .last-row td {
+            border-bottom: 1px solid grey;
+        }
+
+        .table-min-height tbody {
+            min-height: 40em !important;
+        }
+
+        .shrinknew {
+            /* border-bottom-color:#fff; */
+            border-right: .5px;
+            border-right-color: #000;
+        }
+
+        .shrink {
+            /* border-bottom-color:#fff;  */
+            border-bottom: none;
+        }
+    </style>
+
+    <!-- employeewise criteria PDF--->
+
+    <?php
+    //echo $this->element('reportadminheader', array(
+    //'title' => 'Salary Slip - '.date("M Y",strtotime($value['summary']['0']['ectc']['month_year']))));
+    ?>
+    <?php
+
+    $i = 0;
+    if ($cr == 'EmployeeDetails') {
+        // debug($_SERVER); exit;
+        // debug(count($arr_salary_for_template)); exit;
+        foreach ($arr_salary_for_template as $value) {
+            if (count($value['summary']) != 0) {
+                $i += 1;
+    ?>
+                <page backtop="30mm" backbottom="0mm" backleft="10mm" backright="10mm" style="font-size: 12pt">
+                    <page_header>
+
+                        <div style="text-align:left; width:100%; ">
+
+
+
+                            <img style=" margin-left: 40px; " src="https://<?php echo $_SERVER['HTTP_HOST'] . $this->webroot . $arr_comp_contact_info['CompanyContactInfo']['logo']; ?>" height="60" width="70" class="img-circle" alt="Company Logo" />
+
+                            <div style="text-align:center; width:75%;">
+                                <b style="font-size: 19px; margin-top: 0px; color: #000066; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?></b>
+                                <p style="font-size: 13px; margin-top: -40px; ">(A Govt. of Kerala Public Sector Undertaking)</p>
+                                <p style="font-size: 13px; margin-top: -10px; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['address'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['city'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['pincode'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['state']; ?></p>
+                            </div>
+
+                        </div>
+                        <div style="text-align: center; border: 1px solid black; width:450px; margin-top: 0px; margin-left: 160px; margin-right: auto; height: 25px;">
+                            <h3 style="padding: 0px 20px; margin: 0; font-size: 16px;">
+                                Pay Slip for the month of <?php echo $mname1 . " / " . $y1; ?>
+                            </h3>
+                        </div>
+                    </page_header>
+                    <page_footer>
+
+                        <!--        <div style="width: 100%; text-align: right">
+            page [[page_cu]]/[[page_nb]]
+        </div>
+        <div style="width: 100%; text-align: left">
+            Downloaded By <?php echo $user_name; ?> <?php echo date("l,F j, Y"); ?>
+        </div>-->
+                    </page_footer>
+                    <!--    <bookmark title="Sommaire" level="0"></bookmark>-->
+                    <table class="noborder" align="center" style="margin-top: -22px; border:hidden; width: 100% !important; border-bottom: double;  ">
+                        <tbody>
+
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Emp No.</th>
+                                <?php $emp_pkey = isset($value['summary']['0']['ed']['emp_pkey']) ? $value['summary']['0']['ed']['emp_pkey'] : ''; ?>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo  wordwrap(isset($value['summary']['0']['ep']['emp_company_id']) ? $value['summary']['0']['ep']['emp_company_id'] : ''); ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Division </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php if (!empty($value['summary']['0']['payroll_master']['division'])) {
+                                                                                                                                echo $value['summary']['0']['payroll_master']['division'];
+                                                                                                                            } else {
+                                                                                                                                echo isset($value['summary']['0']['division']['div_name']) ? $value['summary']['0']['division']['div_name'] : '';
+                                                                                                                            } ?></th>
+                            </tr>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Employee Name:</th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php
+                                                                                                                            $empstatus = isset($value['summary']['0']['ed']['status']) && $value['summary']['0']['ed']['status'] == "2" ? '  (Resigned)' : '';
+                                                                                                                            if (!empty($value['summary']['0']['payroll_master']['emp_name'])) {
+
+                                                                                                                                echo $value['summary']['0']['payroll_master']['emp_name'] . ' ' . $empstatus;
+                                                                                                                            } else {
+                                                                                                                                echo isset($value['summary']['0']['ed']['first_name']) ? $value['summary']['0']['ed']['first_name'] : '';
+                                                                                                                                echo ' ';
+                                                                                                                                echo isset($value['summary']['0']['ed']['middile_name']) ? $value['summary']['0']['ed']['middile_name'] : '';
+                                                                                                                                echo ' ';
+                                                                                                                                echo isset($value['summary']['0']['ed']['last_name']) ? $value['summary']['0']['ed']['last_name'] : '';
+                                                                                                                                echo ' ' . $empstatus;
+                                                                                                                            }
+
+
+                                                                                                                            ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> PAN </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo isset($value['summary']['0']['ed']['pan_no']) ? $value['summary']['0']['ed']['pan_no'] : ''; ?> </th>
+                            </tr>
+                            <?php
+                            $acc_number = '';
+
+                            if ($acc_number == '') {
+                                $acc_number = isset($value['summary']['0']['ed']['account_no']) ? $value['summary']['0']['ed']['account_no'] : '';
+                            } ?>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> DOJ </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "> <?php if (!empty($value['summary']['0']['payroll_master']['joining_date']) && $value['summary']['0']['payroll_master']['joining_date'] != '0000-00-00') {
+                                                                                                                                echo date('d-m-Y', strtotime($value['summary']['0']['payroll_master']['joining_date']));
+                                                                                                                            } else {
+                                                                                                                                echo isset($value['summary']['0']['ep']['joining_date']) ? date('d-m-Y', strtotime($value['summary']['0']['ep']['joining_date'])) : '';
+                                                                                                                            } ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Bank A/c </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo $acc_number; ?></th>
+                            </tr>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ; text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Designation </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;padding-left: 5px; "> <?php if (!empty($value['summary']['0']['payroll_master']['desig'])) {
+                                                                                                                                                                //debug($value['summary']['0']['payroll_master']['desig']);exit;   
+                                                                                                                                                                echo $value['summary']['0']['payroll_master']['desig'];
+                                                                                                                                                            } else {
+
+                                                                                                                                                                echo  wordwrap(isset($value['summary']['0']['desg']['desig_name']) ? $value['summary']['0']['desg']['desig_name'] : '', 30, "<br>\n", TRUE);
+                                                                                                                                                            } ?></th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ; text-align:  left ;background-color: lightgrey;padding-left: 5px;"> UAN </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ; padding-left: 5px;"> <?php echo isset($value['summary']['0']['ed']['pf']) ? $value['summary']['0']['ed']['pf'] : ''; ?></th>
+                            </tr>
+                            <?php $leave = isset($value['summary']['0']['payroll_master']['days_leave']) ? $value['summary']['0']['payroll_master']['days_leave'] : '';
+                            $present = isset($value['summary']['0']['payroll_master']['days_presant']) ? $value['summary']['0']['payroll_master']['days_presant'] : '';
+                            $weekoff = isset($value['summary']['0']['ar']['weekoff_total']) ? $value['summary']['0']['ar']['weekoff_total'] : '';
+                            $paydays = $leave + $present + $weekoff;
+                            //Edited by Akshay on 2-8-2024
+                            $grade = (isset($value['summary']['0']['payroll_master']['grade']) && ($value['summary']['0']['payroll_master']['grade'] != '')) ? $value['summary']['0']['payroll_master']['grade'] : (isset($value['summary']['0']['grade']['grade_name']) ? $value['summary']['0']['grade']['grade_name'] : '');
+                            //End
+                            //Edited by Akshay on 2-8-2024
+                            $pay_scale = (isset($value['summary']['0']['payroll_master']['pay_scale']) && ($value['summary']['0']['payroll_master']['pay_scale'] != '')) ? $value['summary']['0']['payroll_master']['pay_scale'] : (isset($value['summary']['0']['grade']['pay_scale']) ? $value['summary']['0']['grade']['pay_scale'] : '');
+                            //End
+                            $esi = isset($value['summary']['0']['ed']['esi']) ? $value['summary']['0']['ed']['esi'] : '';
+                            //End
+                            ?>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 0px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;border-bottom: 1px solid white ;"> Department</th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; padding-left: 5px;border-bottom: 1px solid white ;"><?php echo  wordwrap(isset($value['summary']['0']['payroll_master']['departments']) ? $value['summary']['0']['payroll_master']['departments'] : '', 30, "<br>\n", TRUE); ?> </th>
+                                <!-- Edited by Akshay on 21-6-2024 -->
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Grade </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; padding-left: 5px; border-bottom: 1px solid white ;"><?php echo  wordwrap($grade, 30, "<br>\n", TRUE); ?> </th>
+                            </tr>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Pay Scale</th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; padding-left: 5px; border-bottom: 1px solid white ;"><?php echo  wordwrap($pay_scale, 30, "<br>\n", TRUE); ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> ESI No</th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px;  border-bottom: 1px solid white ;"><?php echo  wordwrap($esi, 30, "<br>\n", TRUE); ?> </th>
+                            </tr>
+                            <tr>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 0px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Pay Days</th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo $paydays; ?></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            <!-- End -->
+                            <tr>
+
+                                <th style="width:15%"></th>
+                                <th style="width:35%"></th>
+                                <th style="width:15%"></th>
+                                <th style="width:35%"></th>
+
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-no-row-borders table-min-height" align="center" style="margin-top: 5px;border:1px solid grey;  width: 550px !important; border: 1px solid grey; ">
+                        <tbody>
+                            <tr>
+                                <th style="width:32%; text-align: left; font-size: 12px;border: .5px solid black;"><b> &nbsp;&nbsp;&nbsp;&nbsp; Earnings</b></th>
+                                <th style="width:18%; text-align: center; font-size: 12px;border: .5px solid black;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Amount</b></th>
+                                <th style="border: .5px solid black !important;" class="shrinknew"></th>
+                                <th style="width:32%; text-align: left; font-size: 12px;border: .5px solid black;padding-left: 2px;"><b> &nbsp;&nbsp;&nbsp;&nbsp; Deductions</b></th>
+
+                                <th style="width:18%; text-align: center; font-size: 12px;border: .5px solid black;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Amount</b></th>
+
+                            </tr>
+                            <?php $arr_data = $value['summary'];
+                            $arr_withoutComponents = $value['withoutcomponent'];
+                            ?>
+                            <?php
+                            if (count($arr_data) >= 0) {
+                                $countss = count($arr_data);
+                                if (count($arr_data) < count($arr_withoutComponents)) {
+                                    $countss = count($arr_withoutComponents);
+                                }
+                                $sum = 0;
+                                $tot = 0;
+                                $dd = 0;
+                                $net = 0;
+                            ?>
+                                <?php for ($i = 0; $i < $countss; $i++) {
+                                ?>
+                                    <tr <?php if ($i === $countss - 1); ?>>
+
+                                        <?php
+                                        $sum += isset($arr_data[$i]['ectc']['salary_amount']) ? round($arr_data[$i]['ectc']['salary_amount']) : 0;
+                                        if (isset($arr_withoutComponents[$i]['ectc']))
+                                            $dd += isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? round($arr_withoutComponents[$i]['ectc']['salary_amount']) : 0;
+
+                                        ?>
+                                        <!--            <td>Consolidated Pay<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></td>-->
+                                        <td style="border: .5px solid black;"><?php echo isset($arr_data[$i]['ectc']['salary_head_item_desc']) ? '&nbsp;' . trim($arr_data[$i]['ectc']['salary_head_item_desc']) : ''; ?></td>
+                                        <td style="text-align:right;border: .5px solid black;"><?php echo isset($arr_data[$i]['ectc']['salary_amount']) ? formatIndianNumberslip(abs(round($arr_data[$i]['ectc']['salary_amount'])), 2) . '&nbsp;&nbsp;' : ''; ?></td>
+                                        <td style="border: .5px solid black;" class="shrinknew"></td>
+                                        <td style="border: .5px solid black;"><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_head_item_desc']) ? '&nbsp;&nbsp;' . $arr_withoutComponents[$i]['ectc']['salary_head_item_desc'] . ' ' : ''; ?></td>
+                                        <td style="text-align:right;border: .5px solid black;"><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? formatIndianNumberslip(abs(round($arr_withoutComponents[$i]['ectc']['salary_amount'])), 2) . '&nbsp;&nbsp;' : ''; ?></td>
+
+                                    </tr>
+                                    <?php }
+
+                                // Add remaining blank rows if the number of rows is less than 20
+                                $remainingRows = 130 - $countss; //Edited by Akshay on 26-6-2024
+                                if ($remainingRows > 0) {
+                                    for ($j = 0; $j < $remainingRows; $j++) {
+                                    ?>
+                                        <tr <?php if ($j == ($remainingRows - 1)) echo 'class="last-row"'; ?>>
+                                            <td style="border: .5px solid black;"></td>
+                                            <td style="border: .5px solid black;"></td>
+                                            <td style="border: .5px solid black;" class="shrinknew"></td>
+                                            <td style="border: .5px solid black;"></td>
+                                            <td style="border: .5px solid black;"></td>
+
+                                        </tr>
+                                <?php
+                                    }
+                                }
+                                ?>
+
+                                <tr style="border-collapse: seperate;border-color: black!important;">
+                                    <td style="border: .5px solid black;border-bottom: .5px solid black;"><b>&nbsp;Total</b></td>
+                                    <td style="border: .5px solid black;text-align:right;border-bottom: .5px solid black;"><b><?php echo formatIndianNumberslip((round($sum)), 2) . '&nbsp;&nbsp;'; ?></b></td>
+                                    <td style="border: .5px solid black;border-bottom: .5px solid black;" class="shrinknew"></td>
+                                    <td style="border: .5px solid black;border-bottom: .5px solid black;"><b>&nbsp;&nbsp;Total </b></td>
+                                    <td style="text-align:right;border: .5px solid black;border-bottom: .5px solid black;"><b><?php echo formatIndianNumberslip((abs(round($dd))), 2) . '&nbsp;&nbsp;'; ?></b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" style="border: .5px solid black;border-bottom: .5px solid black;padding-top: 1px; padding-bottom: 1px;"></td>
+                                </tr>
+                                <?php $settle = isset($value['settle']) ? $value['settle'] : 0;
+                                $netpay1 = (float)round($sum) + (float)round($dd) + (float)round($settle);
+                                ?>
+
+                                <?php
+                                $netpay = $netpay1;
+                                $no = floor($netpay);
+                                $point = round($netpay - $no, 2) * 100;
+                                $hundred = null;
+                                $digits_1 = strlen($no);
+                                $i = 0;
+                                $str = array();
+                                $words = array(
+                                    '0' => '', '1' => 'one', '2' => 'two',
+                                    '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
+                                    '7' => 'seven', '8' => 'eight', '9' => 'nine',
+                                    '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
+                                    '13' => 'thirteen', '14' => 'fourteen',
+                                    '15' => 'fifteen', '16' => 'sixteen', '17' => 'seventeen',
+                                    '18' => 'eighteen', '19' => 'nineteen', '20' => 'twenty',
+                                    '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
+                                    '60' => 'sixty', '70' => 'seventy',
+                                    '80' => 'eighty', '90' => 'ninety'
+                                );
+                                $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
+                                while ($i < $digits_1) {
+                                    $divider = ($i == 2) ? 10 : 100;
+                                    $netpay = floor($no % $divider);
+                                    $no = floor($no / $divider);
+                                    $i += ($divider == 10) ? 1 : 2;
+                                    if ($netpay && (isset($words[$netpay]) || isset($words[floor($netpay / 10) * 10]) && isset($words[$netpay % 10]))) {
+                                        $plural = (($counter = count($str)) && $netpay > 9) ? null : null;
+
+                                        $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
+                                        $str[] = ($netpay < 21) ? $words[$netpay] .
+                                            " " . $digits[$counter] . $plural . " " . $hundred
+                                            :
+                                            $words[floor($netpay / 10) * 10]
+                                            . " " . $words[$netpay % 10] . " "
+                                            . $digits[$counter] . $plural . " " . $hundred;
+                                    } else $str[] = null;
+                                }
+                                $str = array_reverse($str);
+                                $result = implode('', $str);
+                                if ($netpay1 < 0) {
+                                    $result = 'Negative ' . $result;
+                                } ?>
+
+                            <?php } ?>
+                            <tr>
+                                <th style="display: flex; justify-content: space-between; align-items: center; width: 32%; font-size: 12px; border: .5px solid white;padding-top:10px;">
+                                    <span style="margin-right: auto;"><b>&nbsp;Net Pay</b></span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                    <span style="margin-left: auto;"><b><?php echo formatIndianNumberslip($netpay1, 2); ?></b></span>
+                                </th>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="text-align: left; font-size: 12px;text-transform: capitalize;"><b>&nbsp;&nbsp;In Words &nbsp;&nbsp;&nbsp;&nbsp;Rupees <?php echo $result; ?> Only</b></div>
+                    <?php
+                    // debug($value);
+                    if ($value['regime'] == 'O') {
+                        $option = 'Old';
+                    } else {
+                        $option =  'New';
+                    } ?>
+                    <table class="" style="border-color: black;">
+                        <tbody>
+                            <tr style="background: #ccc; ">
+                                <th style=" font-weight: bold; font-size: 12px;text-align: left;width: 50%;border-right:none;"> <?php echo $option; ?> Tax Regime Opted </th>
+
+                                <th style=" font-weight: bold; text-align: center;font-size: 12px;width: 35%; border-right: #ccc;">TDS Details
+                                </th>
+                                <th style=" font-weight: bold; text-align:right ;font-size: 12px;text-align: right; width: 215px;"> PAN : <?php echo isset($value['summary']['0']['ed']['pan_no']) ? $value['summary']['0']['ed']['pan_no'] : ''; ?>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- table experiment -->
+                    <table style="border:none">
+                        <tr>
+                            <td style="border:none">
+                                <table style="border:none">
+                                    <tr>
+                                        <td style="border:none">
+                                            <table style="width:400px;margin-bottom: 0px; padding:0;margin-top:3px;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="width: 144px; text-align: center; font-size: 12px;" colspan="1"><b>Description</b></td>
+                                                        <td style="width: 70px; text-align: center; font-size: 12px;"><b>Gross</b></td>
+                                                        <td style="width: 70px; text-align: center; font-size: 12px;"><b>Exempt</b></td>
+                                                        <td style="width: 70px; text-align: center; font-size: 12px;"><b>Taxable</b></td>
+                                                    </tr>
+                                                    <?php
+                                                    $taxable = '';
+                                                    $excempt = '';
+                                                    $values = '';
+                                                    $count = 0;
+
+
+                                                    $arr_data = isset($value['grossnew']) ? $value['grossnew'] : '';
+                                                    $employee = $value;
+
+                                                    if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                        if (count($arr_data) >= 0) {
+                                                            foreach ($arr_data as $val) {
+                                                                $component = isset($val['SHI']['item']) ? $val['SHI']['item'] : '';
+                                                                if ($value['regime'] == 'N') {
+                                                                    $values = isset($val['EmpTaxSalTransNew']['availed_salary']) ? $val['EmpTaxSalTransNew']['availed_salary'] : 0;
+                                                                    $emp_fkey = isset($val['EmpTaxSalTransNew']['emp_fkey']) ? $val['EmpTaxSalTransNew']['emp_fkey'] : 0;
+                                                                } else {
+                                                                    $values = isset($val['EmpTaxSalTrans']['availed_salary']) ? $val['EmpTaxSalTrans']['availed_salary'] : 0;
+                                                                    $emp_fkey = isset($val['EmpTaxSalTrans']['emp_fkey']) ? $val['EmpTaxSalTrans']['emp_fkey'] : 0;
+                                                                }
+                                                                $taxable = $values - $excempt;
+
+                                                                if ($emp_fkey === $emp_pkey) {
+                                                                    $count++;
+                                                    ?>
+                                                                    <tr>
+                                                                        <td style="width: 144px;"><?php echo $component; ?></td>
+                                                                        <td style="width: 70px; text-align: right;"><?php echo formatIndianNumberslip($values, 2); ?></td>
+                                                                        <td style="width: 70px; text-align: right;"><?php echo $excempt; ?></td>
+                                                                        <td style="width: 70px; text-align: right;"><?php echo formatIndianNumberslip($taxable, 2); ?></td>
+                                                                    </tr>
+                                                    <?php
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    ?>
+
+                                                    <?php
+
+
+                                                    if ($count < 9) {
+                                                        for ($k = 0; $k <= (8 - $count); $k++) { ?>
+                                                            <tr>
+                                                                <td style="width: 144px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                                <td style="width: 70px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                                <td style="width: 70px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                                <td style="width: 70px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                            </tr>
+                                                    <?php }
+                                                    }
+                                                    ?>
+                                                </tbody>
+
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border:none">
+                                            <table class="" style="width:100%;margin-top: 3px;">
+                                                <tbody>
+                                                    <tr>
+
+                                                        <td colspan="2" style="font-size: 12px;width: 375px;text-align: center;"><b>&nbsp;Deduction Under Chapter VI-A</b></td>
+                                                    </tr>
+
+
+                                                    <?php $j = 0;
+                                                    if ($option == 'Old') {
+                                                        foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $heads) {  ?>
+                                                            <tr>
+                                                                <?php foreach ($value['tax'] as $key => $val) {
+                                                                    if ($val['tax_value'] > 0) {
+                                                                        if ($heads['tax_heads_pkey'] == $key) { ?>
+                                                                            <td style="width:298px;"> <?php echo $heads['tax_name']; ?></td>
+
+                                                                            <td style="width:67px; text-align: right;">
+                                                                                <?php $result = formatIndianNumberslip($val['tax_value'], 2);
+                                                                                echo $result; ?>
+                                                                            </td>
+                                                                <?php $j++;
+                                                                        }
+                                                                    }
+                                                                } ?>
+                                                            </tr>
+                                                    <?php
+                                                        }
+                                                    } ?>
+                                                    <?php for ($i = $j; $i < 8; $i++) {  ?>
+                                                        <tr>
+                                                            <td style="width:298px;height:9px;"></td>
+                                                            <td style="width:67px;height:9px;"></td>
+                                                        </tr>
+                                                    <?php } ?>
+
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td style="border:none">
+                                <table style="border:none">
+                                    <tr>
+                                        <td style="border:none">
+                                            <table class="table table-bordered" style="width:669px; margin-top:3px;  margin-left: 0px;">
+                                                <tbody>
+                                                    <tr>
+                                                        <th colspan="2" style="text-align:center;"><b>Income Tax Deduction</b></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:29%">&nbsp;Gross Salary</td>
+                                                        <?php
+                                                        $arr_data = isset($value['gross']) ? $value['gross'] : '';
+                                                        $gross = 0;
+                                                        $std = 0;
+                                                        $Income_from_Other_Source = 0;
+                                                        $Taxable_Income = 0;
+                                                        $Total_Tax = 0;
+                                                        $Surcharge = 0;
+                                                        $Tax_Deducted_Till_date = 0;
+                                                        $Tax_to_be_Deducted = 0;
+                                                        $Monthly_tax = 0;
+
+                                                        if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                            if (count($arr_data) >= 0) {
+                                                                foreach ($arr_data as $val) {
+                                                                    //$stdecn = 50000;
+                                                                    $gross =  isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? $val['tax_computation_report']['Taxable_Income_from_Salary'] : 0;
+                                                                    //$std =  isset($val['tax_computation_report']['Standard_deduction']) ? formatIndianNumberslip($val['tax_computation_report']['Standard_deduction'],2) : formatIndianNumberslip($stdecn,2);
+                                                                    $Income_from_Other_Source = isset($val['tax_computation_report']['Taxable_Income_from_Other_Sources']) ? formatIndianNumberslip($val['tax_computation_report']['Taxable_Income_from_Other_Sources'], 2) : 0.00;
+                                                                    $Taxable_Income =  isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? formatIndianNumberslip($val['tax_computation_report']['Taxable_Income_from_Salary'], 2) : 0.00;
+                                                                    $Total_Tax =  isset($val['tax_computation_report']['Total_Tax']) ? formatIndianNumberslip($val['tax_computation_report']['Total_Tax'], 2) : 0.00;
+                                                                    $Surcharge =  isset($val['tax_computation_report']['Surcharge']) ? formatIndianNumberslip($val['tax_computation_report']['Surcharge'], 2) : 0.00;
+                                                                    $Tax_Deducted_Till_date = isset($val['tax_computation_report']['Tax_Deducted']) ? formatIndianNumberslip($val['tax_computation_report']['Tax_Deducted'], 2) : 0.00;
+                                                                    $Tax_to_be_Deducted = isset($val['tax_computation_report']['Balance_Tax']) ? formatIndianNumberslip($val['tax_computation_report']['Balance_Tax'], 2) : 0.00;
+                                                                    $Monthly_tax =  isset($val['tax_computation_report']['Monthly_Tax']) ? formatIndianNumberslip($val['tax_computation_report']['Monthly_Tax'], 2) : 0.00;
+                                                                }
+                                                            }
+                                                        }
+
+                                                        ?>
+
+                                                        <?php
+
+                                                        $totalValuesSum = 0;
+
+
+                                                        $arr_data = isset($value['grossnew']) ? $value['grossnew'] : '';
+                                                        $employee = $value;
+
+                                                        if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                            if (count($arr_data) >= 0) {
+                                                                foreach ($arr_data as $employee => $val) {
+                                                                    if ($value['regime'] == 'N') {
+                                                                        $values = isset($val['EmpTaxSalTransNew']['availed_salary']) ? $val['EmpTaxSalTransNew']['availed_salary'] : 0;
+                                                                    } else {
+                                                                        $values = isset($val['EmpTaxSalTrans']['availed_salary']) ? $val['EmpTaxSalTrans']['availed_salary'] : 0;
+                                                                    }
+                                                                    $totalValuesSum += $values;
+                                                                }
+                                                            }
+                                                        }
+                                                        ?>
+                                                        <td style="width:15%;text-align:right;"><?php echo formatIndianNumberslip($totalValuesSum, 2); ?></td>
+                                                    </tr>
+                                                    <?php
+                                                    //                                            $pt = 0.00;									  
+                                                    //                                                $arr_data = isset($value['withoutcomponent']) ? $value['withoutcomponent'] : '';
+                                                    //                                                if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                    //                                                    if (count($arr_data) >= 0) {
+                                                    //                                                        foreach ($arr_data as $val) {
+                                                    //                                                            $pthead = isset($val['ectc']['salary_head_item_desc']) ? $val['ectc']['salary_head_item_desc'] : '';
+                                                    //                                                            $ptAmount = isset($val['ectc']['salary_amount']) ? $val['ectc']['salary_amount'] : 0;
+                                                    //                                                             if ($pthead == 'Professional Tax') {
+                                                    //                                                                $pt = formatIndianNumberslip(abs($ptAmount), 2);
+                                                    //                                                                break ;
+                                                    //                                                            }
+                                                    //                                                        }
+                                                    //                                                    }
+                                                    //                                                }
+                                                    ?>
+                                                    <?php
+
+                                                    if ($value['regime'] == 'N') {
+                                                        $other_ded = 0;
+                                                        $standerd_deduction = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['standerd_deduction']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['standerd_deduction'] : 0;
+                                                        $taxableincome = $totalValuesSum - $standerd_deduction - $other_ded + (isset($Income_from_Other_Source) ? floatval(str_replace(',', '', $Income_from_Other_Source)) : 0); //Edited by Akshay on 2-5-2024
+                                                        $totalded = $standerd_deduction + $other_ded;
+                                                        $Total_Tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_yearly']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_yearly'] : 0;
+                                                        $Surcharge = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['surcharge']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['surcharge'] : 0;
+                                                        $cess = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['cess']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['cess'] : 0;
+                                                        $Surchargecess = formatIndianNumberslip($Surcharge + $cess, 2);
+                                                        $Monthly_tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_monthly_proj']) ? formatIndianNumberslip($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_monthly_proj'], 2) : 0;
+                                                        if ($taxableincome <= 700000) {
+                                                            $Total_Tax = 0;
+                                                            $Monthly_tax = 0;
+                                                        }
+                                                        $totalSum = 0.00;
+                                                        $pt = 0.00;
+                                                    } else {
+                                                        $other_ded = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_heads_limitsum']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_heads_limitsum'] : 0;
+                                                        $standerd_deduction = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['standerd_deduction']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['standerd_deduction'] : 0;
+                                                        $taxableincome = $totalValuesSum - $standerd_deduction - $other_ded + (isset($Income_from_Other_Source) ? floatval(str_replace(',', '', $Income_from_Other_Source)) : 0); //Edited by Akshay on 2-5-2024
+                                                        $totalded = $standerd_deduction + $other_ded;
+                                                        $Total_Tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_yearly']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_yearly'] : 0;
+                                                        $Surcharge = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['surcharge']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['surcharge'] : 0;
+                                                        $cess = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['cess']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['cess'] : 0;
+                                                        $Surchargecess = formatIndianNumberslip($Surcharge + $cess, 2);
+                                                        $Monthly_tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_monthly_proj']) ? formatIndianNumberslip($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_monthly_proj'], 2) : 0;
+                                                        if ($taxableincome <= 500000) {
+                                                            $Total_Tax = 0;
+                                                            $Monthly_tax = 0;
+                                                        }
+                                                        $totalSum = 0.00;
+
+                                                        foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $heads) {
+                                                            $result = 0;
+
+                                                            foreach ($value['tax'] as $key => $val) {
+                                                                if ($heads['tax_heads_pkey'] == $key) {
+                                                                    $result = $val['tax_value'];
+                                                                }
+                                                            }
+
+                                                            $totalSum += $result;
+                                                        }
+                                                        $totalSum = formatIndianNumberslip($totalSum, 2);
+                                                        $pt = 2500;
+                                                        $pt = formatIndianNumberslip($pt, 2);
+                                                    }
+                                                    $taxableincome = formatIndianNumberslip($taxableincome, 2);
+                                                    $totalded = formatIndianNumberslip($totalded, 2);
+                                                    $taxtilldate = 0;
+                                                    for ($i = 0; $i < 12; $i++) {
+                                                        $taxtilldate =  $taxtilldate + $value['taxdates'][$i]['tax'];
+                                                    }
+
+                                                    $Surchargecess = str_replace(',', '', $Surchargecess); //Edited by Akshay on 10-5-2024
+                                                    // $Tax_to_be_Deducted = abs($Total_Tax - $taxtilldate);
+                                                    $Tax_to_be_Deducted = abs($Total_Tax - $taxtilldate + (isset($Surchargecess) ? floatval($Surchargecess) : 0)); //Edited by Akshay on 10-5-2024
+                                                    ?>
+                                                    <tr>
+                                                        <td>&nbsp;Professional Tax</td>
+                                                        <td style="text-align: right;"><?php echo $pt; ?></td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>&nbsp;Other Ded. & Standard Ded.</td>
+                                                        <td style="text-align: right;"><?php echo $totalded; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>&nbsp;House Property</td>
+                                                        <?php
+                                                        $TaxHead = 'House Property';
+                                                        $houseProperty = 0.00;
+                                                        $j = 0;
+                                                        foreach ($arr_taxheadfields['Income']['tax_heads'] as $heads) {
+                                                            if ($heads['tax_name'] == $TaxHead) {
+
+                                                                foreach ($value['tax'] as $key => $val) {
+                                                                    if ($heads['tax_heads_pkey'] == $key) {
+                                                                        $houseProperty = formatIndianNumberslip($val['tax_value'], 2);
+                                                                        break;
+                                                                    }
+                                                                }
+                                                                break;
+                                                            }
+
+                                                            $j++;
+                                                        } ?>
+                                                        <td style="text-align: right;"><?php echo $houseProperty; ?></td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>&nbsp;Income from Other Source</td>
+                                                        <td style="text-align: right;"><?php echo $Income_from_Other_Source; ?></td>
+                                                    </tr>
+                                                    <tr>
+
+
+                                                        <td>&nbsp;Total VI-A deduction</td>
+
+                                                        <td style="text-align: right;"><?php echo $totalSum; ?></td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>&nbsp;Taxable Income</td>
+                                                        <td style="text-align: right;"><?php echo $taxableincome; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>&nbsp;Total Tax</td>
+                                                        <td style="text-align: right;"><?php echo isset($Total_Tax) ? formatIndianNumberslip($Total_Tax, 2) : 0; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>&nbsp;Surcharge + Education Cess</td>
+                                                        <td style="text-align: right;"><?php echo isset($Surchargecess) ? $Surchargecess : 0; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>&nbsp;Tax Deducted(Prev.Emplr+Other)</td>
+                                                        <td style="text-align: right;">0</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>&nbsp;Tax Deducted Till date</td>
+                                                        <td style="text-align: right;"><?php echo isset($taxtilldate) ? formatIndianNumberslip($taxtilldate, 2) : 0; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>&nbsp;Tax to be Deducted</td>
+                                                        <td style="text-align: right;"><?php echo isset($Tax_to_be_Deducted) ? formatIndianNumberslip($Tax_to_be_Deducted, 2) : 0; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>&nbsp;Monthly Projected Tax</td>
+                                                        <td style="text-align: right;"><?php echo $Monthly_tax; ?></td>
+                                                    </tr>
+                                                    <?php $tax_count = count($arr_taxheadfields['Deductions']['tax_heads']);
+
+                                                    // for ($k = 8; $k < $tax_count; $k++) {  
+                                                    ?>
+                                                    <!--                                    <tr>
+                                        <td style="height: 9px;"><?php echo "  "; ?></td>
+                                        <td style="height: 9px;"><?php echo "  "; ?></td>
+                                    </tr>-->
+                                                    <?php // } 
+                                                    ?>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border:none">
+                                            <table class="table table-bordered" style="width:665px;margin-top: 3px; margin-left: 0px;">
+                                                <tbody>
+
+                                                    <?php $tax_array = isset($value['gross']) ? $value['gross'] : '';
+                                                    $Monthly_tax = 0;
+                                                    if ($tax_array != '') {
+                                                        foreach ($tax_array as $val) {
+
+                                                            $Monthly_tax =  $val['tax_computation_report']['Monthly_Tax'];
+                                                        }
+                                                    }
+
+                                                    ?> <tr>
+                                                        <th colspan="6" style="text-align:center;width: 288px;"><b>Tax Paid Details</b></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th style="text-align:center;width: 40px;"><b>APR</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>MAY</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>JUN</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>JUL</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>AUG</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>SEP</b></th>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <?php for ($i = 0; $i < 6; $i++) { ?>
+                                                            <td style="width:20px;text-align:center;"><?php echo ($value['taxdates'][$i]['tax'] != 0) ? $value['taxdates'][$i]['tax'] : 0; ?></td>
+                                                        <?php } ?>
+                                                    </tr>
+                                                    <tr>
+                                                        <th style="text-align:center;width: 40px;"><b>OCT</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>NOV</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>DEC</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>JAN</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>FEB</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>MAR</b></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <?php for ($i = 6; $i < 12; $i++) { ?>
+                                                            <td style="width:20px;text-align:center;"><?php echo $value['taxdates'][$i]['tax']; ?></td>
+                                                        <?php } ?>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    <!-- end -->
+
+
+
+                    <p style="text-align:center;font-size: 11px; margin-bottom: 0px;">*This is a electronically generated document, does not require signature.</p>
+                </page>
+
+
+            <?php }
+        }
+    } else {
+        foreach ($arr_salary_for_template as $value) {
+            if (count($value['summary']) != 0) {
+                $i += 1;
+            ?>
+                <page backtop="30mm" backbottom="0mm" backleft="10mm" backright="10mm" style="font-size: 12pt">
+                    <page_header>
+
+                        <div style="text-align:left; width:100%; ">
+
+
+
+                            <img style=" margin-left: 40px; " src="https://<?php echo $_SERVER['HTTP_HOST'] . $this->webroot . $arr_comp_contact_info['CompanyContactInfo']['logo']; ?>" height="60" width="70" class="img-circle" alt="Company Logo" />
+
+                            <div style="text-align:center; width:75%;">
+                                <b style="font-size: 19px; margin-top: 0px; color: #000066;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?></b>
+                                <p style="font-size: 13px; margin-top: -40px; ">(A Govt. of Kerala Public Sector Undertaking)</p>
+                                <p style="font-size: 13px; margin-top: -10px; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['address'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['city'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['pincode'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['state']; ?></p>
+                            </div>
+
+                        </div>
+                        <div style="text-align: center; border: 1px solid black; width:450px; margin-top: 0px; margin-left: 160px; margin-right: auto; height: 25px;">
+                            <h3 style="padding: 0px 20px; margin: 0; font-size: 16px;">
+                                Pay Slip for the month of <?php echo $mname1 . " / " . $y1; ?>
+                            </h3>
+                        </div>
+                    </page_header>
+                    <page_footer>
+
+                        <!--        <div style="width: 100%; text-align: right">
+            page [[page_cu]]/[[page_nb]]
+        </div>
+        <div style="width: 100%; text-align: left">
+            Downloaded By <?php echo $user_name; ?> <?php echo date("l,F j, Y"); ?>
+        </div>-->
+                    </page_footer>
+                    <!--    <bookmark title="Sommaire" level="0"></bookmark>-->
+                    <table class="noborder" align="center" style="margin-top: -22px; border:hidden; width: 100% !important; border-bottom: double;  ">
+                        <tbody>
+
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Emp No.</th>
+                                <?php $emp_pkey = isset($value['summary']['0']['ed']['emp_pkey']) ? $value['summary']['0']['ed']['emp_pkey'] : ''; ?>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo  wordwrap(isset($value['summary']['0']['ep']['emp_company_id']) ? $value['summary']['0']['ep']['emp_company_id'] : ''); ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Division </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php if (!empty($value['summary']['0']['payroll_master']['division'])) {
+                                                                                                                                echo $value['summary']['0']['payroll_master']['division'];
+                                                                                                                            } else {
+                                                                                                                                echo isset($value['summary']['0']['division']['div_name']) ? $value['summary']['0']['division']['div_name'] : '';
+                                                                                                                            } ?></th>
+                            </tr>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Employee Name:</th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php
+                                                                                                                            $empstatus = isset($value['summary']['0']['ed']['status']) && $value['summary']['0']['ed']['status'] == "2" ? '  (Resigned)' : '';
+                                                                                                                            if (!empty($value['summary']['0']['payroll_master']['emp_name'])) {
+
+                                                                                                                                echo $value['summary']['0']['payroll_master']['emp_name'] . ' ' . $empstatus;
+                                                                                                                            } else {
+                                                                                                                                echo isset($value['summary']['0']['ed']['first_name']) ? $value['summary']['0']['ed']['first_name'] : '';
+                                                                                                                                echo ' ';
+                                                                                                                                echo isset($value['summary']['0']['ed']['middile_name']) ? $value['summary']['0']['ed']['middile_name'] : '';
+                                                                                                                                echo ' ';
+                                                                                                                                echo isset($value['summary']['0']['ed']['last_name']) ? $value['summary']['0']['ed']['last_name'] : '';
+                                                                                                                                echo ' ' . $empstatus;
+                                                                                                                            }
+
+                                                                                                                            ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> PAN </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo isset($value['summary']['0']['ed']['pan_no']) ? $value['summary']['0']['ed']['pan_no'] : ''; ?> </th>
+                            </tr>
+                            <?php
+                            $acc_number = '';
+
+                            if ($acc_number == '') {
+                                $acc_number = isset($value['summary']['0']['ed']['account_no']) ? $value['summary']['0']['ed']['account_no'] : '';
+                            } ?>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> DOJ </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "> <?php if (!empty($value['summary']['0']['payroll_master']['joining_date']) && $value['summary']['0']['payroll_master']['joining_date'] != '0000-00-00') {
+                                                                                                                                echo date('d-m-Y', strtotime($value['summary']['0']['payroll_master']['joining_date']));
+                                                                                                                            } else {
+                                                                                                                                echo isset($value['summary']['0']['ep']['joining_date']) ? date('d-m-Y', strtotime($value['summary']['0']['ep']['joining_date'])) : '';
+                                                                                                                            } ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Bank A/c </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo $acc_number; ?></th>
+                            </tr>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ; text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Designation </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;padding-left: 5px; "> <?php if (!empty($value['summary']['0']['payroll_master']['desig'])) {
+                                                                                                                                                                echo $value['summary']['0']['payroll_master']['desig'];
+                                                                                                                                                            } else {
+                                                                                                                                                                echo  wordwrap(isset($value['summary']['0']['desg']['desig_name']) ? $value['summary']['0']['desg']['desig_name'] : '', 30, "<br>\n", TRUE);
+                                                                                                                                                            } ?></th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ; text-align:  left ;background-color: lightgrey;padding-left: 5px;"> UAN </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ; padding-left: 5px;"> <?php echo isset($value['summary']['0']['ed']['pf']) ? $value['summary']['0']['ed']['pf'] : ''; ?></th>
+                            </tr>
+                            <?php $leave = isset($value['summary']['0']['payroll_master']['days_leave']) ? $value['summary']['0']['payroll_master']['days_leave'] : '';
+                            $present = isset($value['summary']['0']['payroll_master']['days_presant']) ? $value['summary']['0']['payroll_master']['days_presant'] : '';
+                            $weekoff = isset($value['summary']['0']['ar']['weekoff_total']) ? $value['summary']['0']['ar']['weekoff_total'] : '';
+                            $paydays = $leave + $present + $weekoff;
+                            //Edited by Akshay on 2-8-2024
+                            $grade = (isset($value['summary']['0']['payroll_master']['grade']) && ($value['summary']['0']['payroll_master']['grade'] != '')) ? $value['summary']['0']['payroll_master']['grade'] : (isset($value['summary']['0']['grade']['grade_name']) ? $value['summary']['0']['grade']['grade_name'] : '');
+                            //End
+                            //Edited by Akshay on 2-8-2024
+                            $pay_scale = (isset($value['summary']['0']['payroll_master']['pay_scale']) && ($value['summary']['0']['payroll_master']['pay_scale'] != '')) ? $value['summary']['0']['payroll_master']['pay_scale'] : (isset($value['summary']['0']['grade']['pay_scale']) ? $value['summary']['0']['grade']['pay_scale'] : '');
+                            //End
+                            $esi = isset($value['summary']['0']['ed']['esi']) ? $value['summary']['0']['ed']['esi'] : '';
+                            //End
+                            ?>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 0px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;border-bottom: 1px solid white ;"> Department</th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; padding-left: 5px;border-bottom: 1px solid white ;"><?php echo  wordwrap(isset($value['summary']['0']['payroll_master']['departments']) ? $value['summary']['0']['payroll_master']['departments'] : '', 30, "<br>\n", TRUE); ?> </th>
+                                <!-- Edited by Akshay on 21-6-2024 -->
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Grade </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; padding-left: 5px; border-bottom: 1px solid white ;"><?php echo  wordwrap($grade, 30, "<br>\n", TRUE); ?> </th>
+                            </tr>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Pay Scale</th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; padding-left: 5px; border-bottom: 1px solid white ;"><?php echo  wordwrap($pay_scale, 30, "<br>\n", TRUE); ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> ESI No</th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px;  border-bottom: 1px solid white ;"><?php echo  wordwrap($esi, 30, "<br>\n", TRUE); ?> </th>
+                            </tr>
+                            <tr>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 0px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Pay Days</th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo $paydays; ?></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            <!-- End -->
+                            <tr>
+
+                                <th style="width:15%"></th>
+                                <th style="width:35%"></th>
+                                <th style="width:15%"></th>
+                                <th style="width:35%"></th>
+
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-no-row-borders table-min-height" align="center" style="margin-top: 5px;border:1px solid grey;  width: 550px !important; border: 1px solid grey; ">
+                        <tbody>
+                            <tr>
+                                <th style="width:32%; text-align: left; font-size: 12px;border: .5px solid black;"><b> &nbsp;&nbsp;&nbsp;&nbsp; Earnings</b></th>
+                                <th style="width:18%; text-align: center; font-size: 12px;border: .5px solid black;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Amount</b></th>
+                                <th style="border: .5px solid black !important;" class="shrinknew"></th>
+                                <th style="width:32%; text-align: left; font-size: 12px;border: .5px solid black;padding-left: 2px;"><b> &nbsp;&nbsp;&nbsp;&nbsp; Deductions</b></th>
+
+                                <th style="width:18%; text-align: center; font-size: 12px;border: .5px solid black;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Amount</b></th>
+
+                            </tr>
+                            <?php $arr_data = $value['summary'];
+                            $arr_withoutComponents = $value['withoutcomponent'];
+                            ?>
+                            <?php
+                            if (count($arr_data) >= 0) {
+                                $countss = count($arr_data);
+                                if (count($arr_data) < count($arr_withoutComponents)) {
+                                    $countss = count($arr_withoutComponents);
+                                }
+                                $sum = 0;
+                                $tot = 0;
+                                $dd = 0;
+                                $net = 0;
+                            ?>
+                                <?php for ($i = 0; $i < $countss; $i++) {
+                                ?>
+                                    <tr <?php if ($i === $countss - 1); ?>>
+
+                                        <?php
+                                        $sum += isset($arr_data[$i]['ectc']['salary_amount']) ? round($arr_data[$i]['ectc']['salary_amount']) : 0;
+                                        if (isset($arr_withoutComponents[$i]['ectc']))
+                                            $dd += isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? round($arr_withoutComponents[$i]['ectc']['salary_amount']) : 0;
+
+                                        ?>
+                                        <!--            <td>Consolidated Pay<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></td>-->
+                                        <td style="border: .5px solid black;"><?php echo isset($arr_data[$i]['ectc']['salary_head_item_desc']) ? '&nbsp;' . trim($arr_data[$i]['ectc']['salary_head_item_desc']) : ''; ?></td>
+                                        <td style="text-align:right;border: .5px solid black;"><?php echo isset($arr_data[$i]['ectc']['salary_amount']) ? formatIndianNumberslip(abs(round($arr_data[$i]['ectc']['salary_amount'])), 2) . '&nbsp;&nbsp;' : ''; ?></td>
+                                        <td style="border: .5px solid black;" class="shrinknew"></td>
+                                        <td style="border: .5px solid black;"><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_head_item_desc']) ? '&nbsp;&nbsp;' . $arr_withoutComponents[$i]['ectc']['salary_head_item_desc'] . ' ' : ''; ?></td>
+                                        <td style="text-align:right;border: .5px solid black;"><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? formatIndianNumberslip(abs(round($arr_withoutComponents[$i]['ectc']['salary_amount'])), 2) . '&nbsp;&nbsp;' : ''; ?></td>
+
+                                    </tr>
+                                    <?php }
+
+                                // Add remaining blank rows if the number of rows is less than 20
+                                $remainingRows = 130 - $countss; //Edited by Akshay on 26-6-2024
+                                if ($remainingRows > 0) {
+                                    for ($j = 0; $j < $remainingRows; $j++) {
+                                    ?>
+                                        <tr <?php if ($j == ($remainingRows - 1)) echo 'class="last-row"'; ?>>
+                                            <td style="border: .5px solid black;"></td>
+                                            <td style="border: .5px solid black;"></td>
+                                            <td style="border: .5px solid black;" class="shrinknew"></td>
+                                            <td style="border: .5px solid black;"></td>
+                                            <td style="border: .5px solid black;"></td>
+
+                                        </tr>
+                                <?php
+                                    }
+                                }
+                                ?>
+
+                                <tr style="border-collapse: seperate;border-color: black!important;">
+                                    <td style="border: .5px solid black;border-bottom: .5px solid black;"><b>&nbsp;Total</b></td>
+                                    <td style="border: .5px solid black;text-align:right;border-bottom: .5px solid black;"><b><?php echo formatIndianNumberslip((round($sum)), 2) . '&nbsp;&nbsp;'; ?></b></td>
+                                    <td style="border: .5px solid black;border-bottom: .5px solid black;" class="shrinknew"></td>
+                                    <td style="border: .5px solid black;border-bottom: .5px solid black;"><b>&nbsp;&nbsp;Total </b></td>
+                                    <td style="text-align:right;border: .5px solid black;border-bottom: .5px solid black;"><b><?php echo formatIndianNumberslip((abs(round($dd))), 2) . '&nbsp;&nbsp;'; ?></b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" style="border: .5px solid black;border-bottom: .5px solid black;padding-top: 1px; padding-bottom: 1px;"></td>
+                                </tr>
+                                <?php $settle = isset($value['settle']) ? $value['settle'] : 0;
+                                $netpay1 = (float)round($sum) + (float)round($dd) + (float)round($settle);
+                                ?>
+
+                                <?php
+                                $netpay = $netpay1;
+                                $no = floor($netpay);
+                                $point = round($netpay - $no, 2) * 100;
+                                $hundred = null;
+                                $digits_1 = strlen($no);
+                                $i = 0;
+                                $str = array();
+                                $words = array(
+                                    '0' => '', '1' => 'one', '2' => 'two',
+                                    '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
+                                    '7' => 'seven', '8' => 'eight', '9' => 'nine',
+                                    '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
+                                    '13' => 'thirteen', '14' => 'fourteen',
+                                    '15' => 'fifteen', '16' => 'sixteen', '17' => 'seventeen',
+                                    '18' => 'eighteen', '19' => 'nineteen', '20' => 'twenty',
+                                    '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
+                                    '60' => 'sixty', '70' => 'seventy',
+                                    '80' => 'eighty', '90' => 'ninety'
+                                );
+                                $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
+                                while ($i < $digits_1) {
+                                    $divider = ($i == 2) ? 10 : 100;
+                                    $netpay = floor($no % $divider);
+                                    $no = floor($no / $divider);
+                                    $i += ($divider == 10) ? 1 : 2;
+                                    if ($netpay && (isset($words[$netpay]) || isset($words[floor($netpay / 10) * 10]) && isset($words[$netpay % 10]))) {
+                                        $plural = (($counter = count($str)) && $netpay > 9) ? null : null;
+
+                                        $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
+                                        $str[] = ($netpay < 21) ? $words[$netpay] .
+                                            " " . $digits[$counter] . $plural . " " . $hundred
+                                            :
+                                            $words[floor($netpay / 10) * 10]
+                                            . " " . $words[$netpay % 10] . " "
+                                            . $digits[$counter] . $plural . " " . $hundred;
+                                    } else $str[] = null;
+                                }
+                                $str = array_reverse($str);
+                                $result = implode('', $str);
+                                if ($netpay1 < 0) {
+                                    $result = 'Negative ' . $result;
+                                } ?>
+
+                            <?php } ?>
+                            <tr>
+                                <th style="display: flex; justify-content: space-between; align-items: center; width: 32%; font-size: 12px; border: .5px solid white;padding-top:10px;">
+                                    <span style="margin-right: auto;"><b>&nbsp;Net Pay</b></span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                    <span style="margin-left: auto;"><b><?php echo formatIndianNumberslip($netpay1, 2); ?></b></span>
+                                </th>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="text-align: left; font-size: 12px;text-transform: capitalize;"><b>&nbsp;&nbsp;In Words &nbsp;&nbsp;&nbsp;&nbsp;Rupees <?php echo $result; ?> Only</b></div>
+                    <?php
+                    // debug($value);
+                    if ($value['regime'] == 'O') {
+                        $option = 'Old';
+                    } else {
+                        $option =  'New';
+                    } ?>
+                    <table class="" style="border-color: black;">
+                        <tbody>
+                            <tr style="background: #ccc; ">
+                                <th style=" font-weight: bold; font-size: 12px;text-align: left;width: 50%;border-right:none;"> <?php echo $option; ?> Tax Regime Opted </th>
+
+                                <th style=" font-weight: bold; text-align: center;font-size: 12px;width: 35%; border-right: #ccc;">TDS Details
+                                </th>
+                                <th style=" font-weight: bold; text-align:right ;font-size: 12px;text-align: right; width: 215px;"> PAN : <?php echo isset($value['summary']['0']['ed']['pan_no']) ? $value['summary']['0']['ed']['pan_no'] : ''; ?>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- table experiment -->
+                    <table style="border:none">
+                        <tr>
+                            <td style="border:none">
+                                <table style="border:none">
+                                    <tr>
+                                        <td style="border:none">
+                                            <table style="width:400px;margin-bottom: 0px; padding:0;margin-top:3px;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="width: 144px; text-align: center; font-size: 12px;" colspan="1"><b>Description</b></td>
+                                                        <td style="width: 70px; text-align: center; font-size: 12px;"><b>Gross</b></td>
+                                                        <td style="width: 70px; text-align: center; font-size: 12px;"><b>Exempt</b></td>
+                                                        <td style="width: 70px; text-align: center; font-size: 12px;"><b>Taxable</b></td>
+                                                    </tr>
+                                                    <?php
+                                                    $taxable = '';
+                                                    $excempt = '';
+                                                    $values = '';
+                                                    $count = 0;
+
+
+                                                    $arr_data = isset($value['grossnew']) ? $value['grossnew'] : '';
+                                                    $employee = $value;
+
+                                                    if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                        if (count($arr_data) >= 0) {
+                                                            foreach ($arr_data as $val) {
+                                                                $component = isset($val['SHI']['item']) ? $val['SHI']['item'] : '';
+                                                                if ($value['regime'] == 'N') {
+                                                                    $values = isset($val['EmpTaxSalTransNew']['availed_salary']) ? $val['EmpTaxSalTransNew']['availed_salary'] : 0;
+                                                                    $emp_fkey = isset($val['EmpTaxSalTransNew']['emp_fkey']) ? $val['EmpTaxSalTransNew']['emp_fkey'] : 0;
+                                                                } else {
+                                                                    $values = isset($val['EmpTaxSalTrans']['availed_salary']) ? $val['EmpTaxSalTrans']['availed_salary'] : 0;
+                                                                    $emp_fkey = isset($val['EmpTaxSalTrans']['emp_fkey']) ? $val['EmpTaxSalTrans']['emp_fkey'] : 0;
+                                                                }
+                                                                $taxable = $values - $excempt;
+
+                                                                if ($emp_fkey === $emp_pkey) {
+                                                                    $count++;
+                                                    ?>
+                                                                    <tr>
+                                                                        <td style="width: 144px;"><?php echo $component; ?></td>
+                                                                        <td style="width: 70px; text-align: right;"><?php echo formatIndianNumberslip($values, 2); ?></td>
+                                                                        <td style="width: 70px; text-align: right;"><?php echo $excempt; ?></td>
+                                                                        <td style="width: 70px; text-align: right;"><?php echo formatIndianNumberslip($taxable, 2); ?></td>
+                                                                    </tr>
+                                                    <?php
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    ?>
+
+                                                    <?php
+
+
+                                                    if ($count < 9) {
+                                                        for ($k = 0; $k <= (8 - $count); $k++) { ?>
+                                                            <tr>
+                                                                <td style="width: 144px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                                <td style="width: 70px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                                <td style="width: 70px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                                <td style="width: 70px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                            </tr>
+                                                    <?php }
+                                                    }
+                                                    ?>
+                                                </tbody>
+
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border:none">
+                                            <table class="" style="width:100%;margin-top: 3px;">
+                                                <tbody>
+                                                    <tr>
+
+                                                        <td colspan="2" style="font-size: 12px;width: 375px;text-align: center;"><b>&nbsp;Deduction Under Chapter VI-A</b></td>
+                                                    </tr>
+
+
+                                                    <?php $j = 0;
+                                                    if ($option == 'Old') {
+                                                        foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $heads) {  ?>
+                                                            <tr>
+                                                                <?php foreach ($value['tax'] as $key => $val) {
+                                                                    if ($val['tax_value'] > 0) {
+                                                                        if ($heads['tax_heads_pkey'] == $key) { ?>
+                                                                            <td style="width:298px;"> <?php echo $heads['tax_name']; ?></td>
+
+                                                                            <td style="width:67px; text-align: right;">
+                                                                                <?php $result = formatIndianNumberslip($val['tax_value'], 2);
+                                                                                echo $result; ?>
+                                                                            </td>
+                                                                <?php $j++;
+                                                                        }
+                                                                    }
+                                                                } ?>
+                                                            </tr>
+                                                    <?php
+                                                        }
+                                                    } ?>
+                                                    <?php for ($i = $j; $i < 8; $i++) {  ?>
+                                                        <tr>
+                                                            <td style="width:298px;height:9px;"></td>
+                                                            <td style="width:67px;height:9px;"></td>
+                                                        </tr>
+                                                    <?php } ?>
+
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td style="border:none">
+                                <table style="border:none">
+                                    <tr>
+                                        <td style="border:none">
+                                            <table class="table table-bordered" style="width:669px; margin-top:3px;  margin-left: 0px;">
+                                                <tbody>
+                                                    <tr>
+                                                        <th colspan="2" style="text-align:center;"><b>Income Tax Deduction</b></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:29%">&nbsp;Gross Salary</td>
+                                                        <?php
+                                                        $arr_data = isset($value['gross']) ? $value['gross'] : '';
+                                                        $gross = 0;
+                                                        $std = 0;
+                                                        $Income_from_Other_Source = 0;
+                                                        $Taxable_Income = 0;
+                                                        $Total_Tax = 0;
+                                                        $Surcharge = 0;
+                                                        $Tax_Deducted_Till_date = 0;
+                                                        $Tax_to_be_Deducted = 0;
+                                                        $Monthly_tax = 0;
+
+                                                        if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                            if (count($arr_data) >= 0) {
+                                                                foreach ($arr_data as $val) {
+                                                                    //$stdecn = 50000;
+                                                                    $gross =  isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? $val['tax_computation_report']['Taxable_Income_from_Salary'] : 0;
+                                                                    //$std =  isset($val['tax_computation_report']['Standard_deduction']) ? formatIndianNumberslip($val['tax_computation_report']['Standard_deduction'],2) : formatIndianNumberslip($stdecn,2);
+                                                                    $Income_from_Other_Source = isset($val['tax_computation_report']['Taxable_Income_from_Other_Sources']) ? formatIndianNumberslip($val['tax_computation_report']['Taxable_Income_from_Other_Sources'], 2) : 0.00;
+                                                                    $Taxable_Income =  isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? formatIndianNumberslip($val['tax_computation_report']['Taxable_Income_from_Salary'], 2) : 0.00;
+                                                                    $Total_Tax =  isset($val['tax_computation_report']['Total_Tax']) ? formatIndianNumberslip($val['tax_computation_report']['Total_Tax'], 2) : 0.00;
+                                                                    $Surcharge =  isset($val['tax_computation_report']['Surcharge']) ? formatIndianNumberslip($val['tax_computation_report']['Surcharge'], 2) : 0.00;
+                                                                    $Tax_Deducted_Till_date = isset($val['tax_computation_report']['Tax_Deducted']) ? formatIndianNumberslip($val['tax_computation_report']['Tax_Deducted'], 2) : 0.00;
+                                                                    $Tax_to_be_Deducted = isset($val['tax_computation_report']['Balance_Tax']) ? formatIndianNumberslip($val['tax_computation_report']['Balance_Tax'], 2) : 0.00;
+                                                                    $Monthly_tax =  isset($val['tax_computation_report']['Monthly_Tax']) ? formatIndianNumberslip($val['tax_computation_report']['Monthly_Tax'], 2) : 0.00;
+                                                                }
+                                                            }
+                                                        }
+
+                                                        ?>
+
+                                                        <?php
+
+                                                        $totalValuesSum = 0;
+
+
+                                                        $arr_data = isset($value['grossnew']) ? $value['grossnew'] : '';
+                                                        $employee = $value;
+
+                                                        if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                            if (count($arr_data) >= 0) {
+                                                                foreach ($arr_data as $employee => $val) {
+                                                                    if ($value['regime'] == 'N') {
+                                                                        $values = isset($val['EmpTaxSalTransNew']['availed_salary']) ? $val['EmpTaxSalTransNew']['availed_salary'] : 0;
+                                                                    } else {
+                                                                        $values = isset($val['EmpTaxSalTrans']['availed_salary']) ? $val['EmpTaxSalTrans']['availed_salary'] : 0;
+                                                                    }
+                                                                    $totalValuesSum += $values;
+                                                                }
+                                                            }
+                                                        }
+                                                        ?>
+                                                        <td style="width:15%;text-align:right;"><?php echo formatIndianNumberslip($totalValuesSum, 2); ?></td>
+                                                    </tr>
+                                                    <?php
+                                                    //                                            $pt = 0.00;									  
+                                                    //                                                $arr_data = isset($value['withoutcomponent']) ? $value['withoutcomponent'] : '';
+                                                    //                                                if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                    //                                                    if (count($arr_data) >= 0) {
+                                                    //                                                        foreach ($arr_data as $val) {
+                                                    //                                                            $pthead = isset($val['ectc']['salary_head_item_desc']) ? $val['ectc']['salary_head_item_desc'] : '';
+                                                    //                                                            $ptAmount = isset($val['ectc']['salary_amount']) ? $val['ectc']['salary_amount'] : 0;
+                                                    //                                                             if ($pthead == 'Professional Tax') {
+                                                    //                                                                $pt = formatIndianNumberslip(abs($ptAmount), 2);
+                                                    //                                                                break ;
+                                                    //                                                            }
+                                                    //                                                        }
+                                                    //                                                    }
+                                                    //                                                }
+                                                    ?>
+                                                    <?php
+
+                                                    if ($value['regime'] == 'N') {
+                                                        $other_ded = 0;
+                                                        $standerd_deduction = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['standerd_deduction']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['standerd_deduction'] : 0;
+                                                        $taxableincome = $totalValuesSum - $standerd_deduction - $other_ded + (isset($Income_from_Other_Source) ? floatval(str_replace(',', '', $Income_from_Other_Source)) : 0); //Edited by Akshay on 2-5-2024
+                                                        $totalded = $standerd_deduction + $other_ded;
+                                                        $Total_Tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_yearly']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_yearly'] : 0;
+                                                        $Surcharge = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['surcharge']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['surcharge'] : 0;
+                                                        $cess = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['cess']) ? $value['taxcomponents']['0']['EmployeeTaxsalsumNew']['cess'] : 0;
+                                                        $Surchargecess = formatIndianNumberslip($Surcharge + $cess, 2);
+                                                        $Monthly_tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_monthly_proj']) ? formatIndianNumberslip($value['taxcomponents']['0']['EmployeeTaxsalsumNew']['tax_monthly_proj'], 2) : 0;
+                                                        if ($taxableincome <= 700000) {
+                                                            $Total_Tax = 0;
+                                                            $Monthly_tax = 0;
+                                                        }
+                                                        $totalSum = 0.00;
+                                                        $pt = 0.00;
+                                                    } else {
+                                                        $other_ded = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_heads_limitsum']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_heads_limitsum'] : 0;
+                                                        $standerd_deduction = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['standerd_deduction']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['standerd_deduction'] : 0;
+                                                        $taxableincome = $totalValuesSum - $standerd_deduction - $other_ded + (isset($Income_from_Other_Source) ? floatval(str_replace(',', '', $Income_from_Other_Source)) : 0); //Edited by Akshay on 2-5-2024
+                                                        $totalded = $standerd_deduction + $other_ded;
+                                                        $Total_Tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_yearly']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_yearly'] : 0;
+                                                        $Surcharge = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['surcharge']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['surcharge'] : 0;
+                                                        $cess = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['cess']) ? $value['taxcomponents']['0']['EmployeeTaxsalsum']['cess'] : 0;
+                                                        $Surchargecess = formatIndianNumberslip($Surcharge + $cess, 2);
+                                                        $Monthly_tax = isset($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_monthly_proj']) ? formatIndianNumberslip($value['taxcomponents']['0']['EmployeeTaxsalsum']['tax_monthly_proj'], 2) : 0;
+                                                        if ($taxableincome <= 500000) {
+                                                            $Total_Tax = 0;
+                                                            $Monthly_tax = 0;
+                                                        }
+                                                        $totalSum = 0.00;
+
+                                                        foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $heads) {
+                                                            $result = 0;
+
+                                                            foreach ($value['tax'] as $key => $val) {
+                                                                if ($heads['tax_heads_pkey'] == $key) {
+                                                                    $result = $val['tax_value'];
+                                                                }
+                                                            }
+
+                                                            $totalSum += $result;
+                                                        }
+                                                        $totalSum = formatIndianNumberslip($totalSum, 2);
+                                                        $pt = 2500;
+                                                        $pt = formatIndianNumberslip($pt, 2);
+                                                    }
+                                                    $taxableincome = formatIndianNumberslip($taxableincome, 2);
+                                                    $totalded = formatIndianNumberslip($totalded, 2);
+                                                    $taxtilldate = 0;
+                                                    for ($i = 0; $i < 12; $i++) {
+                                                        $taxtilldate =  $taxtilldate + $value['taxdates'][$i]['tax'];
+                                                    }
+
+                                                    $Surchargecess = str_replace(',', '', $Surchargecess); //Edited by Akshay on 10-5-2024
+                                                    // $Tax_to_be_Deducted = abs($Total_Tax - $taxtilldate);
+                                                    $Tax_to_be_Deducted = abs($Total_Tax - $taxtilldate + (isset($Surchargecess) ? floatval($Surchargecess) : 0)); //Edited by Akshay on 10-5-2024
+                                                    ?>
+                                                    <tr>
+                                                        <td>&nbsp;Professional Tax</td>
+                                                        <td style="text-align: right;"><?php echo $pt; ?></td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>&nbsp;Other Ded. & Standard Ded.</td>
+                                                        <td style="text-align: right;"><?php echo $totalded; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>&nbsp;House Property</td>
+                                                        <?php
+                                                        $TaxHead = 'House Property';
+                                                        $houseProperty = 0.00;
+                                                        $j = 0;
+                                                        foreach ($arr_taxheadfields['Income']['tax_heads'] as $heads) {
+                                                            if ($heads['tax_name'] == $TaxHead) {
+
+                                                                foreach ($value['tax'] as $key => $val) {
+                                                                    if ($heads['tax_heads_pkey'] == $key) {
+                                                                        $houseProperty = formatIndianNumberslip($val['tax_value'], 2);
+                                                                        break;
+                                                                    }
+                                                                }
+                                                                break;
+                                                            }
+
+                                                            $j++;
+                                                        } ?>
+                                                        <td style="text-align: right;"><?php echo $houseProperty; ?></td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>&nbsp;Income from Other Source</td>
+                                                        <td style="text-align: right;"><?php echo $Income_from_Other_Source; ?></td>
+                                                    </tr>
+                                                    <tr>
+
+
+                                                        <td>&nbsp;Total VI-A deduction</td>
+
+                                                        <td style="text-align: right;"><?php echo $totalSum; ?></td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>&nbsp;Taxable Income</td>
+                                                        <td style="text-align: right;"><?php echo $taxableincome; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>&nbsp;Total Tax</td>
+                                                        <td style="text-align: right;"><?php echo isset($Total_Tax) ? formatIndianNumberslip($Total_Tax, 2) : 0; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>&nbsp;Surcharge + Education Cess</td>
+                                                        <td style="text-align: right;"><?php echo isset($Surchargecess) ? $Surchargecess : 0; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>&nbsp;Tax Deducted(Prev.Emplr+Other)</td>
+                                                        <td style="text-align: right;">0</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>&nbsp;Tax Deducted Till date</td>
+                                                        <td style="text-align: right;"><?php echo isset($taxtilldate) ? formatIndianNumberslip($taxtilldate, 2) : 0; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>&nbsp;Tax to be Deducted</td>
+                                                        <td style="text-align: right;"><?php echo isset($Tax_to_be_Deducted) ? formatIndianNumberslip($Tax_to_be_Deducted, 2) : 0; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>&nbsp;Monthly Projected Tax</td>
+                                                        <td style="text-align: right;"><?php echo $Monthly_tax; ?></td>
+                                                    </tr>
+                                                    <?php $tax_count = count($arr_taxheadfields['Deductions']['tax_heads']);
+
+                                                    // for ($k = 8; $k < $tax_count; $k++) {  
+                                                    ?>
+                                                    <!--                                    <tr>
+                                        <td style="height: 9px;"><?php echo "  "; ?></td>
+                                        <td style="height: 9px;"><?php echo "  "; ?></td>
+                                    </tr>-->
+                                                    <?php // } 
+                                                    ?>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border:none">
+                                            <table class="table table-bordered" style="width:665px;margin-top: 3px; margin-left: 0px;">
+                                                <tbody>
+
+                                                    <?php $tax_array = isset($value['gross']) ? $value['gross'] : '';
+                                                    $Monthly_tax = 0;
+                                                    if ($tax_array != '') {
+                                                        foreach ($tax_array as $val) {
+
+                                                            $Monthly_tax =  $val['tax_computation_report']['Monthly_Tax'];
+                                                        }
+                                                    }
+
+                                                    ?> <tr>
+                                                        <th colspan="6" style="text-align:center;width: 288px;"><b>Tax Paid Details</b></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th style="text-align:center;width: 40px;"><b>APR</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>MAY</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>JUN</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>JUL</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>AUG</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>SEP</b></th>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <?php for ($i = 0; $i < 6; $i++) { ?>
+                                                            <td style="width:20px;text-align:center;"><?php echo ($value['taxdates'][$i]['tax'] != 0) ? $value['taxdates'][$i]['tax'] : 0; ?></td>
+                                                        <?php } ?>
+                                                    </tr>
+                                                    <tr>
+                                                        <th style="text-align:center;width: 40px;"><b>OCT</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>NOV</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>DEC</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>JAN</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>FEB</b></th>
+                                                        <th style="text-align:center;width: 40px;"><b>MAR</b></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <?php for ($i = 6; $i < 12; $i++) { ?>
+                                                            <td style="width:20px;text-align:center;"><?php echo $value['taxdates'][$i]['tax']; ?></td>
+                                                        <?php } ?>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    <!-- end -->
+
+                    <p style="text-align:center;font-size: 11px; margin-bottom: 0px;">*This is a electronically generated document, does not require signature.</p>
+                </page>
+
+
+    <?php }
+        }
+    } ?>
+
+    <?php ?>
+
+    <?php
+    // exit;
+    if (empty($arr_salary_for_template)) { ?>
+
+
+        <div style="width:100%; ">
+
+
+
+            <img style=" margin-left: 40px; " src="https://<?php echo $_SERVER['HTTP_HOST'] . $this->webroot . $arr_comp_contact_info['CompanyContactInfo']['logo']; ?>" height="60" width="70" class="img-circle" alt="Company Logo" />
+
+            <div style="text-align: center; width: 75%;">
+                <b style="font-size: 19px; margin-top: 0px; color: #000066;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?></b>
+                <p style="font-size: 13px; margin-top: -40px; ">(A Govt. of Kerala Public Sector Undertaking)</p>
+                <p style="font-size: 13px; margin-top: -10px; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['address'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['city'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['pincode'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['state']; ?></p>
+            </div>
+
+        </div>
+        <div style="text-align: center; border: 1px solid black; width:450px; margin-top: 0px; margin-left: 160px; margin-right: auto; height: 25px;">
+            <h3 style="padding: 0px 20px; margin: 0; font-size: 16px;">
+                Pay Slip for the month of <?php echo $mname1 . " / " . $y1; ?>
+            </h3>
+        </div>
+        <br>
+        <div style="font-size: 15px;text-align:center; background-color:white;">
+            No data available under the selected criteria</div>
+    <?php } ?>
+<?php }
+// exit;
+?>

@@ -1,0 +1,728 @@
+<style>
+    .form-horizontal .control-label {
+        text-align: left;
+    }
+
+    .custom-file-upload {
+        border: 1px solid #0d0c0c52;
+        border-radius: 4px;
+        display: inline-block;
+        padding: 4px 12px;
+        cursor: pointer;
+        width: 100%;
+        height: 30px;
+        text-align: center;
+    }
+
+    .tabs-process {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        margin-top: 40px;
+        margin-bottom: -5px;
+
+    }
+
+    .tabs-process .tab {
+        padding: 15px 25px;
+        border: 1px solid #1d615f;
+        border-bottom: none;
+        margin: 0px 5px;
+    }
+
+    .tabs-process .active {
+        background-color: #1d615f;
+        color: white;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+       /* edit by bindu 14-11-2025 */
+    .heading {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        /* margin-left: 20px; */
+    }
+
+    .home {
+        background-color: #ffffffff;
+        border-radius: 50px;
+        padding: 2px 15px;
+        color: #1e516e !important;
+        /* margin-right: 15px; */
+        color: white;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: #1e516e 1px solid;
+    }
+
+    /* edit by bindu 14-11-2025 end */
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<section class="content">
+    <div class="col-md-12" style="padding: -10px;">
+        <!-- edited by athira on 03-07-2025 -->
+        <!-- <h1 style="margin:0px;" class="text-primary-18">Salary Increment</h1> -->
+        <!-- end -->
+        <!-- <hr style="margin-top: 17px;margin-bottom: 7px;border-top:1px solid #d4d4d4;"> -->
+<div class="heading" style="padding-left: 15px; padding-right:15px;">
+        <h1 class="text-primary-18">Salary Management</h1>
+        <div class="text-primary-16 home" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <i class="fa" style="font-size:16px;">&#xf104;</i>
+            Back
+        </div>
+    </div>
+    <!-- /* edit by bindu 14-11-2025 end */ -->
+    </div>
+    <div class="col-md-12">
+        <!-- Employee import form -->
+        <br>
+        <form class="form-horizontal" method="post" action="" id="importemployeectcform" name="importemployeectcform">
+            <div class="form-group" style="display:flex;justify-content:space-around;align-items:center;">
+
+                <!-- Branch -->
+                <div class="d-flex align-items-center" style="gap: 8px;">
+                    <label for="filterby_branch" class="mb-0" style="min-width: 90px;">Branch</label>
+                    <select id="filterby_branch" name="filterby_branch" class="form-control js-example-basic-single"
+                        style="width: 200px;" onchange="filterAttendanceupload(this);">
+                        <?php
+                        if (!isset($payroUser[0]['emp_proff']['payro_priv']) || $payroUser[0]['emp_proff']['payro_priv'] != 1) {
+                            if ($is_ho == 1 || $user_group != 2) {
+                                echo '<option value="">All</option>';
+                            }
+                        }
+                        foreach ($arr_branches as $key => $value) {
+                            if (isset($payroUser[0]['emp_proff']['emp_branch']) && $payroUser[0]['emp_proff']['payro_priv'] == 1) {
+                                if ($payroUser[0]['emp_proff']['emp_branch'] !== $value['Units']['branch_code']) {
+                                    continue;
+                                }
+                            }
+                            echo '<option value="' . $value['Units']['branch_code'] . '">' . $value['Units']['branch_name'] . '</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+
+                <!-- Employee -->
+                <div class="d-flex align-items-center" style="gap: 8px;">
+                    <label for="emp_fkey" class="mb-0" style="min-width: 90px;">Employee</label>
+                    <select id="emp_fkey" name="emp_fkey" class="form-control js-example-basic-single"
+                        style="width: 200px;" onchange="filterAttendanceupload(this);">
+                        <option value="">All</option>
+                        <?php
+                        foreach ($arr_employees as $employee) { ?>
+                            <option value="<?php echo $employee['ei']['emp_pkey'] ?>"><?php echo $employee['ei']['EmpName'] . ' - ' . $employee['ei']['employee_id'] ?></option>
+                        <?php }
+                        ?>
+                    </select>
+                </div>
+
+                <!-- Salary Structure -->
+                <div class="d-flex align-items-center" style="gap: 8px;">
+                    <label for="approved_bys" class="mb-0" style="min-width: 120px;">Salary Structure</label>
+                    <select id="approved_bys" name="approved_bys" class="form-control js-example-basic-single"
+                        style="width: 200px;" onchange="filterAttendanceupload(this);">
+                        <option value="0">All</option>
+                        <?php foreach ($arr_structure as $key => $value) { ?>
+                            <option value="<?php echo $value['SalaryStructures']['structure_id']; ?>">
+                                <?php echo $value['SalaryStructures']['structure_name']; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
+            </div>
+
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top: 40px;">
+                <div>
+                    <input type="radio" id="gross" value="gross" name="monthly" checked>
+                    <label for="gross" style="margin-right:5px;">Gross Salary</label>
+
+                    <input type="radio" id="salary_component" value="salary_component" name="monthly">
+                    <label for="salary_component">Salary Component</label>
+                </div>
+
+
+                <div style="display:flex;justify-content:end;align-items:center;">
+                    <span id="selectedFileName" style="max-width: 146px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;font-size:11px;"></span>
+                    <!-- Hidden File Input -->
+                    <div>
+                        <input id="empctccsv" name="empctccsv" type="file" accept=".xls,.xlsx" style="display:none;" onchange="handleFileSelect()" />
+
+                        <!-- Upload Button (triggers file input) -->
+                        <button type="button" id="btn-uploademployeectc" class="btn btn-success btn-sm" style="margin-right:20px;" data-toggle="tooltip" title="Upload" data-placement="top">
+                            <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" id="btn-downloademployeectcform" class="btn btn-danger btn-sm " onclick="downloadEmployeeCTCForm();" data-toggle="tooltip" title="Download template" data-placement="top"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            </div>
+
+
+        </form>
+
+
+        <div class="tabs-process">
+            <div class="tab active" onclick="switchTab(this, 'tab1')">Not Processed</div>
+            <div class="tab" onclick="switchTab(this, 'tab2')">Processed</div>
+        </div>
+
+        <div id="tab1" class="tab-content active">
+            <!-- <p> Not Processed</p> -->
+        </div>
+
+        <div id="tab2" class="tab-content">
+            <!-- <p>Processed</p> -->
+        </div>
+
+
+        <br>
+
+
+
+        <table id="att_table" class="table table-bordered table-hover">
+            <tbody>
+            </tbody>
+        </table>
+        <!-- </div> -->
+        <!-- /.box-body -->
+    </div>
+</section>
+<style type="text/css">
+    .pws_tabs_list {
+        min-height: 900px;
+    }
+</style>
+<script>
+    function switchTab(tabElement, tabId) {
+        // Remove active class from all tabs and contents
+        document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+
+        // Add active class to clicked tab and corresponding content
+        tabElement.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+
+        // Determine status from tabId
+        let status = '';
+        if (tabId === 'tab1') {
+            status = 'Not Processed';
+            $('#salaryIncrementBtn').show(); // Show when "Not Processed"
+        } else if (tabId === 'tab2') {
+            status = 'Processed';
+            $('#salaryIncrementBtn').hide(); // Hide when "Processed"
+        }
+
+        var branch = $('#importemployeectcform #filterby_branch').val();
+        var employee = $('#importemployeectcform #emp_fkey').val()
+        var structure = $('#importcomponents #approved_bys').val();
+
+        // Reload datagrid with corresponding status
+        $('#att_table').datagrid('load', {
+            employee: employee,
+            branch: branch,
+            structure: structure,
+            status: status
+        });
+    }
+
+
+    function handleFileSelect() {
+        const input = document.getElementById('empctccsv');
+        const label = document.getElementById('selectedFileName');
+        if (input.files.length > 0) {
+            label.textContent = input.files[0].name;
+            uploadEmployeeCTC(); // Trigger upload function
+        } else {
+            label.textContent = '';
+        }
+    }
+
+    function filterEmployees() {
+
+
+        var branch = $('#filterby_branch').val();
+        var structure = $('#approved_bys').val();
+        var fileInput = $('#empctccsv');
+        if ($('#approved_bys').val() !== '') {
+            fileInput.prop('disabled', false);
+        } else {
+            fileInput.prop('disabled', true);
+        }
+
+        $("#emp_fkey").select2({
+            placeholder: "--Select--",
+            allowClear: true,
+            ajax: {
+                url: livesite + "SalaryIncrement/jsons/" + branch,
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term,
+                        page: params.page
+                    };
+                },
+                processResults: function(data, params) {
+                    var selectElement = this.$element;
+                    var selectId = selectElement.attr('id');
+
+                    params.page = params.page || 1;
+
+                    return {
+                        results: data.items,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                }
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            }
+        });
+    }
+
+    function startdatcheck() {
+        var startDate = new Date($('#time').val());
+        var endDate = new Date($('#out_time').val());
+
+        if (startDate > endDate) {
+            alert("expected starting date should be less than ending date");
+            $("#time").val('');
+        }
+    }
+
+    function enddatecheck() {
+        var startDate = new Date($('#time').val());
+        var endDate = new Date($('#out_time').val());
+
+        if (startDate > endDate) {
+            alert("expected ending date should be greater than starting date");
+            $("#out_time").val('');
+        }
+    }
+    $('#time').datepicker({
+        format: 'dd-mm-yyyy',
+        autoclose: true,
+        startView: "days",
+        minViewMode: "days"
+    })
+
+    $('#out_time').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+    })
+    $("#out_date").inputmask("yyyy-mm-dd");
+    $('#y').on('click', function() {
+
+        if (this.value === 'Y') {
+            $('#date').css("display", "block");
+        }
+    });
+    $('#z').on('click', function() {
+
+        if (this.value === 'N') {
+            $('#date').css("display", "none");
+        }
+    });
+    // AMAL END
+    function startdateeffect() {
+        var startDateeffect = new Date($('#effect').val());
+        var endDateeffect = new Date($('#end_time').val());
+
+        if (startDateeffect > endDateeffect) {
+            alert("expected starting date should be less than ending date");
+            $("#effect").val('');
+        }
+    }
+
+    function enddatecheck() {
+        var startDateeffect = new Date($('#effect').val());
+        var endDateeffect = new Date($('#end_time').val());
+
+        if (startDateeffect > endDateeffect) {
+            alert("expected ending date should be greater than starting date");
+            $("#end_time").val('');
+        }
+    }
+    $('#effect').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        startView: "months",
+        minViewMode: "months"
+    })
+
+    $('#end_time').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+    })
+    $("#end_date").inputmask("yyyy-mm-dd");
+
+    function filterAttendanceupload(obj) {
+        var branch = $('#importemployeectcform #filterby_branch').val();
+        var employee = $('#importemployeectcform #emp_fkey').val()
+        var structure = $('#importcomponents #approved_bys').val();
+        var activeTabId = $('.tabs-process .tab.active').attr('id'); // example: 'tab1' or 'tab2'
+        var status = (activeTabId === 'tab2') ? 'Processed' : 'Not Processed';
+
+        $('#att_table').datagrid('load', {
+            employee: employee,
+            branch: branch,
+            structure: structure,
+            status: status
+        });
+        filterEmployees();
+    }
+
+    function downloadEmployeeCTCForm() {
+        var ctcuploadtype = $('#ctc_upload_type').val();
+        var selectedValue = $('input[name="monthly"]:checked').val();
+        var salStructure = $("#approved_bys").val();
+        if (ctcuploadtype == '') {
+            alert('Please select Choose Type ');
+            $('#ctc_upload_type').focus();
+        }
+        var ctcuploadtype = $('#ctc_upload_type').val();
+        var branch = $('#importemployeectcform #filterby_branch').val();
+        var employee = $('#importemployeectcform #emp_fkey').val();
+        var month = $('#importemployeectcform #emp_fkey').val();
+        var arrear = $('input[name="arrear"]:checked').val();
+
+        var payout = $('#importemployeectcform #time').val();
+        var startdate = $('#importemployeectcform #effect').val();
+        var approvedBy = $('#approved_bys').val();
+        ctcuploadtype = (ctcuploadtype === undefined) ? 2 : ctcuploadtype;
+        if (branch === '') {
+            branch = "0";
+        }
+
+        if (true) {
+            var url = '<?php echo $this->webroot; ?>';
+            var selectedValue = $('input[name="monthly"]:checked').val();
+            // alert(selectedValue);
+            if (selectedValue !== 'gross') {
+                url += 'SalaryIncrement/downloadempctcformatItem/';
+                url += (employee || '0') + '/' +
+                    (branch || 'undefined') + '/' +
+                    (salStructure || 'undefined');
+            } else {
+                url += 'SalaryIncrement/downloadempctcformat/';
+                url += (ctcuploadtype || 'undefined') + '/' +
+                    (branch || 'undefined') + '/' +
+                    (arrear || 'undefined') + '/' +
+                    // (payout || 'undefined') + '/' +
+                    // (startdate || 'undefined') + '/' +
+                    // (employee || 'undefined') + '/' +
+                    // (approvedBy || 'undefined');
+                    (employee || 'undefined');
+            }
+
+
+            window.open(url, '_blank');
+
+        } else {
+            return false;
+        }
+
+    }
+
+    function uploadEmployeeCTC() {
+
+
+        var form = $('#importemployeectcform');
+        var fileSelect = document.getElementById('empctccsv');
+        var ctcuploadtype = ($('#ctc_upload_type').val() === undefined) ? 2 : $('#ctc_upload_type').val();
+        var files = fileSelect.files;
+        var approvedBy = $('#approved_bys').val();
+
+
+        if (files.length == 0) {
+            $.notify("please choose any file to upload!", {
+                type: 'danger',
+                allow_dismiss: false,
+                z_index: 9999
+            });
+            return false;
+        }
+
+
+        var files = fileSelect.files;
+
+        var formData = new FormData();
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+
+            formData.append('empctc[]', file, file.name);
+
+        }
+
+        var xhr = new XMLHttpRequest();
+
+        //Edited by Akshay on 26-6-2025
+        var selectedValue = $('input[name="monthly"]:checked').val(); // get current selection
+        var endpoint = (selectedValue !== 'gross') ? 'uploadandsaveempctcitem' : 'uploadandsaveempctc';
+
+        xhr.open(
+            'POST',
+            livesite + 'SalaryIncrement/' + endpoint + '/' + ctcuploadtype + '/' + approvedBy,
+            true
+        );
+        // End
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                $('#empctccsv').val("");
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    $('#att_table').datagrid('reload');
+                    $.notify(response.msg, {
+                        type: 'success',
+                        allow_dismiss: false,
+                        z_index: 9999
+                    });
+                } else {
+                    $('#att_table').datagrid('reload');
+                    $.notify(response.msg, {
+                        type: 'error',
+                        allow_dismiss: false,
+                        z_index: 9999
+                    });
+                }
+            } else {
+                alert("Employee Gross Salary import failed, please check informations given or try again.");
+            }
+        };
+
+        $('#empctccsv').val('');
+        $("#filterby_branch").select2("val", "");
+        $("#emp_fkey").select2("val", "");
+
+        xhr.send(formData);
+    }
+
+
+    jQuery(document).ready(function() {
+
+        filterEmployees();
+        $("#filterby_branch").select2();
+        $("#emp_fkey").select2();
+        $("#approved_bys").select2();
+
+
+        // Open modal on Upload button click
+        $('#btn-uploademployeectc').click(function() {
+            showSmallModalForm(livesite + 'SalaryIncrement/fileUpload');
+        });
+
+
+        var employee = $('#attendanceuploadfilter #emp_fkey').val();
+        var branch = $('#attendanceuploadfilter #filterby_branch').val();
+        var structure = $('#importcomponents #approved_bys').val();
+
+        $('#att_table').datagrid({
+            url: livesite + "SalaryIncrement/employeelist",
+            pagination: true,
+            autoRowHeight: false,
+            singleSelect: true,
+            PostsearchFilter: true,
+            rownumbers: true,
+            pageSize: 10,
+            width: '100%',
+            queryParams: {
+                employee: employee,
+                branch: branch,
+                structure: structure,
+                status: 'Not Processed'
+            },
+            toolbar: [{
+                    text: 'Salary Increment',
+                    iconCls: 'icon-edit',
+                    id: 'salaryIncrementBtn',
+                    handler: function() {
+                        showLargeModalForm(livesite + 'SalaryIncrement/salaryIncrementForm')
+                    }
+                },
+
+                // {
+                //     text: 'Process',
+                //     iconCls: 'icon-ok',
+                //     handler: function() {
+                //         var row = $('#att_table').datagrid('getSelected');
+                //         console.log('Row', row);
+
+                //         if (!row) {
+                //             alert('Please select a row to process.');
+                //             return;
+                //         }
+
+                //         $.ajax({
+                //             url: livesite + (row.item === 'Y' ? 'SalaryIncrement/processItem' : 'SalaryIncrement/process'),
+                //             type: 'POST',
+                //             data: {
+                //                 salary_hike_pkey: row.salary_hike_pkey,
+                //                 is_multiple: (row.empname === 'Multiple') ? 'Y' : 'N',
+                //             }, // Send the selected employee key
+                //             success: function(response) {
+                //                 var result = $.parseJSON(response);
+                //                 if (result.success) {
+                //                     $.notify('Processed successfully', {
+                //                         type: 'success'
+                //                     });
+                //                     $('#att_table').datagrid('reload');
+                //                 } else {
+                //                     $.notify('Processing failed', {
+                //                         type: 'danger'
+                //                     });
+                //                 }
+                //             },
+                //             error: function() {
+                //                 $.notify('Server error occurred', {
+                //                     type: 'danger'
+                //                 });
+                //             }
+                //         });
+                //     }
+                // },
+
+                {
+                    text: 'View',
+                    iconCls: 'icon-edit',
+                    handler: function() {
+                        var row = $('#att_table').datagrid('getSelected');
+                        if (!row) {
+                            alert('Please select a row to process.');
+                            return;
+                        }
+
+                        showLargeModalForm(
+                            livesite + 'SalaryIncrement/viewSalaryIncrementForm/' + row.salary_hike_pkey + '/' + encodeURIComponent(row.empname.trim())
+                        );
+
+                    }
+                },
+
+                // {
+                //     text: 'Download',
+                //     iconCls: 'icon-save',
+                //     handler: function() {
+                //         var row = $('#att_table').datagrid('getSelected');
+                //         console.log('Row', row);
+
+                //         if (!row) {
+                //             alert('Please select a row to process.');
+                //             return;
+                //         }
+
+                //         // Determine the correct URL based on the item type
+                //         var url = livesite + (row.item === 'Y' ? 'SalaryIncrement/itemIncerementReport' : 'SalaryIncrement/incerementReport');
+
+                //         // Create a temporary form
+                //         var form = $('<form>', {
+                //             method: 'POST',
+                //             action: url,
+                //             target: '_blank'
+                //         });
+
+                //         // Add form inputs for required data
+                //         form.append($('<input>', {
+                //             type: 'hidden',
+                //             name: 'salary_hike_pkey',
+                //             value: row.salary_hike_pkey
+                //         }));
+                //         form.append($('<input>', {
+                //             type: 'hidden',
+                //             name: 'is_multiple',
+                //             value: (row.empname === 'Multiple') ? 'Y' : 'N'
+                //         }));
+
+                //         // Append, submit, and remove the form
+                //         $('body').append(form);
+                //         form.submit();
+                //         form.remove();
+                //     }
+                // }
+                // End
+
+            ],
+            fitColumns: true,
+            pageList: [2, 5, 10],
+            columns: [
+                [{
+                        field: 'empname',
+                        title: 'Employee Name',
+                        width: "20%"
+                    },
+                    {
+                        field: 'empid',
+                        title: 'Employee ID',
+                        width: "15%"
+                    },
+                    {
+                        field: 'item',
+                        title: 'Type',
+                        width: "18%",
+                        formatter: function(value, row, index) {
+                            return value === 'Y' ? 'Item Increment' : 'Gross Amount Increment'; // Display 'Item' if value is 'Y'
+                        }
+                    },
+                    {
+                        field: 'created_date',
+                        title: 'Created Date',
+                        width: "18%"
+                    },
+
+                    {
+                        field: 'branch',
+                        title: 'Branch',
+                        width: '18%'
+                    },
+                    {
+                        field: 'salary_structure',
+                        title: 'Salary Structure',
+                        width: '28%'
+                    },
+                ]
+            ],
+
+            onSearch: function(s) {
+
+                $('#att_table').datagrid('load', {
+                    emp: $('#searchqupo').val()
+                });
+            },
+            onLoadSuccess: function() {
+                // console.log("Loaded data:", data);
+                // setwidth();
+            }
+        });
+    });
+     /* edit by bindu 14-11-2025 */
+    $(".home").on("click", function() {
+        $("#container").isLoading({
+            text: "Loading",
+            position: "overlay",
+        });
+
+        $("#container").load(livesite + "SalaryProcessing/index", function() {
+            isDashboardShown = false;
+        });
+
+
+    }); /* edit by bindu 14-11-2025 end */
+</script>

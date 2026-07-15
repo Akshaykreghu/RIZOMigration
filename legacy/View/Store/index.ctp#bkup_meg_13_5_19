@@ -1,0 +1,143 @@
+<div class="col-md-12">
+    <div class="box ">
+        <div class="box-header with-border">
+            <h3 class="box-title"><strong>Store Master</strong></h3>
+            <div class="box-tools pull-right">
+                <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
+        </div><!-- /.box-header -->
+        <div class="box-body">
+            <table id="storetable" ></table>
+        </div>
+    </div>
+</div>
+<div id="empSetupModalForm" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Content will be loaded here from "remote.php" file -->
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#storetable').datagrid({
+            url: 'store/storeList',
+            rownumbers: true,
+            title: "Store Master",
+            fitColumns: true,
+            singleSelect: true,
+            autoRowHeight: false,
+            pagination: true,
+            width: '98%',
+            pageSize: 10,
+            toolbar: [{
+                    iconCls: 'icon-add',
+                    text: "New",
+                    handler: function () {
+                        var url = 'store/form';
+                        showModalForm(url);
+                        //$('#modalDiv').load(url, function () {
+                        //    $('#modalDiv').modal('show');
+                        //});
+                    }
+                }, {
+                    iconCls: 'icon-edit',
+                    text: "Edit",
+                    handler: function () {
+                        var row = $('#storetable').datagrid('getSelected');
+                        //console.log(row);
+                        if (row) {
+                            var store_master_pkey = row.store_master_pkey;
+                            var url = 'store/form/' + store_master_pkey;
+                            showModalForm(url);
+                            //$('#modalDiv').load(url, function () {
+                            //    $('#modalDiv').modal('show');
+                            //});
+                        } else
+                        {
+                            //alert("Please choose a store");
+                            $.notify('Please choose a store', {
+                                type: 'warning',
+                                allow_dismiss: false
+                            });
+                        }
+                    }
+                }, {
+                    iconCls: 'icon-edit',
+                    text: "Allocate",
+                    handler: function () {
+                        var row = $('#storetable').datagrid('getSelected');
+                        //console.log(row);
+                        if (row) {
+                            var store_master_pkey = row.store_master_pkey;
+                            var url = 'store/Storedata/' + store_master_pkey;
+                            showModalForm(url);
+                            //$('#modalDiv').load(url, function () {
+                            //    $('#modalDiv').modal('show');
+                            //});
+                        } else
+                        {
+                            //alert("Please choose a store");
+                            $.notify('Please choose a store', {
+                                type: 'warning',
+                                allow_dismiss: false
+                            });
+                        }
+                    }
+                }, {
+                    iconCls: 'icon-cancel',
+                    text: "Remove",
+                    handler: function () {
+                        var row = $('#storetable').datagrid('getSelected');
+                        if (row) {
+                            var r = confirm("Do you want to remove the selected item ?")
+                            if (r == true) {
+                                var store_master_pkey = row.store_master_pkey;
+                                $.ajax({
+                                    url: "store/storeDelete",
+                                    data: {
+                                        store_master_pkey: store_master_pkey
+                                    },
+                                    success: function (response) {
+                                        //var text = response.responseText;
+                                        // process server response here
+                                        $.notify('Group deleted', {
+                                            type: 'danger',
+                                            allow_dismiss: false
+                                        });
+                                        $('#storetable').datagrid('reload');
+                                    }
+                                });
+                            } else
+                            {
+                                //alert("Canceled operation!");
+                                $.notify('Canceled operation!', {
+                                    type: 'warning',
+                                    allow_dismiss: false
+                                });
+                            }
+                        } else {
+                            //alert("Please choose a store");
+                            $.notify('Please choose a store', {
+                                type: 'warning',
+                                allow_dismiss: false
+                            });
+                        }
+
+                    }
+                }],
+            columns: [[
+                    {field: 'store_code', title: 'Store Code', width: '10%', sortable: true, order: 'asc', editor: 'textbox'},
+                    {field: 'store_location', title: 'Store Location', width: '10%', sortable: true, order: 'asc', editor: 'textbox'},
+                    {field: 'store_manager', title: 'Store Manager', width: '10%', sortable: true, order: 'asc', editer: 'textbox'},
+                    {field: 'address', title: 'Address', width: '10%', sortable: true, order: 'asc', editor: 'textbox'},
+                    {field: 'city', title: 'City', width: '10%', sortable: true, order: 'asc', editor: 'textbox'},
+                    {field: 'state', title: 'State', width: '10%', sortable: true, order: 'asc', editer: 'textbox'},
+                    {field: 'pincode', title: 'Pincode', width: '10%', sortable: true, order: 'asc', editer: 'textbox'},
+                    {field: 'created_by', title: 'Created By', width: '10%', sortable: true, order: 'asc', editer: 'textbox'},
+                    {field: 'creation_date', title: 'Created Date', width: '10%', sortable: true, order: 'asc', editer: 'textbox'},
+                    {field: 'modified_by', title: 'Modified By', width: '10%', sortable: true, order: 'asc', editer: 'textbox'}
+                ]],
+        });
+    })
+</script>

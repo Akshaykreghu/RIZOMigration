@@ -1,0 +1,251 @@
+<style>
+    td,th,table
+    {
+        border-style: double;
+    }
+    table.table-bordered th:last-child, table.table-bordered td:last-child{
+        border-right-width:1px;
+    }
+</style>
+<?php if ($mode == '') { ?>
+    <div class="modal-body" >
+        <legend class="text-center"><b><?php echo "Rota Master - " .$mname."  "  .$year?></b></legend>
+         <h2 style="font-weight: bold;text-align: center;font-size: 19px;"><?php echo  "(Report Run by " . $user_id . " at " . $date_time . ")"?>  </h2>
+        <div class="row">
+            <div class="col-md-12">
+                <?php
+if($criterias == 'AccessSite'){ ?>
+                            <h4 align="center"><?php echo "Site Manager / Superior : " . $manager; ?></h4>
+                        <?php }
+                foreach ($arr_siteattendance_for_template as $values) {
+                    //The below code is to reset the arrays for calculate VARIANCE... By ***ARUL P DAS on 22/7/2020
+                    if (isset($list)) {
+                        unset($list);
+                        unset($arrays);
+                    }
+                    //////////////////////////////////////////////////////////////////////////////////////
+                    ?>
+                    <div style="overflow-y: auto;">
+                        <?php
+                        
+                        if ($branch_wise == 0) {
+                            $site = $values['summary']['0']['site']['site_pkey'];
+                            ?>
+                            <h3><?php echo "Rota Master Report of " . $values['summary']['0']['site']['site_name']; ?></h3>
+                            <?php
+                        } else {
+                            $branch = $values['summary']['0']['branches']['branch_code'];
+                            ?>
+                            <h3><?php echo "Rota Master Report of " . $values['summary']['0']['branches']['branch_name']; ?></h3>
+                        <?php } ?>
+                        <table class="table table-bordered" >
+                            <thead>
+                                <tr>
+                                    <th>Sl. No.</th>
+                                    <th>Employee Name</th>
+                                    <th>Employee ID</th>
+                                    <th>Branch</th>
+                                    <th>Designation</th>
+                                    <th>Client Name</th>
+                                    <th>Site ID</th>
+                                    <th>Site Name</th>
+                                     <th>Payment Mode</th>
+                                    <?php foreach ($array as $val) { ?>
+                                        <th><?php echo $val; ?></th>
+                                    <?php } ?>
+                                    <th>Total Hours</th>
+                                    <th>No of Working Day</th>
+                                   
+                                </tr>
+
+                            </thead>
+                            <tbody>
+
+                                <?php
+                                $i = 0;
+                                $date_total = 0;
+                                $date_array = array();
+                                foreach ($values['summary'] as $value) {
+                                    $arr1 = '';
+                                    $emp = 0;
+                                    ?> 
+                                    <?php
+                                    $i++;
+                                    if (!empty($value['emp_details']['first_name'])) {
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $i; ?></td>
+                                            <td><?php $empstatus = isset($value['emp_details']['status']) && $value['emp_details']['status'] == "2" ? '  (Resigned)' : '';echo $value['emp_details']['first_name'] . ' ' . $value['emp_details']['last_name'] .$empstatus; ?></td>
+                                            <td><?php echo $value['emp_proff']['emp_company_id']; ?></td>
+                                            <td><?php echo $value['branches']['branch_name']; ?></td>
+                                            <td><?php echo $value['designation']['desig_name']; ?></td>
+                                            <td><?php echo $value["contacts"]['company_name']; ?></td>
+                                            <td><?php echo $value['site']['site_id']; ?></td>
+                                            <td><?php echo $value['site']['site_name']; ?></td> 
+                                             <td><?php if($value['site']['payment_mode']=='1'){
+                                                     $payment_mode= 'Bank';
+                                                 }
+                                                  if($value['site']['payment_mode']=='2'){
+                                                     $payment_mode= 'Cash';
+                                                 }; 
+                                                      echo isset($payment_mode)?$payment_mode:''; ?></td>
+                                            
+                                            <?php $emp = $value['emp_details']['emp_pkey']; ?>
+                                            <?php $site_key = $value['site']['site_pkey']; ?>
+                                            <?php
+                                            $tot = 0;
+                                            $arr1 = isset($values['summary']['dates'][$emp][$site_key]) ? $values['summary']['dates'][$emp][$site_key] : '';
+                                            $workings = 0;
+                                            ?>
+                                            <?php
+                                            if ($arr1 != '') {
+                                                foreach ($arr1 as $key => $date) {
+                                                    $date_array[$key] = isset($date_array[$key]) ? $date_array[$key] : 0;
+                                                    $date_array[$key] += round($date); // Edited by Akshay on 2-4-2025
+                                                    if ($date > 0) {
+                                                        $workings++;
+                                                         //edited by sinsiya on 15-09-2025
+                                                         if($company_code === 'ABSG'){
+                                                             $tot = $tot + $date;
+                                                         }else{
+                                                         $tot = $tot + round($date); } // Edited by Akshay on 2-4-2025
+                                                    }
+                                                    ?>       
+                                                    <td><?php
+                                                        if ($date == 0) {
+                                                            echo '';
+                                                        } else {
+                                                            //edited by sinsiya on 15-09-2025
+                                                            if($company_code === 'ABSG'){
+                                                              echo $date;   
+                                                            }else{
+                                                            echo round($date); 
+                                                            }// Edited by Akshay on 2-4-2025
+                                                        }
+                                                        ?></td>
+                                                    <?php
+                                                }
+                                            }
+                                            ?>
+                                               <td><?php  //edited by sinsiya on 15-09-2025
+                                                            if($company_code === 'ABSG'){ echo $tot;}else { echo round($tot); }?></td>
+                                            <td><?php echo $workings; ?></td>
+                                           
+                                        </tr>
+                                        <tr>
+
+                                        </tr>
+                                        <tr>
+
+                                        </tr>
+                                        <tr>
+
+                                        </tr>
+                                        
+
+                                    <?php } ?>
+                                <?php } ?> 
+                                <tr>
+                                    <th colspan="9">MANNED HOURS</th>
+                                    <?php
+                                    $mannedTotal = 0;
+                                    foreach ($date_array as $key => $val) {
+//                                        debug($val);
+                                        $mannedTotal = $mannedTotal + $val;
+                                        $arrays['manned'][] = $val;
+                                        ?>
+                                        <td><?php echo $val; ?></td>
+                                        <?php
+                                    }
+                                    //$list[] = $arrays; 
+                                    ?>
+                                    <th><?php echo $mannedTotal; ?></th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="9">CONTRACTED HOURS</th> 
+                                    <?php
+                                    $contractsTotal = 0;
+                                    if ($branch_wise == 0) {
+                                        ?>
+                                        <?php
+                                        foreach ($contract_list as $val) {
+                                            if ($val[0]['site'] == $site) {
+                                                foreach ($val as $key => $set) {
+                                                    $contractsTotal = $contractsTotal + $set['duration'];
+                                                    $arrays['contract'][] = $set['duration'];
+                                                    ?>
+                                                    <td><?php echo $set['duration']; ?></td>
+                                                    <?php
+                                                }
+                                            }
+                                        }
+                                        ?>
+                                    <?php } else { ?>
+                                        <?php
+                                        foreach ($contract_list as $val) {
+                                            if ($val[0]['branch'] == $branch) {
+//                                                $arrays['contract'] = array();
+                                                foreach ($val as $set) {
+                                                    $contractsTotal = $contractsTotal + $set['duration'];
+                                                    $arrays['contract'][] = $set['duration']; //debug($arrays);
+//                                                    debug($set['duration']);
+                                                    ?>
+                                                    <td><?php echo $set['duration']; ?></td>
+                                                    <?php
+                                                }
+                                            }
+                                        }
+                                        ?>
+                                    <?php } $list[] = $arrays; ?>
+                                    <th><?php echo $contractsTotal; ?></th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="9">VARIANCE</th> 
+                                    <?php
+//                                    debug($list);
+                                    $var = 0;
+                                    $contracts = array();
+                                    $manned = array();
+                                    $totalHoursOfvariance = 0;
+                                    foreach ($list as $key => $val) {
+                                        foreach ($val as $head => $value) {
+                                            if ($head == "contract") {
+                                                $contracts = $value;
+                                            } else if ($head == "manned") {
+                                                $manned = $value;
+                                            }
+                                        }
+                                        for ($i = 0; $i < count($manned); $i++) {
+                                            $var = $contracts[$i] - $manned[$i];
+//                                            debug($contracts);
+                                            $totalHoursOfvariance = $totalHoursOfvariance + $var;
+                                            ?>
+                                            <td><?php echo $var; ?></td>
+                                            <?php
+                                        }
+                                        ?>
+                                    <?php } ?>
+                                    <th><?php echo $totalHoursOfvariance; ?></th>
+                                    <td></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                
+
+            <?php // } }else {   ?>
+        <?php } if (empty($arr_siteattendance_for_template)) {
+            ?> <!-- /.box-body -->
+            </div>
+            </div>
+            <div class="row">
+                <h3 style="text-align:left;color:black;">No Records found under this Criteria</h3>
+            </div>
+        </div>
+        <?php
+    }
+}
+?>

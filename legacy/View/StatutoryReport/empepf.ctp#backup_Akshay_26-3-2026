@@ -1,0 +1,493 @@
+<?php
+// Edited by Akshay on 24-3-2026
+function indian_format($num)
+{
+    $num = round($num);
+    $num = (string)$num;
+
+    if (strlen($num) <= 3) return $num;
+
+    $last3 = substr($num, -3);
+    $rest = substr($num, 0, -3);
+
+    if ($rest != '') {
+        $rest = preg_replace("/\B(?=(\d{2})+(?!\d))/", ",", $rest);
+        return $rest . ',' . $last3;
+    }
+
+    return $last3;
+}
+// End
+
+if ($mode == '') { ?>
+    <style>
+        .table-header {
+            width: 15px;
+            word-wrap: break-word;
+            white-space: normal;
+            text-align: center;
+            padding: 4px;
+        }
+    </style>
+    <div class="modal-body" style="overflow-y:initial; padding-left:3%; padding-right:3%; padding-bottom:3%;">
+        <h3 style="text-align:center;">EPF Report</h3>
+        <h4 style="text-align:center; font-size:14px; font-weight:normal;">
+            <?php echo "Employer EPF No.: " . $eip; ?>
+        </h4>
+        <div class="row">
+            <div class="col-md-12">
+
+                <!-- Edited by Akshay on 28-7-2025 -->
+                <?php
+                $rowcount = 0;
+
+                foreach ($arr_salary_for_template as $value): ?>
+                    <?php
+                    if (count($value) > 0): ?>
+
+                        <legend> <?php
+                                    echo isset($value['0']['employee_info']['branch']) ? "EPF  Report of - " . $value['0']['employee_info']['branch'] : '';
+                                    echo ' ';
+                                    ?>
+                        </legend>
+
+                        <fieldset style="overflow-x:auto;">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="table-header">Sl No</th>
+                                        <th class="table-header">Employee Name</th>
+                                        <th class="table-header">Employee ID</th>
+                                        <th class="table-header">Joining Date</th>
+                                        <th class="table-header">Branch</th>
+                                        <th class="table-header">Department</th>
+                                        <th class="table-header">Designation</th>
+                                        <th class="table-header">UAN Number</th>
+                                        <th class="table-header">Gross Salary</th>
+                                        <th class="table-header">NCP Days</th>
+                                        <th class="table-header">Employee EPF Salary </th>
+                                        <th class="table-header">Employee EPF</th>
+                                        <th class="table-header">Employer EPF Salary</th>
+                                        <th class="table-header">Total Employer Contribution</th>
+                                        <th class="table-header">Employer EPS/EDLI Salary</th>
+                                        <th class="table-header">Employer EPF Contribution 3.67%</th>
+                                        <th class="table-header">Employer EPS Contribution 8.33%</th>
+                                        <th class="table-header">Employer EDLI Contribution 0.5%</th>
+                                        <th class="table-header">Employer Admin Charges 0.5%</th>
+                                        <th class="table-header">Excluded Salary</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $rowcount = 1; // Initialize row count
+                                    if (count($value) > 0) {
+                                        $arr_data = $value;
+                                        $j = 0; // Initialize serial number
+                                        // initialize totals
+                                        $total_gross                   = 0;
+                                        $total_epf_salary              = 0;
+                                        $total_employee_epf            = 0;
+                                        $total_employer_epf_salary     = 0;
+                                        $total_employer_epf            = 0;
+                                        $total_eps                     = 0;
+                                        $total_employer_epf_contrib    = 0;
+                                        $total_employer_eps            = 0;
+                                        $total_employer_edli           = 0;
+                                        $total_employer_admin_charges  = 0;
+                                        $total_excluded                = 0;
+
+                                        foreach ($arr_data as $val) {
+                                            if ($val['0']['EPF'] == 0) continue;
+
+                                            $name       = ucwords(strtolower($val['employee_info']['EmpName']));
+                                            $id         = $val['employee_info']['employee_id'];
+                                            $join_date  = $val['employee_info']['joining_date'];
+                                            $dep        = ucwords(strtolower($val['employee_info']['department']));
+                                            $deg        = ucwords(strtolower($val['employee_info']['designation']));
+                                            // Edited by Akshay on 4-10-2025
+                                            $calendar_days = isset($val['payroll_master']['calander_days']) ? floor($val['payroll_master']['calander_days']) : 0;
+                                            $working_days = isset($val[0]['total_days']) ? ($val[0]['total_days']) : 0;
+                                            $ncp = isset($val[0]['NCP_days']) ? $val[0]['NCP_days'] : 0;
+                                            $ncp = max(0, $ncp);
+                                            // End
+                                            $branch     = ucwords(strtolower($val['employee_info']['branch']));
+                                            $uan        = $val['emp_details']['pf'];
+                                            $gross      = round($val['0']['SALARY'], 2);
+
+                                            if ($month >= '2020-05' && $month <= '2020-07') {
+                                                $epf_salary          = round($val['0']['EPF'] * 100 / 10);
+                                                $sal                 = round($val['0']['EPF'] * 100 / 10, 2);
+                                                $www_salary          = round($sal * 10 / 100);
+                                                $employer_epf_salary = round($val['0']['EMPLOYER_EPF'] * 100 / 10);
+                                            } else {
+                                                $epf_salary          = round($val['0']['epf_salary']);
+                                                $sal                 = round($val['0']['epf_salary'], 2);
+                                                $www_salary          = round($sal * 12 / 100);
+                                                $employer_epf_salary = round($val['0']['employer_epf_salary']);
+                                            }
+
+                                            $employee_epf   = $val['0']['EPF'];
+                                            $employer_epf   = $val['0']['EMPLOYER_EPF'];
+                                            $epf            = round($sal * 8.33 / 100);
+                                            $esia           = round($sal * .5 / 100, 2);
+                                            $emp_epf_contr = round($employer_epf_salary * .12) - round($employer_epf_salary * .0833); // Edited by Akshay on 5-11-2025
+                                            $j++;
+
+                                            // accumulate totals
+                                            $total_gross                  += $gross;
+                                            $total_epf_salary             += $epf_salary;
+                                            $total_employee_epf           += $employee_epf;
+                                            $total_employer_epf_salary    += $employer_epf_salary;
+                                            $total_employer_epf           += $employer_epf;
+                                            $total_eps                    += min($employer_epf_salary, 15000);
+                                            $total_employer_epf_contrib   +=  $emp_epf_contr; // Edited by Akshay on 5-11-2025
+                                            $total_employer_eps           += round(min($employer_epf_salary, 15000) * .0833);
+                                            $total_employer_edli          += (min($employer_epf_salary, 15000) * .005);
+                                            $total_employer_admin_charges += ($employer_epf_salary * .005);
+                                            $total_excluded               += ($gross - $employer_epf_salary);
+                                    ?>
+                                            <tr>
+                                                <td><?= $j ?></td>
+                                                <td><?= htmlspecialchars($name) ?></td>
+                                                <td><?= $id ?></td>
+                                                <td><?= $join_date ?></td>
+                                                <td><?= htmlspecialchars($branch) ?></td>
+                                                <td><?= htmlspecialchars($dep) ?></td>
+                                                <td><?= htmlspecialchars($deg) ?></td>
+                                                <td><?= $uan ?></td>
+                                                <td><?= $gross ?></td>
+                                                <td><?= floor($ncp) ?></td>
+                                                <td><?= $epf_salary ?></td>
+                                                <td><?= $employee_epf ?></td>
+                                                <td><?= $employer_epf_salary ?></td>
+                                                <td><?= $employer_epf ?></td>
+                                                <td><?= min($employer_epf_salary, 15000) ?></td>
+                                                <!-- Edited by Akshay on 5-11-2025 -->
+                                                <td><?= $emp_epf_contr; ?></td>
+                                                <!-- End -->
+                                                <td><?= round(min($employer_epf_salary, 15000) * .0833) ?></td>
+                                                <td><?= round(min($employer_epf_salary, 15000) * .005, 2) ?></td>
+                                                <td><?= round($employer_epf_salary * .005, 2) ?></td>
+                                                <td><?= ($gross - $employer_epf_salary) ?></td>
+                                            </tr>
+                                        <?php
+                                        } ?>
+                                        <!-- Totals row -->
+                                        <tr style="font-weight:bold; background:#f2f2f2;">
+                                            <td colspan="8" style="text-align:right;">Total</td>
+                                            <!-- Edited by Akshay on 24-3-2026 -->
+                                            <td class="table-header"><?= indian_format($total_gross) ?></td>
+                                            <td></td>
+                                            <td class="table-header"><?= indian_format($total_epf_salary) ?></td>
+                                            <td class="table-header"><?= indian_format($total_employee_epf) ?></td>
+                                            <td class="table-header"><?= indian_format($total_employer_epf_salary) ?></td>
+                                            <td class="table-header"><?= indian_format($total_employer_epf) ?></td>
+                                            <td class="table-header"><?= indian_format($total_eps) ?></td>
+                                            <td class="table-header"><?= indian_format($total_employer_epf_contrib) ?></td>
+                                            <td class="table-header"><?= indian_format($total_employer_eps) ?></td>
+                                            <td class="table-header"><?= indian_format($total_employer_edli) ?></td>
+                                            <td class="table-header"><?= indian_format($total_employer_admin_charges) ?></td>
+                                            <td class="table-header"><?= indian_format($total_excluded) ?></td>
+                                            <!-- End -->
+                                        </tr>
+                                    <?php }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </fieldset>
+                        <br>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+
+                <?php if ($rowcount == 0): ?>
+                    <h4>No data available under the selected criteria.</h4>
+                <?php endif; ?>
+                <!-- End -->
+
+            </div>
+        </div>
+        <!--div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel </button>  
+        </div-->
+        <!---<div class="row">
+              <div class="form-group">
+                  <div class="col-md-12" align="right">
+                      <a href="#" class="btn btn-default" onclick="downloadReport('salarystructure','pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                      <a href="#" class="btn btn-default" onclick="downloadReport('salarystructure','excel');"><i class="icon-file"></i>Download As Excel</a>
+                  </div>
+              </div>
+          </div> -->
+    </div>
+
+<?php } else { ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';  
+    ?>
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+
+        .row {
+            height: 32px;
+        }
+
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+
+        table {
+            border: 2px solid #f4f4f4;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            font-size: 9px;
+            border: 1px solid #B2B2B2;
+        }
+
+        .table-header {
+            width: 50px;
+            word-wrap: break-word;
+            white-space: normal;
+            text-align: center;
+            padding: 4px;
+        }
+
+        .wrap-header {
+            white-space: normal;
+            /* allow wrapping */
+            word-break: keep-all;
+            /* wrap only at spaces */
+            overflow-wrap: normal;
+            /* no breaking inside words */
+            max-width: 120px;
+            /* optional: control width */
+            text-align: center;
+        }
+
+        .align {
+            text-align: center;
+        }
+    </style>
+
+
+    <?php
+    $i = 0;
+    $rowcount = 0;
+    foreach ($arr_salary_for_template as $value) {
+        if (count($value) !== 0) {
+            $i += 1;
+    ?>
+            <?php
+            echo $this->element('reportadminheader', array(
+                'title' => 'EPF Report<br><span style="font-size:14px;font-weight:normal; margin-top:5px;">Employer EPF No.: '.$eip.'</span>'
+            ));
+            ?>
+
+
+            <h3 style="text-align: left;padding-bottom: 0px;padding-top: 10px;"> <?php echo isset($value['0']['employee_info']['branch']) ? " EPF Report of - " . $value['0']['employee_info']['branch'] : ''; ?></h3>
+
+
+            <hr>
+            <!--edited by sinsiya on 12-06-2024 hided the br-->
+            <br>
+            <!--<h3>&nbsp;</h3>-->
+
+
+            <!-- Edited by Akshay on 29-7-2025 -->
+            <?php
+            $hasValidData = false;
+            foreach ($arr_salary_for_template as $temp_value) {
+                foreach ($temp_value as $val) {
+                    if (isset($val[0]['EPF']) && $val[0]['EPF'] != 0) {
+                        $hasValidData = true;
+                        break 2; // Stop both loops
+                    }
+                }
+            }
+            ?>
+            <!-- End -->
+
+            <?php if ($hasValidData) { ?>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="wrap-header">Sl No</th>
+                            <th class="wrap-header">Employee Name</th>
+                            <th class="wrap-header">Employee ID</th>
+                            <th class="wrap-header">Joining Date</th>
+                            <th class="wrap-header">Branch</th>
+                            <th class="wrap-header">Department</th>
+                            <th class="wrap-header">Designation</th>
+                            <th class="wrap-header">UAN Number</th>
+                            <th class="wrap-header">Gross Salary</th>
+                            <th class="wrap-header">NCP Days</th>
+                            <th class="table-header">Employee EPF Salary </th>
+                            <th class="table-header">Employee EPF</th>
+                            <th class="table-header">Employer EPF Salary</th>
+                            <th class="table-header">Total Employer Contribution</th>
+                            <th class="table-header">Employer EPS/EDLI Salary</th>
+                            <th class="table-header">Employer EPF Contribution 3.67%</th>
+                            <th class="table-header">Employer EPS Contribution 8.33%</th>
+                            <th class="table-header">Employer EDLI Contribution 0.5%</th>
+                            <th class="table-header">Employer Admin Charges 0.5%</th>
+                            <th class="table-header">Excluded Salary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $rowcount = 1; // Initialize row count
+                        if (count($value) > 0) {
+                            $arr_data = $value;
+                            $j = 0; // Initialize serial number
+                            // initialize totals
+                            $total_gross                   = 0;
+                            $total_epf_salary              = 0;
+                            $total_employee_epf            = 0;
+                            $total_employer_epf_salary     = 0;
+                            $total_employer_epf            = 0;
+                            $total_eps                     = 0;
+                            $total_employer_epf_contrib    = 0;
+                            $total_employer_eps            = 0;
+                            $total_employer_edli           = 0;
+                            $total_employer_admin_charges  = 0;
+                            $total_excluded                = 0;
+
+                            foreach ($arr_data as $val) {
+
+                                if ($val['0']['EPF'] == 0) continue;
+
+                                $name       = ucwords(strtolower($val['employee_info']['EmpName']));
+                                $id         = $val['employee_info']['employee_id'];
+                                $join_date  = $val['employee_info']['joining_date'];
+                                $dep        = ucwords(strtolower($val['employee_info']['department']));
+                                $deg        = ucwords(strtolower($val['employee_info']['designation']));
+                                // Edited by Akshay on 4-10-2025
+                                $calendar_days = isset($val['payroll_master']['calander_days']) ? floor($val['payroll_master']['calander_days']) : 0;
+                                $working_days = isset($val[0]['total_days']) ? ($val[0]['total_days']) : 0;
+                                $ncp = isset($val[0]['NCP_days']) ? $val[0]['NCP_days'] : 0;
+                                $ncp = max(0, $ncp);
+                                // End
+                                $branch     = $val['employee_info']['branch'];
+                                $uan        = $val['emp_details']['pf'];
+                                $gross      = round($val['0']['SALARY'], 2);
+
+                                if ($month >= '2020-05' && $month <= '2020-07') {
+                                    $epf_salary          = round($val['0']['EPF'] * 100 / 10);
+                                    $sal                 = round($val['0']['EPF'] * 100 / 10, 2);
+                                    $www_salary          = round($sal * 10 / 100);
+                                    $employer_epf_salary = round($val['0']['EMPLOYER_EPF'] * 100 / 10);
+                                } else {
+                                    $epf_salary          = round($val['0']['epf_salary']);
+                                    $sal                 = round($val['0']['epf_salary'], 2);
+                                    $www_salary          = round($sal * 12 / 100);
+                                    $employer_epf_salary = round($val['0']['employer_epf_salary']);
+                                }
+
+                                $employee_epf   = $val['0']['EPF'];
+                                $employer_epf   = $val['0']['EMPLOYER_EPF'];
+                                $epf            = round($sal * 8.33 / 100);
+                                $esia           = round($sal * .5 / 100, 2);
+                                $emp_epf_contr = round($employer_epf_salary * .12) - round($employer_epf_salary * .0833); // Edited by Akshay on 5-11-2025
+                                $j++;
+
+                                // accumulate totals
+                                $total_gross                  += $gross;
+                                $total_epf_salary             += $epf_salary;
+                                $total_employee_epf           += $employee_epf;
+                                $total_employer_epf_salary    += $employer_epf_salary;
+                                $total_employer_epf           += $employer_epf;
+                                $total_eps                    += min($employer_epf_salary, 15000);
+                                $total_employer_epf_contrib   += $emp_epf_contr; // Edited by Akshay on 5-11-2025
+                                $total_employer_eps           += round(min($employer_epf_salary, 15000) * .0833);
+                                $total_employer_edli          += (min($employer_epf_salary, 15000) * .005);
+                                $total_employer_admin_charges += ($employer_epf_salary * .005);
+                                $total_excluded               += ($gross - $employer_epf_salary);
+                        ?>
+                                <tr>
+                                    <td class="align"><?= $j ?></td>
+                                    <td><?= htmlspecialchars($name) ?></td>
+                                    <td><?= $id ?></td>
+                                    <td><?= $join_date ?></td>
+                                    <!-- Edited by Akshay on 5-11-2025 -->
+                                    <td><?= str_replace(' ', '<br>', htmlspecialchars($branch)) ?></td>
+                                    <td><?= str_replace(' ', '<br>', htmlspecialchars($dep)) ?></td>
+                                    <td><?= str_replace(' ', '<br>', htmlspecialchars($deg)) ?></td>
+                                    <!-- End -->
+                                    <td><?= $uan ?></td>
+                                    <td><?= $gross ?></td>
+                                    <td><?= floor($ncp) ?></td>
+                                    <td><?= $epf_salary ?></td>
+                                    <td><?= $employee_epf ?></td>
+                                    <td><?= $employer_epf_salary ?></td>
+                                    <td><?= $employer_epf ?></td>
+                                    <td><?= min($employer_epf_salary, 15000) ?></td>
+                                    <!-- Edited by Akshay on 5-11-2025 -->
+                                    <td><?= $emp_epf_contr ?></td>
+                                    <td><?= round(min($employer_epf_salary, 15000) * .0833) ?></td>
+                                    <!-- End -->
+                                    <td><?= round(min($employer_epf_salary, 15000) * .005, 2) ?></td>
+                                    <td><?= round($employer_epf_salary * .005, 2) ?></td>
+                                    <td><?= ($gross - $employer_epf_salary) ?></td>
+                                </tr>
+                            <?php
+                            } ?>
+                            <!-- Totals row -->
+                            <tr style="font-weight:bold; background:#f2f2f2;">
+                                <td colspan="8" style="text-align:right;">Total</td>
+                                <!-- Edited by Akshay on 24-3-2026 -->
+                                <td class="align"><?= indian_format($total_gross) ?></td>
+                                <td class="align"></td>
+                                <td class="align"><?= indian_format($total_epf_salary) ?></td>
+                                <td class="align"><?= indian_format($total_employee_epf) ?></td>
+                                <td class="align"><?= indian_format($total_employer_epf_salary) ?></td>
+                                <td class="align"><?= indian_format($total_employer_epf) ?></td>
+                                <td class="align"><?= indian_format($total_eps) ?></td>
+                                <td class="align"><?= indian_format($total_employer_epf_contrib) ?></td>
+                                <td class="align"><?= indian_format($total_employer_eps) ?></td>
+                                <td class="align"><?= indian_format($total_employer_edli) ?></td>
+                                <td class="align"><?= indian_format($total_employer_admin_charges) ?></td>
+                                <td class="align"><?= indian_format($total_excluded) ?></td>
+                                <!-- End -->
+                            </tr>
+                        <?php }
+                        ?>
+                    </tbody>
+                </table>
+            <?php } ?>
+
+            <!-- <br> -->
+
+
+    <?php }
+    } ?> <!-- /.box-body -->
+
+    <!-- Edited by Akshay on 28-7-2025 -->
+    <?php if ($rowcount == 0): ?>
+        <h4>No data available under the selected criteria.</h4>
+    <?php endif; ?>
+    <!-- End -->
+
+<?php }
+?>

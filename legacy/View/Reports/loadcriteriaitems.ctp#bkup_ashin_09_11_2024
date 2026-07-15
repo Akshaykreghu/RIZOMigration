@@ -1,0 +1,150 @@
+<?php if ($criteria == 'EmployeeProfessionalDetails') { ?>
+    <!-- Edited by Akshay on 15-11-2023 -->
+    <div class="col-md-6" style="padding:0;">
+        <label class="col-md-3 control-label " for="reportfrom">From:&nbsp;&nbsp;</label>
+        <div class="col-md-9">
+            <input class="form-control input-md" id="reportfrom" name="reportfrom" value="" type="text" style="width:77%;">
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label class="col-md-3 control-label" for="reportto">To:</label>
+        <div class="col-md-9">
+            <input class="form-control input-md" id="reportto" name="reportto" value="" type="text" disabled>
+        </div>
+    </div>
+    <script>
+        jQuery(document).ready(function() {
+            $('#reportfrom').datepicker({
+                format: 'yyyy-mm-dd'
+            }).on('changeDate', function(selected) { //Edited by Akshay on 16-11-2023
+                // Set the minimum date for the "To" datepicker
+                var minDate = new Date(selected.date.valueOf());
+                minDate.setDate(minDate.getDate() + 1);
+                $('#reportto').datepicker('setStartDate', minDate);
+
+                $('#reportto').prop('disabled', false);//Edited by Akshay on 16-11-2023
+            });
+
+            $("#reportfrom").inputmask("yyyy-mm-dd");
+            $('#reportto').datepicker({
+                format: 'yyyy-mm-dd',
+            })
+            $("#reportto").inputmask("yyyy-mm-dd");
+
+
+            $('#reportto').on("change", function() {
+                var start_date = $('#reportfrom').val();
+                var end_date = $(this).val();
+                if (start_date > end_date) {
+                    alert("Start date should be less than end date");
+                    $('#reportfrom').val('');
+                }
+            });
+
+            $('#reportto').prop('disabled', true);//Edited by Akshay on 16-11-2023
+        });
+    </script>
+<?php } else { ?>
+    <div class="col-md-2">
+        <a onclick="toggleItemsDisplay(<?php echo $index; ?>);"><i class="fa fa-minus"></i></a>
+    </div>
+    <div class="col-md-10">
+        <!--    <input type="text" id="search<?php echo $index; ?>" class="form-control" placeholder="Search">-->
+        <ul title="<?php
+                    if ($criteria == "DayTimeProcedures") {
+                        echo 'Select ShiftPolicyGroup';
+                    } else if ($criteria == "Units") {
+                        echo 'Select Branches';
+                    } else {
+                        echo 'Select ' . $criteria;
+                    }
+                    ?>" lines="true" style="width:100%;min-height:200px;height:auto;max-height:500px;"></ul>
+    </div>
+    <script>
+        function toggleItemsDisplay(index) {
+            $('#div-items-criteria' + index + ' .panel-body').fadeToggle('slow', function() {
+                if ($(this).is(":visible")) {
+                    $('#div-items-criteria' + index + ' a .fa').removeClass('fa-plus');
+                    $('#div-items-criteria' + index + ' a .fa').addClass('fa-minus');
+                } else {
+                    $('#div-items-criteria' + index + ' a .fa').removeClass('fa-minus')
+                    $('#div-items-criteria' + index + ' a .fa').addClass('fa-plus');
+                }
+            });
+        }
+
+        function setwidth() {
+            $('.checkw').parent().parent().css("width", "30px"); //Here was the design issue.Issue solved by repeating of $('.checkw') code in the query.by ***ARUL P DAS on 3/3/2020
+        }
+        $(document).ready(function() {
+            var criteria = $('#hidden-criteria<?php echo $index; ?>').val();
+            $('#div-items-criteria<?php echo $index; ?> ul').datalist({
+                toolbar: [{
+                    text: 'Select all',
+                    iconCls: 'icon-ok',
+                    handler: function() {
+                        $('#div-items-criteria<?php echo $index; ?> ul').datalist('checkAll');
+                        $('#div-items-criteria<?php echo $index; ?> input:checkbox').each(function() {
+                            this.checked = true;
+                        });
+                    }
+                }, {
+                    text: 'Deselect all',
+                    iconCls: 'icon-delete',
+                    handler: function() {
+                        $('#div-items-criteria<?php echo $index; ?> ul').datalist('clearChecked');
+                        $('#div-items-criteria<?php echo $index; ?> input:checkbox').each(function() {
+                            this.checked = false;
+                        });
+                    }
+                }],
+                //frozenColumns:[[
+                columns: [
+                    [{
+                            field: criteria + '[]',
+                            formatter: function(value, row, index) {
+                                return '<input type="checkbox" class="checkw" name="' + criteria + '[]" value="' + row.key + '" />';
+                            }
+                        },
+                        {
+                            field: 'Name',
+                            formatter: function(value, row, index) {
+                                return row.text;
+                            }
+                        }
+                    ]
+                ],
+                url: livesite + 'Reports/listcriteriaitems/' + criteria,
+                //checkbox: true,
+                checkOnSelect: true,
+                searchFilter: false,
+                singleSelect: false,
+                lines: true,
+                valueField: "key",
+                onCheck: function(i, rows) {
+
+                },
+                onUncheck: function(i, rows) {
+
+                },
+                onLoadSuccess: function() {
+                    setwidth();
+                }
+            });
+            //The search field added by ****ARUL P DAS on 16/1/2020
+            $('#div-items-criteria<?php echo $index; ?> div.datagrid-toolbar').after('<input type="text" id="search<?php echo $index; ?>" class="form-control" autocomplete="off" placeholder="Search">');
+        });
+        $(document).ready(function() {
+            //The below keyup function is used to search elements. By ****ARUL P DAS on 16/1/2020
+            $('#search<?php echo $index; ?>').keyup(function() {
+                //            alert('<?php echo $index; ?>');
+                var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+
+                $('#div-items-criteria<?php echo $index; ?> .datagrid-btable tr').show().filter(function() {
+                    var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                    return !~text.indexOf(val);
+                }).hide();
+            });
+        });
+    </script>
+<?php } ?>

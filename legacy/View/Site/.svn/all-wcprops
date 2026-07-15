@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/testrepo/!svn/ver/35/forsightv2/app/View/Site
+END
+forgetpwd.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/testrepo/!svn/ver/35/forsightv2/app/View/Site/forgetpwd.ctp
+END
+reset.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/testrepo/!svn/ver/35/forsightv2/app/View/Site/reset.ctp
+END

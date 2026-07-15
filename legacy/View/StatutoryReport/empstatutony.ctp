@@ -1,0 +1,511 @@
+
+<?php if ($mode == '') { ?>
+
+<div class="modal-body" style="overflow-y:initial; padding-left:3%; padding-right:3%; padding-bottom:3%;" >
+        <?php if ($report_component =='esi'){ ?> 
+        <h3 align="center" >EPF ESI Report - <?php echo $monthname['0']['0']['month'] ." ".$year['0']['0']['year'];?> </h3>
+        <?php }else if ($report_component =='tax'){ ?>
+        <h3 align="center" >TDS Report - <?php echo $monthname['0']['0']['month'] ." ".$year['0']['0']['year'];?>  </h3>
+        <?php }else{ ?>
+        <h3 align="center" >Professional Tax Report - <?php echo $monthname['0']['0']['month'] ." ".$year['0']['0']['year'];?></h3>
+        <?php } ?>
+        <div class="row">
+            <div class="col-md-12">
+  
+                <?php
+                $i = 0; 
+                if (count($arr_salary_for_template) !== 0) {
+                foreach ($arr_salary_for_template as $value) {
+                    
+                        $i += 1;
+                        ?>
+
+                        <fieldset> 
+
+
+                            <legend> <?php
+                        echo isset($value['0']['employee_info']['branch']) ? "Statutory Report of - " . $value['0']['employee_info']['branch'] : '';
+                        echo ' ';
+                        ?> 
+                            </legend>
+
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <br>
+                        <fieldset>
+
+
+                            <table class="table table-bordered " >
+                                <thead>
+                                    <tr>
+                                     <?php if ($report_component =='esi'){ ?>
+                                    <th colspan="8">Employee Details</th>
+                                    <th colspan="3">Employee Contribution</th>
+                                    <th colspan="3">Employer Contribution</th>
+                                    <?php }else if ($report_component =='tax'){ ?>
+                                    <th colspan="10">Employee Details</th>
+                                     <?php }else{ ?>
+                                    <th colspan="9">Employee Details</th>
+                                    <?php } ?>
+                                    </tr>
+                                    <tr>
+                                    <?php if ($report_component =='esi'){ ?>
+                                    <th>Sl No</th>
+                                    <th>Employee Name</th>
+                                    <th>Employee ID</th>
+                                    <th>Joining Date</th>
+                                    <th>Branch</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>Gross Salary</th>
+                                    <th>EPF</th>
+                                    <th>ESI</th>
+                                    <th>WWF</th>
+                                    <th>EPF</th>
+                                    <th>ESI</th>
+                                    <th>WWF</th>
+                                     <?php }else if ($report_component =='tax'){ ?>
+                                    <th>Sl No</th>
+                                    <th>Employee Name</th>
+                                    <th>Employee ID</th>
+                                    <th>Joining Date</th>
+                                    <th>Branch</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>PAN No.</th>
+                                    <th>Gross Salary</th>
+                                    <th>TDS</th>
+                                    <?php }else{ ?>
+                                    <th>Sl No</th>
+                                    <th>Employee Name</th>
+                                    <th>Employee ID</th>
+                                    <th>Joining Date</th>
+                                    <th>Branch</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>Gross Salary</th>
+                                    <th>Professional Tax</th>
+                                     <?php } ?>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                        <?php $arr_data = $value; 
+                                      //  debug($value);
+                                        if (count($arr_data) >= 0) {
+                                            $i = 0;
+                                            $sum = 0;
+                                            $gross = 0;
+                                            $emp_epf = 0;
+                                            $empr_epf = 0;
+                                            $emp_esi = 0;
+                                            $epr_esi = 0;
+                                            $emp_wwf = 0; 
+                                            $empr_wwf = 0;
+                                            $tds = 0;
+                                            $pt = 0;
+                                             foreach ($arr_data as $val) {
+                                                ?>
+                                            <tr>
+                                                 <?php if ($report_component =='esi' &&  ($val['0']['EPF'] != '0' || $val['0']['Esi'] != '0' || $val['0']['WWF'] != '0' || $val['0']['EMPLOYER_EPF'] != '0' || $val['0']['EMPLOYER_ESI'] != '0' || $val['0']['EMPLOYER_WWFS'] != '0')){ 
+                                                    $i = $i + 1;?>
+                                                <td><?php echo $i;
+                                                ?></td>
+                                                <td><?php echo $val['employee_info']['EmpName']; ?><?php echo isset($val['emp_details']['status']) && $val['emp_details']['status']=="2" ? '(Resigned)' : '' ; ?></td>
+                                                <td><?php echo $val['employee_info']['employee_id']; ?></td>
+                                                <td><?php echo $val['employee_info']['joining_date']; ?></td>
+                                                <td><?php echo $val['employee_info']['branch']; ?></td>
+                                                <td><?php echo $val['employee_info']['department']; ?></td>
+                                                <td><?php echo $val['employee_info']['designation']; ?></td>
+                                                <td><?php echo round($val['0']['SALARY'],2); ?></td>
+                                                
+                                                
+                                                <td><?php echo round($val['0']['EPF'],2); ?></td>
+                                                <td><?php echo round($val['0']['Esi'],2); ?></td>
+<!--                                                <td><?php// echo round(($val['0']['Esi'] != '0') ?round($val['0']['SALARY'] * 0.75 / 100, 2):0, 2); ?></td>-->
+                                                <td><?php echo round($val['0']['WWF'],2); ?></td>
+                                                <td><?php echo round($val['0']['EMPLOYER_EPF'],2); ?></td>
+                                                <?php
+                                                    $gross += round($val['0']['SALARY'],2);
+                                                    $emp_epf += round($val['0']['EPF'],2);
+                                                    $empr_epf += round($val['0']['EMPLOYER_EPF'],2);
+                                                    $emp_esi += round($val['0']['Esi'],2);
+                                                    //$emp_esi += round(($val['0']['Esi'] != '0') ?round($val['0']['SALARY'] * 0.75 / 100, 2):0, 2);
+                                                    $epr_esi += round($val['0']['EMPLOYER_ESI'],2);
+                                                    $emp_wwf += round($val['0']['WWF'],2);
+                                                    $empr_wwf += round($val['0']['EMPLOYER_WWFS'],2);
+                                                ?>
+                                                <td><?php echo round($val['0']['EMPLOYER_ESI'],2); ?></td>
+                                                <td><?php echo round($val['0']['EMPLOYER_WWFS'],2); ?></td>
+                                                <?php }else if ($report_component =='tax' && $val['0']['TDS'] != '0'){ 
+                                                    $i = $i + 1;?>
+                                                 <td><?php echo $i;?></td>
+                                                 <?php
+                                                    $tds += round($val['0']['TDS'],2);
+                                                ?>
+                                                <td><?php echo $val['employee_info']['EmpName']; ?><?php echo isset($val['emp_details']['status']) && $val['emp_details']['status']=="2" ? '(Resigned)' : '' ; ?></td>
+                                                <td><?php echo $val['employee_info']['employee_id']; ?></td>
+                                                <td><?php echo $val['employee_info']['joining_date']; ?></td>
+                                                <td><?php echo $val['employee_info']['branch']; ?></td>
+                                                <td><?php echo $val['employee_info']['department']; ?></td>
+                                                <td><?php echo $val['employee_info']['designation']; ?></td>
+                                                <td><?php echo $val['emp_details']['pan_no']; ?></td>
+                                                <td><?php echo round($val['0']['SALARY'],2); ?></td>
+                                                <td><?php echo round($val['0']['TDS']); ?></td>
+                                                 <?php }else if ($report_component =='protax' && $val['0']['Professional_Tax'] != '0'){ 
+                                                     $i = $i + 1;?>
+                                                 <?php
+                                                 //added by megha on 28/09/2019 pt settlement amount
+                                                    $settle_pt = ($val['0']['Settle_PT'])*-1;
+                                                    if($settle_pt == 0){
+                                                    $pro_tax = round($val['0']['Professional_Tax']);
+                                                    $pt += round($val['0']['Professional_Tax'],2);
+                                                    }else{
+                                                    $pro_tax = round($settle_pt);   
+                                                    $pt += round($settle_pt,2); 
+                                                    }
+                                                ?>
+                                                <td><?php echo $i;?></td>
+                                                <td><?php echo $val['employee_info']['EmpName']; ?><?php echo isset($val['emp_details']['status']) && $val['emp_details']['status']=="2" ? '(Resigned)' : '' ; ?></td>
+                                                <td><?php echo $val['employee_info']['employee_id']; ?></td>
+                                                <td><?php echo $val['employee_info']['joining_date']; ?></td>
+                                                <td><?php echo $val['employee_info']['branch']; ?></td>
+                                                <td><?php echo $val['employee_info']['department']; ?></td>
+                                                <td><?php echo $val['employee_info']['designation']; ?></td>
+                                                <td><?php echo round($val['0']['SALARY'],2); ?></td>
+                                                <td><?php echo $pro_tax; ?></td>
+                                                 <?php } ?>
+                                            </tr>
+
+
+
+
+
+                                             <?php  }?>
+                                            <tr>
+                                                <?php if ($report_component =='esi'){ ?>
+                                                <td colspan="8">Total</td>
+                                                <td><?php echo $emp_epf; ?></td>
+                                                <td><?php echo $emp_esi; ?></td>
+                                                <td><?php echo $emp_wwf; ?></td>
+                                                <td><?php echo $empr_epf; ?></td>
+                                                <td><?php echo $epr_esi; ?></td>
+                                                <td><?php echo $empr_wwf; ?></td>
+                                                <?php }else if ($report_component =='tax'){ ?>
+                                                <td colspan="9">Total</td>
+                                                <td><?php echo round($tds); ?></td>
+                                                <?php }else{ ?>
+                                                <td colspan="8">Total</td>
+                                                <td><?php echo round($pt); ?></td>
+                                                 <?php } ?>
+                                            </tr>    
+                                        
+                                        <?php } else { ?>
+                                        <tr>
+                                            <td colspan="4">No Orders found under this data</td>
+                                        </tr>  
+                                        <?php } ?>
+
+
+                                </tbody>
+                            </table>
+
+                        </fieldset>
+                        <br>
+                <?php } }
+        else { ?>
+                         <fieldset> 
+                            <div class="row">
+                                <div class="col-md-12"><h3 style="color: red;"> No Records Found!!!</h3>
+                                </div>
+                            </div>
+                        </fieldset>
+        <?php }
+                  ?> <!-- /.box-body -->
+
+            </div>
+        </div>  
+        <!--div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel </button>  
+        </div-->
+        <!---<div class="row">
+              <div class="form-group">
+                  <div class="col-md-12" align="right">
+                      <a href="#" class="btn btn-default" onclick="downloadReport('salarystructure','pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                      <a href="#" class="btn btn-default" onclick="downloadReport('salarystructure','excel');"><i class="icon-file"></i>Download As Excel</a>
+                  </div>
+              </div>
+          </div> -->
+    </div>
+
+<?php } else { ?>
+ 
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+        .row {
+            height: 32px;
+        }
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+        table {
+            border: 2px solid #f4f4f4;
+            width: 100%;
+            max-width: 100%;
+            margin-top:20px;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        td, th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            font-size: 11px;
+            border: 1px solid #B2B2B2;
+        }
+     
+    </style>
+
+
+    <?php
+    $i = 0;
+      if (count($arr_salary_for_template) !== 0) {
+      foreach ($arr_salary_for_template as $value) {
+       // if (count($value) !== 0) {
+            $i += 1;
+           
+            if ($report_component =='esi'){ 
+            echo $this->element('reportadminheader', array(
+                'title' => 'EPF ESI Report - '.$monthname['0']['0']['month'] .' '.$year['0']['0']['year'])); 
+            }else if ($report_component =='tax'){ 
+            echo $this->element('reportadminheader', array(
+                'title' => 'TDS Report - '.$monthname['0']['0']['month'] .' '.$year['0']['0']['year'])); 
+            }else{ 
+                echo $this->element('reportadminheader', array(
+                'title' => 'Professional Tax Report - '.$monthname['0']['0']['month'] .' '.$year['0']['0']['year'])); 
+            }
+            ?>
+     
+
+            <h3 style="text-align: left;padding-bottom: 0px;padding-top: 10px;"> <?php echo isset($value['0']['employee_info']['branch']) ? " Statutory Report of - " .$value['0']['employee_info']['branch'] : ''; ?>  
+            </h3>
+
+
+            <hr>
+ <br>
+            <br>
+
+
+
+            <table class="table" style="margin-top:20px;">
+                            <thead>
+                                <tr>
+                                     <?php if ($report_component =='esi'){ ?>
+                                    <th colspan="8">Employee Details</th>
+                                    <th colspan="3">Employee Contribution</th>
+                                    <th colspan="3">Employer Contribution</th>
+                                    <?php }else if ($report_component =='tax'){ ?>
+                                    <th colspan="10">Employee Details</th>
+                                     <?php }else{ ?>
+                                    <th colspan="9">Employee Details</th>
+                                    <?php } ?>
+                                </tr>
+                                <tr>
+                                    <?php if ($report_component =='esi'){ ?>
+                                    <th>Sl No</th>
+                                    <th style="width:80px;">Employee Name</th>
+                                    <th>Employee <br>ID</th>
+                                    <th>Joining Date</th>
+                                    <th>Branch</th>
+                                    <th style="max-width:60px;">Department</th>
+                                    <th style="width:70px;">Designation</th>
+                                    <th>Gross <br>Salary</th>
+                                    <th>EPF</th>
+                                    <th>ESI</th>
+                                    <th>WWF</th>
+                                    <th>EPF</th>
+                                    <th>ESI</th>
+                                    <th>WWF</th>
+                                     <?php }else if ($report_component =='tax'){ ?>
+                                    <th>Sl No</th>
+                                    <th>Employee Name</th>
+                                    <th>Employee <br>ID</th>
+                                    <th>Joining Date</th>
+                                    <th>Branch</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>PAN No.</th>
+                                    <th>Gross <br>Salary</th>
+                                    <th>TDS</th>
+                                    <?php }else{ ?>
+                                    <th>Sl No</th>
+                                    <th>Employee Name</th>
+                                    <th>Employee <br>ID</th>
+                                    <th>Joining Date</th>
+                                    <th>Branch</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>Gross <br>Salary</th>
+                                    <th>Professional <br>Tax</th>
+                                     <?php } ?>
+
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <?php $arr_data = $value; ?>
+                                <?php
+                                if (count($arr_data) >= 0) {
+                                    $i = 0;
+                                        $sum = 0;
+                                        $gross = 0;
+                                        $emp_epf = 0;
+                                        $empr_epf = 0;
+                                        $emp_esi = 0;
+                                        $epr_esi = 0;
+                                        $emp_wwf = 0;
+                                        $empr_wwf = 0;
+                                        $tds = 0;
+                                        $pt = 0;
+                                        ?>
+                                   
+                                        <?php foreach ($arr_data as $val) { ?>
+                                        <tr>
+                                             <?php if ($report_component =='esi' &&  ($val['0']['EPF'] != '0' || $val['0']['Esi'] != '0' || $val['0']['WWF'] != '0' || $val['0']['EMPLOYER_EPF'] != '0' || $val['0']['EMPLOYER_ESI'] != '0' || $val['0']['EMPLOYER_WWFS'] != '0')){ 
+                                                    $i = $i + 1;?>
+                                                <td><?php echo $i;
+                                                ?></td>
+                                                <td style="width:80px;"><?php echo $val['employee_info']['EmpName']; ?><?php echo isset($val['emp_details']['status']) && $val['emp_details']['status']=="2" ? '(Resigned)' : '' ; ?></td>
+                                                <td><?php echo $val['employee_info']['employee_id']; ?></td>
+                                                <td><?php echo $val['employee_info']['joining_date']; ?></td>
+                                                <td style="width:70px;"><?php echo $val['employee_info']['branch']; ?></td>
+                                                <td style="width:60px;"><?php echo $val['employee_info']['department']; ?></td>
+                                                <td style="width:70px;"><?php echo $val['employee_info']['designation']; ?></td>
+                                                <td><?php echo round($val['0']['SALARY'],2); ?></td>
+                                                
+                                                
+                                                <td><?php echo round($val['0']['EPF'],2); ?></td>
+                                                <td><?php echo round($val['0']['Esi'],2); ?></td>
+<!--                                                <td><?php //echo round(($val['0']['Esi'] != '0') ?round($val['0']['SALARY'] * 1.75 / 100, 2):0, 2); ?></td>-->
+                                                <td><?php echo round($val['0']['WWF'],2); ?></td>
+                                                <td><?php echo round($val['0']['EMPLOYER_EPF'],2); ?></td>
+                                                <?php
+                                                    $gross += round($val['0']['SALARY'],2);
+                                                    $emp_epf += round($val['0']['EPF'],2);
+                                                    $empr_epf += round($val['0']['EMPLOYER_EPF'],2);
+                                                     $emp_esi += round($val['0']['Esi'],2);
+                                                    //$emp_esi += round(($val['0']['Esi'] != '0') ?round($val['0']['SALARY'] * 1.75 / 100, 2):0, 2);
+                                                    $epr_esi += round($val['0']['EMPLOYER_ESI'],2);
+                                                    $emp_wwf += round($val['0']['WWF'],2);
+                                                    $empr_wwf += round($val['0']['EMPLOYER_WWFS'],2);
+                                                ?>
+                                                <td><?php echo round($val['0']['EMPLOYER_ESI'],2); ?></td>
+                                                <td><?php echo round($val['0']['EMPLOYER_WWFS'],2); ?></td>
+                                                <?php }else if ($report_component =='tax' && $val['0']['TDS'] != '0'){ 
+                                                     $i = $i + 1;?>
+                                                 <td><?php echo $i;?></td>
+                                                 <?php
+                                                    $tds += round($val['0']['TDS'],2);
+                                                ?>
+                                                <td><?php echo $val['employee_info']['EmpName']; ?><?php echo isset($val['emp_details']['status']) && $val['emp_details']['status']=="2" ? '(Resigned)' : '' ; ?></td>
+                                                <td><?php echo $val['employee_info']['employee_id']; ?></td>
+                                                <td><?php echo $val['employee_info']['joining_date']; ?></td>
+                                                <td><?php echo $val['employee_info']['branch']; ?></td>
+                                                <td><?php echo $val['employee_info']['department']; ?></td>
+                                                <td><?php echo $val['employee_info']['designation']; ?></td>
+                                                <td><?php echo $val['emp_details']['pan_no']; ?></td>
+                                                <td><?php echo round($val['0']['SALARY'],2); ?></td>
+                                                <td><?php echo round($val['0']['TDS']); ?></td>
+                                                 <?php }else if ($report_component =='protax' && $val['0']['Professional_Tax'] != '0'){ 
+                                                     $i = $i + 1;?>
+                                                 <?php
+                                                    //$pt += round($val['0']['Professional_Tax'],2);
+                                                  //added by megha on 28/09/2019 pt settlement amount
+                                                    $settle_pt = ($val['0']['Settle_PT'])*-1;
+                                                    if($settle_pt == 0){
+                                                    $pro_tax = round($val['0']['Professional_Tax']);
+                                                    $pt += round($val['0']['Professional_Tax'],2);
+                                                    }else{
+                                                    $pro_tax = round($settle_pt);   
+                                                    $pt += round($settle_pt,2); 
+                                                    }
+                                                ?>
+                                                <td><?php echo $i;?></td>
+                                                <td><?php echo $val['employee_info']['EmpName']; ?><?php echo isset($val['emp_details']['status']) && $val['emp_details']['status']=="2" ? '(Resigned)' : '' ; ?></td>
+                                                <td><?php echo $val['employee_info']['employee_id']; ?></td>
+                                                <td><?php echo $val['employee_info']['joining_date']; ?></td>
+                                                <td><?php echo $val['employee_info']['branch']; ?></td>
+                                                <td><?php echo $val['employee_info']['department']; ?></td>
+                                                <td><?php echo $val['employee_info']['designation']; ?></td>
+                                                <td><?php echo round($val['0']['SALARY'],2); ?></td>
+                                                <td><?php echo $pro_tax; ?></td>
+                                                 <?php } ?>
+                                            </tr>
+
+
+
+
+
+                                        <?php } ?>
+                                            <tr>
+                                                <?php if ($report_component =='esi'){ ?>
+                                                <td colspan="8">Total</td>
+                                                <td><?php echo $emp_epf; ?></td>
+                                                <td><?php echo $emp_esi; ?></td>
+                                                <td><?php echo $emp_wwf; ?></td>
+                                                <td><?php echo $empr_epf; ?></td>
+                                                <td><?php echo $epr_esi; ?></td>
+                                                <td><?php echo $empr_wwf; ?></td>
+                                                <?php }else if ($report_component =='tax'){ ?>
+                                                <td colspan="9">Total</td>
+                                                <td><?php echo round($tds); ?></td>
+                                                <?php }else{ ?>
+                                                <td colspan="8">Total</td>
+                                                <td><?php echo round($pt); ?></td>
+                                                 <?php } ?>
+                                            </tr>  
+                                <?php } else { ?>
+                                    <tr>
+                                        <td colspan="4">No Orders found under this data</td>
+                                    </tr>  
+            <?php } ?>
+
+
+                            </tbody>
+                        </table>
+
+
+            <br>
+
+
+       <?php } }
+                        else { ?>
+                        <fieldset> 
+                            <div class="row">
+                                <div class="col-md-12"><h3 style="color: red;"> No Records Found!!!</h3>
+                                </div>
+                            </div>
+                        </fieldset>
+                       <?php }
+                  ?> <!-- /.box-body -->
+
+<?php } ?>

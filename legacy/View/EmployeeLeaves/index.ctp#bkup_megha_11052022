@@ -1,0 +1,319 @@
+
+<style>
+    .form-horizontal .control-label{
+
+        text-align: left;
+        padding-left: 2px;
+    }
+    .custom-file-upload {
+  border: 1px solid #0d0c0c52;
+    border-radius: 4px;
+  display: inline-block;
+  padding: 4px 12px;
+  cursor: pointer;
+  width: 98%;
+    height: 30px;
+    text-align: center;
+}
+</style>
+<section class="content-header">
+    <h1 style="font-size: 30px;">Approve / Cancel Leaves</h1>
+    <hr style="margin-top: 8px;margin-bottom: -2px;">
+</section>
+<section class="content">
+    <div class="col-md-12">
+        <br>
+            <form class="form-horizontal" method="post" action="" id="leaveuploadfilter">
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="month" class="col-sm-3 control-label">Month </label>
+                        <div class="col-md-1 control-label">:</div>
+                        <div class="col-md-8">
+                            <select id="filterby_month" name="filterby_month" class="js-example-basic-single form-control"   onchange="filterleaveupload();" >                                                 
+                                <option value=""style="text-align: center;" >---- Select ----</option>
+                                <?php
+                                for ($i = -1; $i < 11; $i++) {
+                                echo '<option value="' . date('Y-m', strtotime("-$i month", strtotime(date('M-Y')))) . '">' . date('M-Y', strtotime("-$i month", strtotime(date('M-Y')))) . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                   
+                    <div class="col-md-6" style="">
+                        <label class="col-sm-3 control-label" for="leavetype">Leave Type  </label>    
+                        <div class="col-md-1 control-label">:</div>
+                        <div class="col-md-8">
+                            <select id="leavetype" name="leavetype" class="js-example-basic-single form-control" required="required" onchange="filterleaveupload();">                                    
+                                                                  
+                                </select>
+                          </div>    
+                    </div>
+
+                    <div class="col-md-6" style="padding-top: 15px;">
+                        <label class="col-sm-3 control-label " for="filterby_branch">Branch </label>
+                        <div class="col-md-1 control-label">:</div>
+                        <div class="col-md-8">                        
+                            <select id="filterby_branch" name="filterby_branch" class="form-control js-example-basic-single" onchange="filterleaveupload(this);" >
+                                <option value="" style="text-align: center;">---- All ----</option>
+                                <?php foreach ($arr_branches as $key => $value) { ?>                              
+                                <option  value="<?php echo $value['Units']['branch_code']; ?>"><?php echo $value['Units']['branch_name']; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div> 
+                    
+ <div class="col-md-6" style="padding-top: 15px;">
+                        <label class="col-sm-3 control-label" for="employee">Employee  </label>    
+                        <div class="col-md-1 control-label">:</div>
+                        <!--<input type="radio" id="employeeview" name="employeeview" value="y">  -->    
+                        <!--                        onchange="filterleaveupload(this);"-->
+                        <!--<div class="col-md-1 control-label">:</div>-->
+                        <div class="col-md-8">
+                            <!--                            <select id="emp_fkey" class="form-control  js-example-basic-single" style="width: 100% ;" onchange="filterleaveupload();">
+                                                            <option value="emp_fkey">All</option>
+                                                        </select>-->
+                            <select id="emp_fkey" class="form-control js-example-basic-single" name="emp_fkey" onchange="filterleaveupload(this);"  ></select>
+                            
+                        </div>    
+                    </div>
+                    <div class="col-md-6" style="padding-top: 15px;">
+                        <label class="col-sm-3 control-label " for="filterby_status">Status </label>
+                        <div class="col-md-1 control-label">:</div>
+                        <div class="col-md-8">                        
+                            <select id="filterby_status" name="filterby_status" class="form-control js-example-basic-single" onchange="filterleaveupload(this);" >
+                                <option value="" >---- All ----</option>
+                                <option value="Applied" >Applied</option>
+                                <option value="Authorized" >Authorized</option>
+                                <option value="Approved" >Approved</option>
+                                <option value="Cancelled" >Cancelled</option>
+                                <option value="Rejected" >Rejected</option>
+                                <option value="CancelledByAdmin" >CancelledByAdmin</option>
+                                <option value="Can not Apply" >Can not Apply</option>
+                                <option value="Cancellation Authorized" >Cancellation Authorized</option>
+                                <option value="Cancellation Approved" >Cancellation Approved</option>
+                                <option value="CancellationOfAuthorized" >CancellationOfAuthorized</option>
+                                <option value="CancellationOfApproved" >CancellationOfApproved</option>
+                                <option value="Can not Apply 0 days" >Can not Apply 0 days</option>
+                            </select>
+                        </div>
+                    </div> 
+                 </div>    
+                <br>
+            </form>
+        <div class="box box-primary " style="margin-top: -21px;">
+            <div class="box-body" style="    margin-top: -11px;">
+                <br>
+                <table id="leave_table" class="table table-bordered table-hover">
+                    <tbody>
+                    </tbody>
+                </table>
+            </div><!-- /.box-body -->
+            <!--/.direct-chat -->
+        </div><!-- /.col -->
+    </div>
+</section>
+<script>
+    function filterEmployees(branch)
+    {
+        var branch = $('#filterby_branch').val();
+        //alert(branch);
+        $("#emp_fkey").select2(
+                {
+                    //closeOnSelect:false,
+                    placeholder: "---- All ----",
+                    allowClear: false,
+                    ajax: {
+                        url: livesite + "Attendanceregister/jsons/" + branch,
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        }
+                    },
+                    escapeMarkup: function (markup) {
+                        return markup;
+                    }
+                });
+    }
+     function filterHeads()
+    {
+        $("#leavetype").select2(
+                {
+                    //closeOnSelect:false,
+                    placeholder: "---- All ----",
+                    allowClear: false,
+                    ajax: {
+                        url: livesite + "EmployeeLeaves/filterHeads/",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        }
+                    },
+                    escapeMarkup: function (markup) {
+                        return markup;
+                    }
+                });
+    }
+    function filterleaveupload(obj) {
+        var leavetype = $('#leaveuploadfilter #leavetype').val();
+        var branch = $('#leaveuploadfilter #filterby_branch').val();
+        var employee = $('#leaveuploadfilter #emp_fkey').val();
+        var month = $('#leaveuploadfilter #filterby_month').val();
+        var status = $('#leaveuploadfilter #filterby_status').val();
+        var url = 'EmployeeLeaves/index';
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: {
+                branch: branch
+            }
+        });
+        $('#leave_table').datagrid('load', {
+            branch: branch,
+            employee: employee,
+            month: month,
+            leavetype : leavetype,
+            status : status
+        });
+        filterEmployees();
+    }
+
+
+    jQuery(document).ready(function () {
+        //  $('#loaders').hide();
+        //filterEmployees();
+        filterEmployees();
+  filterHeads();
+        $("#filterby_branch").select2();
+        $("#filterby_month").select2();
+        $("#filterby_status").select2();
+        //$("#leavetype").select2();
+        var leavetype = $('#leaveuploadfilter #leavetype').val();
+        var employee = $('#leaveuploadfilter #emp_fkey').val();
+        $('#leave_table').datagrid({
+            url: livesite + "EmployeeLeaves/listleave",
+            pagination: true,
+            singleSelect: true,
+//            PostsearchFilter:true,
+            rownumbers: true,
+            queryParams: {
+                employee: employee
+            },
+            toolbar: [
+                //{
+                  //  text: 'New',
+                  //  iconCls: 'icon-add',
+                  //  handler: function () {
+                  //  showModalForm(livesite + 'EmployeeLeaveUpload/form')
+                  //  }
+                //}
+//                , {
+//                    text: 'Edit',
+//                    iconCls: 'icon-edit',
+//                    handler: function () {
+//                        var selectedRow = $('#leave_table').datagrid('getSelections');
+//                        showModalForm(livesite + 'EmployeeLeaveUpload/form/' + selectedRow[0].emp_leave_upload_pkey)
+//                    }
+//                }
+                 {
+                    text: 'Details',
+                    iconCls: 'icon-remove',
+                    handler: function () {
+                        var selectedRow = $('#leave_table').datagrid('getSelections');
+                        if(selectedRow == ''){
+                            alert("Please Select Any row");
+                        }
+                        var leaveentryid = selectedRow[0].LEAVEENTRYID;
+                        showSmallModalForm(livesite + 'EmployeeLeaves/showleavedays/' + leaveentryid);
+                    }
+                }
+               //, '-', {
+                 //  iconCls: 'icon-remove',
+                   //text: 'Remove',
+                   //handler: function () {
+                     //  var rows = $('#leave_table').datagrid('getSelections');
+                       //if (rows) {
+                         //  var str_ids = "";
+                           //for (var i = 0; i < rows.length; i++) {
+                             //  var data = rows[i];
+                               //if (str_ids == "") {
+                                 //  str_ids += data.LEAVEENTRYID;
+                                //} else
+                               // {
+                                 //   str_ids += "," + data.LEAVEENTRYID;
+                                //}
+                           // }
+                            //if (confirm("Are you sure want to cancel the leave? ")) {
+                              //    $.ajax({
+                                //    url: livesite + "EmployeeLeaves/deleteleave",
+                                  //  data: {
+                                    //    LEAVEENTRYIDS: str_ids
+                                    //},
+                                    //success: function (response) {
+                                      //    var response = $.parseJSON(response);
+                                        //if (response.msg) {
+                                          //  $.notify(response.msg, {
+                                            //    type: 'success',
+                                              //  allow_dismiss: true
+                                             //});
+                                        //}
+                                        //reloadTable('leave_table');
+                                    //}
+                                //});
+                            //}
+                        //}
+                    //}
+               //}
+            ],
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            columns: [[
+                    {field: 'empname', title: 'Employee Name', width: "20%",sortable:true},
+                    {field: 'empid', title: 'Employee ID', width: "14%",sortable:true},
+                    {field: 'type', title: 'Leave Type', width: "12%",sortable:true},
+                    {field: 'fromdate', title: 'Leave Start Date', width: "12%",sortable:true},
+                    {field: 'todate', title: 'Leave End Date', width: "10%",sortable:true},
+                    {field: 'applied_date', title: 'Applied Date', width: "12%",sortable:true},
+                    {field: 'status', title: 'Status', width: "19%",sortable:true},
+                ]]
+        });
+
+
+    });
+</script>

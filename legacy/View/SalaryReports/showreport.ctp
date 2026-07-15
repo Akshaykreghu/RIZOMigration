@@ -1,0 +1,1185 @@
+<style>
+    /* #reportCon table,td,th{
+  border-style: none;
+  border: none;
+  } */
+    .width1 {
+        width: 87px;
+    }
+
+    .width2 {
+        width: 82px;
+    }
+
+    /* Edited by Akshay on 22-11-2024 */
+    #dropdown-container {
+        position: relative;
+        width: 240px;
+    }
+
+    /* Style the dropdown header */
+    .dropdown-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        background-color: #fff;
+    }
+
+    /* Style the arrow icon */
+    .arrow-down {
+        font-size: 12px;
+    }
+
+    /* Style the dropdown content */
+    #checkbox-options {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        /* width: 100%; */
+        width: 225px;
+        max-height: 500px;
+        /* Adjust this value to control the dropdown's scrollable area */
+        overflow-y: auto;
+        /* Enable vertical scrolling */
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+    }
+
+    /* Style individual checkbox options */
+    .checkbox-option {
+        padding: 5px 10px;
+        font-weight: normal;
+        /* Ensure the text is not bold */
+    }
+
+    /* Make the Select All checkbox fixed at the top of the dropdown */
+    #search-container {
+        position: sticky;
+        top: 0;
+        background-color: #fff;
+        /* Ensure the background color is same as dropdown */
+        z-index: 20;
+        /* Make sure it stays on top of other options */
+        border-bottom: 1px solid #ccc;
+    }
+
+    /* Ensure 'Select All' checkbox has some padding for better spacing */
+    #select-all {
+        margin-left: 10px;
+    }
+
+    #btn-submit4 {
+        display: none;
+    }
+
+    #select-item-type {
+        display: none;
+    }
+
+    /* End */
+
+    /* Edited by Akshay on 7-1-2026 */
+    #reportto option:disabled {
+        color: #aaa;
+        background-color: #f5f5f5;
+    }
+
+    /* End */
+</style>
+
+<?php
+if (isset($arr_reportcriterias)) {
+?>
+    <script>
+        $(document).ready(function() {
+            $('#date').hide();
+
+            var v = $('#filterby_reporttype').val();
+            //debug(v);
+            if (v == 'SummaryPayroll' || v == 'Salaryslip' || v == 'cascadeslip' || v == 'grossvayalat' || v == 'Salaryslipnew' || v == 'Payrollslip' || v == 'GrosssalaryNew' || v == 'Grosssalary' || v == 'GrosssalarySummary' || v == 'BankTranfer' || v == 'GrossPeriod' || v == 'BankTranferNew' || v == 'MonthlyCTCReport' || v == 'LOPREPORT' || v == 'SalaryCombined' || v == 'Analysis' || v == 'SlipFirstVersion' || v == 'SlipSecondVersion' || v == 'SlipThirdVersion' || v == 'Gross' || v == 'DepositslipSynthite' || v == 'GrossalarynewVayalat' || v == 'Comparison' || v == 'GrossAndCTCMonthly' || v == 'BankTranferSynthite' || v == 'Custom' || v == 'SalaryBulkUpload' || v == 'PayrollCTC' || v == 'Account') { //Edited by Akshay on 6-1-2026
+                $('#date').show();
+            } else {
+                $('#date').hide();
+            }
+
+        });
+    </script>
+    <form class="form-horizontal" method="post" action="" id="form-showreport">
+        <input type="hidden" id="hidden-report-type" name="hidden-report-type" value="<?php echo $type; ?>" />
+        <input type="hidden" id="hidden-criterias-count" name="hidden-criterias-count" value="1" />
+        <input type="hidden" id="hidden-reportfields" name="hidden-reportfields" value="" />
+        <div class="form-group" id="div-criteria1">
+            <!-- Edited by Akshay on 5-1-2026 -->
+            <?php if ($type == "Account") { ?>
+                <div id="account-period">
+                    <div class="col-md-1" style="width:50px;"><b>Type: </b></div>
+                    <div class="col-md-1">
+                        <select id="report_type" name="report_type" class="form-control">
+                            <option value="M">Month</option>
+                            <option value="FY">Period</option>
+                        </select>
+                    </div>
+                </div>
+            <?php } ?>
+            <!-- End -->
+            <div id="date">
+
+                <?php
+                if ($type == "GrossPeriod" || $type == "LOPREPORT") { ?>
+                    <div class="col-md-1"><b>Month&nbsp;:</b></div>
+                    <div class="col-md-2">
+
+
+
+                        <div class="col-md-12" style="padding-left: 4px; padding-right: 4px; ">
+
+                            <div class="col-md-6" style="padding-left: 4px; padding-right: 4px; ">
+                                <input type="text" id="reporstfrom" name="reportfrom" class="form-control pickerDate" value="<?php echo date("Y-m", strtotime("-1 months")); ?>" />
+                            </div>
+                            <div class="col-md-6" style="padding-left: 4px; padding-right: 4px; ">
+                                <input type="text" id="reporstto" name="reportto" class="form-control pickerDate" value="<?php echo date("Y-m"); ?>" />
+                            </div>
+
+
+
+
+
+                        </div>
+
+                    </div>
+
+                <?php } else if ($type == 'Analysis') { ?>
+                    <div class="col-md-1"><b>Month&nbsp;:</b></div>
+                    <div class="col-md-2" style="padding-left: 0px; padding-right: 0px;">
+
+
+
+                        <div class="col-md-12" style="padding-left: 4px; padding-right: 4px; ">
+
+                            <div class="col-md-4" style="padding-left: 4px; padding-right: 4px; ">
+                                <input type="text" id="prev_month" name="reportfrom" class="form-control pickerDate width1" placeholder="Select Month" readonly />
+                            </div>
+                            <div class="col-md-4" style="padding-left: 4px; padding-right: 4px; margin-left:15%;">
+                                <input type="text" id="next_month" name="reportto" class="form-control pickerDate width2" style="display: none;" placeholder="Compare To" readonly />
+                            </div>
+
+
+
+
+
+                        </div>
+
+                    </div>
+                <? } elseif ($type == 'Custom') { ?>
+                    <!-- Edited by Akshay on 18-11-2024 -->
+                    <div class="col-md-4">
+                        <div class="col-md-2"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;From&nbsp;:</b></div>
+                        <div class="col-md-4">
+                            <select id="reportsfrom" name="reportsfrom" class="form-control">
+                                <option value="" disabled selected>--Select--</option>
+                                <?php
+                                $start_month = strtotime(date('Y-m', strtotime("+1 month", strtotime(date('Y-m')))));
+                                for ($i = 0; $i < 50; $i++) {
+                                    $month = date('Y-m', strtotime("-$i month", $start_month));
+                                    $displayMonth = date('M-Y', strtotime("-$i month", $start_month));
+                                    echo '<option value="' . $month . '">' . $displayMonth . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="col-md-1"><b>To&nbsp;:</b></div>
+                        <div class="col-md-4">
+                            <select id="reportsto" name="reportsto" class="form-control" disabled>
+                                <option value="" disabled selected>--Select--</option>
+                                <?php
+                                for ($i = 0; $i < 50; $i++) {
+                                    $month = date('Y-m', strtotime("-$i month", $start_month));
+                                    $displayMonth = date('M-Y', strtotime("-$i month", $start_month));
+                                    echo '<option value="' . $month . '">' . $displayMonth . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- End -->
+                    <!-- Edited by Akshay on 6-1-2026 -->
+                <?php } elseif ($type == 'Account') { ?>
+                    <div class="col-md-1" style="width:50px;"><b id="period-label">Month:</b></div>
+                    <div class="col-md-1">
+                        <select id="reportfrom" name="reportfrom" class="form-control" style="width:100px;"></select>
+                    </div>
+
+                    <div class="col-md-1" id="to-month-wrapper" style="display:none;">
+                        <select id="reportto" name="reportto" class="form-control" style="width:100px;"></select>
+                    </div>
+                    <!-- End -->
+                <?php } else { ?>
+
+                    <div class="col-md-1"><b>Month: </b></div>
+                    <div class="col-md-2">
+                        <select id="reportfrom" name="reportfrom" class="form-control">
+                            <?php
+                            /*
+                                 * By santhosh on 27 Dec 2015
+                                 */
+                            $start_month = strtotime(date('Y-m', strtotime("+1 month", strtotime(date('Y-m')))));
+                            /*
+				 * By megha on 10 April 2019
+				*/
+                            for ($i = 0; $i < 78; $i++) {
+                                /*
+				* By megha on 10 April 2019
+				 */
+                                $month = date('Y-m', strtotime("-$i month", $start_month));
+                                if ($month == date('Y-m')) {
+                                    echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                } else {
+                                    echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                <?php } ?>
+
+            </div>
+
+            <input type="hidden" class="hidden-criterias" id="hidden-criteria1" name="hidden-criteria1" value="" />
+            <!-- Edited by Akshay on 7-1-2026 -->
+            <?php
+            if ($type == 'Account') { ?>
+                <div class="col-md-1" style="padding-left:4%;"><b>Criteria: </b></div>
+            <?php } else { ?>
+                <div class="col-md-1"><b>Criteria: </b></div>
+            <?php }
+            ?>
+            <!-- End -->
+            <div class="col-md-3">
+                <!-- Edited by Akshay on 1-7-2024 -->
+                <select id="select-criteria1" name="select-criteria1" style="width: 240px;" class="form-control" onchange="loadCriteriaItems(1);">
+                    <!-- End -->
+                    <option value="">--Choose criteria--</option>
+                    <?php
+                    // Sort the $arr_reportcriterias array by 'reportcriteria_desc' field in ascending order
+                    sort($arr_reportcriterias, function ($a, $b) {
+                        return strcmp($a['reportcriteria_desc'], $b['reportcriteria_desc']);
+                    });
+
+                    foreach ($arr_reportcriterias as $key => $value) {
+                        echo '<option value="' . $value['reportcriteria'] . '">' . $value['reportcriteria_desc'] . '</option>';
+                    }
+                    ?>
+                </select>
+            </div>
+
+            <!-- Edited by Akshay on 1-7-2024 -->
+            <div class="row">
+                <div class="" id="div-items-criteria1">
+
+                </div>
+                <div class="col-md-4">
+                    <div id="controls-container" style="display: flex; align-items: center; margin-bottom: 10px; margin-top:10px;">
+                        <?php
+                        if (trim($type) == 'BankTranferSynthite') { ?>
+                            <div class="" id="div-items-criteria2">
+
+                            </div>
+                            <!-- </div> -->
+
+                            <div id="print-container" style="margin-left: 10px; display:none;">
+                                <select id="print-select" style="width: 150px;" onchange="updateDownloadButtons()" class="form-control select2-searching">
+                                    <option value="">Select File</option>
+                                    <option value="excel">.exl</option>
+                                    <option value="csv">.csv</option>
+                                    <option value="pdf">.pdf</option>
+                                    <option value="view">View</option>
+                                </select>
+                            </div>
+                        <?php }
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <!-- End -->
+            <?php if ($type == "BankTranferNew") { ?>
+                <div class="col-md-2" id="payment" style="display:none;"><b>Payment Mode &nbsp; : </b>
+                    <select id="select-payment" name="select-payment" style="width: 140px;" class="form-control">
+                        <option value="NEFT">NEFT</option>
+                        <option value="RTGS">RTGS</option>
+                    </select>
+                </div>
+            <?php } ?>
+        </div>
+
+        <!-- Edited by Akshay on 11-11-2024 -->
+        <?php if ($type == 'Custom') { ?>
+            <input type="hidden" class="hidden-criterias" id="hidden-item-type" name="hidden-item-type" value="" />
+            <div class="form-group col-md-12" style="position: absolute; top: 180px; left: 10px;">
+                <div class="col-md-4" id="select-item-type">
+                    <div class="col-md-4"><label for="criteria-select">Choose Item Type:</label></div>
+                    <div class="col-md-4" style=" z-index: 1000;"> <select id="criteria-select" class="form-control">
+                            <option value="" disabled selected>Select</option>
+                            <option value="standard">Standard</option>
+                            <option value="actual">Actual</option>
+                        </select></div>
+                </div>
+
+                <div class="col-md-4" id="select-item" style="display: none; padding:0px; z-index: 1000;">
+                    <div class="col-md-4"><label for="select-items">Choose Item(s):</label></div>
+                    <div id="dropdown-container" class="dropdown col-md-4" style="width: 240px; padding-left:0px;">
+                        <!-- Dropdown Header -->
+                        <div class="dropdown-header form-control" onclick="toggleDropdown()">
+                            <span id="dropdown-placeholder">-- Select --</span>
+                            <span class="arrow-down">&#9662;</span>
+                        </div>
+
+                        <!-- Description -->
+                        <!-- <small id="selection-limit-note" style="display: block; margin-top: 5px; color: red;">
+                            * Maximum 6 items can be selected.
+                        </small> -->
+
+                        <!-- Dropdown Content -->
+                        <input type="hidden" class="hidden-criterias" id="hidden-select-items" name="hidden-select-items" value="" />
+                        <div id="checkbox-options" class="dropdown-content" style="display: none;">
+
+                            <!-- Select All checkbox container (fixed at the top) -->
+                            <div id="search-container">
+                                <!-- Search Bar -->
+                                <input type="text" id="search-input" class="form-control" placeholder="Search..." onkeyup="filterItems()">
+                                <!-- <label><input type="checkbox" id="select-all" onclick="toggleSelectAll(this)"> Select All</label> -->
+                                <small id="selection-limit-note" style="display: block; margin-top: 5px; margin-bottom: 5px; color: red;">
+                                    * Maximum 7 items can be selected.
+                                </small>
+                            </div>
+
+                            <!-- Dynamic Item List (Generated via PHP or JavaScript) -->
+                            <div id="item-list-container">
+                                <?php
+                                foreach ($arr_items as $key => $value) {
+                                    echo '<div class="checkbox-option"><label style="font-weight:normal"><input type="checkbox" class="item-checkbox" value="' . $value['salary_head_items']['salary_head_item_pkey'] . '""> ' . $value['salary_head_items']['item'] . '</label></div>';
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        <?php } ?>
+        <!-- End -->
+
+        <?php if ($type == 'employee') { ?>
+            <div class="row">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-4">
+                    <div id="allempfields" style="width:100%; height:270px; background-color:white;"></div>
+                </div>
+                <div class="col-sm-4">
+                    <div id="reportfields" style="width:100%; height:270px; background-color:white;"></div>
+                </div>
+                <div class="col-sm-2">
+                </div>
+            </div>
+        <?php } ?>
+
+        <div class="form-group">
+            <div class="col-md-12" align="right">
+
+                <?php if (trim($type != 'BankTranferSynthite')) { //Edited by Akshay on 3-7-2024 
+                ?>
+                    <?php if ($type != 'DepositslipSynthite' && $type != 'GrossalarynewVayalat' && $type != 'SalaryBulkUpload' && $type != 'PayrollCTC') { ?>
+                        <button type="button" onclick="viewReport();" id="btn-submit" class="btn btn-primary">
+                            <li class="fa fa-eye"></li>
+                        </button>
+                    <?php } ?>
+                    <!-- //edited by amal on 08/08/2019 hide pdf-->
+                    <?php if ($type != "Grosssalary" && $type != "Analysis" && $type != "GrosssalaryNew" && $type != "SalaryCombined" && $type != "GrossAndCTCMonthly" && $type != "GrossPeriod" && $type != "SummaryPayroll" && $type != "LOPREPORT" && $type != "MonthlyCTCReport" && $type != "Gross" && $type != 'grossvayalat' && $type != 'GrossalarynewVayalat' && $type != 'Comparison' && $type != 'salary' && $type != 'SalaryBulkUpload' && $type != 'PayrollCTC') { ?>
+                        <button type="button" onclick="downloadReport('pdf');" id="btn-submit1" class="btn btn-danger">
+                            <li class="fa fa-file-pdf-o"></li>
+                        </button>
+                    <?php } ?>
+                    <?php if (trim($type != "SlipThirdVersion" && $type != "SlipSecondVersion" && $type != "SlipFirstVersion" && $type != 'Salaryslipnew' && $type != 'cascadeslip' && $type != 'DepositslipSynthite' && $type != 'Account')) { //Edited by Akshay on 6-1-2026
+                    ?>
+                        <button type="button" onclick="downloadReport('excel');" id="btn-submit2" class="btn btn-success">
+                            <li class="fa fa-file-excel-o"></li>
+                        </button>
+                    <?php } ?>
+                <?php } ?>
+                <?php //Edited by Akshay on 19-7-2023
+                if (trim($type) == 'BankTranferSynthite' || trim($type) == 'Custom') { ?>
+                    <button type="button" onclick="downloadReport('csv');" id="btn-submit3" class="btn btn-success" style="display: none;">
+                        <li class="fa fa-file-excel-o"></li>
+                    </button>
+
+                    <button type="button" onclick="downloadReport('excel');" id="btn-submit2" class="btn btn-success" style="display: none;">
+                        <li class="fa fa-file-excel-o"></li>
+                    </button>
+                    <button type="button" onclick="viewReport();" id="btn-submit" class="btn btn-primary" style="display: none;">
+                        <li class="fa fa-eye"></li>
+                    </button>
+                    <button type="button" id="btn-submit4" class="btn btn-info" style="display: none;">
+                        <li class="fa fa-print"></li>
+                    </button>
+                    <button type="button" onclick="downloadReport('pdf');" id="btn-submit5" class="btn btn-danger" style="display: none;">
+                        <li class="fa fa-file-pdf-o"></li>
+                    </button>
+                    <!-- End -->
+                <?php } ?>
+            </div>
+
+        </div>
+        <div id="reportCon" class="box box-body">
+
+        </div>
+    </form>
+    <script>
+        //Edited by Akshay on 3-7-2024
+        $(document).ready(function() {
+            loadPeriod('M'); // Edited by Akshay on 5-1-2026
+            $('#print-select').select2();
+            $('#btn-submit4').click(function() {
+                var type = $('#hidden-report-type').val(); //Edited by Akshay on 22-11-2024
+                var content = $('#printReportSynthite').html();
+                //Edited by Akshay on 22-11-2024
+                if (type == 'Custom') {
+                    printContent(content);
+                } else {
+                    printReportContent(content);
+                }
+                //End
+            });
+
+            // Edited by Akshay on 5-1-2026
+            $('#report_type').on('change', function() {
+                loadPeriod($(this).val());
+            });
+
+            $('#reportfrom').on('change', function() {
+                let fromVal = $(this).val().replace('-', '');
+                fromVal = parseInt(fromVal);
+                let type = $('#hidden-report-type').val();
+
+                if (type == 'Account' && $('#report_type').val() === 'FY') {
+                    $('#to-month-wrapper').show();
+                    $('#reportto option').each(function() {
+                        let optVal = $(this).val().replace('-', '');
+                        optVal = parseInt(optVal);
+
+
+                        if (optVal <= fromVal) {
+                            $(this).prop('disabled', true);
+                        } else {
+                            $(this).prop('disabled', false);
+                        }
+                    });
+
+                    // Reset To Month selection
+                    $('#reportto').val('');
+                }
+            });
+            // End
+        });
+
+        function printReportContent(content) {
+            var printWindow = window.open('', '_blank', 'height=600,width=900');
+            printWindow.document.write('<html><head><title>Print Document</title>');
+            printWindow.document.write('<style>');
+            printWindow.document.write('body { font-size: 12pt; margin: 0; padding: 0; visibility: hidden; }');
+            printWindow.document.write('table { width: 100%; border-collapse: collapse; margin: 0; padding: 0; }');
+            printWindow.document.write('th, td { padding: 0; text-align: left; border: 1px solid black; }'); // Add border to th and td
+            printWindow.document.write('th { background-color: #f2f2f2; text-align: center; }');
+            printWindow.document.write('.single-line { white-space: nowrap; }');
+            printWindow.document.write('.align-left { text-align: left !important; padding-left: 80px !important; }'); // Align left and add padding
+            printWindow.document.write('.align-nodataleft { text-align: left !important;padding-left: 0px !important; }');
+            printWindow.document.write('.align-nodata { font-weight: bold; }');
+            printWindow.document.write('@media print { body { visibility: visible; } }'); // Show content for print
+            printWindow.document.write('@page { size: auto; margin: 3mm; }'); // Hide browser default headers/footers
+            printWindow.document.write('</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(content);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+
+            printWindow.onload = function() {
+                printWindow.print();
+                printWindow.close();
+            };
+        }
+
+        //Edited by Akshay on 22-11-2024
+        function printContent(content) {
+            var printWindow = window.open('', '_blank', 'height=800,width=1200,scrollbars=yes');
+            printWindow.document.open();
+            printWindow.document.write('<html><head><title>&nbsp;</title>');
+            printWindow.document.write('<style>');
+
+            // General styles
+            printWindow.document.write('body { font-size: 10pt; margin: 5px; padding: 0; }');
+            printWindow.document.write('header { text-align: center; font-size: 16pt; font-weight: bold; margin-bottom: 20px; }'); // Centered header
+            printWindow.document.write('.subheader { text-align: center; font-size: 14pt; margin-bottom: 40px; }'); // Centered subheading
+
+            // Layout for date, time, and page number
+            printWindow.document.write('.info-bar { display: flex; justify-content: space-between; margin-bottom: 20px; }'); // Flex for alignment
+            printWindow.document.write('.info-bar .left, .info-bar .right { width: 20%; font-size: 10pt; }'); // Adjust width for spacing
+            printWindow.document.write('.info-bar .left { text-align: left; }'); // Align left content
+            printWindow.document.write('.info-bar .right { text-align: right; }'); // Align right content
+
+            // Table styles (remove vertical borders)
+            printWindow.document.write('table { width: 100%; border-collapse: collapse; table-layout: fixed; page-break-before: always; }');
+            printWindow.document.write('th, td { border-top: 1px solid black; border-bottom: 1px solid black; padding: 8px; text-align: left; word-wrap: break-word; }'); // Only horizontal borders
+            printWindow.document.write('th { background-color: #f2f2f2; white-space: nowrap; width: auto; font-size:10pt }');
+            printWindow.document.write('th:nth-child(1) { width: 40px; }');
+            printWindow.document.write('th:nth-child(2) { width: 70px; }');
+            printWindow.document.write('tr.no-border-print, th.no-border-print, fieldset { border: none; margin: 0; padding: 0; }');
+            printWindow.document.write('legend { font-size: 1em; margin-bottom: 10px; }');
+
+            // Page counter styles for dynamic page number
+            printWindow.document.write('@page { size:landscape; counter-increment: page; padding-top: 20px; }');
+            printWindow.document.write('.page-number:after { content: "Page " counter(page); position: absolute; top: 20px; right: 20px; font-size: 10pt; }');
+
+            printWindow.document.write('</style>');
+            printWindow.document.write('</head><body>');
+
+            // Modify header with the formatted date
+            printWindow.document.write("<header><?php echo isset($arr_comp_contact_info['CompanyContactInfo']['business_name']) ? $arr_comp_contact_info['CompanyContactInfo']['business_name'] : ''; ?></header>"); // Add formatted date header
+
+            // Add the subheader
+            printWindow.document.write('<div class="subheader">STAFF REPORT</div>'); // Centered subheading
+
+            // Insert the content to be printed
+            printWindow.document.write(content);
+
+            // Close the document
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+
+            // Add page numbers dynamically after loading
+            printWindow.onload = function() {
+                // Ensure the print window is focused and ready for printing
+                printWindow.focus();
+                printWindow.print(); // Trigger the print action
+                printWindow.close(); // Close the print window after printing
+            };
+        }
+        //End
+
+        //End
+        //Edited by Akshay on 25-6-2024
+        function updateDownloadButtons() {
+            var selectedValue = document.getElementById('print-select').value;
+            if (selectedValue === 'csv') {
+                document.getElementById('btn-submit3').style.display = 'inline-block';
+                document.getElementById('btn-submit2').style.display = 'none';
+                document.getElementById('btn-submit').style.display = 'none';
+                document.getElementById('btn-submit5').style.display = 'none';
+                document.getElementById('btn-submit4').style.display = 'none';
+            } else if (selectedValue === 'excel') {
+                document.getElementById('btn-submit3').style.display = 'none';
+                document.getElementById('btn-submit2').style.display = 'inline-block';
+                document.getElementById('btn-submit').style.display = 'none';
+                document.getElementById('btn-submit5').style.display = 'none';
+                document.getElementById('btn-submit4').style.display = 'none';
+            } else if (selectedValue === 'view') {
+                document.getElementById('btn-submit3').style.display = 'none';
+                document.getElementById('btn-submit2').style.display = 'none';
+                document.getElementById('btn-submit').style.display = 'inline-block';
+                document.getElementById('btn-submit5').style.display = 'none';
+            } else if (selectedValue === 'pdf') {
+                document.getElementById('btn-submit3').style.display = 'none';
+                document.getElementById('btn-submit2').style.display = 'none';
+                document.getElementById('btn-submit').style.display = 'none';
+                document.getElementById('btn-submit5').style.display = 'inline-block';
+                document.getElementById('btn-submit4').style.display = 'none';
+            } else {
+                document.getElementById('btn-submit3').style.display = 'none';
+                document.getElementById('btn-submit2').style.display = 'none';
+                document.getElementById('btn-submit').style.display = 'none';
+                document.getElementById('btn-submit5').style.display = 'none';
+                document.getElementById('btn-submit4').style.display = 'none';
+            }
+        }
+        //End
+
+        //Edited by Akshay on 14-11-2024
+        function filterItems() {
+            var input, filter, options, label, i, txtValue;
+            input = document.getElementById('search-input');
+            filter = input.value.toUpperCase();
+            options = document.getElementById('item-list-container').getElementsByClassName('checkbox-option');
+
+            // Loop through all options and hide those who don't match the search term
+            for (i = 0; i < options.length; i++) {
+                label = options[i].getElementsByTagName("label")[0];
+                txtValue = label.textContent || label.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    options[i].style.display = "";
+                } else {
+                    options[i].style.display = "none";
+                }
+            }
+        }
+
+        function toggleDropdown() {
+            var dropdownContent = document.getElementById("checkbox-options");
+            var reportCon = document.getElementById("reportCon");
+
+            if (dropdownContent.style.display === "none" || dropdownContent.style.display === "") {
+                // Show the dropdown
+                dropdownContent.style.display = "block";
+
+                // Add margin-top to #reportCon
+                reportCon.style.marginTop = "500px";
+            } else {
+                // Hide the dropdown
+                dropdownContent.style.display = "none";
+
+                // Reset margin-top of #reportCon
+                reportCon.style.marginTop = "40px";
+            }
+        }
+
+
+        function toggleSelectAll(checkbox) {
+            const checkboxes = document.querySelectorAll(".item-checkbox");
+            checkboxes.forEach(item => item.checked = checkbox.checked);
+        }
+
+        function uncheckAllCheckboxes() {
+            // Use jQuery to uncheck all checkboxes with the class 'item-checkbox'
+            $('.item-checkbox').prop('checked', false);
+        }
+
+
+        function checkSelectAll() {
+            const checkboxes = document.querySelectorAll(".item-checkbox");
+            const selectAll = document.getElementById("select-all");
+            selectAll.checked = Array.from(checkboxes).every(item => item.checked);
+        }
+        //End
+
+        function downloadReport(mode) {
+            $("#checkbox-options").hide(); //Edited by Akshay on 18-11-2024
+            var type = $('#hidden-report-type').val();
+            var criteria = $('#select-criteria1').val();
+            var fromDate = $('#reportsfrom').val(); //Edited by Akshay on 16-11-2024
+            var toDate = $('#reportsto').val(); //Edited by Akshay on 16-11-2024
+            var selectany = false;
+            $('.checkw').each(function() {
+                if ($(this).prop('checked') == true) {
+                    selectany = true;
+                }
+            });
+            if (selectany) {
+
+            } else {
+                alert("Please Choose Criteria items First");
+                return false;
+            }
+
+            // Edited by Akshay on 7-1-2026
+            var reportType = $('#report_type').val();
+            if (type == 'Account') {
+                var fromDate = $('#reportfrom').val();
+
+                if (reportType == 'FY') {
+                    var toDate = $('#reportto').val();
+                    var accountNotReady = !fromDate || !toDate;
+                } else {
+                    var accountNotReady = !fromDate;
+                }
+
+                if (accountNotReady) {
+                    alert("Please select both dates");
+                    return false;
+                }
+            }
+            // End
+
+            //Edited by Akshay on 6-10-2023
+            var prevMonth = $("#prev_month").val();
+            var nextMonth = $("#next_month").val();
+
+            if (type === 'Analysis' && (prevMonth === '' || nextMonth === '')) {
+                alert("Please Choose the required months");
+                return false;
+            }
+            if (type === 'Analysis' && (prevMonth >= nextMonth)) {
+                alert("Second selected month should be greater than first month");
+                return false;
+            }
+
+
+            if (criteria) {
+                //Edited by Akshay on 14-11-2024
+                var itemType = $('#criteria-select').val();
+                var selectedItems = [];
+                $('#checkbox-options .item-checkbox:checked').each(function() {
+                    selectedItems.push($(this).val());
+                });
+                $('#hidden-item-type').val(itemType); // Store the criteria value in a hidden input
+                $('#hidden-select-items').val(selectedItems.join(',')); // Store selected items in a hidden input
+                if ((selectedItems.length > 0 && itemType !== '' && fromDate !== null && toDate !== null) || type !== 'Custom') {
+                    $('#form-showreport').attr('action', livesite + 'SalaryReports/generatereport/' + type + '/' + mode);
+                    $('#form-showreport').attr('method', 'POST');
+                    $('#form-showreport').submit();
+
+                    //Edited bu Akshay on 3-7-2024
+                    if (type === "BankTranferSynthite") {
+                        $('#print-select').val('');
+                        $('#print-select').trigger('change');
+                        // $('#print-container').hide();
+                    }
+                    loadCriteriaItems(1) //To load dropdown after downloading report
+                    //End
+                    //Edited by Akshay on 15-11-2024
+                    if (type == 'Custom') {
+                        $('#btn-submit3').hide();
+                        $('#criteria-select').val('');
+                        $(".item-checkbox").prop("checked", false);
+                        $("#select-item").hide();
+                        $('#btn-submit4').hide();
+                        $("#reportCon").css("margin-top", "40px"); //Edited by Akshay on 18-11-2024
+                    }
+                    //End
+                } else {
+                    if (!fromDate || !toDate) {
+                        alert("Please select both dates");
+                    } else {
+                        alert("Please select an item");
+                    }
+                    return false;
+                }
+            } else {
+                alert("Please select a criteria first");
+                return false;
+            }
+
+
+
+
+
+        }
+
+        function hasValue(elem) {
+            return $(elem).filter(function() {
+                return $(this).val();
+            }).length > 0;
+        }
+        <?php if ($type == 'employee') { ?>
+            var allempfields;
+            allempfields = new dhtmlXGridObject('allempfields');
+            allempfields.selMultiRows = true;
+            allempfields.setHeader("Fields");
+            allempfields.setInitWidths("*");
+            allempfields.setColAlign("left");
+            allempfields.setColSorting("str");
+            allempfields.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+                /*var currentReportFields = $('#hidden-reportfields').val().split(',').filter(function(v){return v!==''});
+                var arrSelectedFields = sId.split(',');
+                var difference = [];
+                $.grep(arrSelectedFields, function(el) {
+                    console.log(el);
+                    if ($.inArray(el, currentReportFields) == -1) difference.push(el);
+                })
+                var newReportFields = $.unique(difference);
+                console.log(newReportFields);
+                //$('#hidden-reportfields').val(newReportFields.join(','));*/
+                return true;
+            });
+            allempfields.setMultiLine(false);
+            allempfields.enableDragAndDrop(true);
+            allempfields.init();
+            allempfields.clearAndLoad("<?php echo $this->webroot; ?>SalaryReports/listemployeefields", "json");
+
+            var reportfields;
+            reportfields = new dhtmlXGridObject('reportfields');
+            reportfields.selMultiRows = true;
+            reportfields.setHeader("Report Fields");
+            reportfields.setInitWidths("*");
+            reportfields.setColAlign("left");
+            reportfields.setColSorting("str");
+            reportfields.setMultiLine(false);
+            reportfields.enableDragAndDrop(true);
+            reportfields.init();
+            reportfields.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+                /*var currentReportFields = $('#hidden-reportfields').val().split(',').filter(function(v){return v!==''});
+                var arrSelectedFields = sId.split(',');
+                var newReportFields = $.unique($.merge(arrSelectedFields, currentReportFields));
+                $('#hidden-reportfields').val(newReportFields.join(','));*/
+                return true;
+            });
+        <?php } ?>
+        jQuery(document).ready(function() {
+            //Edited by Akshay on 6-10-2023
+            $("#prev_month").change(function() {
+                var selectedValue = $(this).val();
+                var secondDropdown = $("#next_month");
+
+                if (selectedValue === "") {
+                    // If no selection is made, hide the second dropdown
+                    secondDropdown.hide();
+                } else {
+                    // If a selection is made, show the second dropdown
+                    secondDropdown.show();
+                }
+            });
+
+            $('#prev_month').datepicker({
+                format: 'yyyy-mm',
+                autoclose: true,
+                startView: "months",
+                minViewMode: "months"
+            }).on('changeDate', function(selected) {
+                var selectedDate = new Date(selected.date);
+                selectedDate.setMonth(selectedDate.getMonth() + 1, 1);
+                $('#next_month').datepicker('setStartDate', selectedDate);
+            });
+
+            $('#next_month').datepicker({
+                format: 'yyyy-mm',
+                autoclose: true,
+                startView: "months",
+                minViewMode: "months"
+            });
+
+
+
+            $('#reporstfrom').datepicker({
+                format: 'yyyy-mm',
+                autoclose: true,
+                startView: "months",
+                minViewMode: "months"
+            });
+
+            $('#reporstto').datepicker({
+                format: 'yyyy-mm',
+                autoclose: true,
+                startView: "months",
+                minViewMode: "months"
+            });
+
+            //Edited by Akshay on 19-11-2024
+            const maxSelection = 7; // Maximum number of allowed selections
+
+            // Add event listener to all checkboxes with the class 'item-checkbox'
+            $(document).on('change', '.item-checkbox', function() {
+                const selectedCount = $('.item-checkbox:checked').length;
+
+                if (selectedCount >= maxSelection) {
+                    // Disable all unchecked checkboxes
+                    $('.item-checkbox:not(:checked)').prop('disabled', true);
+                } else {
+                    // Enable all checkboxes if the limit is not reached
+                    $('.item-checkbox').prop('disabled', false);
+                }
+            });
+            //End
+            //Edited by Akshay on 14-11-2024
+            // Listen for changes in the first dropdown using jQuery
+            $("#criteria-select").change(function() {
+                var selectItem = $("#select-item");
+                if ($(this).val()) {
+                    // Show the second dropdown if a value is selected
+                    selectItem.show();
+                } else {
+                    // Hide the second dropdown if no value is selected
+                    selectItem.hide();
+                }
+                $('#select-all').prop('checked', false);
+                $('.item-checkbox').prop('checked', false);
+                $('#hidden-select-items').val('');
+                $('.item-checkbox').prop('disabled', false);
+            });
+            //End
+
+            $('#form-showreport').parsley();
+
+            //Edited by Akshay on 11-11-2024
+            // Store all options in an array for filtering later
+            const allOptions = $('#reportsto option').clone();
+
+            // Event listener for when 'From' dropdown changes
+            $('#reportsfrom').change(function() {
+                const fromValue = $(this).val();
+                const $reportsto = $('#reportsto');
+
+                // Enable 'To' dropdown
+                $reportsto.prop('disabled', false);
+
+                // Clear current options in 'To' dropdown and re-add placeholder
+                $reportsto.empty().append('<option value="" disabled selected>--Select--</option>');
+
+                // Append only options that are greater than the selected 'From' value
+                allOptions.each(function() {
+                    if ($(this).val() >= fromValue) {
+                        $reportsto.append($(this));
+                    }
+                });
+            });
+            //End
+        });
+
+        function viewReport() {
+            var type = $('#hidden-report-type').val();
+            var selectany = false;
+            $('.checkw').each(function() {
+                if ($(this).prop('checked') == true) {
+                    selectany = true;
+                }
+            });
+            //        return false;
+            if (selectany) {
+                $("#checkbox-options").hide(); //Edited by Akshay on 18-11-2024
+            } else {
+                alert("Please Choose Criteria items First");
+                return false;
+            }
+            //Edited by Akshay on 3-7-2024
+            if (type === 'BankTranferSynthite' || type == 'Custom') {
+                document.getElementById('btn-submit4').style.display = 'inline-block';
+                $("#reportCon").css("margin-top", "40px"); //Edited by Akshay on 27-11-2024
+            }
+            //End
+            //Edited by Akshay on 6-10-2023
+            var prevMonth = $("#prev_month").val();
+            var nextMonth = $("#next_month").val();
+
+            if (type === 'Analysis' && (prevMonth === '' || nextMonth === '')) {
+                alert("Please Choose the required months");
+                return false;
+            }
+            if (type === 'Analysis' && (prevMonth >= nextMonth)) {
+                alert("Second selected month should be greater than first month");
+                return false;
+            }
+            // edited by sinsiya on 28-11-2024
+            var selectedItems = [];
+            //Edited by Akshay on 14-11-2024
+            if (type == 'Custom') {
+                var fromDate = $('#reportsfrom').val(); //Edited by Akshay on 16-11-2024
+                var toDate = $('#reportsto').val(); //Edited by Akshay on 16-11-2024
+                var itemType = $('#criteria-select').val();
+                var selectedItems = [];
+                $('#checkbox-options .item-checkbox:checked').each(function() {
+                    selectedItems.push($(this).val());
+                });
+                $('#hidden-item-type').val(itemType); // Store the criteria value in a hidden input
+                $('#hidden-select-items').val(selectedItems.join(',')); // Store selected items in a hidden input
+            }
+
+            if ((selectedItems.length > 0 && itemType !== '' && fromDate !== null && toDate !== null) || type !== 'Custom') {} else {
+                if (!fromDate || !toDate) {
+                    alert("Please select both dates");
+                } else {
+                    alert("Please select an item");
+                }
+                return false;
+            }
+            //End
+
+
+            // Edited by Akshay on 7-1-2026
+            var reportType = $('#report_type').val();
+
+            if (type == 'Account' && reportType == 'FY') {
+                var fromDate = $('#reportfrom').val();
+                if (reportType == 'FY') {
+                    var toDate = $('#reportto').val();
+
+                    var accountNotReady = !fromDate || !toDate;
+                } else {
+                    var accountNotReady = !fromDate;
+                }
+
+                if (accountNotReady) {
+                    alert("Please select both dates");
+                    return false;
+                }
+            } else
+            if (type == 'Account' && reportType != 'FY') {
+                var fromDate = $('#reportfrom').val();
+                if (!fromDate) {
+                    alert("Please select month");
+                    return false;
+                }
+            }
+            // End
+
+
+            $('#loaders').show();
+            var type = $('#hidden-report-type').val();
+            //var container = $("#largeModalForm1 #largeModalForm-content1");
+            var container = $("#reportCon");
+            var url = livesite + 'SalaryReports/generatereport/' + type;
+            //edited by sinsiya 12-04-2024 // Serialize form data
+            var formData = $('#form-showreport').serialize();
+
+            // Make the AJAX request with POST method
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                success: function(data) {
+                    container.html(data);
+                    $('#loaders').hide();
+                },
+                error: function() {
+                    // Handle errors here
+                    $('#loaders').hide();
+                    alert("An error occurred while fetching the report.");
+                }
+            });
+            var arrReportFieldsChosen = [];
+            var reportfields;
+            //        reportfields.forEachRow(function(id){
+            //            arrReportFieldsChosen.push(id);
+            //        });
+            $('#hidden-reportfields').val(arrReportFieldsChosen.join(','));
+            toggleItemsDisplay(1);
+            //Edited by Akshay on 11-7-2024
+            if (type === 'BankTranferSynthite') {
+                toggleItemsDisplay(2);
+            }
+            //End
+            $('body').addClass('sidebar-collapse');
+
+            //Edited by Akshay on 25-10-2023
+            if (type !== 'Grosssalary' && type !== 'Analysis' && type !== 'Salaryslipnew' && type !== 'salarystructure' && type != 'Salaryslip' && type != 'salary' && type != 'Account') { //Edited by Akshay on 6-1-2026
+                container.load(url, $('#form-showreport').serialize(), function() {
+                    $('#loaders').hide();
+                    //$("#largeModalForm1").modal('show')
+                });
+            } else {
+                $.post(url, $('#form-showreport').serialize(), function(data) {
+                    // Replace the content of the container with the response data
+                    container.html(data);
+
+                    // Optionally, you can perform other actions here
+                    $('#loaders').hide();
+                    // Show your modal here if needed
+                }).fail(function() {
+                    // Handle errors here
+                });
+            }
+
+
+
+
+        }
+
+        function loadCriteriaItems(index) {
+            var criteria = $('#select-criteria' + index).val();
+            $('#hidden-criteria' + index).val(criteria);
+            var type = $('#hidden-report-type').val();
+            $('#div-items-criteria' + index).load(livesite + 'salaryReports/loadcriteriaitems/' + index + '/' + criteria + '/' + type);
+            //Edited by Akshay on 28-6-2024
+            if (criteria !== 'Banks' && type !== "BankTranferSynthite") {
+                $("#controls-container").hide();
+                $('#new-datagrid').datalist('loadData', []);
+            } else if (criteria === 'Banks' && type === "BankTranferSynthite") {
+                // loadBankBranches(2);
+                // $("#controls-container").show();
+                // $('#criteriasite ul').datalist('loadData', []);
+                // $("#controls-container").hide();
+                get_items_site([]);
+            } else {
+                $("#controls-container").hide();
+            }
+            //End
+
+            //Edited by Akshay on 20-11-2024
+            if (type == 'Custom') {
+                $('#select-item-type').hide();
+                $("#select-item").hide();
+                $('#select-all').prop('checked', false);
+                $('.item-checkbox').prop('checked', false);
+                $('#hidden-select-items').val('');
+                $('.item-checkbox').prop('disabled', false);
+            }
+            //End
+        }
+
+        //Edited by Akshay on 10-7-2024
+        function loadBankBranches(index) {
+            var criteria = $('#select-criteria' + index).val();
+            $('#hidden-criteria' + index).val(criteria);
+            var type = $('#hidden-report-type').val();
+            $('#criteriasite').load(livesite + 'salaryReports/itemcriteriaSite/' + []);
+        }
+        //End
+
+        function addOneReportCriteria(index) {
+            var type = $('#hidden-report-type').val();
+
+            var currentcriteriaschosen = '';
+            $('#form-showreport .hidden-criterias').each(function() {
+                currentcriteriaschosen += (currentcriteriaschosen == '') ? this.value : ',' + this.value;
+            });
+            $('#form-showreport .link-removecriterias').remove();
+            var newIndex = index + 1;
+            $('<div class="form-group" id="div-criteria' + newIndex + '"></div>').insertAfter($('#div-criteria' + index));
+            $('#div-criteria' + newIndex).load(livesite + 'SalaryReports/addreportcriteria/' + type + '/' + newIndex + '/' + currentcriteriaschosen);
+
+            var count = $('#hidden-criterias-count').val();
+            if (count >= 1) {
+                $('#hidden-criterias-count').val(parseInt(count) + 1);
+            }
+        }
+
+        function removeThisCriteria(index) {
+            var count = $('#hidden-criterias-count').val();
+            $('#hidden-criterias-count').val(parseInt(count) - 1);
+            $('#div-criteria' + index).remove();
+        }
+
+        // Edited by Akshay on 5-1-2026
+        function loadPeriod(type) {
+            $.ajax({
+                url: livesite + 'SalaryReports/getAccountPeriod/',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    type: type
+                },
+                success: function(res) {
+
+                    let options = `<option value="">--Select--</option>`;
+                    $.each(res.options, function(key, val) {
+                        options += `<option value="${key}">${val}</option>`;
+                    });
+
+                    $('#reportfrom').val('');
+
+                    if (type === 'FY') {
+                        // $('#period-label').text('From Month:');
+                        $('#reportto').val('');
+                        $('#reportfrom').html(options);
+                        $('#reportto').html(options);
+
+                    } else {
+                        $('#period-label').text(res.label + ':');
+                        $('#to-month-wrapper').hide();
+
+                        $('#reportfrom').html(options);
+                    }
+                }
+            });
+        }
+
+        // End
+    </script>
+<?php } ?>
+
+<style>
+    /* td, th, table {
+  border-style: none;
+  border: none;
+  } */
+</style>

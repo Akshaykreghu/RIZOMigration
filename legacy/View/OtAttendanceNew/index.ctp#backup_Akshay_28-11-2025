@@ -1,0 +1,1043 @@
+<style>
+    .form-horizontal .control-label {
+        text-align: left;
+    }
+
+    .custom-file-upload {
+        border: 1px solid #0d0c0c52;
+        border-radius: 4px;
+        display: inline-block;
+        padding: 4px 12px;
+        cursor: pointer;
+        width: 100%;
+        height: 30px;
+        text-align: center;
+    }
+
+    .tabs-process {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        margin-top: 40px;
+        margin-bottom: -5px;
+
+    }
+
+    .dg-btn {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        color: #1e516e;
+        font-weight: 500;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .dg-btn:hover {
+        background-color: #f8f8f8 !important;
+        border-color: #ccc !important;
+    }
+
+    .tabs-process .tab {
+        background-color: white !important;
+        padding: 15px 25px;
+        border: 1px solid #1d615f !important;
+        border-bottom: none !important;
+        margin: 0px 10px 0px 0px;
+    }
+
+    .tabs-process .active {
+        background-color: #1d615f !important;
+        color: white;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+
+    /* Dropdown container */
+    .custom-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        width: 150px;
+        z-index: 1000;
+    }
+
+    /* Dropdown items */
+
+    .dg-btn {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        color: #1e516e;
+        font-weight: 500;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .dg-btn:hover {
+        background-color: #f8f8f8 !important;
+        border-color: #ccc !important;
+    }
+
+    /* Filter Panel styling */
+    /* Make the filter panel always appear near the button */
+    #filterPanel {
+        display: none;
+        position: absolute;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 15px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        width: 200px;
+    }
+
+
+    #filterPanel .form-group {
+        margin-bottom: 8px;
+    }
+
+    #filterPanel input[type="radio"] {
+        margin-right: 6px;
+    }
+
+    #filterPanel label {
+        font-weight: 500;
+        color: #333;
+        cursor: pointer;
+    }
+
+
+    /* Clear button */
+    .btn-clear {
+        background-color: #2a78c5;
+        /* blue */
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 6px 12px;
+        font-weight: 500;
+        cursor: pointer;
+        margin-top: 8px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-clear:hover {
+        background-color: #205a99;
+    }
+
+    #filterPanel .form-group {
+        display: flex;
+        align-items: center;
+        /* vertically centers radio + label */
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+
+    #filterPanel .form-group label {
+        margin: 0;
+        font-size: 14px;
+        /* optional: keep consistent text size */
+        position: relative;
+        top: 2px;
+        /* 👈 moves label slightly downward */
+    }
+
+
+    /* End */
+    /* edit by bindu 14-11-2025 */
+    .heading {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        /* margin-left: 20px; */
+    }
+
+    .home {
+        background-color: #ffffffff;
+        border-radius: 50px;
+        padding: 2px 15px;
+        color: #1e516e !important;
+        /* margin-right: 15px; */
+        color: white;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: #1e516e 1px solid;
+    }
+
+    /* edit by bindu 14-11-2025 end */
+
+    /* Edited by Akshay on 19-11-2025 */
+    .custom-btn {
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        font-size: 13px;
+        padding: 4px 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s;
+        border: 1px solid #e0e0e0 !important;
+        color: #555;
+        background-color: #fff;
+    }
+
+    .custom-btn:hover {
+        background: #f5f5f5;
+    }
+
+    /* End */
+
+    /* Edited by Akshay in 20-11-2025 */
+    .input-group-text {
+        position: absolute;
+        top: 50%;
+        left: 12px;
+        transform: translateY(-50%);
+        background-color: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        z-index: 4;
+    }
+
+    .search-container {
+        width: 325px;
+        position: relative;
+        margin-left: 15px !important;
+        margin-right: 10px;
+    }
+
+    /* Custom Search Input */
+    #searchqupo.form-control {
+        /* background-color: #dfdfdf !important; */
+        border-radius: 8px !important;
+        border: 1px solid #aaa !important;
+        height: 30px;
+        padding-left: 40px;
+        /* Space for icon */
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    /* End */
+
+    /* Edited by Akshay on 25-11-2025 */
+    /* Only target datagrid body cells, not headers */
+    .datagrid-body .datagrid-cell-c1-set_duration_min {
+        height: 100% !important;
+        padding: 0 2% 0 2% !important;
+        box-sizing: border-box;
+    }
+
+    /* Input inside body cells fills the div */
+    .datagrid-body .datagrid-cell-c1-set_duration_min input.new-ot-duration {
+        height: 100% !important;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+    }
+
+    /* Adjust the row height if needed */
+    .datagrid-body .datagrid-row {
+        height: 40px !important;
+        /* set desired row height */
+    }
+
+
+    /* End */
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<section class="content">
+    <!-- /* edit by bindu 14-11-2025 */ -->
+    <div class="heading">
+        <h1 class="text-primary-18">Over Time Register</h1>
+        <div class="text-primary-16 home" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <i class="fa" style="font-size:16px;">&#xf104;</i>
+            Back
+        </div>
+    </div>
+    <!-- /* edit by bindu 14-11-2025 end */ -->
+    <br>
+    <div class="col-md-12">
+
+        <form class="form-horizontal">
+            <div class="form-group" id="div-reportcriterias">
+                <div class="col-md-3">
+                    <label class="col-md-3 control-label" for="filterby_month"> Month</label>
+                    <div class="col-md-1">:</div>
+                    <div class="col-md-7">
+                        <select id="filterby_month" name="filterby_month" class="form-control">
+
+                            <?php
+                            /*
+                             * By santhosh on 27 Dec 2015
+                             */
+                            $start_month = strtotime(date('Y-m', strtotime("+1 month", strtotime(date('Y-m')))));
+                            for ($i = 0; $i < 12; $i++) {
+                                $month = date('Y-m', strtotime("-$i month", $start_month));
+                                if ($month == date('Y-m')) {
+                                    echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                } else {
+                                    echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="col-sm-3" for="filterby_branch"> Branch</label>
+                    <div class="col-md-1">:</div>
+                    <div class="col-md-7">
+                        <select id="filterby_branch" name="filterby_branch" class="form-control" onchange="filterEmployees(this);">
+                            <option value="0">All</option>
+                            <?php foreach ($arr_branches as $key => $value) { ?>
+                                <option value="<?php echo $value['branch_code']; ?>"><?php echo $value['branch_name']; ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="col-sm-4" for="employee"> Employee</label>
+                    <div class="col-md-1">:</div>
+                    <div class="col-md-7">
+                        <select id="emp_fkey" class="js-example-basic-single" style="width: 100% ; ">
+                            <option value="0">All</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-1">
+                    <div class="col-md-10">
+                        <button type="button" id="btn-processregister" class="btn btn-primary" onclick="filterRegister();">Process</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Edited by Akshay on 8-11-2025 -->
+        <div class="tabs-process">
+            <div id="tabNotProcessed" class="tab active" onclick="switchTab('tabNotProcessed', 'tab1')">Not Processed</div>
+            <div id="tabProcessed" class="tab" onclick="switchTab('tabProcessed', 'tab2')">Processed</div>
+        </div>
+
+        <div id="customToolbar" style="margin-bottom:0px;margin-top:10px; display:flex; align-items:center; gap:8px;">
+
+            <button id="approveAllBtn" class="dg-btn">
+                <i class="fa fa-circle-check" style="color:#1e8e3e;"></i> Approve Selected
+            </button>
+
+            <button id="removeBtn" class="dg-btn" style="display:none;">
+                <i class="fa fa-trash" style="color:#d27219;"></i> Remove
+            </button>
+
+            <div style="display:inline-block; position:relative;" id="filterDiv">
+                <button id="filterBtn" class="dg-btn">
+                    <i class="fa fa-filter" style="color:#d27219;"></i> Filter
+                </button>
+
+                <!-- Filter Panel -->
+                <div id="filterPanel" style="display:none; width:200px; position:absolute; top:100%; left:0; background:#fff; border:1px solid #ddd; border-radius:6px; padding:15px; box-shadow:0 2px 6px rgba(0,0,0,0.15); z-index:1000;">
+                    <h5 style="margin-top:0; margin-bottom:12px; font-weight:600; color:#333;">Filter Employees</h5>
+
+                    <div class="form-group">
+                        <input type="radio" name="filtering" value="Eligible" id="filterEligible">
+                        <label for="filterResigned">Eligible</label>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="radio" name="filtering" value="Not Eligible" id="filterNotEligible">
+                        <label for="filterActive">Not Eligible</label>
+                    </div>
+                    <button id="clearFilter" class="btn-clear">Clear</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- End -->
+
+        <div id="tab1" class="tab-content active">
+            <!-- <p> Not Processed</p> -->
+        </div>
+
+        <div id="tab2" class="tab-content">
+            <!-- <p>Processed</p> -->
+        </div>
+
+
+        <br>
+
+
+        <table id="att_table" class="table table-bordered table-hover">
+            <tbody>
+            </tbody>
+        </table>
+        <!-- </div> -->
+        <!-- /.box-body -->
+    </div>
+</section>
+
+<div id="modalDetailForm12" class="modal fade">
+    <div class="modal-dialog modal-lg" style="width:80%;">
+        <div class="modal-content" id="modaldetails-content12" style="overflow: scroll;">
+
+        </div>
+    </div>
+</div>
+
+<style type="text/css">
+    .pws_tabs_list {
+        min-height: 900px;
+    }
+</style>
+<script>
+    function showLargeModalForm1(url) {
+        var container = $("#modalDetailForm12 #modaldetails-content12");
+
+
+        container.load(url, function() {
+            $("#modalDetailForm12").modal('show')
+        });
+    }
+
+    function getDurationRegister() {
+        var employee = $('#emp_fkey').val();
+        var month = $('#filterby_month').val();
+        var branch = $('#filterby_branch').val();
+
+        $.ajax({
+            url: livesite + "OtAttendanceNew/getDurationRegister",
+            type: "POST",
+            dataType: "json",
+            data: {
+                month: month,
+                emp: employee,
+                branch: branch
+            },
+            success: function(res) {},
+            error: function(xhr, status, error) {
+                console.error("Error:", error);
+            },
+            complete: function() {}
+        });
+    }
+
+
+    function filterRegister(obj) {
+        $('#loader').show();
+        getDurationRegister();
+
+        var status = '';
+        if ($('#tab1').hasClass('active')) {
+            status = 'Pending';
+        } else if ($('#tab2').hasClass('active')) {
+            status = 'Processed';
+        }
+
+        var url = (status === 'Pending') ?
+            livesite + "OtAttendanceNew/getNotApprovedData" :
+            livesite + "OtAttendanceNew/getApprovedData";
+        var employee = $('#emp_fkey').val();
+        var month = $('#filterby_month').val();
+        var branch = $('#filterby_branch').val();
+
+        $('#att_table').datagrid('load', {
+            month: month,
+            emp: employee,
+            branch: branch,
+        });
+        $('#loader').hide();
+    }
+
+    function switchTab(tabId, contentId) {
+
+        // Remove active class from all tabs & contents
+        $('.tab').removeClass('active');
+        $('.tab-content').removeClass('active');
+
+        // Add active class to clicked elements
+        $('#' + tabId).addClass('active');
+        $('#' + contentId).addClass('active');
+
+        // Determine status from active tab
+        let status = '';
+        if (contentId === 'tab1') {
+            status = 'Not Processed';
+            $('#approveAllBtn').show();
+            $('#filterDiv').show();
+            $('#removeBtn').hide();
+            // Show / hide columns
+            $('#att_table').datagrid('showColumn', 'eligible');
+            $('#att_table').datagrid('showColumn', 'set_duration_min');
+            $('#att_table').datagrid('showColumn', 'new_ot_duration_hrs');
+            $('#att_table').datagrid('showColumn', 'total_ot_duration_hrs');
+            $('#att_table').datagrid('hideColumn', 'approved_duration_min');
+            $('#att_table').datagrid('hideColumn', 'approved_duration_hrs');
+
+        } else if (contentId === 'tab2') {
+            status = 'Processed';
+            $('#approveAllBtn').hide();
+            $('#filterDiv').hide();
+            $('#removeBtn').show();
+
+            // Hide checkbox column, Eligible, and OT in hrs
+            $('#att_table').datagrid('hideColumn', 'eligible');
+            $('#att_table').datagrid('hideColumn', 'set_duration_min');
+            $('#att_table').datagrid('hideColumn', 'new_ot_duration_hrs');
+            $('#att_table').datagrid('hideColumn', 'total_ot_duration_hrs');
+            $('#att_table').datagrid('showColumn', 'approved_duration_min');
+            $('#att_table').datagrid('showColumn', 'approved_duration_hrs');
+        }
+
+        // Determine URL based on status
+        var url = (status === 'Not Processed') ?
+            livesite + "OtAttendanceNew/getNotApprovedData" :
+            livesite + "OtAttendanceNew/getApprovedData";
+
+        // Update URL
+        $('#att_table').datagrid('options').url = url;
+
+        // Reload with filters
+        $('#att_table').datagrid('load', {
+            month: $('#filterby_month').val(),
+            emp: $('#emp_fkey').val(),
+            branch: $('#filterby_branch').val()
+        });
+    }
+
+
+    function filterEmployees() {
+        var branch = $('#filterby_branch').val();
+        var structure = $('#approved_bys').val();
+        var fileInput = $('#empctccsv');
+        if ($('#approved_bys').val() !== '') {
+            fileInput.prop('disabled', false);
+        } else {
+            fileInput.prop('disabled', true);
+        }
+
+        $("#emp_fkey").select2({
+            placeholder: "--Select--",
+            allowClear: true,
+            ajax: {
+                url: livesite + "Attendanceregister/jsons/" + branch,
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term,
+                        page: params.page
+                    };
+                },
+                processResults: function(data, params) {
+                    var selectElement = this.$element;
+                    var selectId = selectElement.attr('id');
+
+                    params.page = params.page || 1;
+
+                    return {
+                        results: data.items,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                }
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            }
+        });
+    }
+
+
+    function disableInvalidCheckboxes() {
+        const dg = $('#att_table');
+        const rows = dg.datagrid('getRows');
+        const panel = dg.datagrid('getPanel');
+
+        let allValidChecked = true;
+        let hasValidRow = false;
+
+        rows.forEach((row, index) => {
+            if (row.emp_ot_master_pkey == 0) {
+                dg.datagrid('uncheckRow', index);
+
+                $(panel)
+                    .find(`tr[datagrid-row-index="${index}"] input[type="checkbox"]`)
+                    .prop('disabled', true)
+                    .css('cursor', 'not-allowed')
+                    .prop('checked', false);
+            } else {
+                hasValidRow = true;
+                // If any valid row is not checked, allValidChecked = false
+                if (!dg.datagrid('getChecked').includes(row)) {
+                    allValidChecked = false;
+                }
+            }
+        });
+
+        if (!hasValidRow) {
+            allValidChecked = false;
+        }
+
+        // If all valid rows are checked, tick the select-all checkbox manually
+        if (allValidChecked) {
+            $(panel).find("div.datagrid-header-check input[type='checkbox']").prop("checked", true);
+        } else {
+            $(panel).find("div.datagrid-header-check input[type='checkbox']").prop("checked", false);
+        }
+    }
+
+
+
+
+
+
+
+
+    // End
+
+
+
+    jQuery(document).ready(function() {
+
+        filterEmployees();
+
+        $('#filterby_branch').select2();
+
+        // Edited by Akshay on 20-11-2025
+        let searchTimer;
+        $('#searchqupo').on('input', function() {
+            clearTimeout(searchTimer);
+
+            let searchValue = $(this).val().trim();
+
+            searchTimer = setTimeout(function() {
+                $('#att_table').datagrid('load', {
+                    emp: searchValue // send name search param
+                });
+            }, 300); // wait 300ms after typing stops
+        });
+        // End
+
+
+        // Open modal on Upload button click
+        $('#uploadModal').click(function() {
+            showLargeModalForm(livesite + 'OtAttendanceNew/fileUpload');
+        });
+
+
+
+        var structure = $('#importcomponents #approved_bys').val();
+        var employee = $('#emp_fkey').val();
+        var month = $('#filterby_month').val();
+        var branch = $('#filterby_branch').val();
+
+        // Edited by Akshay on 21-10-2025
+        let prevSelectedIndex = null;
+        // Initialize DataGrid without toolbar
+        $('#att_table').datagrid({
+            url: livesite + "OtAttendanceNew/getNotApprovedData",
+            pagination: true,
+            autoRowHeight: false,
+            singleSelect: false,
+            PostsearchFilter: true,
+            rownumbers: true,
+            pageSize: 10,
+            width: '100%',
+            queryParams: {
+                month: month,
+                emp: employee,
+                branch: branch,
+            },
+            fitColumns: true,
+            pageList: [2, 5, 10],
+            columns: [
+                [{
+                        field: 'ck',
+                        checkbox: true,
+                    },
+                    {
+                        field: 'empname',
+                        title: 'Employee Name',
+                        width: "24%"
+                    },
+                    {
+                        field: 'total_duration',
+                        title: 'Total Hrs Worked',
+                        width: "15%"
+                    },
+                    {
+                        field: 'eligible',
+                        title: 'Eligible',
+                        width: "10%"
+                    },
+                    {
+                        field: 'total_ot_duration_hrs',
+                        title: 'OT in hrs',
+                        width: "10%"
+                    },
+                    {
+                        field: 'set_duration_min',
+                        title: 'Set New OT mins',
+                        width: "15%",
+                        formatter: function(value, row, index) {
+
+                            // If no OT entry exists, don't show input
+                            if (row.emp_ot_master_pkey == 0 || row.emp_ot_master_pkey === null) {
+                                return value ?? 0; // Display normal text
+                            }
+
+                            // Otherwise show editable input
+                            return `<input type="number" name="et_duration_min${row.emp_ot_master_pkey}" class="form-control new-ot-duration"
+                                data-ot="${row.emp_ot_master_pkey}"
+                                value="${value ?? 0}"
+                                min="0"
+                                style="width:100%; height:100%;">`;
+                        }
+                    },
+
+                    {
+                        field: 'new_ot_duration_hrs',
+                        title: 'New OT in hrs',
+                        width: '15%',
+                        formatter: function(value, row, index) {
+                            // Convert row.set_duration (minutes) into hours
+                            let mins = row.set_duration_min ? row.set_duration_min : 0;
+                            let hours = (mins / 60).toFixed(2);
+                            return hours;
+                        }
+                    },
+
+                    // Approved fields
+                    {
+                        field: 'approved_duration_min',
+                        title: 'Approved Duration In mins.',
+                        width: "25%",
+                        hidden: true,
+                    },
+
+                    {
+                        field: 'approved_duration_hrs',
+                        title: 'Approved Duration In Hrs.',
+                        width: '25%',
+                        hidden: true,
+                    },
+                    // End
+
+                    {
+                        field: 'view',
+                        title: 'View',
+                        width: '9%',
+                        formatter: function(value, row, index) {
+                            if (row.emp_ot_master_pkey == 0 || row.emp_ot_master_pkey === null) {
+                                return ''; // Display normal text
+                            }
+
+                            return `
+                                    <div style="text-align:center;">
+                                        <a href="javascript:void(0)"
+                                        title="View Details"
+                                        onclick="showLargeModalForm1('${livesite}OtAttendanceNew/subtable/${row.emp_fkey}/${$('#filterby_month').val()}')">
+                                            <i class="fa fa-search-plus" style="font-size:18px;"></i>
+                                        </a>
+                                    </div>`;
+                        }
+                    }
+
+
+                ]
+            ],
+            rowStyler: function(index, row) {
+                if (row.emp_ot_master_pkey == 0) {
+                    return 'color:#999;';
+                }
+            },
+
+            onClickRow: function(index, row) {
+                if (row.emp_ot_master_pkey == 0) {
+                    $('#att_table').datagrid('unselectRow', index);
+                    return;
+                }
+            },
+
+            onLoadSuccess: function() {
+                disableInvalidCheckboxes();
+            },
+            onCheckAll: function(rows) {
+                disableInvalidCheckboxes();
+            }
+
+
+            // End
+        });
+
+        // 🔹 Button Handlers
+
+        // 🔹 Filter change event
+        $('#statusFilter').on('change', function() {
+            $('#att_table').datagrid('load', {
+                status: $(this).val()
+            });
+        });
+
+        // End 
+
+        // Edited by Akshay on 25-11-2025
+        $(document).on('keydown', '.new-ot-duration', function(e) {
+
+            if (e.key === '-' || e.keyCode === 189 || e.key === 'e') {
+                e.preventDefault();
+            }
+        });
+
+        $(document).on("input", ".new-ot-duration", function() {
+
+            let mins = parseFloat($(this).val()) || 0;
+            let hours = (mins / 60).toFixed(2);
+
+            // Update datagrid row display in "New OT in hrs" column
+            let dg = $('#att_table');
+            let panel = dg.datagrid('getPanel');
+            let index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
+            let row = dg.datagrid('getRows')[index];
+
+            row.new_ot_duration_hrs = hours;
+
+            let tr = panel.find('tr[datagrid-row-index=' + index + ']');
+            $('td[field="new_ot_duration_hrs"] div', tr).text(hours);
+
+            // Prepare data to send
+            let emp_fkey = row.emp_fkey;
+            let month = $('#filterby_month').val(); // ensure you have an input/select with id month
+
+            var employee = $('#emp_fkey').val();
+            var branch = $('#filterby_branch').val();
+
+            if ($(this).val() < 0) {
+                $(this).val(0);
+            }
+
+        });
+
+        // End
+
+        // Edited by Akshay on 21-10-2025
+
+        // Apply filter on radio selection
+        $('#filterBtn').on('click', function(e) {
+            e.stopPropagation();
+            var btnOffset = $(this).offset();
+            var btnHeight = $(this).outerHeight();
+            $('#filterPanel').css({
+                // top: btnOffset.top + btnHeight + 4 + 'px',
+                top: '0px',
+                left: (btnOffset.left / 2.5) + 'px'
+            }).toggle();
+        });
+
+        // Hide filter panel if clicked outside
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#filterPanel, #filterBtn').length) {
+                $('#filterPanel').hide();
+            }
+        });
+        $('#filterPanel input[name="filtering"]').on('change', function() {
+            var value = $(this).val();
+
+            var employee = $('#emp_fkey').val();
+            var month = $('#filterby_month').val();
+            var branch = $('#filterby_branch').val();
+
+            $('#att_table').datagrid('load', {
+                month: month,
+                emp: employee,
+                branch: branch,
+                status: value
+            });
+            $('#filterPanel').hide();
+        });
+
+        // Clear filter
+        $('#clearFilter').on('click', function() {
+            $('#filterPanel input[name="filtering"]').prop('checked', false);
+            var employee = $('#emp_fkey').val();
+            var month = $('#filterby_month').val();
+            var branch = $('#filterby_branch').val();
+
+            $('#att_table').datagrid('load', {
+                month: month,
+                emp: employee,
+                branch: branch,
+                status: ''
+            });
+            $('#filterPanel').hide();
+        });
+
+        $('#removeBtn').click(function() {
+            // Array to store details of selected rows
+            var selectedRows = $('#att_table').datagrid('getSelections');
+            var month = $('#filterby_month').val() + '-01';
+
+
+            if (selectedRows.length === 0) {
+                $.notify('Please select a row.', {
+                    type: 'danger',
+                    allow_dismiss: false
+                });
+                return;
+            }
+
+            var pkeys = selectedRows.map(function(row) {
+                return row.emp_ot_master_pkey;
+            });
+
+            console.log('Pkeys', pkeys);
+
+            // Call Remove API only
+            $.ajax({
+                type: 'POST',
+                url: livesite + 'OtAttendanceNew/remove',
+                data: {
+                    pkeys: pkeys,
+                    month: month
+                },
+                success: function(response) {
+                    var data = JSON.parse(response);
+                    console.log('Response', data);
+
+                    if (data.success === true) {
+                        $.notify("Removed the employees successfully", {
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+                    } else {
+                        $.notify(data.message || "Failed to remove employees", {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error sending pkeys:', error);
+                    $.notify("Error occurred while removing employees", {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                }
+            });
+
+            var employee = $('#emp_fkey').val();
+            var month = $('#filterby_month').val();
+            var branch = $('#filterby_branch').val();
+
+            $('#att_table').datagrid('load', {
+                month: month,
+                emp: employee,
+                branch: branch,
+                status: ''
+            });
+        });
+        // End
+
+    });
+
+
+    /* edit by bindu 14-11-2025 */
+    $(".home").on("click", function() {
+        $("#container").isLoading({
+            text: "Loading",
+            position: "overlay",
+        });
+
+        $("#container").load(livesite + "SalaryProcessing/index", function() {
+            isDashboardShown = false;
+        });
+
+
+    });
+
+    $('#approveAllBtn').click(function() {
+
+        var selectedRows = $('#att_table').datagrid('getSelections');
+        if (selectedRows.length === 0) {
+            $.notify("Please select at least one row", {
+                type: 'danger',
+                allow_dismiss: false
+            });
+            return;
+        }
+
+        var month = $('#filterby_month').val();
+
+        // Build employees array with emp_fkey + value from input field
+        var employees = selectedRows.map(function(row, index) {
+            // Find the input in the current row
+            var tr = $('#att_table').datagrid('getPanel').find('tr[datagrid-row-index=' + index + ']');
+            var inputVal = parseFloat($('input.new-ot-duration', tr).val()) || 0;
+
+            return {
+                emp_fkey: row.emp_fkey,
+                set_duration_min: inputVal // <-- get value directly from input
+            };
+        });
+
+        $.ajax({
+            url: livesite + 'OtAttendanceNew/approves',
+            type: 'POST',
+            data: {
+                month: month,
+                employees: employees
+            },
+            success: function(resp) {
+                $.notify("Approved Successfully", {
+                    type: 'success'
+                });
+
+                // Reload datagrid
+                var employee = $('#emp_fkey').val();
+                var branch = $('#filterby_branch').val();
+
+                $('#att_table').datagrid('load', {
+                    month: month,
+                    emp: employee,
+                    branch: branch,
+                    status: ''
+                });
+            },
+            error: function() {
+                $.notify("Error Occurred", {
+                    type: 'danger'
+                });
+            }
+        });
+
+    });
+</script>

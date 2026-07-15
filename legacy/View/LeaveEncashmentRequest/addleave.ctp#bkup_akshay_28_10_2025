@@ -1,0 +1,959 @@
+<style>
+    .datagrid .panel-body {
+        width: 100% !important;
+    }
+
+    #encash td[field="EmployeeDetails[]"] {
+        width: 35px;
+    }
+
+    .select2-container--default .select2-selection--single {
+        background-color: #fff;
+        border: 1px solid #d2d6de !important;
+        border-radius: 0px !important;
+        color: #d2d6de !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-color: #ccc transparent transparent transparent;
+    }
+</style>
+
+<section class="content-header">
+      <!-- edited by athira on 03-07-2025 -->
+    <h1 class="text-primary-18">Leave Encashment</h1>
+    <!-- end -->
+    <hr style="margin-top: 8px;margin-bottom: -2px;">
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <br>
+        <!-- Leave Requests -->
+        <!-- DIRECT CHAT DANGER -->
+        <!--                <div class="box-header with-border">
+                            <div class="box-tools pull-right">
+                                <button class="btn btn-box-tool" data-widget="collapse">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <button class="btn btn-box-tool" >
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                        </div>-->
+        <!-- /.box-header -->
+        <div class="col-md-3">
+            <label class="col-md-3 control-label" for="filterby_month">Month</label>
+            <div class="col-md-1">:</div>
+            <div class="col-md-7">
+                <select id="filterby_month" name="filterby_month" class="form-control" onchange="">
+
+                    <?php
+                    $start_month = strtotime(date('Y-m', strtotime("+1 month", strtotime(date('Y-m')))));
+                    for ($i = 0; $i < 12; $i++) {
+                        $month = date('Y-m', strtotime("-$i month", $start_month));
+                        if ($month == date('Y-m')) {
+                            echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                        } else {
+                            echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                        }
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label class="col-md-4 control-label" for="filterby_branch"> Branch : </label>
+            <div class="col-md-8">
+                <select id="filterby_branch" name="filterby_branch" class="form-control">
+                    <!-- edited by athira on 30-01-2025 -->
+                    <?php
+                    if ($is_ho == 1 || $user_group != 2) {
+                        echo ' <option value="">All</option>';
+                    }
+                    ?>
+                    <!-- end -->
+                    <?php
+                    foreach ($arr_branches as $key => $value) {
+                        echo '<option value="' . $value['branch_code'] . '">' . $value['branch_name'] . '</option>';
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label class="col-md-3" for="emp_fkey">Employee</label>
+            <div class="col-md-1">:</div>
+            <div class="col-md-8">
+                <select id="emp_fkey" class="form-control js-example-basic-single" name="emp_fkey">
+                    <option value="">All</option>
+                    <!--edited by arul - changing emp id as company id-->
+                    <?php //foreach ($arr_employees as $value) { 
+                    ?>
+                    <!--                                                <option value="<?php echo $value['EmployeeDetails']['emp_pkey']; ?>"><?php echo $value['EmployeeDetails']['first_name']; ?><?php echo ' ' . $value['EmployeeDetails']['last_name']; ?> - <?php echo $value['EmployeeDetails']['emp_id']; ?></option>-->
+                    <?php foreach ($emp_list as $key => $value) { ?>
+                        <option value="<?php echo $value['emp_details']['emp_pkey']; ?>">
+                            <?php echo $value['emp_details']['first_name'] . ' ' . $value['emp_details']['last_name'] . ' - ' . $value['emp_proff']['emp_company_id']; ?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-1" align="">
+            <button type="button" id="btn-downloademployeectcform" class="btn btn-primary" onclick="showencash()">List Leaves</button>
+        </div>
+        <!-- <div class="col-md-12" id="div-items-criteria1">
+
+            <form method="post" id="encash" class="col-md-12">
+                <div>
+                    <ul title="Employees" lines="true" style="width:100%;min-height:200px;height:auto;max-height:500px;"></ul>
+                </div>
+            </form>
+            <div class="col-md-12 pull-right" style="margin-top: 10px;">
+                <button onclick="showencash();" class="btn btn-primary">Show Selected</button>
+            </div>
+
+        </div> -->
+        <div class="col-md-12">
+
+            <div class="tabset-attendanceregister col-md-12" style="margin-top:20px;">
+                <div class="tabset-attendanceregister">
+                    <!--                        <div id="tab0" data-pws-tab="tab0" data-pws-tab-name="To be Encashed">
+                                                <h3>Leave Requests</h3>
+                                            </div>-->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" id="personal" class="active" onclick="showencashToBeVerify();">
+                            <a href="#div-empsetuppersonal" aria-controls="div-empsetuppersonal" role="tab" data-toggle="tab">To be Encashed</a>
+                        </li>
+                        <li role="presentation" id="proffessional" onclick="showencashVerified();">
+                            <a href="#div-empsetupprofessional" aria-controls="div-empsetupprofessional" role="tab" data-toggle="tab">Encashed</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="div-empsetuppersonal">
+                            <div class=" " style="margin-top:20px;margin-bottom:10px;">
+                                <div class="datagrid-toolbar">
+                                    <table cellspacing="0" cellpadding="0">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <a href="javascript:void(0)" onclick="verifyRegisterEntries();" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                                        <span class="l-btn-left l-btn-icon-left">
+                                                            <span class="l-btn-text">Encash</span>
+                                                            <span class="l-btn-icon icon-ok">&nbsp;</span>
+                                                        </span>
+                                                    </a>
+                                                </td>
+                                                <!--   <td>
+                            <a href="javascript:void(0)" onclick="verifyAllRegisterEntries();" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                <span class="l-btn-left l-btn-icon-left">
+                                    <span class="l-btn-text">Encash All</span>
+                                    <span class="l-btn-icon icon-ok">&nbsp;</span>
+                                </span>
+                            </a>
+                        </td> -->
+
+                                                <td style="padding-left: 10px;">Leave Type : </td>
+                                                <td>
+                                                    <select style="margin-left: 15px;" id="filterby_item" name="filterby_item" class="form-control" onchange="showencash();">
+                                                        <option value="">--All--</option>
+                                                        <?php
+                                                        foreach ($arr_heads as $value) {
+                                                            echo '<option value="' . $value['leavepolicy']['salary_head_item_fkey'] . '">' . $value['salary_head_items']['item'] . '</option>';
+                                                        }
+                                                        ?>
+                                                    </select>
+
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <table id="empleaverequeststable" class="table table-bordered table-hover">
+
+                                </table>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="div-empsetupprofessional">
+                            <div class="box " style="margin-top:24px; ">
+                                <div class="datagrid-toolbar">
+                                    <table cellspacing="0" cellpadding="0">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <a href="javascript:void(0)" onclick="removeEntries();" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                                        <span class="l-btn-left l-btn-icon-left">
+                                                            <span class="l-btn-text">Remove</span>
+                                                            <span class="l-btn-icon icon-cancel">&nbsp;</span>
+                                                        </span>
+                                                    </a>
+                                                </td>
+                                                <!--  <td>
+                            <a href="javascript:void(0)" onclick="removeAllEntries();" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                <span class="l-btn-left l-btn-icon-left">
+                                    <span class="l-btn-text">Remove All</span>
+                                    <span class="l-btn-icon icon-cancel">&nbsp;</span>
+                                </span>
+                            </a>
+                        </td> -->
+
+                                                <td style="padding-left: 10px;">Leave Type : </td>
+                                                <td>
+                                                    <select style="margin-left: 15px;" id="filterby_head" name="filterby_head" class="form-control" onchange="showencashveri();">
+                                                        <option value="">--All--</option>
+                                                        <?php
+                                                        foreach ($arr_heads as $value) {
+                                                            echo '<option value="' . $value['leavepolicy']['salary_head_item_fkey'] . '">' . $value['salary_head_items']['item'] . '</option>';
+                                                        }
+                                                        ?>
+                                                    </select>
+
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <table id="empleaverequeststableverified" class="table table-bordered table-hover">
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div><!-- /.col -->
+</section>
+<script>
+    jQuery(document).ready(function() {
+        $('#filterby_month').select2();
+        $('#filterby_branch').select2();
+        $('#emp_fkey').select2();
+    });
+
+    function showencash() {
+        var serialize = [];
+        serialize = $('#encash').serialize();
+        var item = $('#filterby_item').val();
+        var head = $('#filterby_head').val();
+        var month = $('#filterby_month').val();
+        var branch = $('#filterby_branch').val();
+        var emp = $('#emp_fkey').val();
+        $.ajax({
+            url: livesite + "LeaveEncashmentRequest/encashlisting",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                emp: emp,
+                branch: branch,
+                month: month,
+                item: item
+            },
+            success: function(resp) {
+                $('#empleaverequeststable').datagrid('load', {
+                    item: item,
+                    month: month,
+                    branch: branch,
+                    emp: emp
+                });
+                $('#empleaverequeststableverified').datagrid('load', {
+                    item: head,
+                    month: month,
+                    branch: branch,
+                    emp: emp
+                });
+            }
+        });
+
+    }
+
+    function showencashveri() {
+        var serialize = [];
+        serialize = $('#encash').serialize();
+        var item = $('#filterby_item').val();
+        var head = $('#filterby_head').val();
+        var month = $('#filterby_month').val();
+        var branch = $('#filterby_branch').val();
+        var emp = $('#emp_fkey').val();
+        $.ajax({
+            url: livesite + "LeaveEncashmentRequest/encashlisting",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                emp: emp,
+                branch: branch,
+                month: month,
+                item: head
+            },
+            success: function(resp) {
+                $('#empleaverequeststable').datagrid('load', {
+                    item: item,
+                    month: month,
+                    branch: branch,
+                    emp: emp
+                });
+                $('#empleaverequeststableverified').datagrid('load', {
+                    item: head,
+                    month: month,
+                    branch: branch,
+                    emp: emp
+                });
+            }
+        });
+
+    }
+
+    function showencashToBeVerify() {
+        var item = $('#filterby_item').val();
+        var month = $('#filterby_month').val();
+        var branch = $('#filterby_branch').val();
+        var emp = $('#emp_fkey').val();
+        $('#empleaverequeststable').datagrid('load', {
+            item: item,
+            month: month,
+            branch: branch,
+            emp: emp
+        });
+    }
+
+    function showencashVerified() {
+        var head = $('#filterby_head').val();
+        var month = $('#filterby_month').val();
+        var branch = $('#filterby_branch').val();
+        var emp = $('#emp_fkey').val();
+        $('#empleaverequeststableverified').datagrid('load', {
+            item: head,
+            month: month,
+            branch: branch,
+            emp: emp
+        });
+    }
+
+    function edit(v, eligible, leaveencashfkey) {
+        var values = v.value;
+        if (v.value > eligible) {
+            alert("Sorry!!! Only " + eligible + " leave are available");
+        } else {
+            if (v.value > 0) {
+                $.ajax({
+                    url: livesite + "LeaveEncashmentRequest/editvalue",
+                    type: "POST",
+                    dataType: 'json',
+                    data: {
+                        values: values,
+                        leaveencashfkey: leaveencashfkey
+                    },
+                    success: function(resp) {
+                        if (resp.msg == true) {
+                            // $('#empleaverequeststable').datagrid('reload');
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    function save(s, employee, leaveencashfkey) {
+        var month = $('#filterby_month').val();
+        $.ajax({
+            url: livesite + "LeaveEncashmentRequest/encashemp",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                emp: employee,
+                leaveencashfkey: leaveencashfkey,
+                month: month
+            },
+            success: function(resp) {
+                if (resp.msg == true) {
+                    //$(s).html('<li class="fa fa-spinner fa-spin"></li>');
+                    $(s).fadeOut(90, function() {
+                        $(s).parent('div').append('Approved');
+                        showencash();
+                        // $('#empleaverequeststable').datagrid('reload');
+                        // $('#empleaverequeststableverified').datagrid('load');
+                    });
+                }
+            }
+        });
+    }
+    /* function save(s, applied, employee, salaryheaditemsfkey) {
+        var input_te = $(s).siblings('input');
+        var applied_value = $(input_te).val();
+        if (applied == 0) {
+            $(s).prop("disabled", true).html("No Balance");
+            return false;
+        } else {
+            $.ajax({
+                url: livesite + "LeaveEncashmentRequest/encashemp",
+                type: "POST",
+		dataType: 'json',
+                data: {emp: employee, applied_days: applied_value, salaryheaditemsfkey: salaryheaditemsfkey},
+                success: function (resp) {
+                    if (resp.msg == true) {
+                        //$(s).html('<li class="fa fa-spinner fa-spin"></li>');
+                        $(s).fadeOut(90, function () {
+                            $(s).parent('div').append('Encashed');
+                            $('#empleaverequeststable').datagrid('reload');
+                            $('#empleaverequeststableverified').datagrid('load');
+                        });
+                    }else{
+			$.notify("Can't approve leave encashment.Payroll Processed for this month. ", {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                    return false;
+					}
+                }
+            });
+        }
+    }*/
+    function loadCriteriaItems() {
+        var criteria = 'EmployeeDetails';
+        var branch = $(filterby_branch).val();
+        $('#div-items-criteria1 ul').datalist({
+            fitColumns: true,
+            searchFilter: true,
+            toolbar: [{
+                text: 'Select all',
+                iconCls: 'icon-ok',
+                handler: function() {
+                    $('#div-items-criteria1 ul').datalist('checkAll');
+                    $('#div-items-criteria1 input:checkbox').each(function() {
+                        this.checked = true;
+                    });
+                }
+            }, {
+                text: 'Deselect all',
+                iconCls: 'icon-delete',
+                handler: function() {
+                    $('#div-items-criteria1 ul').datalist('clearChecked');
+                    $('#div-items-criteria1 input:checkbox').each(function() {
+                        this.checked = false;
+                    });
+                }
+            }],
+            //frozenColumns:[[
+            columns: [
+                [{
+                        field: criteria + '[]',
+                        width: 30,
+                        fixed: true,
+                        formatter: function(value, row, index) {
+                            return '<input type="checkbox" name="' + row.key + '" value="' + row.key + '" />';
+                        }
+                    },
+                    {
+                        field: 'Name',
+                        width: 200,
+                        fixed: true,
+                        formatter: function(value, row, index) {
+                            return row.text;
+                        }
+                    }
+                ]
+            ],
+            url: livesite + 'LeaveEncashmentRequest/listcriteriaitems/' + criteria + '/' + branch,
+            //checkbox: true,
+            checkOnSelect: true,
+            singleSelect: false,
+            lines: true,
+            valueField: "key",
+            onCheck: function(i, rows) {
+
+            },
+            onUncheck: function(i, rows) {
+
+            },
+            onLoadSuccess: function() {
+
+            }
+        });
+    }
+    jQuery(document).ready(function() {
+
+
+        loadCriteriaItems();
+
+        var item = $('#filterby_item').val();
+        var head = $('#filterby_head').val();
+        var month = $('#filterby_month').val();
+        var branch = $('#filterby_branch').val();
+        var emp = $('#emp_fkey').val();
+
+        $('#empleaverequeststable').datagrid({
+            url: livesite + "LeaveEncashmentRequest/listallempsforencash",
+            queryParams: {
+                item: item,
+                month: month,
+                branch: branch,
+                emp: emp
+            },
+            rowStyler: function(index, row) {
+                var style = "";
+                if (row.action == 'Processed' || row.action == 'Approved') {
+                    style += 'background-color:#b7b5b5;color:#fff;'; //Payroll processed employee background color.
+                }
+                return style;
+            },
+            autoRowHeight: true,
+            pageSize: 10,
+            width: '100%',
+            singleSelect: false,
+            pagination: true,
+            rownumbers: true,
+            //fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            onLoadSuccess: function(data) {
+                //                $.messager.show({
+                //                    title: 'Info',
+                //                    msg: 'You have  ' + data.total + ' Leave Requests'
+                //                });
+            },
+            columns: [
+                [{
+                        field: 'chek_encash',
+                        title: '',
+                        width: "15%",
+                        checkbox: true
+                    },
+                    {
+                        field: 'emp_company_id',
+                        title: 'Employee ID',
+                        width: "15%"
+                    },
+                    {
+                        field: 'emp_name',
+                        title: 'Name',
+                        width: "20%"
+                    },
+                    {
+                        field: 'item',
+                        title: 'Leave Type',
+                        width: "18%"
+                    },
+                    {
+                        field: 'leave_encash_limit',
+                        title: 'Available Leaves',
+                        width: "14%"
+                    },
+                    // {field: 'yearlybalance', title: 'Yearly Balance', width: "12%"},
+                    {
+                        field: 'eligible',
+                        title: 'Applicable Days',
+                        width: "14%"
+                    },
+                    {
+                        field: 'applied',
+                        title: 'Encashing Now',
+                        width: "15%",
+
+
+formatter: function(value, row, index) {
+    var maxAllowed = row.leave_limit - row.already_encashed; // maximum can encash now
+    var canEncash = row.can_encash && row.action == null && maxAllowed > 0;
+
+    // input value should show current eligible, but limit max via attribute
+    var input = '<input type="number" value="' + value + '" max="' + maxAllowed + '" min="0" step="any" style="width:80px;" ' + (canEncash ? '' : 'disabled') + ' onchange="edit(this,' + maxAllowed + ',' + row.leave_encashment_master_pkey + ');">';
+
+    var btn = '<button onclick="save(this,' + row.emp_fkey + ',' + row.leave_encashment_master_pkey + ');" ' + (canEncash ? '' : 'disabled') + '>Encash</button>';
+
+    return input + btn;
+}
+
+
+
+                        // formatter: function(value, row, index) {
+                        // console.log(row,'hi');
+                        //     if (row.editing == false) {
+                        //         var s = '<a href="#" onclick="saverow(this)">Save</a> ';
+                        //         var c = '<a href="#" onclick="cancelrow(this)">Cancel</a>';
+                        //         return s + c;
+                        //     } else {
+                        //         if (row.eligible > 0 && row.action == null) {
+                        //             var e = '<input value="' + row.eligible + '" max="' + row.eligible + '" min = "0" step="any" type="number" style="color:black;width: 80px;" onchange="edit(this,' + row.eligible + ',' + row.leave_encashment_master_pkey + ');"> ';
+                        //             var es = '<button style="background:#babfbb;padding:4px 9px;" onclick="save(this,' + row.emp_fkey + ',' + row.leave_encashment_master_pkey + ');" class="btn">Encash</button>';
+                        //         } else {
+                        //             var e = '<input disabled="disabled" value="' + row.eligible + '" max="' + row.eligible + '" min = "0" step="any" type="number" style="color:black;width: 80px;" > ';
+                        //             var es = '<button style="background:#babfbb;padding:4px 9px;" class="btn" disabled="disabled" >Encash</button>';
+                        //         }
+                        //         return e + es;
+                        //         //  return e
+                        //     }
+                        // }
+                    }
+                ]
+            ]
+        });
+
+        $('#empleaverequeststableverified').datagrid({
+            url: livesite + "LeaveEncashmentRequest/listallempsforverified",
+            queryParams: {
+                item: head,
+                month: month,
+                branch: branch,
+                emp: emp
+            },
+            rowStyler: function(index, row) {
+                var style = "";
+                if (row.salary_paid == 'Y') {
+                    style += 'background-color:#b7b5b5;color:#fff;'; //Payroll processed employee background color.
+                }
+                return style;
+            },
+            pagination: true,
+            rownumbers: true,
+            //          searchFilter: true,
+            singleSelect: false,
+            pageSize: 10,
+            //width: '100%',
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            // toolbar: [{
+            //         iconCls: 'icon-cancel',
+            //        text: 'Remove',
+            //                    handler: function () {
+            //                        var row = $('#empleaverequeststableverified').datagrid('getSelected');
+            //                        var leaveentryId = row.LEAVEENTRYID;
+            //                        showLargeModalForm(livesite + 'LeaveEncashmentRequest/manageleave/' + row.leave_encashment_master_pkey);
+            //                    }
+            //    },
+            //],
+            columns: [
+                [{
+                        field: 'chek_encash_remove',
+                        title: '',
+                        width: "15%",
+                        checkbox: true
+                    },
+                    {
+                        field: 'emp_company_id',
+                        title: 'Employee ID',
+                        width: 250,
+                        fixed: true
+                    },
+                    {
+                        field: 'emp_name',
+                        title: 'Name',
+                        width: 305,
+                        fixed: true
+                    },
+                    {
+                        field: 'item',
+                        title: 'Leave Type',
+                        width: 250,
+                        fixed: true
+                    },
+                    //{field: 'encash_days', title: 'Encash Days', width: "15%", fixed: true},
+                    //{field: 'available_days', title: 'Available Days', width: "15%", fixed: true},
+
+                    //{field: 'remarks', title: 'Remarks', width: 120, fixed: true},
+                    {
+                        field: 'approved_date',
+                        title: 'Month',
+                        width: 200,
+                        fixed: true
+                    },
+                    //{field: 'requested_days', title: 'Requested Leaves', width: 200, fixed: true},
+                    {
+                        field: 'approved_days',
+                        title: 'Encashed Leaves',
+                        width: 200,
+                        fixed: true
+                    },
+                ]
+            ]
+        });
+
+        function loadtabs() {
+            $('.tabset-attendanceregister').pwstabs({
+                effect: 'scale', // You can change effects of your tabs container: scale / slideleft / slideright / slidetop / slidedown / none
+                defaultTab: 1, // The tab we want to be opened by default
+                containerWidth: '100%', // Set custom container width if not set then 100% is used
+                tabsPosition: 'horizontal', // Tabs position: horizontal / vertical
+                horizontalPosition: 'top', // Tabs horizontal position: top / bottom
+                verticalPosition: 'left', // Tabs vertical position: left / right
+                responsive: false, // Make tabs container responsive: true / false - boolean
+                theme: '',
+                rtl: false // Right to left support: true/ false
+            });
+        }
+    });
+
+    //The below code is used to fetch the employee list of choosen branch...
+    $('#filterby_branch').change(function() {
+        var branch = $('#filterby_branch').val();
+        if (branch == '' || branch == null) {
+            branch = 'ALL';
+        } //This to set back the employee list to all branches.
+        $.ajax({
+            url: livesite + "LeaveEncashmentRequest/employeelists/" + branch,
+            success: function(response) {
+                var result = '';
+                var resp = $.parseJSON(response);
+                if (resp.msg > 0) {
+                    result += '<option value="">All</option>';
+                    for (var i = 0; i < resp.value.length; i++) {
+                        result += '<option value="' + resp.value[i].emp_details.emp_pkey + '">' + resp.value[i].emp_details.first_name + ' ' + resp.value[i].emp_details.last_name + ' - ' + resp.value[i].emp_proff.emp_company_id + '</option>';
+                    }
+                    $('#emp_fkey').html(result);
+                } else {
+                    result = "<option></option>";
+                    $('#emp_fkey').html(result);
+                }
+            }
+        });
+    });
+
+    function removeEntries() {
+
+        //Verify all entries : On 21 Feb 2016
+        var rows = $('#empleaverequeststableverified').datagrid('getSelections');
+
+        if (rows.length > 0) {
+            var str_ids = "";
+            var id = 0;
+            for (var i = 0; i < rows.length; i++) {
+                var data = rows[i];
+                if (data.action == null) {
+                    if (str_ids == "") {
+                        str_ids += data.leave_encashment_master_pkey;
+                    } else {
+                        str_ids += "," + data.leave_encashment_master_pkey;
+                    }
+                } else {
+                    id = 1;
+                }
+            }
+            if (str_ids == '' && id == 1) {
+                alert("Please remove processed payroll entry.");
+                return false;
+            } else if (str_ids == '' && id == 0) {
+                alert("Please remove processed payroll entry.");
+                return false;
+            } else {
+                doRemovalProcedure(str_ids);
+            }
+        } else {
+            alert("Please select atleast one record to remove.");
+        }
+
+    }
+
+    function removeAllEntries() {
+
+        //Verify all entries : On 21 Feb 2016
+        var data = $('#empleaverequeststableverified').datagrid('getData');
+        var rows = data.rows;
+        //alert(rows);
+        if (rows) {
+            var str_ids = "";
+            var id = 0;
+            for (var i = 0; i < rows.length; i++) {
+                var data = rows[i];
+                if (data.action == null) {
+                    if (str_ids == "") {
+                        str_ids += data.leave_encashment_master_pkey;
+                    } else {
+                        str_ids += "," + data.leave_encashment_master_pkey;
+                    }
+                } else {
+                    id = 1;
+                }
+            }
+        }
+        if (str_ids == '' && id == 1) {
+            alert("Please remove processed payroll entry.");
+            //alert("Please select atleast one record to verify");
+            // $.notify("Please select atleast one record to Encash", {
+            //    type: 'danger',
+            //    allow_dismiss: false
+            //});
+            return false;
+        } else if (str_ids == '' && id == 0) {
+            alert("Please remove processed payroll entry.");
+            return false;
+        } else {}
+        doRemovalProcedure(str_ids);
+
+    }
+
+    function doRemovalProcedure(str_ids) {
+        //if(str_ids == 0 ){
+        // alert('Attendance verification failed!');
+        if (confirm("Are you sure to remove the encashment?")) {
+            $.ajax({
+                url: livesite + "LeaveEncashmentRequest/cancelentries",
+                type: 'post',
+                data: {
+                    ids: str_ids
+                },
+                success: function(response) {
+                    //process server response here
+                    var success = $.parseJSON(response).success;
+                    if (success) {
+                        //alert('Attendance verified successfully');
+                        $.notify("Leave encashment removed successfully.", {
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+                        //$('#empleaverequeststable').datagrid('reload');
+                        showencash();
+
+                        //$('#empleaverequeststable').datagrid('load', {
+                        //branch: branch,
+                        //employee: employee,
+                        //month: month
+                        //});
+                        //$('#empleaverequeststableverified').datagrid('load', {
+
+                        //});
+                    } else {
+                        //alert('Attendance verification failed!');
+                        $.notify("Cancellation of Encashment failed!", {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    function verifyAllRegisterEntries() {
+
+        var month = $('#filterby_month').val();
+        //Verify all entries : On 21 Feb 2016
+        var data = $('#empleaverequeststable').datagrid('getData');
+        var rows = data.rows;
+        if (rows) {
+            var str_ids = "";
+            var id = 0;
+            for (var i = 0; i < rows.length; i++) {
+                var data = rows[i];
+                if (data.eligible > 0 && data.action == null) {
+                    if (str_ids == "") {
+                        str_ids += data.leave_encashment_master_pkey;
+                    } else {
+                        str_ids += "," + data.leave_encashment_master_pkey;
+                    }
+                } else {
+                    id = 1;
+                }
+            }
+        }
+        if (str_ids == '' && id == 1) {
+            alert("Please remove processed payroll entry.");
+            //alert("Please select atleast one record to verify");
+            // $.notify("Please select atleast one record to Encash", {
+            //    type: 'danger',
+            //    allow_dismiss: false
+            //});
+            return false;
+        } else if (str_ids == '' && id == 0) {
+            alert("Please remove processed payroll entry.");
+            return false;
+        } else {
+            alert("Please select atleast one record to encash.");
+        }
+        //if (str_ids == '') {
+        //alert("Please select atleast one record to verify");
+        // $.notify("Please select atleast one record to Encash", {
+        //    type: 'danger',
+        //    allow_dismiss: false
+        //});
+        //return false;
+        //}
+        doVerificationProcedure(str_ids, month);
+
+    }
+
+    function verifyRegisterEntries() {
+
+        var month = $('#filterby_month').val();
+        //Verify all entries : On 21 Feb 2016
+        var rows = $('#empleaverequeststable').datagrid('getSelections');
+        var data = $('#empleaverequeststable').datagrid('getData');
+        //var rows = data.rows;
+        if (rows.length > 0) {
+            var str_ids = "";
+            var id = 0;
+            for (var i = 0; i < rows.length; i++) {
+                var data = rows[i];
+                if (data.eligible > 0 && data.action == null) {
+                    if (str_ids == "") {
+                        str_ids += data.leave_encashment_master_pkey;
+                    } else {
+                        str_ids += "," + data.leave_encashment_master_pkey;
+                    }
+                } else {
+                    id = 1;
+                }
+            }
+            if (str_ids == '' && id == 1) {
+                alert("Please remove processed payroll entry.");
+                return false;
+            } else if (str_ids == '' && id == 0) {
+                alert("Please remove processed payroll entry.");
+                return false;
+            } else {
+                doVerificationProcedure(str_ids, month);
+            }
+        } else {
+            alert("Please select atleast one record to encash.");
+        }
+
+    }
+
+    function doVerificationProcedure(str_ids, month) {
+        var item = $('#filterby_item').val();
+        var month = $('#filterby_month').val();
+        var branch = $('#filterby_branch').val();
+        var emp = $('#emp_fkey').val();
+        if (confirm("Are you sure to process encashment?")) {
+            $.ajax({
+                url: livesite + "LeaveEncashmentRequest/verifyregisterentries",
+                type: 'post',
+                data: {
+                    ids: str_ids,
+                    month: month
+                },
+                success: function(response) {
+                    //process server response here
+                    var success = $.parseJSON(response).success;
+                    if (success) {
+                        //alert('Attendance verified successfully');
+                        $.notify("Leaves encashed successfully.", {
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+                        showencash();
+
+                        //  $('#empleaverequeststable').datagrid('load', {
+                        //      branch: branch,
+                        //     employee: employee,
+                        //      month: month,
+                        //     item:item
+                        //  });
+                        //  $('#empleaverequeststableverified').datagrid('load', {
+                        //     branch: branch,
+                        //      employee: employee,
+                        //      month: month,
+                        //      item:item
+                        //  });
+                    } else {
+                        //alert('Attendance verification failed!');
+                        $.notify("Leave Encashment failed!", {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                    }
+                }
+            });
+        }
+    }
+</script>

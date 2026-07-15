@@ -1,0 +1,642 @@
+<?php if ($mode == '') { ?>
+    <div class="modal-body" style="overflow-y:initial; padding-left:3%; padding-right:3%; padding-bottom:3%;" >
+        <h2 align="center" >ESI Report </h2>
+        <div class="row">
+            <div class="col-md-12">
+                <?php 
+                    if (count($arr_salary_for_template) == 0){
+                        echo "<h3>No Data Available With The Selected Criteria</h3>";
+                    } else{?>
+              <?php
+                    if (isset($needBranchWiseReport) && $needBranchWiseReport == 1) { //do branchwise listing 
+                    ?>
+                <?php
+                $i = 0; 
+                foreach ($arr_salary_for_template as $value) { 
+                    if (count($value) !== 0) { 
+                        $i += 1;
+                        ?>
+
+                      <!--   <fieldset> -->
+                            <?php  if ($cr == 'Units') { ?>
+                   <!--   <legend> <?php 
+                        echo isset($value['summary']['0']['employee_info']['branch']) ? "ESI Report of  " . $value['summary']['0']['employee_info']['branch'] : '';
+                        ?> 
+                        </legend>  -->
+                            <?php }else{ ?>
+                           <!--  <legend> <?php 
+                        echo isset($value['summary']['0']['employee_info']['EmpName']) ? "ESI Report of  " . $value['summary']['0']['employee_info']['EmpName'] : '';
+                        ?> 
+                        </legend> -->
+                            <?php } ?>
+                             <div class="box-body " style="overflow-y:auto; ">
+                                <fieldset>
+                                    <legend><?php echo $value['summary']['0']['employee_info']['branch']; ?></legend>
+                                </fieldset>
+                                <br>
+                                <fieldset>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr> <th colspan="15" style="text-align:center;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name'].' - ESI Report - '. $from;?></th> </tr>
+                                    <tr>
+                                        <tr> <th colspan="15" style="text-align:center;">Employer ESI No : <?php echo $eip;?></th> </tr>
+                                    <tr>
+                                       
+                                    <th colspan="8" style="text-align:center">Employee Details</th>
+                                    <th colspan="4" style="text-align:center">ESI Details</th>
+                                    <th colspan="1">ESI - Employee</th>
+                                    <th colspan="1">ESI - Employer</th>
+                                     <th colspan="1">Total</th>
+
+                                    </tr>
+                                    <tr>
+
+                                    <th>Sl No</th>
+                                    <th>Employee Name</th>
+                                    <th>Employee ID</th>
+                                    <th>ESI IP No:</th>
+                                    <th>Joining Date</th>
+                                    <th>Branch</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>Days Worked</th>
+                                    <th>Actual Gross </th>
+                                    <!--<th>EPF</th>-->
+                                    <th>ESI Salary</th>
+                                    <th>Excluded Salary</th>
+                                    <!--<th>1.75%</th>
+                                    <th>4.75%</th>-->  
+                                    <!-- edited by megha -->
+                                    <?php $chg_date = '2019-07-01'; 
+                                    if ($otdate < $chg_date) {  ?>
+                                    <th>1.75%</th>
+                                    <th>4.75%</th>
+                                    <?php } else { ?>
+                                    <th>0.75%</th>
+                                    <th>3.25%</th>
+                                     <th>4%</th>
+                                    <?php } ?>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                        <?php $arr_data = $value; ?>
+
+                                        <?php  $arr_daata = $value['summary'];
+                    $employees = $value;
+                    if(empty($arr_daata))                        continue;
+                 if (count($arr_data) >= 0) {
+                                            $i = 0;
+                                            $sum = 0;
+                                            $gross = 0;
+                                            $esi_sal = 0;
+                                            $split1 = 0;
+                                            $split2 = 0;
+                                            $split3 = 0;
+                                            $pf_salary=0;
+                                            $day=0;
+                                            $days=0;
+                                            ?>
+                                            <?php  $arr_e = $employees['summary'];
+                foreach ($arr_e as $employee =>$val)  { if($val['0']['Esi'] > 0){?>
+                                            <tr>
+                                                <?php $i = $i + 1; ?>
+                                                <td><?php echo $i;
+                                                ?></td>
+                                                <td><?php echo $val['employee_info']['EmpName']; ?></td>
+                                                <td><?php echo $val['employee_info']['employee_id']; ?></td>
+                                                <td><?php echo $val['emp_details']['esi']; ?></td> 
+                                                <td><?php echo $val['employee_info']['joining_date']; ?></td>
+                                                <td><?php echo $val['employee_info']['branch']; ?></td>
+                                                <td><?php echo $val['employee_info']['department']; ?></td>
+                                                <td><?php echo $val['employee_info']['designation']; ?></td>
+                                                <?php
+                                                    $esi1 =round($val['0']['Esi']);
+                                                    $esi = round($val['0']['EMPLOYER_ESI']);
+                                                    $total = round($esi1 + $esi);
+                                                    $sal = ($val['0']['SALARY'] != '0') ?round($val['0']['SALARY']):0;
+                                                    $gross += round($val['0']['SALARY']);
+                                                    $days= $val['0']['present'] + $val['0']['leaves'];
+                                                    $split1 += round($val['0']['Esi']);
+                                                    $split2+= round($val['0']['EMPLOYER_ESI']);
+                                                    $split3+= round($val['0']['EMPLOYER_ESI']) +round($val['0']['Esi']);
+                                                    $day+=$days;
+                                                    //edited by megha on 30_05_2024
+                                                    $esi_remarks = isset($val['0']['ESI_REMARKS']) ? $val['0']['ESI_REMARKS'] : 0;
+                                                     // replace non-numeric placeholders with 0
+                                    $esi_remarks = str_replace(['Performance Incentive', 'Incentives'], [0, 0], $esi_remarks);
+                                    $esi_remarks = preg_replace("/[^0-9\+\-\*\/\(\)\.]/", "", $esi_remarks);
+                                    $string = preg_replace('/\*.*$/', '', $esi_remarks);
+                                    eval('$excluded = ' . $string . ';');
+                                                    //$excluded = ($val['0']['Esi']+$val['0']['EMPLOYER_ESI'])/.04;
+                                                    if($excluded > $val['0']['SALARY']){
+                                                        $excluded = $val['0']['SALARY'];
+                                                    }
+                                                    $salary = round($val['0']['SALARY']-$excluded );
+                                                    $pf_salary+= round($salary);
+                                                    $esi_sal += round($excluded);
+                                                ?>
+                                                <td><?php echo $days; ?></td>
+                                                <td><?php echo $sal; ?></td>
+                                                <td><?php echo $excluded; ?></td>
+                                                <td><?php echo $salary;  ?></td>
+                                                <td><?php echo $esi1; ?></td>
+                                                <td><?php echo $esi; ?></td>
+                                                <td><?php echo $total; ?></td>
+                                            </tr>
+                <?php } }?>
+                                        <tr>
+                                            <th colspan="8" style="text-align:center">Grand Total</th>
+                                             <th><?php echo $day; ?></th>
+                                            <th><?php echo round($gross); ?></th>
+                                            <th><?php echo round($esi_sal); ?></th>
+                                            <th><?php  echo round($pf_salary);  ?></th>
+                                            <th><?php echo round($split1); ?></th>
+                                            <th><?php echo round($split2); ?></th>
+                                            <th><?php echo round($split3); ?></th>
+                                        </tr>
+                                        <?php } else { ?>
+                                        <tr>
+                                            <td>No data under this criteria</td>
+                                        </tr>  
+                                        <?php } ?>
+
+
+                                </tbody>
+                            </table>
+
+                        </fieldset>
+                        <br>
+                    </div>
+
+
+        <?php }
+    }
+
+}
+     else { ?>
+ <?php
+                $i = 0;
+               
+                    if (count($arr_salary_for_template) !== 0) {
+                        $i += 1;
+                        ?> 
+          <div class="box-body " style="overflow-y:auto; ">
+                               <!--  <fieldset>
+                                    <legend><?php echo $value['summary']['0']['employee_info']['EmpName']?></legend>
+                                </fieldset>
+                                <br> -->
+                                <fieldset>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr> <th colspan="15" style="text-align:center;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name'].' - ESI Report - '. $from;?></th> </tr>
+                                    <tr>
+                                        <tr> <th colspan="15" style="text-align:center;">Employer ESI No : <?php echo $eip;?></th> </tr>
+                                    <tr>
+                                       
+                                    <th colspan="8" style="text-align:center">Employee Details</th>
+                                    <th colspan="4" style="text-align:center">ESI Details</th>
+                                    <th colspan="1">ESI - Employee</th>
+                                    <th colspan="1">ESI - Employer</th>
+                                     <th colspan="1">Total</th>
+
+                                    </tr>
+                                    <tr>
+
+                                    <th>Sl No</th>
+                                    <th>Employee Name</th>
+                                    <th>Employee ID</th>
+                                    <th>ESI IP No:</th>
+                                    <th>Joining Date</th>
+                                    <th>Branch</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>Days Worked</th>
+                                    <th>Actual Gross </th>
+                                    <!--<th>EPF</th>-->
+                                    <th>ESI Salary</th>
+                                    <th>Excluded Salary</th>
+                                    <!--<th>1.75%</th>
+                                    <th>4.75%</th>-->  
+                                    <!-- edited by megha -->
+                                    <?php $chg_date = '2019-07-01'; 
+                                    if ($otdate < $chg_date) {  ?>
+                                    <th>1.75%</th>
+                                    <th>4.75%</th>
+                                    <?php } else { ?>
+                                    <th>0.75%</th>
+                                    <th>3.25%</th>
+                                     <th>4%</th>
+                                    <?php } ?>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                       <?php  
+                   
+                  //  if(empty($arr_daata))                        continue;
+                 
+                                            $i = 0;
+                                            $sum = 0;
+                                            $gross = 0;
+                                            $esi_sal = 0;
+                                            $split1 = 0;
+                                            $split2 = 0;
+                                            $split3 = 0;
+                                            $pf_salary=0;
+                                            $day=0;
+                                            $days=0;
+                                            ?>
+                                            <?php   foreach ($arr_salary_for_template as $value) {  $arr_e = $value['summary'];
+                foreach ($arr_e as $employee =>$val)  { 
+                    if($val['0']['Esi'] > 0){?>
+                                            <tr>
+                                                <?php $i = $i + 1; ?>
+                                                <td><?php echo $i;
+                                                ?></td>
+                                                <td><?php echo $val['employee_info']['EmpName']; ?></td>
+                                                <td><?php echo $val['employee_info']['employee_id']; ?></td>
+                                                <td><?php echo $val['emp_details']['esi']; ?></td> 
+                                                <td><?php echo $val['employee_info']['joining_date']; ?></td>
+                                                <td><?php echo $val['employee_info']['branch']; ?></td>
+                                                <td><?php echo $val['employee_info']['department']; ?></td>
+                                                <td><?php echo $val['employee_info']['designation']; ?></td>
+                                                <?php
+                                                    $esi1 =round($val['0']['Esi']);
+                                                    $esi = round($val['0']['EMPLOYER_ESI']);
+                                                    $total = round($esi1 + $esi);
+                                                    $sal = ($val['0']['SALARY'] != '0') ?round($val['0']['SALARY']):0;
+                                                    $gross += round($val['0']['SALARY']);
+                                                    $days= $val['0']['present'] + $val['0']['leaves'];
+                                                    $split1 += round($val['0']['Esi']);
+                                                    $split2+= round($val['0']['EMPLOYER_ESI']);
+                                                    $split3+= round($val['0']['EMPLOYER_ESI']) +round($val['0']['Esi']);
+                                                    $day+=$days;
+                                                    //edited by megha on 30_05_2024
+                                                    $esi_remarks = isset($val['0']['ESI_REMARKS']) ? $val['0']['ESI_REMARKS'] : 0;
+                                                      $esi_remarks = str_replace(['Performance Incentive', 'Incentives'], [0, 0], $esi_remarks);
+                                   
+                                    $esi_remarks = preg_replace("/[^0-9\+\-\*\/\(\)\.]/", "", $esi_remarks);
+                                    $string = preg_replace('/\*.*$/', '', $esi_remarks);
+                                    eval('$excluded = ' . $string . ';');
+                                                    //$excluded = ($val['0']['Esi']+$val['0']['EMPLOYER_ESI'])/.04;
+                                                    if($excluded > $val['0']['SALARY']){
+                                                        $excluded = $val['0']['SALARY'];
+                                                    }
+                                                    $salary = round($val['0']['SALARY']-$excluded );
+                                                    $pf_salary+= round($salary);
+                                                    $esi_sal += round($excluded);
+                                                ?>
+                                                <td><?php echo $days; ?></td>
+                                                <td><?php echo $sal; ?></td>
+                                                <td><?php echo $excluded; ?></td>
+                                                <td><?php echo $salary;  ?></td>
+                                                <td><?php echo $esi1; ?></td>
+                                                <td><?php echo $esi; ?></td>
+                                                <td><?php echo $total; ?></td>
+                                            </tr>
+                                            <?php } } }?>
+                                        <tr>
+                                            <th colspan="8" style="text-align:center">Grand Total</th>
+                                             <th><?php echo $day; ?></th>
+                                            <th><?php echo round($gross); ?></th>
+                                            <th><?php echo round($esi_sal); ?></th>
+                                            <th><?php  echo round($pf_salary);  ?></th>
+                                            <th><?php echo round($split1); ?></th>
+                                            <th><?php echo round($split2); ?></th>
+                                            <th><?php echo round($split3); ?></th>
+                                        </tr>
+                                        <?php } else { ?>
+                                        <tr>
+                                            <td>No data under this criteria</td>
+                                        </tr>  
+                                        <?php } ?>
+                                </tbody>
+                            </table>
+                        </fieldset>
+                        <br>
+                    </div>
+                    <?php } } ?>
+                 
+            </div>
+        </div>  
+    </div>
+  
+
+<?php } else { ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';  ?>
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+        .row {
+            height: 32px;
+        }
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+        table {
+            border: 2px solid #f4f4f4;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        td, th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            font-size: 10px;
+            border: 1px solid #B2B2B2;
+        }
+    </style>
+
+<?php
+            echo $this->element('reportadminheader', array(
+                'title' => 'ESI Report'));
+            ?>
+ 
+            
+
+ <?php    if (isset($needBranchWiseReport) && $needBranchWiseReport == 1) { //do branchwise listing 
+                    ?>
+                <?php
+                $i = 0; 
+                foreach ($arr_salary_for_template as $value) { 
+                    if (count($value) !== 0) {
+                        $i += 1;
+                        ?>
+
+                            <table class="table table-bordered" >
+                                <thead>
+                                    <tr> <th colspan="15" style="text-align:center;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name'].' - ESI Report - '. $from;?></th> </tr>
+                                    <tr> <th colspan="15" style="text-align:center;">Employer ESI No : <?php echo $eip;?></th> </tr>
+                                    <tr>
+                                       
+                                    <th colspan="8" style="text-align:center">Employee Details</th>
+                                    <th colspan="4" style="text-align:center">ESI Details</th>
+                                    <th colspan="1" style="width:25px;">ESI - Employee</th>
+                        <th colspan="1" style="width:25px;">ESI - Employer</th>
+                        <th colspan="1" style="width:20px;">Total</th>
+                                    </tr>
+                                    <tr>
+                        <th style="width:15px;">Sl No</th>
+                        <th style="width:60px;">Employee Name</th>
+                        <th style="width:30px;">Employee ID</th>
+                        <th style="width:30px;">ESI IP No:</th>
+                        <th style="width:30px;">Joining Date</th>
+                        <th style="width:60px;">Branch</th>
+                        <th style="width:60px;">Department</th>
+                        <th style="width:60px;">Designation</th>
+                        <th style="width:15px;">Days Worked</th>
+                        <th style="width:15px;">Actual Gross </th>
+                        <th style="width:15px;">ESI Salary</th>
+                        <th style="width:20px;">Excluded Salary</th>
+                        <!-- edited by megha -->
+                        <?php $chg_date = '2019-07-01';
+                        if ($otdate < $chg_date) {  ?>
+                            <th style="width:10px;">1.75%</th>
+                            <th style="width:10px;">4.75%</th>
+                                    <?php } else { ?>
+                                    <th>0.75%</th>
+                                    <th>3.25%</th>
+                                     <th>4%</th>
+                                    <?php } ?>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                        <?php $arr_data = $value; ?>
+
+                                        <?php  $arr_daata = $value['summary'];
+                    $employees = $value;
+                    if(empty($arr_daata))                        continue;
+                 if (count($arr_data) >= 0) {
+                                            $i = 0;
+                                            $sum = 0;
+                                            $gross = 0;
+                                            $esi_sal = 0;
+                                            $split1 = 0;
+                                            $split2 = 0;
+                                            $split3 = 0;
+                                            $pf_salary=0;
+                                            $day=0;
+                                            $days=0;
+                                            ?>
+                                            <?php  $arr_e = $employees['summary'];
+                foreach ($arr_e as $employee =>$val)  { if($val['0']['Esi'] > 0){?>
+                                            <tr>
+                                                <?php $i = $i + 1; ?>
+                                                <td><?php echo $i;
+                                                ?></td>
+                                                <td style="width:60px;"><?php echo $val['employee_info']['EmpName']; ?></td>
+                                                <td><?php echo $val['employee_info']['employee_id']; ?></td>
+                                                <td><?php echo $val['emp_details']['esi']; ?></td> 
+                                                <td><?php echo $val['employee_info']['joining_date']; ?></td>
+                                                <td style="width:60px;"><?php echo $val['employee_info']['branch']; ?></td>
+                                                <td style="width:60px;"><?php echo $val['employee_info']['department']; ?></td>
+                                                <td style="width:60px;"><?php echo $val['employee_info']['designation']; ?></td>
+                                                <?php
+                                                    $esi1 =round($val['0']['Esi']);
+                                                    $esi = round($val['0']['EMPLOYER_ESI']);
+                                                    $total = round($esi1 + $esi);
+                                                    $sal = ($val['0']['SALARY'] != '0') ?round($val['0']['SALARY']):0;
+                                                    $gross += round($val['0']['SALARY']);
+                                                    $days= $val['0']['present'] + $val['0']['leaves'];
+                                                    $split1 += round($val['0']['Esi']);
+                                                    $split2+= round($val['0']['EMPLOYER_ESI']);
+                                                    $split3+= round($val['0']['EMPLOYER_ESI']) +round($val['0']['Esi']);
+                                                    $day+=$days;
+                                                    //edited by megha on 30_05_2024
+                                                    $esi_remarks = isset($val['0']['ESI_REMARKS']) ? $val['0']['ESI_REMARKS'] : 0;
+                                                    $esi_remarks = str_replace(['Performance Incentive', 'Incentives'], [0, 0], $esi_remarks);
+                                                    $esi_remarks = preg_replace("/[^0-9\+\-\*\/\(\)\.]/", "", $esi_remarks);
+                                                    $string = preg_replace('/\*.*$/', '', $esi_remarks);
+                                                    eval('$excluded = ' . $string . ';');
+                                                    //$excluded = ($val['0']['Esi']+$val['0']['EMPLOYER_ESI'])/.04;
+                                                    if($excluded > $val['0']['SALARY']){
+                                                        $excluded = $val['0']['SALARY'];
+                                                    }
+                                                    $salary = round($val['0']['SALARY']-$excluded );
+                                                    $pf_salary+= round($salary);
+                                                    $esi_sal += round($excluded);
+                                                ?>
+                                                <td><?php echo $days; ?></td>
+                                                <td><?php echo $sal; ?></td>
+                                                <td><?php echo $excluded; ?></td>
+                                                <td><?php echo $salary;  ?></td>
+                                                <td><?php echo $esi1; ?></td>
+                                                <td><?php echo $esi; ?></td>
+                                                <td><?php echo $total; ?></td>
+                                            </tr>
+                <?php } }?>
+                                        <tr>
+                                            <th colspan="8" style="text-align:center">Grand Total</th>
+                                            <th><?php echo $day; ?></th>
+                                            <th><?php echo round($gross); ?></th>
+                                            <th><?php echo round($esi_sal); ?></th>
+                                            <th><?php  echo round($pf_salary);  ?></th>
+                                            <th><?php echo round($split1); ?></th>
+                                            <th><?php echo round($split2); ?></th>
+                                            <th><?php echo round($split3); ?></th>
+                                        </tr>
+                                        <?php } else { ?>
+                                        <tr>
+                                            <td>No data under this criteria</td>
+                                        </tr>  
+                                        <?php } ?>
+
+
+                                </tbody>
+                            </table>
+    <br><br>
+        <?php }
+    }
+
+}
+     else { ?>
+ <?php
+                $i = 0;
+               
+                    if (count($arr_salary_for_template) !== 0) {
+                        $i += 1;
+                        ?> 
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr> <th colspan="15" style="text-align:center;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name'].' - ESI Report - '. $from;?></th> </tr>
+                                    <tr>
+                                        <th colspan="15" style="text-align:center;">Employer ESI No : <?php echo $eip;?></th> </tr>
+                                    <tr>
+                                       
+                                    <th colspan="8" style="text-align:center">Employee Details</th>
+                                    <th colspan="4" style="text-align:center">ESI Details</th>
+                                    <th colspan="1" style="width:25px;">ESI - Employee</th>
+                        <th colspan="1" style="width:25px;">ESI - Employer</th>
+                        <th colspan="1" style="width:20px;">Total</th>
+                                    </tr>
+                                    <tr>
+                        <th style="width:15px;">Sl No</th>
+                        <th style="width:60px;">Employee Name</th>
+                        <th style="width:30px;">Employee ID</th>
+                        <th style="width:30px;">ESI IP No:</th>
+                        <th style="width:30px;">Joining Date</th>
+                        <th style="width:60px;">Branch</th>
+                        <th style="width:60px;">Department</th>
+                        <th style="width:60px;">Designation</th>
+                        <th style="width:15px;">Days Worked</th>
+                        <th style="width:15px;">Actual Gross </th>
+                        <th style="width:15px;">ESI Salary</th>
+                        <th style="width:20px;">Excluded Salary</th>
+                        <!-- edited by megha -->
+                        <?php $chg_date = '2019-07-01';
+                        if ($otdate < $chg_date) {  ?>
+                            <th style="width:10px;">1.75%</th>
+                            <th style="width:10px;">4.75%</th>
+                                    <?php } else { ?>
+                                    <th>0.75%</th>
+                                    <th>3.25%</th>
+                                     <th>4%</th>
+                                    <?php } ?>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                       <?php  
+                   
+                  //  if(empty($arr_daata))                        continue;
+                 
+                                            $i = 0;
+                                            $sum = 0;
+                                            $gross = 0;
+                                            $esi_sal = 0;
+                                            $split1 = 0;
+                                            $split2 = 0;
+                                            $split3 = 0;
+                                            $pf_salary=0;
+                                            $day=0;
+                                            $days=0;
+                                            ?>
+                                            <?php   foreach ($arr_salary_for_template as $value) {  $arr_e = $value['summary'];
+                foreach ($arr_e as $employee =>$val)  { 
+                    if($val['0']['Esi'] > 0){?>
+                                            <tr>
+                                                <?php $i = $i + 1; ?>
+                                                <td><?php echo $i;
+                                                ?></td>
+                                                <td style="width:60px;"><?php echo $val['employee_info']['EmpName']; ?></td>
+                                                <td><?php echo $val['employee_info']['employee_id']; ?></td>
+                                                <td><?php echo $val['emp_details']['esi']; ?></td> 
+                                                <td><?php echo $val['employee_info']['joining_date']; ?></td>
+                                                <td style="width:60px;"><?php echo $val['employee_info']['branch']; ?></td>
+                                                <td style="width:60px;"><?php echo $val['employee_info']['department']; ?></td>
+                                                <td style="width:60px;"><?php echo $val['employee_info']['designation']; ?></td>
+                                                <?php
+                                                    $esi1 =round($val['0']['Esi']);
+                                                    $esi = round($val['0']['EMPLOYER_ESI']);
+                                                    $total = round($esi1 + $esi);
+                                                    $sal = ($val['0']['SALARY'] != '0') ?round($val['0']['SALARY']):0;
+                                                    $gross += round($val['0']['SALARY']);
+                                                    $days= $val['0']['present'] + $val['0']['leaves'];
+                                                    $split1 += round($val['0']['Esi']);
+                                                    $split2+= round($val['0']['EMPLOYER_ESI']);
+                                                    $split3+= round($val['0']['EMPLOYER_ESI']) +round($val['0']['Esi']);
+                                                    $day+=$days;
+                                                    //edited by megha on 30_05_2024
+                                                    $esi_remarks = isset($val['0']['ESI_REMARKS']) ? $val['0']['ESI_REMARKS'] : 0;
+                                                    $esi_remarks = str_replace(['Performance Incentive', 'Incentives'], [0, 0], $esi_remarks);
+                                                    $esi_remarks = preg_replace("/[^0-9\+\-\*\/\(\)\.]/", "", $esi_remarks);
+                                                    $string = preg_replace('/\*.*$/', '', $esi_remarks);
+                                                    eval('$excluded = ' . $string . ';');
+                                                    //$excluded = ($val['0']['Esi']+$val['0']['EMPLOYER_ESI'])/.04;
+                                                    if($excluded > $val['0']['SALARY']){
+                                                        $excluded = $val['0']['SALARY'];
+                                                    }
+                                                    $salary = round($val['0']['SALARY']-$excluded );
+                                                    $pf_salary+= round($salary);
+                                                    $esi_sal += round($excluded);
+                                                ?>
+                                                <td><?php echo $days; ?></td>
+                                                <td><?php echo $sal; ?></td>
+                                                <td><?php echo $excluded; ?></td>
+                                                <td><?php echo $salary;  ?></td>
+                                                <td><?php echo $esi1; ?></td>
+                                                <td><?php echo $esi; ?></td>
+                                                <td><?php echo $total; ?></td>
+                                            </tr>
+                                            <?php } } }?>
+                                        <tr>
+                                            <th colspan="8" style="text-align:center">Grand Total</th>
+                                             <th><?php echo $day; ?></th>
+                                            <th><?php echo round($gross); ?></th>
+                                            <th><?php echo round($esi_sal); ?></th>
+                                            <th><?php  echo round($pf_salary);  ?></th>
+                                            <th><?php echo round($split1); ?></th>
+                                            <th><?php echo round($split2); ?></th>
+                                            <th><?php echo round($split3); ?></th>
+                                        </tr>
+                                        <?php } else { ?>
+                                        <tr>
+                                            <td>No data under this criteria</td>
+                                        </tr>  
+                                        <?php } ?>
+                                </tbody>
+                            </table>
+<?php }  ?>
+
+<?php } ?>

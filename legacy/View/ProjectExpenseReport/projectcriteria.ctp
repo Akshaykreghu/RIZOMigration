@@ -1,0 +1,49 @@
+
+<div class="col-md-12" >
+         <div class="col-md-12" style="padding-left: 4px; padding-right: 4px; ">
+                     <div class="col-md-5" style="padding-left: 4px; padding-right: 4px; ">
+<!--                            <input type="text" id="reporstfrom" name="reportfrom" class="form-control pickerDate" value="<?php //if($arr_dates['0']['site']['expected_starting_date'] =='0000-00-00'){echo date("Y-m-d");}else{ echo $arr_dates['0']['site']['expected_starting_date'];} ?>" />-->
+                          <b>From : </b>    <input type="text" id="reporstfrom" name="reportfrom" class="form-control pickerDate" value="<?php echo date("Y-m-d");?>" />
+                        </div>
+                        <div class="col-md-5" style="padding-left: 4px; padding-right: 4px; ">
+<!--                            <input type="text" id="reporstto" name="reportto" class="form-control pickerDate" value="<?php //if($arr_dates['0']['site']['actual_completion_date'] ==''){ echo $arr_dates['0']['site']['expected_starting_date'];}else{echo $arr_dates['0']['site']['actual_completion_date'];} ?>" />-->
+                         <b>To : </b>    <input type="text" id="reporstto" name="reportto" class="form-control pickerDate" value="<?php echo date("Y-m-d"); ?>" />
+                        </div>
+          </div> 
+</div>
+<script>
+  var start = $("#start").val();  
+ $('#reporstfrom').datepicker({
+     
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                startDate: '<?php if($arr_dates['0']['site']['expected_starting_date'] =='0000-00-00'){echo date("Y-m-d");}else{ echo $arr_dates['0']['site']['expected_starting_date'];} ?>'
+            }).on('changeDate', function (e) {
+                var selected = $("#reporstfrom").val();
+                var sdt = new Date(selected);
+                var selectenddate = $("#reporstto").val();
+                var edt = new Date(selectenddate);
+                if (edt < sdt)
+                {
+                    alert("From date should be less than or equal to To date");
+                    $("#reporstfrom").val('');
+                }
+            });
+             $('#reporstto').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                startDate: '<?php echo $arr_dates['0']['site']['expected_starting_date']; ?>',
+                endDate:'<?php if($arr_dates['0']['site']['actual_completion_date'] =='0000-00-00'){ echo $arr_dates['0']['site']['expected_starting_date'];}else{echo $arr_dates['0']['site']['actual_completion_date'];}?>'
+            }).on('changeDate', function (e) {
+                var selected = $("#reporstto").val();
+                var edt = new Date(selected);
+                var selectsdate = $("#reporstfrom").val();
+                var sdt = new Date(selectsdate);
+                if (edt < sdt)
+                {
+                    alert("To date should be greater than or equal to From date");
+                    $("#reporstto").val('');
+                    return false;
+                }
+            });
+    </script>

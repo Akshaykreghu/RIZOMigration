@@ -1,0 +1,181 @@
+<style>
+
+    .form-horizontal .control-label{
+        text-align: left;
+
+
+    }
+
+</style>
+<!-- Structure re-edited by *** ARUL P DAS *** on 7/12/2020 -->
+ <div class="modal-content">
+<form class="form-horizontal" id="editpunchform" method="post" action="<?php echo $this->webroot; ?>EditAttendance/savenew" >
+   
+
+
+        <!-- Text input-->
+        <?php if ($diff_half_count == 2) { ?>
+            <div class="modal-header" style="background: #00659f;color: white">
+                <h4 class="modal-title">Alert</h4>  
+            </div>
+            <div class="modal-body">
+                <h4 style="text-align: center;">Already leave on 2 half</h4>
+            </div>
+
+
+        <?php } elseif ($count > 0) { ?>
+
+            <!-- <?php ?> -->
+
+            <div class="modal-header" style="background: #00659f;color: white">
+                <h4 class="modal-title">Alert</h4>  
+            </div>
+            <div class="modal-body">
+                <h4 style="text-align: center;"><?php echo $leave ?></h4>
+            </div>
+
+        <?php } else { ?>
+
+            <div class="modal-header" style="background: #00659f;color: white">
+                <h4 class="modal-title">Attendance</h4>  
+            </div>
+            <div class="modal-body">
+                <?php if ($sessions == 1 || 2) { ?>
+                    <?php
+                    foreach ($h_leave as $key => $value) {
+                        $l = $value;
+                        ?>
+
+                        <div class="form-group col-md-12">
+                            <label class=" control-label">
+                                <?php echo $l; ?>
+                            </label>
+                        </div>
+
+                        <?php
+                    }
+                }
+                ?>
+
+                <input type="hidden" name="empid" id="empid" value="<?php echo $empid; ?>"  />
+                <input type="hidden" name="site_t_fkey" id="site_t_fkey" value="<?php echo $site_t_fkey; ?>"  />
+                
+                    <div class="form-group col-md-12">
+                        <label class="col-md-4 control-label" for="LOGDATE">Date <span class="star">*</span></label>  
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <input id="LOGDATE" name="LOGDATE" placeholder="YYYY-MM-DD"  value="" type="text" class="form-control input-md" required="">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <label class="col-md-4 control-label" for="LOGTIME">Time <span class="star">*</span></label>  
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <input id="LOGTIME" name="LOGTIME" placeholder="HH:MM:SS" value="" type="text" class="form-control input-md" required="" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Text input-->
+                    <div class="form-group col-md-12">
+                        <label class="col-md-4 control-label" for="C1">Direction <span class="star">*</span></label>  
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <select name="C1" class="form-control">
+                                <option value="in">In</option>
+                                <option value="out">Out</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Text input-->
+                    <div class="form-group col-md-12">
+                        <label class="col-md-4 control-label" for="C3">Remarks <span class="star">*</span></label>  
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <input name="C3"  value="" type="text" placeholder="Remarks" class="form-control input-md" required="">
+                            <span> You must enter a valid remarks. </span>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+  
+        <div style="text-align: right;padding:15px;">
+            <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="clearForm();">Close</button>
+            <?php if ($count > 0 || $diff_half_count == 2) { ?>
+                <button type="submit" class="hidden">Save</button>
+            <?php } else { ?>
+                <button type="submit" class="btn btn-primary">Save</button>
+            <?php } ?>
+        </div>
+    
+</form>
+   </div> <!-- Closing of Modal Content -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#LOGDATE').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
+        $("#LOGDATE").inputmask("yyyy-mm-dd");
+
+        var att_date = '<?php echo $att_date; ?>';
+        var arrSelectedDate = att_date.split('-');
+        if (arrSelectedDate.length == 3) {
+            var selectedDate = new Date(arrSelectedDate[0], arrSelectedDate[1] - 1, arrSelectedDate[2]);
+        } else {
+            var selectedDate = new Date();
+        }
+        $("#LOGDATE").datepicker("setDate", selectedDate);
+
+        $('#LOGTIME').timepicker({
+            format: 'hh:mm:ss',
+            showMeridian: false,
+            showSeconds:true,
+            autoclose: true
+        });
+
+        $('#editpunchform').parsley();
+        var options = {
+            success: function (responseText, statusText, xhr, $form) {
+                var response = JSON.parse(responseText);
+//                alert(response.success);
+//                console.log(response);
+// Add condition for checking leave exists and restrict adding punch in upcoming days -- Added By Nimisha 20/03/2019
+
+                if (response.success == false) {
+                    alert(response.msg);
+                    clearForm();
+                    closeSmallModalForm();
+                    refreshgrid();
+                    //		$.notify("Attandence With Same Data Already Exists..",{
+//                    type: 'danger',
+//                    allow_dismiss: false
+//                });																	   
+                }
+                else {
+                    clearForm();
+                    closeSmallModalForm();
+                    refreshgrid();
+                    $.notify("New Attandence Saved Successfully", {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                }
+
+                //$('#modalForm').modal('hide');
+
+            }
+        };
+
+        // bind to the form's submit event 
+        $('#editpunchform').submit(function () {
+            $(this).ajaxSubmit(options);
+            return false;
+        });
+    });
+    function clearForm() {
+        $('#empid').val("")
+        $('#editpunchform').form('clear');
+    }
+</script>

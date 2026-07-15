@@ -1,0 +1,824 @@
+<style>
+    #alertsModalForm {
+        z-index: 999999 !important;
+    }
+</style>
+<div style="background-color: #00649d; color: white; padding: 10px; width:100%;">
+    <h3 style="margin: 0px;text-align:center;">&nbsp;Update Attendance</h3>
+</div>
+
+<div class="optionselects" style="width:50%;">
+    <div class="optionselectsinner" style="width: 300px;margin: 0px;">
+        <div style="display:flex; flex-direction:row; justify-content:space-around;">
+            <div class="dropdown1"
+                style="display: flex; color: #000; border: none; font-weight: bold; flex-direction: column;margin-top:10px;">
+                <span style="border: none;">First Half</span>
+                <span style="border: none;">&nbsp;</span>
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default"
+                    type="first" value="P" style="margin-bottom:5px;">P</button>
+
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default"
+                    type="first" value="LOP" style="margin-bottom:5px;">LOP</button>
+
+                <!-- <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default" type="first" value="WO" style="margin-bottom:5px;">WO</button> -->
+
+                <?php foreach ($arr_leave as $leave): ?>
+                    <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)"
+                        data-leavekey="<?php echo $leave['salary_head_item_pkey']; ?>"
+                        data-leavebal="<?php echo $leave['leaveBalance']; ?>"
+                        data-isindirect="<?php echo $leave['isIndirect'] ? 'true' : 'false'; ?>"
+                        data-itempart="<?php echo isset($leave['itemPart']) ? $leave['itemPart'] : ''; ?>"
+                        data-exception="<?php echo isset($leave['exception']) ? $leave['exception'] : 'N'; ?>"
+                        data-minservice="<?php echo isset($leave['isMinimumService']) && $leave['isMinimumService'] ? 'true' : 'false'; ?>"
+                        data-joiningdate="<?php echo isset($leave['joiningDate']) ? $leave['joiningDate'] : ''; ?>"
+                        data-minmonths="<?php echo isset($leave['minServiceMonths']) ? $leave['minServiceMonths'] : 0; ?>"
+                        class="btn btn-default" type="first" value="<?php echo $leave['Head']; ?>"
+                        style="margin-bottom:5px;">
+                        <?php echo $leave['Head'] . ($leave['isIndirect'] ? "" : " (" . $leave['leaveBalance'] . ")"); ?>
+                    </button>
+
+                <?php endforeach; ?>
+            </div>
+            <div class="dropdown1"
+                style="display: flex; color: #000; border: none; font-weight: bold; flex-direction: column; margin-top:10px;">
+                <span style="border: none;">Second Half</span>
+                <span style="border: none;">&nbsp;</span>
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default"
+                    type="second" value="P" style="margin-bottom:5px;">P</button>
+
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default"
+                    type="second" value="LOP" style="margin-bottom:5px;">LOP</button>
+
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default"
+                    type="second" value="WO" style="margin-bottom:5px;">WO</button>
+
+                <?php foreach ($arr_leave as $leave): ?>
+                    <button data-emp="<?php echo $emp_pkey; ?>"
+                        data-leavekey="<?php echo $leave['salary_head_item_pkey']; ?>"
+                        data-leavebal="<?php echo $leave['leaveBalance']; ?>"
+                        data-isindirect="<?php echo $leave['isIndirect'] ? 'true' : 'false'; ?>"
+                        data-itempart="<?php echo isset($leave['itemPart']) ? $leave['itemPart'] : ''; ?>"
+                        data-exception="<?php echo isset($leave['exception']) ? $leave['exception'] : 'N'; ?>"
+                        data-minservice="<?php echo isset($leave['isMinimumService']) && $leave['isMinimumService'] ? 'true' : 'false'; ?>"
+                        data-joiningdate="<?php echo isset($leave['joiningDate']) ? $leave['joiningDate'] : ''; ?>"
+                        data-minmonths="<?php echo isset($leave['minServiceMonths']) ? $leave['minServiceMonths'] : 0; ?>"
+                        onclick="updateStatuses(this)" class="btn btn-default" type="second"
+                        value="<?php echo $leave['Head']; ?>" style="margin-bottom:5px;">
+                        <?php echo $leave['Head'] . ($leave['isIndirect'] ? "" : " (" . $leave['leaveBalance'] . ")"); ?>
+                    </button>
+
+                <?php endforeach; ?>
+            </div>
+
+            <input type="hidden" id="att_date_formatted" value="<?php echo $att_date_formatted; ?>">
+            <input type="hidden" id="dayIndex" value="<?php echo $dayIndex; ?>">
+            <input type="hidden" id="emp_pkey" value="<?php echo $emp_pkey; ?>">
+            <input type="hidden" id="month" value="<?php echo $month; ?>">
+
+            <div class="dropdown1"
+                style="display: flex; color: #000; border: none; font-weight: bold; flex-direction: column;margin-top:10px;">
+                <span style="border: none;">Full Day</span>
+                <span style="border: none;">&nbsp;</span>
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default"
+                    type="full" value="P" style="margin-bottom:5px;">P</button>
+
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default"
+                    type="full" value="HO" style="margin-bottom:5px;">HO</button>
+
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default"
+                    type="full" value="WO" style="margin-bottom:5px;">WO</button>
+
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default"
+                    type="full" value="LOP" style="margin-bottom:5px;">LOP</button>
+
+                <?php foreach ($arr_leave as $leave): ?>
+                    <button data-emp="<?php echo $emp_pkey; ?>"
+                        data-leavekey="<?php echo $leave['salary_head_item_pkey']; ?>"
+                        data-leavebal="<?php echo $leave['leaveBalance']; ?>"
+                        data-isindirect="<?php echo $leave['isIndirect'] ? 'true' : 'false'; ?>"
+                        data-itempart="<?php echo isset($leave['itemPart']) ? $leave['itemPart'] : ''; ?>"
+                        data-exception="<?php echo isset($leave['exception']) ? $leave['exception'] : 'N'; ?>"
+                        data-minservice="<?php echo isset($leave['isMinimumService']) && $leave['isMinimumService'] ? 'true' : 'false'; ?>"
+                        data-joiningdate="<?php echo isset($leave['joiningDate']) ? $leave['joiningDate'] : ''; ?>"
+                        data-minmonths="<?php echo isset($leave['minServiceMonths']) ? $leave['minServiceMonths'] : 0; ?>"
+                        onclick="updateStatuses(this)" class="btn btn-default" type="full"
+                        value="<?php echo $leave['Head']; ?>" style="margin-bottom:5px;">
+                        <?php echo $leave['Head'] . ($leave['isIndirect'] ? "" : " (" . $leave['leaveBalance'] . ")"); ?>
+                    </button>
+
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <button type="button" id="closeModalBtn" class="btn btn-danger" style="margin: 15px;"
+                data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $("#smallModalForm-content").css({
+        width: "50%",
+        marginLeft: "15%"
+    });
+
+    // Frontend-only persistent leave balance cache across modal opens
+    // Structure: window._leaveCache[emp_pkey][code] = number
+    window._leaveCache = window._leaveCache || {};
+
+    function formatBalanceLabel(val) {
+        var n = parseFloat(val);
+        if (isNaN(n)) return '0';
+        // if integer
+        if (Math.abs(n - Math.round(n)) < 1e-9) return String(Math.round(n));
+        // if .5 step, show single decimal
+        if (Math.abs(n * 2 - Math.round(n * 2)) < 1e-9) return (Math.round(n * 2) / 2).toString();
+        // otherwise, trim trailing zeros up to 2 decimals
+        return parseFloat(n.toFixed(2)).toString();
+    }
+
+    function initLeaveCacheForEmployee(empKey) {
+        if (!window._leaveCache[empKey]) window._leaveCache[empKey] = {};
+        // For each leave button, ensure cache has a value; if exists, rewrite label to cached value
+        $("button[data-leavekey]").each(function () {
+            var code = (($(this).attr('value') || '') + "").trim().toUpperCase();
+            if (!code) return;
+            var cached = window._leaveCache[empKey][code];
+            var isInd = ($(this).data("isindirect") === true || $(this).attr("data-isindirect") === "true");
+
+            if (isInd) {
+                // For indirect leaves, ensure balance is never added and cache is skipped or set to 0
+                // ONLY set to 0 if not already seeded by a policy leave
+                if (typeof window._leaveCache[empKey][code] === 'undefined') {
+                    window._leaveCache[empKey][code] = 0;
+                }
+                $(this).data('leavebal', 0);
+            } else if (typeof cached === 'number' && !isNaN(cached)) {
+                // rewrite label with cached
+                var base = ($(this).text() || '').split('(')[0].trim();
+                $(this).text(base + ' (' + formatBalanceLabel(cached) + ')');
+                $(this).data('leavebal', cached);
+            } else {
+                // edited by athira on 17-03-2026
+                // seed cache from current button if not present or if current button has value
+                var dat = $(this).data('leavebal');
+                var val = (typeof dat === 'undefined') ? parseFloat(((($(this).text() || '').match(/\(([-0-9.]+)\)/) || [])[1] || 0)) : parseFloat(dat) || 0;
+
+                if (typeof window._leaveCache[empKey][code] === 'undefined' || val > 0) {
+                    window._leaveCache[empKey][code] = val;
+                }
+                // ended by athira 17-03-2026
+            }
+        });
+    }
+
+    function syncButtonsFromCache(empKey) {
+        if (!window._leaveCache[empKey]) return;
+        $.each(window._leaveCache[empKey], function (code, val) {
+            if (typeof val !== 'number' || isNaN(val)) return true; // continue
+
+            // USE CASE-INSENSITIVE FILTER
+            $("button[data-leavekey]").filter(function () {
+                return (($(this).attr('value') || '').trim().toUpperCase() === code.toUpperCase());
+            }).each(function () {
+                $(this).data('leavebal', val);
+                var isInd = ($(this).data("isindirect") === true || $(this).attr("data-isindirect") === "true");
+                if (!isInd) {
+                    var base = ($(this).text() || '').split('(')[0].trim();
+                    $(this).text(base + ' (' + formatBalanceLabel(val) + ')');
+                }
+            });
+        });
+    }
+
+    function updateStatuses(_this) {
+
+
+        // // edited by athira on 10-04-2026
+        // var minservice = $(_this).data('minservice');
+        // var exception = $(_this).data('exception');
+        // console.log("Button clicked:", $(_this).attr('value'));
+        // console.log("Read minservice:", minservice, " (Type:", typeof minservice, ")");
+        // console.log("Read exception:", exception, " (Type:", typeof exception, ")");
+        // console.log("Joined:", $(_this).data('joiningdate'));
+        // console.log("Min Months policy says:", $(_this).data('minmonths'));
+
+        // if (minservice === true || minservice === 'true') {
+        //     alert("Employee is in minimum service period");
+        //     closeSmallModalForm();
+        //     return false;
+        // } else {
+        //     if (exception === 'Y') {
+        //         alert("Exceptions like minimum leave limit, maximum leave limit and advance notice period are not considere here.");
+        //     }
+        // }
+        // // ended by athira on 10-04-2026
+
+        // edited by athira on 10-04-2026
+
+        // var minservice = $(_this).data('minservice');
+        // var exception = $(_this).data('exception');
+
+
+
+        // console.log("Button clicked:", $(_this).attr('value'));
+        // console.log("Read minservice:", minservice, " (Type:", typeof minservice, ")");
+        // console.log("Read exception:", exception, " (Type:", typeof exception, ")");
+        // console.log("Joined:", $(_this).data('joiningdate'));
+        // console.log("Min Months policy says:", $(_this).data('minmonths'));
+
+        // // Step 1: Check exception first
+        // if (exception == 'Y') {
+
+        //     // Step 2: Only if exception is Y → check minservice
+        //     if ( minservice === true) {
+        //         alert("Employee is in minimum service period");
+        //         closeSmallModalForm();
+        //         return false;
+        //     }
+
+
+        // }
+        // else{
+        //     alert("Exceptions like minimum leave limit, maximum leave limit and advance notice period are not considered here.");
+        // }
+
+
+
+        // ended by athira on 10-04-2026
+
+        var newstatuses = $(_this).attr("value");
+        // console.log('newstatuses', newstatuses);
+        var statusType = $(_this).attr("type");
+        var att_date_formatted = $('#att_date_formatted').val();
+        var dayIndex = $('#dayIndex').val();
+        var month = $('#month').val();
+        var emp_pkey = $('#emp_pkey').val();
+        var isPolicyLeave = $(_this).data('leavekey') ? true : false;
+        var cellId = emp_pkey + "_column_" + dayIndex;
+        var currentStatuses = $("#" + cellId).text().trim();
+        // Capture granular policy flags from the cell (e.g. "true,false")
+        var wasPolStr = $("#" + cellId).attr("data-ispolicy") || ($("#" + cellId).data("ispolicy") + "") || "false,false";
+        var wasPolArr = wasPolStr.split(",");
+        var wasPolFH = wasPolArr[0] === 'true';
+        var wasPolSH = (wasPolArr[1] || wasPolArr[0]) === 'true';
+        console.log('statusType', statusType);
+        
+
+        // isPolicyLeave is already declared at the top of the function
+        //edited by athira on 24-05-2026
+         if (!['P', 'P/P', 'P/A', 'A/P', 'A', 'NA', 'WO', 'HO', '/WO', 'LOP'].includes(newstatuses) || 
+    (newstatuses === 'LOP' && isPolicyLeave)) {
+    
+    initLeaveCacheForEmployee(emp_pkey);
+    var codeKey = (newstatuses || '').toUpperCase();
+    var $sameCode = $("button[value='" + codeKey + "'][data-leavekey]");
+    var isIndirect = $sameCode.first().data("isindirect") === true || 
+                     $sameCode.first().attr("data-isindirect") === "true";
+
+    if (!isIndirect) {
+        var leaveBal = 0;
+        if (window._leaveCache[emp_pkey] && 
+            typeof window._leaveCache[emp_pkey][codeKey] === 'number') {
+            leaveBal = window._leaveCache[emp_pkey][codeKey];
+        } else if ($sameCode.length) {
+            var dat = $sameCode.first().data("leavebal");
+            leaveBal = (typeof dat === 'undefined') 
+                ? parseFloat((($sameCode.first().text() || '')
+                    .match(/\(([-0-9.]+)\)\s*$/) || [])[1] || 0) 
+                : parseFloat(dat) || 0;
+            window._leaveCache[emp_pkey][codeKey] = leaveBal;
+        }
+
+        var need = (statusType === 'full') ? 1 : 0.5;
+        
+        // ✅ For policy LOP specifically, enforce balance check
+        if (codeKey === 'LOP' && isPolicyLeave) {
+            if (leaveBal < need) {
+                alert("No leave balance available");
+                return false;
+            }
+        }
+        
+        // For all other policy leaves
+        if (codeKey !== 'LOP' && leaveBal < need) {
+            alert("No leave balance available");
+            return false;
+        }
+    }
+}
+        // if (!['P', 'P/P', 'P/A', 'A/P', 'A', 'NA', 'WO', 'HO', '/WO', 'LOP'].includes(newstatuses) || (newstatuses === 'LOP' && isPolicyLeave)) {
+        //     // Validate against cached balance if present; otherwise seed from UI
+        //     initLeaveCacheForEmployee(emp_pkey);
+        //     var codeKey = (newstatuses || '').toUpperCase();
+        //     var $sameCode = $("button[value='" + codeKey + "'][data-leavekey]");
+
+        //     // Check if this is an indirect leave
+        //     var isIndirect = $sameCode.first().data("isindirect") === true || $sameCode.first().attr("data-isindirect") === "true";
+
+        //     if (!isIndirect) {
+        //         var leaveBal = 0;
+        //         if (window._leaveCache[emp_pkey] && typeof window._leaveCache[emp_pkey][codeKey] === 'number') {
+        //             leaveBal = window._leaveCache[emp_pkey][codeKey];
+        //         } else if ($sameCode.length) {
+        //             var dat = $sameCode.first().data("leavebal");
+        //             leaveBal = (typeof dat === 'undefined') ? parseFloat((($sameCode.first().text() || '').match(/\(([-0-9.]+)\)\s*$/) || [])[1] || 0) : parseFloat(dat) || 0;
+        //             window._leaveCache[emp_pkey][codeKey] = leaveBal;
+        //         }
+
+        //         var need = (statusType === 'full') ? 1 : 0.5;
+        //         if (leaveBal < need && codeKey !== 'LOP') {
+        //             alert("No leave balance available");
+        //             return false;
+        //         }
+        //     }
+        // }
+
+//ended by athira on 24-05-2026
+        // ✅ Always start with clean values
+        var cellId = emp_pkey + "_column_" + dayIndex;
+        // currentStatuses already fetched above
+        // var isPolicyLeave check moved to top
+
+        // Split current status into halves if any
+        let firstHalf = '';
+        let secondHalf = '';
+
+        if (currentStatuses && currentStatuses.includes('/')) {
+            [firstHalf, secondHalf] = currentStatuses.split('/');
+            firstHalf = firstHalf.trim();
+            secondHalf = secondHalf.trim();
+        } else if (currentStatuses) {
+            // If single status, treat it as full-day (same halves)
+            firstHalf = currentStatuses.trim();
+            secondHalf = currentStatuses.trim();
+        } else {
+            // Empty cell - initialize both halves as blank (we’ll fill as needed)
+            firstHalf = '';
+            secondHalf = '';
+        }
+
+        // ✅ Apply updates based on statusType
+        if (statusType === 'first') {
+            firstHalf = newstatuses;
+        } else if (statusType === 'second') {
+            secondHalf = newstatuses;
+        } else if (statusType === 'full') {
+            firstHalf = newstatuses;
+            secondHalf = newstatuses;
+        }
+
+        // ✅ Preserve existing halves intelligently
+        if (!firstHalf && secondHalf) firstHalf = 'A';
+        if (!secondHalf && firstHalf) secondHalf = 'A';
+
+        // ✅ Always format as "X/Y"
+        let newStatus = firstHalf + '/' + secondHalf;
+
+        if (statusType === 'full') {
+            firstHalf = newstatuses;
+            secondHalf = newstatuses;
+
+            if (firstHalf == 'HO' && secondHalf == 'HO') {
+                newstatuses = newstatuses;
+            }
+
+            else if (firstHalf == 'WO' && secondHalf == 'WO') {
+                newstatuses = newstatuses;
+            }
+
+            // Force sending CL/CL instead of CL
+            else {
+                newStatus = newstatuses + "/" + newstatuses;
+            }
+
+        }
+
+        console.log("Final computed status:", newStatus);
+
+
+        $.ajax({
+            type: "POST",
+            url: livesite + "AttendanceRegisterNew/chnagestatus",
+            data: {
+                device_attandance_seq: $(_this).data('emp'),
+                status: newStatus,
+                statusType: statusType,
+                newstatuses: newstatuses,
+                currentStatuses: currentStatuses,
+                att_date: att_date_formatted,
+                dayIndex: dayIndex,
+                month: month,
+                emp_pkey: emp_pkey,
+                isPolicyLeave: isPolicyLeave
+            },
+            dataType: 'json',
+
+            success: function (resp) {
+
+                if (resp.success !== true) {
+                    // edited by athira on 26-02-2026
+                    alert(resp.message ? resp.message : "Error occured while updating");
+                    // ended by athira on 26-02-2026
+                    // $.messager.alert('Failed', "Error occured while updating", 'info');
+                    return;
+                }
+                // if (resp.success !== true) {
+                //     $.messager.alert('Failed', "Error occured while updating", 'info');
+                //     return;
+                // }
+
+                var empKey = $('#emp_pkey').val();
+                var dayIndex = $('#dayIndex').val(); // day number
+                let cellId = empKey + "_column_" + dayIndex;
+
+                // oldStatus captured from before AJAX call (keeps pre-update value)
+                let oldStatus = currentStatuses ? currentStatuses.toString().trim() : "";
+                // new status from server
+                let newStatusFormatted = (resp.status || "").toString().trim();
+
+                // Use the values that were captured BEFORE the update and FROM the response
+                var isNowPolicyLeave = !!resp.isPolicyLeave;
+
+                console.log("AJAX success. emp:", empKey, "day:", dayIndex);
+                console.log("OLD (pre):", oldStatus, " (PolicyFH:", wasPolFH, ", PolicySH:", wasPolSH, ") NEW (server):", newStatusFormatted, " (PolicyNew:", isNowPolicyLeave, ")");
+
+                // Surgical shortcut check: only skip if the specific target is identical in text AND policy state
+                var textSame = (oldStatus === newStatusFormatted);
+                var policySame = false;
+                if (statusType === 'full') {
+                    policySame = (wasPolFH === isNowPolicyLeave && wasPolSH === isNowPolicyLeave);
+                } else if (statusType === 'first') {
+                    policySame = (wasPolFH === isNowPolicyLeave);
+                } else if (statusType === 'second') {
+                    policySame = (wasPolSH === isNowPolicyLeave);
+                }
+
+                if (textSame && policySame) {
+                    console.log("No change in text or policy status for target portion → Skipping adjustment");
+                    // still update cell and UI to be safe
+                    $("#" + cellId).text(resp.status);
+                    $("#" + cellId).val(resp.status);
+                    applyCellColor(empKey, dayIndex, resp.status, resp.isPolicyLeave);
+                    updateLopCount($("#" + cellId).closest("tr"));
+                    closeSmallModalForm();
+                    return;
+                }
+
+                // ====== Balance Adjust (restore old -> apply new) ======
+                initLeaveCacheForEmployee(empKey);
+
+                // helper: find actual cache key case-insensitively, with DOM fallback
+                function findKey(code) {
+                    if (!code) return null;
+                    const want = code.trim().toUpperCase();
+                    const map = window._leaveCache[empKey] || {};
+
+                    // 1) exact case-insensitive key match in cache
+                    for (let k of Object.keys(map)) {
+                        if (k && k.toUpperCase() === want) return k;
+                    }
+
+                    // 2) fallback to button DOM (seed cache column if missing)
+                    let $btn = $("button[data-leavekey][value]").filter(function () {
+                        return (($(this).attr('value') || '').trim().toUpperCase() === want);
+                    }).first();
+
+                    if ($btn && $btn.length) {
+                        let btnVal = (($btn.attr('value') || '') + "").trim().toUpperCase();
+                        if (typeof map[btnVal] === 'undefined') {
+                            let dat = $btn.data('leavebal');
+                            let bal = (typeof dat === 'undefined')
+                                ? parseFloat((($btn.text() || '').match(/\(([-0-9.]+)\)/) || [])[1] || 0)
+                                : parseFloat(dat) || 0;
+                            window._leaveCache[empKey][btnVal] = bal;
+                        }
+                        return btnVal;
+                    }
+                    return null;
+                }
+
+                function restoreHalf(code, wasPolicy) {
+                    if (!code) return;
+                    let key = findKey(code);
+                    if (!key) {
+                        console.log("restoreHalf: not a tracked leave type:", code);
+                        return;
+                    }
+
+                    // Skip restoration for Indirect leaves
+                    // LOP is unique: only restore if it was a policy leave
+                    if (key.toUpperCase() === 'LOP') {
+                        if (!wasPolicy) {
+                            console.log("restoreHalf: indirect LOP (skip):", key);
+                            return;
+                        }
+                    } else {
+                        let $btn = $("button[data-leavekey]").filter(function () {
+                            return (($(this).attr('value') || '').trim().toUpperCase() === key.toUpperCase());
+                        }).first();
+                        if ($btn.length && ($btn.data("isindirect") === true || $btn.attr("data-isindirect") === "true")) {
+                            console.log("restoreHalf: indirect leave (skip):", key);
+                            return;
+                        }
+                    }
+
+                    let cur = parseFloat(window._leaveCache[empKey][key] || 0);
+                    window._leaveCache[empKey][key] = +((cur + 0.5).toFixed(2));
+                    console.log("restoreHalf:", key, "old:", cur, "new:", window._leaveCache[empKey][key]);
+                }
+
+                function deductHalf(code, isPolicy) {
+                    if (!code) return;
+                    let key = findKey(code);
+                    if (!key) {
+                        console.log("deductHalf: not a tracked leave type (skip):", code);
+                        return;
+                    }
+
+                    // Skip deduction for Indirect leaves
+                    // LOP is unique: only deduct if it is currently a policy leave
+                    if (key.toUpperCase() === 'LOP') {
+                        if (!isPolicy) {
+                            console.log("deductHalf: indirect LOP (skip):", key);
+                            return;
+                        }
+                    } else {
+                        let $btn = $("button[data-leavekey]").filter(function () {
+                            return (($(this).attr('value') || '').trim().toUpperCase() === key.toUpperCase());
+                        }).first();
+                        if ($btn.length && ($btn.data("isindirect") === true || $btn.attr("data-isindirect") === "true")) {
+                            console.log("deductHalf: indirect leave (skip):", key);
+                            return;
+                        }
+                    }
+
+                    let cur = parseFloat(window._leaveCache[empKey][key] || 0);
+                    let upd = cur - 0.5;
+                    // Do not cap at 0 if it's LOP, allowing it to track negative usage
+                    if (upd < 0 && key.toUpperCase() !== 'LOP') upd = 0;
+                    window._leaveCache[empKey][key] = +upd.toFixed(2);
+                    console.log("deductHalf:", key, "old:", cur, "new:", window._leaveCache[empKey][key]);
+                }
+
+                // normalise and split
+                let o = (oldStatus || "").toString().trim();
+                let n = (newStatusFormatted || "").toString().trim();
+
+                let [oFH, oSH] = o.includes("/") ? o.split("/") : [o, o];
+                let [nFH, nSH] = n.includes("/") ? n.split("/") : [n, n];
+
+                oFH = (oFH || '').trim();
+                oSH = (oSH || '').trim();
+                nFH = (nFH || '').trim();
+                nSH = (nSH || '').trim();
+
+                console.log("Before adjust, leave cache:", window._leaveCache[empKey]);
+
+                const halfSkipList = ["P", "A", "NA", "WO", "HO", ""];
+
+                // Adjust balance ONLY for the half that changed
+                if (statusType === 'full') {
+                    // Full day: restore both old, deduct both new
+                    restoreHalf(oFH, wasPolFH);
+                    restoreHalf(oSH, wasPolSH);
+                    if (!halfSkipList.includes(nFH)) deductHalf(nFH, isNowPolicyLeave);
+                    if (!halfSkipList.includes(nSH)) deductHalf(nSH, isNowPolicyLeave);
+                } else if (statusType === 'first') {
+                    // First half only
+                    restoreHalf(oFH, wasPolFH);
+                    if (!halfSkipList.includes(nFH)) deductHalf(nFH, isNowPolicyLeave);
+                } else if (statusType === 'second') {
+                    // Second half only
+                    restoreHalf(oSH, wasPolSH);
+                    if (!halfSkipList.includes(nSH)) deductHalf(nSH, isNowPolicyLeave);
+                }
+
+                // sync UI labels for buttons from cache before changing the table cell
+                syncButtonsFromCache(empKey);
+                console.log("After adjust, leave cache:", window._leaveCache[empKey]);
+
+                // Update policy state for both halves
+                // If full update, both are same. If partial, we mix old untargeted with new targeted.
+                let finalFHPolicy = wasPolFH;
+                let finalSHPolicy = wasPolSH;
+                if (statusType === 'full') {
+                    finalFHPolicy = isNowPolicyLeave;
+                    finalSHPolicy = isNowPolicyLeave;
+                } else if (statusType === 'first') {
+                    finalFHPolicy = isNowPolicyLeave;
+                } else if (statusType === 'second') {
+                    finalSHPolicy = isNowPolicyLeave;
+                }
+                $("#" + cellId).attr("data-ispolicy", finalFHPolicy + "," + finalSHPolicy);
+
+                // ====== Now update DOM (cell text, color, totals) ======
+                $("#" + cellId).text(resp.status);
+                $("#" + cellId).val(resp.status);
+
+                applyCellColor(empKey, dayIndex, resp.status, resp.isPolicyLeave);
+
+                var row = $("#" + cellId).closest("tr");
+
+                // Update row's NA metadata if returned
+                if (typeof resp.na_ho_count !== 'undefined') row.attr('data-na-ho', resp.na_ho_count).data('na-ho', resp.na_ho_count);
+                if (typeof resp.na_wo_count !== 'undefined') row.attr('data-na-wo', resp.na_wo_count).data('na-wo', resp.na_wo_count);
+
+                // edited by athira on 13-04-2026
+                // Use the server-calculated totals directly for 100% accuracy
+                if (resp.counts) {
+                    row.find("td.lopcolor.headcol.left10").text(resp.counts.lop);         // LOP
+                    row.find("td.presentcolor.headcol.left8").text(resp.counts.present);   // Present
+                    row.find("td.presentcolor.headcol.left9").text(resp.counts.leave);     // Leave
+                    row.find("td.calendercolor.headcol.left5").text(resp.counts.weekoff);  // Weekoff
+                    row.find("td.calendercolor.headcol.left6").text(resp.counts.holiday);  // Holiday
+                    row.find("td.calendercolor.headcol.left7").text(resp.counts.working);  // Working Days
+                } else {
+                    updateLopCount(row);
+                }
+                // ended by athira on 13-04-2026
+
+                closeSmallModalForm();
+            }
+
+
+
+
+
+
+
+
+            // closeSmallModalForm();
+            // } else {
+            //     $.messager.alert('Failed', "Error occured while updating", 'info');
+            // }
+
+
+
+            //             success: function(resp) {
+            //                 //var resp = $.parseJSON(resp);
+            //                 //$('#editpunches').datagrid('deleteRow', getRowIndex(target));
+            //                 if (resp.success == true) {
+            //                     // $.messager.show('Success', "Attandence removed successfully", 'info');
+
+            //                     //$('#<?php echo $emp_pkey ?>_column').text(newstatuses);
+            //                      $('#<?php echo $emp_pkey ?>_column').text(resp.status);
+            // $('#<?php echo $emp_pkey ?>_column').val(resp.status);
+            //                    // console.log('#<?php echo $emp_pkey ?>_column');
+
+            // //filterRegister1();
+            //                     closeSmallModalForm();
+
+            //                     //  $('#modalForm').modal('toggle');
+            //                 } else {
+            //                     $.messager.alert('Failed', "Error occured while removing record", 'info');
+            //                     $('#modalForm').modal('toggle');
+            //                 }
+            //             }
+        });
+
+        // console.log((newStatus));
+        // $(_this).parents(".optionselects").parent().find('strong').html(newStatus);
+        $(_this).closest(".optionselects").parent().find('strong').text(newStatus);
+
+        // $(_this).parents(".optionselects").css("display", "none");
+    }
+
+
+    function updateLopCount(row) {
+        let lopCount = 0, leaveCount = 0, workCount = 0;
+        let weekOffCount = 0, holidayCount = 0, naCount = 0;
+
+        // ⚡ Dynamically detect all leave codes except P, LOP, NA, WO, HO
+        let leaveTypes = new Set();
+
+        row.closest("table").find("td span[id*='_column_']").each(function () {
+            let txt = $(this).text().trim().toUpperCase();
+            if (!txt) return;
+            let parts = txt.includes("/") ? txt.split("/") : [txt];
+
+            parts.forEach(p => {
+                p = p.trim();
+                if (!p || ["P", "LOP", "NA", "WO", "HO"].includes(p)) return;
+
+                // any unknown code → treat as leave type
+                leaveTypes.add(p);
+            });
+        });
+
+        row.find("td span[id*='_column_']").each(function () {
+            let status = $(this).text().trim().toUpperCase();
+            if (!status) return;
+
+            let parts = status.includes("/") ? status.split("/") : [status];
+
+            parts.forEach(part => {
+                part = part.trim();
+                if (!part) return;
+
+                let weight = (parts.length === 2) ? 0.5 : 1;
+
+                if (part === "P") workCount += weight;
+                else if (part === "LOP") lopCount += weight;
+                else if (part === "NA") naCount += weight;
+                else if (part === "WO") weekOffCount += weight;
+                else if (part === "HO") holidayCount += weight;
+                else if (leaveTypes.has(part)) leaveCount += weight; // dynamic leaves
+            });
+        });
+
+        // TOTAL CALENDAR DAYS
+        let totalCalendarDays = row.find("td span[id*='_column_']").length;
+        let naHoCount = parseFloat(row.data('na-ho')) || 0;
+        let naWoCount = parseFloat(row.data('na-wo')) || 0;
+        let prorate_code = parseFloat(row.data('prorate')) || 0;
+        let emp_type = parseFloat(row.data('emptype')) || '';
+
+        // edited by athira on 13-04-2026
+        if (prorate_code !== 2) {
+            lopCount = lopCount + naCount + (naHoCount + naWoCount);
+        }
+        else {
+            lopCount = lopCount + naCount;
+        }
+        // ended by athira on 13-04-2026
+
+        // 🎯 WORKING DAYS = Calendar - (Holiday + Weekoff + NA)
+        let workingDays = totalCalendarDays - (weekOffCount + holidayCount);
+
+
+
+        // Update UI
+        row.find("td.lopcolor.headcol.left10").text(lopCount);         // LOP
+        row.find("td.presentcolor.headcol.left8").text(workCount);     // Present
+        row.find("td.presentcolor.headcol.left9").text(leaveCount);    // Leave
+        row.find("td.calendercolor.headcol.left5").text(weekOffCount); // Weekoff
+        row.find("td.calendercolor.headcol.left6").text(holidayCount); // Holiday
+        row.find("td.calendercolor.headcol.left7").text(workingDays);                  // Working Days
+    }
+
+
+
+    function applyCellColor(emp, day, value, isPolicyLeave) {
+        let cell = $("#" + emp + "_column_" + day).closest("td");
+
+        // Reset cell color
+        cell.css({ "color": "", "background-color": "" });
+        if (!value) return;
+        value = value.toString().trim();
+
+        // ✅ Special handling for Direct LOP (if updated via policy)
+        if (isPolicyLeave && value.includes("LOP")) {
+            return; // skip red background
+        }
+
+        // ✅ Full day Present
+        if (value == "P/P") {
+            cell.css({ "color": "white", "background-color": "#06a226" });
+        }
+        // ✅ Full day Absent
+        else if (value === "A") {
+            cell.css({ "color": "white", "background-color": "#06a226" });
+        }
+        // ✅ Full day LOP (Indirect)
+        else if (value === "LOP/LOP" || value === "LOP") {
+            cell.css({ "color": "white", "background-color": "#e02429" });
+        }
+        // ✅ Full day Weekly Off
+        else if (value === "WO" || value === "WO/WO") {
+            cell.css({ "color": "white", "background-color": "#dcdc00" });
+        }
+        // ✅ Full day Holiday
+        else if (value === "HO" || value === "HO/HO") {
+            cell.css({ "color": "white", "background-color": "#2d2df4" });
+        }
+        // 🟠 Any Half LOP (contains /LOP)
+        else if (value.includes("/LOP") || value.includes("LOP/")) {
+            cell.css({ "color": "white", "background-color": "#ef8656" }); // choose your color
+        }
+        // ✅ Empty
+        else if (value === "") {
+            cell.css({ "color": "white", "background": "#ebebeb" });
+        }
+    }
+
+
+
+
+
+
+
+    $(document).ready(function () {
+        // Attach click event handler to the close button
+        $('#closeModalBtn').click(function () {
+            // $('#modalForm').modal('toggle'); // Toggle the modal
+        });
+        // Initialize cache and sync labels for this employee modal
+        var empKeyInit = $('#emp_pkey').val();
+        if (empKeyInit) {
+            initLeaveCacheForEmployee(empKeyInit);
+        }
+    });
+</script>

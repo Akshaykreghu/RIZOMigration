@@ -1,0 +1,389 @@
+<!-- Optional CSS for Select2 vertical layout and styling -->
+<style>
+    .alert {
+        z-index: 9999 !important;
+    }
+
+    .modal-body {
+        /* max-height: 70vh; */
+        overflow-y: auto;
+    }
+
+    .select2-container--default .select2-selection--multiple {
+        padding: 6px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        max-height: auto;
+        min-height: 44px;
+        overflow: hidden;
+        white-space: normal;
+        flex-wrap: wrap !important;
+    }
+
+    .select2-selection__rendered {
+        display: block !important;
+        max-height: 200px;
+        overflow-y: auto;
+        padding: 0;
+        margin: 0;
+    }
+
+    .select2-selection__choice {
+        display: block !important;
+        margin: 4px 0 !important;
+        width: 100% !important;
+        box-sizing: border-box;
+        background-color: #007bff !important;
+        color: white !important;
+        padding: 6px 10px;
+        border-radius: 20px !important;
+        font-size: 14px;
+        font-weight: 500;
+        border: none !important;
+        white-space: normal !important;
+        word-wrap: break-word;
+    }
+
+    .select2-selection__choice__remove {
+        margin-right: 6px;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .select2-selection__choice__remove:hover {
+        color: #ffdddd !important;
+    }
+
+    .btn-group .btn {
+        border-radius: 4px;
+        padding: 5px 10px;
+        font-size: 13px;
+    }
+
+    .apply-to-section {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+
+    .apply-to-section label {
+        font-weight: bold;
+    }
+
+    .employee-name-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: top;
+    }
+
+    .employee-name-container select {
+        width: calc(100% - 160px);
+    }
+
+    .btn-group {
+        margin-left: 10px;
+        display: flex;
+        gap: 8px;
+    }
+
+    #select-all-btn,
+    #deselect-all-btn {
+        font-size: 13px;
+        padding: 6px 10px;
+        height: 35px;
+    }
+</style>
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header" style="background: #00659f; color: white;">
+            <h4 class="modal-title">Allocate</h4>
+        </div>
+
+        <div class="modal-body">
+
+            <!-- Type -->
+            <div class="row">
+                <div class="form-group">
+                    <label for="type" class="col-sm-4 control-label">Type <span class="star">*</span></label>
+                    <div class="col-md-8">
+                        <select id="type" class="form-control js-example-basic-single" name="type" onchange="handleTypeChange(this);" style="width: 60%;">
+                            <option value="Employee">Employee</option>
+                            <option value="emp_type">Employee Type</option>
+                            <!-- <option value="Branch">Branch</option>
+                            <option value="Department">Department</option>
+                            <option value="Designation">Designation</option> -->
+                            <!-- <option value="Joining date">Joining date</option> -->
+                            <!-- <option value="Grade">Grade</option> -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="row" id="type_value_row" style="display: none;">
+                <div class="form-group">
+                    <label for="type_value" class="col-sm-4 control-label" id="type_value_label"></label>
+                    <div class="col-md-8">
+                        <select id="type_value" class="form-control js-example-basic-single" style="width: 60%;"></select>
+                    </div>
+                </div>
+            </div>
+
+
+            <br>
+
+            <!-- Employee Name -->
+            <div class="row">
+                <div class="form-group">
+                    <input type="hidden" id="sal_fkey" name="sal_fkey" value="<?php echo isset($sal_fkey) ? $sal_fkey : ''; ?>">
+                    <label class="col-sm-4 control-label">Employee Name <span class="star">*</span></label>
+                    <div class="col-md-8 employee-name-container">
+                        <select id="emp_fkeys" name="emp_fkeys[]" class="form-control" multiple>
+                            <?php foreach ($arr_employees as $value): ?>
+                                <option value="<?= $value['EmployeeDetails']['emp_pkey'] ?>">
+                                    <?= $value['EmployeeDetails']['first_name'] . ' ' . $value['EmployeeDetails']['last_name'] . ' - ' . $value['EmpProff']['emp_company_id'] ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-secondary" id="select-all-btn">Select All</button>
+                            <button type="button" class="btn btn-sm btn-light" id="deselect-all-btn">Deselect All</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Allocated List -->
+            <div class="row" style="display: none;">
+                <div class="col-md-12">
+                    <h4>Allocated Employees</h4>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Employee Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allocating">
+                            <?php foreach ($arr_employees_allocates as $val): ?>
+                                <tr>
+                                    <td><?= $val['emp_details']['first_name'] . ' ' . $val['emp_details']['last_name'] ?></td>
+                                    <td>
+                                        <button class="btn btn-danger">
+                                            <li class="fa fa-remove" onclick="removeemps(this,<?= $val['component_increment_allocate']['emp_fkey'] ?>)"></li>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <br>
+
+            <!-- Apply To -->
+            <div class="row">
+                <div class="form-group">
+                    <div class="apply-to-section">
+                        <label class="col-sm-4 control-label">Apply To: <span class="star">*</span></label>
+                        <label><input type="radio" name="apply_scope" value="selected" checked> Only Selected Components</label>
+                        <label><input type="radio" name="apply_scope" value="all"> Entire Components</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary" onclick="allocate_emps()">Allocate</button>
+                    <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- JS Section -->
+<script>
+    // Function to adjust the height of the Select2 container
+    function adjustSelectBoxHeight() {
+        var selectedCount = $('#emp_fkeys option:selected').length;
+        var maxVisibleItems = 5; // Set the maximum visible selected items in the dropdown
+        var heightPerItem = 30; // Adjust this height based on your design preferences
+
+        var newHeight = (selectedCount > maxVisibleItems ? maxVisibleItems : selectedCount) * heightPerItem + 44; // 44 is the minimum height for the select box
+
+        $('#emp_fkeys').next('.select2-container').find('.select2-selection').css('height', newHeight + 'px');
+    }
+
+    $(document).ready(function() {
+        $('#emp_fkeys').select2({
+            placeholder: "Select Employees",
+            closeOnSelect: false,
+            width: '100%',
+        });
+
+
+        // Trigger height adjustment after selection or deselection
+        $('#emp_fkeys').on('select2:select select2:unselect', function(e) {
+            var selectedValue = e.params.data.id;
+            var selectedValues = $('#emp_fkeys').val() || []; // If null, make it an empty array
+            console.log('e.params.', typeof(e.params.originalEvent.type));
+            if (e.params.originalEvent.type === 'mouseup') {
+                // If the selected value is not already in selectedValues, add it
+                if (!selectedValues.includes(selectedValue)) {
+                    selectedValues.push(selectedValue); // Add it to the list
+                    $('#emp_fkeys').val(selectedValues).trigger('change'); // Update the select2 dropdown
+                }
+            }
+
+            adjustSelectBoxHeight();
+        });
+
+        // Trigger the height adjustment on page load, in case there are already selected items
+        adjustSelectBoxHeight();
+
+        $('#select-all-btn').click(function() {
+            let all = [];
+            $('#emp_fkeys option').each(function() {
+                if ($(this).val()) all.push($(this).val());
+            });
+            $('#emp_fkeys').val(all).trigger('change');
+            adjustSelectBoxHeight();
+        });
+
+        $('#deselect-all-btn').click(function() {
+            $('#emp_fkeys').val(null).trigger('change');
+
+            // Restore the height of the select box to minimum when Deselect All is clicked
+            // $('#emp_fkeys').next('.select2').find('.select2-selection').css('height', '44px');
+            adjustSelectBoxHeight();
+        });
+    });
+
+    function handleTypeChange(el) {
+        const type = $(el).val();
+        $('#emp_fkeys').html('').trigger('change');
+        adjustSelectBoxHeight();
+
+        if (type === 'Employee') {
+            $('#type_value_row').hide();
+            $('#emp_fkeys').html('<?php foreach ($arr_employees as $value): ?><option value="<?= $value['EmployeeDetails']['emp_pkey'] ?>"><?= $value['EmployeeDetails']['first_name'] . ' ' . $value['EmployeeDetails']['last_name'] ?></option><?php endforeach; ?>');
+        } else {
+            $('#type_value_row').show();
+            $('#type_value_label').text(type);
+            $('#type_value').html('<option>Loading...</option>');
+            $.post('<?= $this->Html->url(["controller" => "SalaryComponentUpload", "action" => "getTypeValues"]) ?>', {
+                type
+            }, function(resp) {
+                const response = JSON.parse(resp);
+                if (response.success) {
+                    let options = '<option value="">Select</option>';
+
+                    // Loop through the data object using Object.entries
+                    Object.entries(response.data).forEach(([key, val], index) => {
+                        options += `<option value="${key}">${val}</option>`;
+                    });
+
+                    $('#type_value').html(options);
+                } else {
+                    $('#type_value').html('<option>No Data Found</option>');
+                }
+                $('#type_value').select2();
+            });
+        }
+    }
+
+    $('#type_value').change(function() {
+        const type = $('#type').val();
+        const type_value = $(this).val();
+        if (type_value) {
+            $.post('<?= $this->Html->url(["controller" => "SalaryComponentUpload", "action" => "getEmployeesByTypeValue"]) ?>', {
+                type,
+                value: type_value
+            }, function(resp) {
+                const response = JSON.parse(resp);
+                let options = '';
+                response.data.forEach(emp => {
+                    options += `<option value="${emp.emp_pkey}">${emp.name}</option>`;
+                });
+                $('#emp_fkeys').html(options).trigger('change');
+            });
+        } else {
+            $('#emp_fkeys').html('').trigger('change');
+        }
+        adjustSelectBoxHeight();
+    });
+
+
+
+
+    function allocate_emps() {
+        const sal_fkey = $('#sal_fkey').val();
+        const emps = $('#emp_fkeys').val();
+        const apply_to = $('input[name="apply_scope"]:checked').val();
+        const row = $('#componenttable').datagrid('getSelected');
+        const hike = row.hike;
+        const component = row.component_fkey;
+        const company_code = <?php echo json_encode($this->Session->read('company_code')); ?>;
+        if (emps && emps.length > 0) {
+            var url = 'SalaryComponentUpload/saveComponentUploads/';
+
+            if (apply_to !== 'selected') {
+                url = company_code === 'KWMT' ?
+                    'SalaryComponentUpload/saveComponentAllocateKWMT/' :
+                    'SalaryComponentUpload/saveComponentAllocate/';
+            }
+
+            $.post(url, {
+                sal_fkey,
+                emps,
+                apply_to,
+                hike,
+                component
+            }, function(resp) {
+                const response = JSON.parse(resp);
+                const notifyType = response.success ? 'success' : 'danger';
+                $.notify(response.msg, {
+                    type: notifyType,
+                    allow_dismiss: false,
+                    z_index: 9999
+                });
+                if (response.success) $('#modalForm').modal('hide');
+            });
+        } else {
+            $.notify("Please choose an employee.", {
+                type: 'danger',
+                allow_dismiss: false,
+                z_index: 9999
+            });
+        }
+    }
+
+
+    function removeemps(el, empId) {
+        const sal_fkey = $('#sal_fkey').val();
+        $.post('SalaryComponentUpload/removeAllocate/', {
+            sal_fkey,
+            emps: empId
+        }, function(resp) {
+            const response = JSON.parse(resp);
+            const notifyType = response.success ? 'success' : 'danger';
+            $.notify(response.msg, {
+                type: notifyType,
+                allow_dismiss: false
+            });
+            if (response.success) $(el).closest('tr').remove();
+        });
+    }
+</script>

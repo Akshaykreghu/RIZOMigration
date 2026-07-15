@@ -1,0 +1,126 @@
+<?php
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+?>
+<script>
+     $(document).ready(function(){
+        
+        
+        
+//                var usersoptions = {
+//            url: function (phrase) {
+//                return "UserCredentials/getusers?username=" + phrase;
+//            },
+//            getValue: "full_name",
+//            list: {
+//                onClickEvent: function () {
+//                     var selectedItem = $("#user").getSelectedItemData();
+//                    var site_fkey = selectedItem.emp_pkey;
+//                    $('#emp_pkey').val(selectedItem.emp_pkey);
+//                  $('#load').load(livesite+'UserAccess/insec/'+site_fkey);
+//                    //reloadDatagrid(site_fkey);
+//
+//                }
+//            }
+//        };
+//
+//        $('#user').easyAutocomplete(usersoptions);
+       $('#tt').tree({
+   
+});
+    $('#emp_pkey').select2({
+        placeholder: "Choose Employee"
+    });
+    })
+</script>
+
+<!--<script>
+var x = document.getElementById("demo");
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+function showPosition(position) {
+    x.innerHTML = "Latitude: " + position.coords.latitude + 
+    "<br>Longitude: " + position.coords.longitude; 
+}
+</script>
+
+
+<p>Click the button to get your coordinates.</p>
+
+<button onclick="getLocation()">Try It</button>
+
+<p id="demo"></p>-->
+
+<section class="content">
+    <div class="row">
+<div class="col-md-12">
+<div class="box box-header">
+    <h2 style="text-align:left; font-size: 3em;">Advanced Access</h2> <p>Control user access to different menus for different level of employees.</p>
+       <div class="box-body" id="div-reportcriterias">
+                     <div class="col-md-12">
+                     <!--<input type="hidden" id="emp_pkey">-->
+                <!--<input type="text" id="user" class="form-control" name="user" placeholder="Search Your Employee Name" />-->
+                 <select id="emp_pkey" style="width: 100%; " onchange="loaddata(this)">
+                    <?php
+                        foreach ($arr_employee as $val){
+                    ?>
+                     <!--edited by arul on 18/11/2019 Employee Id changed to emp company id-->
+                     <option value="<?php echo $val['EmployeeDetails']['emp_pkey']; ?>" > <?php echo $val['EmployeeDetails']['first_name']; ?>    <?php echo $val['EmployeeDetails']['last_name']; ?> -  <?php echo $val['EmployeeDetails']['emp_company_id']; ?></option>
+                    <?php
+                        }
+                    ?>    
+                </select>
+            </div>
+                </div>
+  
+    
+    
+</div>
+ <div id="load" class="box box-body" style="margin:10px 0">
+       
+    </div> 
+</div>
+        
+    </div>
+</section>
+    <script type="text/javascript">
+        function loaddata(s){
+            $('#load').html('<div><li class="fa fa-spinner fa-spin"></li></div>');
+            $('#load').load(livesite+'UserAccess/insec/'+$(s).val());
+        }
+        
+        function getChecked(){
+            var nodes = $('#tt').tree('getChecked');
+            var s = '';
+            for(var i=0; i<nodes.length; i++){
+                if (s != '') s += ',';
+                s += nodes[i].id;
+                
+            }
+            var arr_men = [s];
+            alert(arr_men);
+            var u = $('#emp_pkey').val();
+          //  alert(u);
+               $.ajax({
+                                url:'UserAccess/save/' + s +'/'+u,
+                                success: function(resp){
+                                    $('#uaccess').datagrid('reload');
+                                    $.notify($.parseJSON(resp).msg,{
+                                        type: 'success',
+                                        allow_dismiss: false
+                                    });
+                                }
+                            });
+        }
+            
+   
+
+    </script>

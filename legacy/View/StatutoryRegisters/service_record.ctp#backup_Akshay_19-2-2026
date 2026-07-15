@@ -1,0 +1,204 @@
+<style>
+    body {
+        font-family: DejaVu Sans, sans-serif;
+        font-size: 12px;
+    }
+
+    .center {
+        text-align: center;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    td {
+        padding: 4px;
+        vertical-align: top;
+    }
+
+    .label {
+        width: 45%;
+    }
+
+    .colon {
+        width: 5%;
+        text-align: center;
+    }
+
+    .value {
+        width: 50%;
+    }
+
+    .pay-table td {
+        border: 1px solid #000;
+        text-align: center;
+    }
+</style>
+
+<?php if (empty($arr_leavepolicydetails_for_template)) : ?>
+
+    <page size="A4" orientation="portrait" margin="20mm 20mm 20mm 20mm">
+        <div style="
+            font-size:16px;
+            text-align:left;
+            margin-top:20mm;
+            margin-left:20mm;
+        ">
+            No data available under the selected criteria
+        </div>
+    </page>
+
+<?php else : ?>
+
+    <?php foreach ($arr_leavepolicydetails_for_template as $empKey => $empData):
+        $row = $empData[0];
+
+        $common = $row[0];
+        $pm     = $row['pm'];
+        $ei     = $row['ei'];
+        $ed     = $row['ed'];
+        $t      = $row['t'];
+    ?>
+
+        <!-- <page size="A4" orientation="portrait" backtop="50mm" margin="20mm 20mm 20mm 20mm"> -->
+        <page backtop="30mm" backbottom="2mm" backleft=10mm" backright="10mm">
+
+            <page_header>
+                <div style="margin-top:10mm;">
+                    <div class="center bold">FORM BB</div>
+                    <div class="center">[See Rule 10 (1)a]</div>
+                    <br>
+                    <div class="center bold"><u>SERVICE RECORD</u></div>
+                </div>
+            </page_header>
+
+            <!-- <div class="center bold">FORM BB</div>
+            <div class="center">[See Rule 10 (1)a]</div>
+            <br>
+            <div class="center bold"><u>SERVICE RECORD</u></div> -->
+
+            <table>
+                <tr>
+                    <td class="label">1) Name of Establishment</td>
+                    <td class="colon">:</td>
+                    <td class="value"><?= h(trim($common['establishment'])) ?></td>
+                </tr>
+                <tr>
+                    <td class="label">2) Name of Employee</td>
+                    <td class="colon">:</td>
+                    <td class="value"> <?php
+                                        if (isset($ei['EmpName']) && !empty($ei['EmpName'])) {
+                                            echo h(trim($ei['EmpName']));
+                                        } elseif (isset($common['EmpName']) && !empty($common['EmpName'])) {
+                                            echo h(trim($common['EmpName']));
+                                        } else {
+                                            echo '';
+                                        }
+                                        ?></td>
+                </tr>
+                <tr>
+                    <td class="label">3) Name of father/husband</td>
+                    <td class="colon">:</td>
+                    <td class="value"><?= h($ed['guradian']) ?></td>
+                </tr>
+                <tr>
+                    <td class="label">4) Age</td>
+                    <td class="colon">:</td>
+                    <td class="value"><?= h($common['age']) ?></td>
+                </tr>
+                <tr>
+                    <td class="label">5) Full Residential address</td>
+                    <td class="colon">:</td>
+                    <td class="value"><?= h($ed['address']) ?></td>
+                </tr>
+                <tr>
+                    <td class="label">6) Sex</td>
+                    <td class="colon">:</td>
+                    <td class="value"><?= h($common['gender']) ?></td>
+                </tr>
+                <tr>
+                    <td class="label">7) Date of entry into service</td>
+                    <td class="colon">:</td>
+                    <td class="value"> <?php
+                                        if (isset($ei['joining_date']) && !empty($ei['joining_date'])) {
+                                            echo h($ei['joining_date']);
+                                        } elseif (isset($common['joining_date']) && !empty($common['joining_date'])) {
+                                            echo h($common['joining_date']);
+                                        } else {
+                                            echo '';
+                                        }
+                                        ?></td>
+                </tr>
+                <tr>
+                    <td class="label">8) Category / designation</td>
+                    <td class="colon">:</td>
+                    <td class="value"><?= h($pm['desig']) ?></td>
+                </tr>
+                <tr>
+                    <td class="label">9) Pay</td>
+                    <td class="colon"></td>
+                    <td class="value"></td>
+                </tr>
+            </table>
+
+            <br>
+
+            <table style="width:100%; margin-left:15px; font-size:14px;">
+                <tr>
+                    <td style="width:35%;">
+                        Basic: <?= h($common['basic']) ?>
+                    </td>
+                    <td style="width:15%;">
+                        DA : <?= h($common['DA']) ?>
+                    </td>
+                    <td style="width:50%;">
+                        Other Emoluments : <?= h($common['other_allowances']) ?>
+                    </td>
+                </tr>
+            </table>
+
+            <br>
+
+            <table>
+                <tr>
+                    <td class="label">10) Date of Retire / Discharge / Resignation</td>
+                    <td class="colon">:</td>
+                    <td class="value">
+                        <?= h($t['last_approved_working_date']) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">11) Signature of Employee</td>
+                    <td class="colon">:</td>
+                    <td class="value">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="label">12) Signature of Employer</td>
+                    <td class="colon">:</td>
+                    <td class="value">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="label">13) Counter signature of the Inspector</td>
+                    <td class="colon">:</td>
+                    <td class="value">&nbsp;</td>
+                </tr>
+            </table>
+
+            <br>
+
+            <div style="font-size:11px;">
+                <b>Note:</b> whenever there is a change in designation and wages, the changes
+                shall be noted in column 8 and 9 respectively with date of such changes.
+            </div>
+
+        </page>
+
+    <?php endforeach; ?>
+<?php endif;
+?>

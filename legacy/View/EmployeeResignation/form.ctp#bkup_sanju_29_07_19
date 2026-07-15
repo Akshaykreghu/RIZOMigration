@@ -1,0 +1,234 @@
+
+<div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header" style="color: aliceblue;
+        background: #474747;
+        border-radius: 2px;
+        display: inline-block;
+        position: relative;
+        width: 100%;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);">
+            <h4 class="modal-title"> Employee Separation</h4>  
+        </div>
+        <div class="modal-body">
+            <!-- Form starts -->
+
+            <form autocomplete="off" class="form-horizontal" id="form-user-master" action="<?php echo $this->webroot; ?>EmployeeResignation/Terminate" method="POST">
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="out_time" class="col-sm-4 control-label">Select Employee<span class="star">*</span></label>
+                            <div class="col-sm-8">
+                                <select class="js-example-basic-single new-settled" name="emp_fkey" id="emp_fkey" style="width:227px;">
+                                    <?php if(!empty($details)){ ?>
+                                        <option value="<?php echo $details[0]['EmployeeInfo']['emp_pkey']; ?>"><?php echo $details['0']['EmployeeInfo']['EmpName']; ?></option>
+                                    <?php } else{ ?>
+                                    <option value="">[select]</option>
+                                    <?php foreach ($employee as $emp) { ?>
+                                        <option value="<?php echo $emp['EmployeeDetails']['emp_pkey']; ?>"><?php echo $emp['EmployeeDetails']['first_name'] . ' ' . $emp['EmployeeDetails']['last_name'].' - '.$emp['EmployeeProffessional']['emp_company_id']; ?></option>
+                                    <?php } } ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-4 control-label">Reason For Leaving<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <select class="js-example-basic-single form-control" style="width:227px;" name="Reason" required="required" id="Reason">
+                                    <option value="" >Select </option>
+                                    <option <?php echo ($details[0]['Termination']['Reason'] == "Resigned")? 'selected="selected"': ''; ?> value="Resigned">Resignation</option>
+                                    <option <?php echo ($details[0]['Termination']['Reason'] == "Absconding")? 'selected="selected"': ''; ?> value="Absconding">Absconding</option>
+                                    <option <?php echo ($details[0]['Termination']['Reason'] == "Dissmissed")? 'selected="selected"': ''; ?> value="Dissmissed">Dismissed</option>
+                                    <option <?php echo ($details[0]['Termination']['Reason'] == "Retirement")? 'selected="selected"': ''; ?> value="Retirement">Retirement</option>
+                                    <option <?php echo ($details[0]['Termination']['Reason'] == "Retrenchment")? 'selected="selected"': ''; ?> value="Retrenchment">Retrenchment</option>
+                                    <option <?php echo ($details[0]['Termination']['Reason'] == "Permanent Disabilities")? 'selected="selected"': ''; ?> value="Permanent Disabilities">Permanent Disabilities</option>
+                                    <option <?php echo ($details[0]['Termination']['Reason'] == "End of Contract")? 'selected="selected"': ''; ?> value="End of Contract">End of Contract</option>
+                                    <option <?php echo ($details[0]['Termination']['Reason'] == "Death")? 'selected="selected"': ''; ?> value="Death">Death</option>
+                                    <option <?php echo ($details[0]['Termination']['Reason'] == "Other")? 'selected="selected"': ''; ?> value="Other">Other</option>
+                                </select>
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-4 control-label">Resignation Submitted on<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input autocomplete="off" onchange="asper_notice();" value="<?php echo isset($details[0]['Termination']['submitted_date'])?$details[0]['Termination']['submitted_date']:'' ; ?>" required="required" type="text" name="date_submitted" id="submitted_dayte" class="ClrElements form-control">
+                            </div> 
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-4 control-label">Last Applied working date<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input autocomplete="off" type="hidden" value="<?php echo isset($details[0]['Termination']['terminate_pkey'])?$details[0]['Termination']['terminate_pkey']:'' ; ?>" name="termination_pkey" id="termination_pkey">
+                                <input required="required" type="text" value="<?php echo isset($details[0]['Termination']['last_applied_date'])?$details[0]['Termination']['last_applied_date']:'' ; ?>" name="applied_date" id="applied_date" class="form-control ClrElements applied_date">
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-4 control-label">Notice Period<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input type="number" name="notice_period" id="notice_period" readonly="true" value="<?php echo isset($details[0]['Termination']['notice_period'])?$details[0]['Termination']['notice_period']:'' ; ?>" class="form-control ClrElements">
+                            </div> 
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-4 control-label">Last working date (asper notice days)<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input autocomplete="off" type="text" name="lat_workingday" id="lat_workingday" required="required" value="<?php echo isset($details[0]['Termination']['last_working_date'])?$details[0]['Termination']['last_working_date']:'' ; ?>" readonly="true" class="form-control ClrElements">
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-4 control-label">Last Approved working date<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input autocomplete="off" type="text" name="apprved" id="apprved" class="form-control ClrElements apprved" value="<?php echo isset($details[0]['Termination']['act_last_working_day'])?$details[0]['Termination']['act_last_working_day']:'' ; ?>" required="required">
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-4 control-label">Remarks<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <textarea name="Remarks" id="Remarks" class="form-control ClrElements" required="required"><?php echo isset($details[0]['Termination']['remarks'])?$details[0]['Termination']['remarks']:'' ; ?></textarea>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Submit Termination</button>
+                </div>
+
+
+            </form>
+            <!-- Tax Head Detail Form -->
+
+
+
+
+
+            <!-- form ends-->
+        </div>
+
+    </div>
+
+</div>
+<script type="text/javascript">
+    $.validate({
+        form: '#form-user-master'
+    });
+    var options = {
+        success: function (resp) {
+            $('#modalForm').modal('hide');
+            $('#emptable').datagrid('reload');
+
+            $.notify($.parseJSON(resp).msg, {
+                type: 'success',
+                allow_dismiss: false,
+                autoHideDelay: 50000,
+            });
+            $('.btn-success').attr("disabled",false);
+        }  // post-submit callback
+    };
+
+
+    function setdate(s) {
+        $('.applied_date').datepicker('setStartDate', s);
+        //setenddate();
+    }
+    $('#form-user-master').on('submit', function (event) {
+        if($('#emp_fkey').val() == ''){
+            alert("please select an employee ");
+            return false;
+        }
+        event.preventDefault();
+        if (confirm(" Do You Want  To Save The Form  ")) {
+            $('.btn-success').attr("disabled",true);
+            $('#form-user-master').ajaxSubmit(options)
+        }
+    });
+
+    $(document).ready(function () {
+
+        $(".js-example-basic-single").select2();
+        
+        
+        $('#submitted_dayte').datepicker({
+            format: 'yyyy-mm-dd',
+            onSelect: function (selected) {
+                var esdt = new Date(selected);
+                var checkdate = $('.applied_date').val();
+
+            }
+        })
+        $('.applied_date').datepicker({
+            format: 'yyyy-mm-dd',
+            onSelect: function (selected) {
+                var ecdt = new Date(selected);
+                var checkdate = $('#submitted_dayte').val();
+                alert(checkdate);
+            }
+        })
+        $('.new-settled').change(function () {
+            
+            var emp_pkey = $('.new-settled').val();
+            $.ajax({
+                url: livesite + "FullandFinalsettlement/getperiod/"+emp_pkey,
+                type: "POST",
+                success: function (resp) {
+                    var response = JSON.parse(resp);
+                    
+                    if(response.success == 1){
+                        $('#notice_period').val(response.days);
+                        asper_notice();
+                    }else{
+                        $('#notice_period').val('0');
+                        asper_notice();
+                    }
+                }
+            }); 
+
+        });
+        $('.apprved').datepicker({
+            format: 'yyyy-mm-dd',
+            onSelect: function (selected) {
+                var ecdt = new Date(selected);
+
+            }
+        })
+    });
+    function asper_notice(){
+            var applied_date = new Date($('#submitted_dayte').val());
+            var period = parseInt($('#notice_period').val()-1);
+            if(period){
+                period = period;
+            }else{
+                period = 0;
+            }
+            applied_date.setDate(applied_date.getDate() + period);
+            var dd = applied_date.getDate();
+            var mm = applied_date.getMonth()+1; //January is 0!
+
+            var yyyy = applied_date.getFullYear();
+            if(dd<10){
+                dd='0'+dd;
+            } 
+            if(mm<10){
+                mm='0'+mm;
+            } 
+            var today = yyyy+'-'+mm+'-'+dd;
+            $('#lat_workingday').val(today);
+            
+    }
+</script>

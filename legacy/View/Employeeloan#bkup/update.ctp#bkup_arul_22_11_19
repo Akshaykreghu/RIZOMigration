@@ -1,0 +1,217 @@
+<style>
+    .form-horizontal .control-label{
+
+        text-align: left;
+
+    }
+</style>
+<section class="content-header">
+    <h1 style="text-align:left; font-size: 2em;"> <?php echo $arr_loan_master['0']['EmployeeInfo']['EmpName']; ?>'s Loan Details</h1>
+</section>
+<!-- Main content -->
+<input type="hidden" value="<?php echo isset($arr_loan_master['0']['EmployeeLoan']['emp_loan_pkey'])?$arr_loan_master['0']['EmployeeLoan']['emp_loan_pkey']:'0'; ?>" id="loan_pkey">
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- DIRECT CHAT DANGER -->
+            <div class="box ">
+                <table class="table ">
+                    <thead>
+                            <tr>
+                                <th>Employee Name</th>
+                                <th>Loan Amount</th>
+                                <th>Tenure</th>
+                                <th>Interest Rate</th>
+                                <th>Started On</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <td><?php echo $arr_loan_master['0']['EmployeeInfo']['EmpName']; ?></td>
+                            <td><?php echo $arr_loan_master['0']['EmployeeLoan']['loan_amount']; ?></td>
+                            <td><?php echo $arr_loan_master['0']['EmployeeLoan']['tenure']; ?></td>
+                            <td><?php echo $arr_loan_master['0']['EmployeeLoan']['intrest_rate']; ?></td>
+                            <td><?php echo $arr_loan_master['0']['EmployeeLoan']['emi_start_month']; ?></td>
+                        </tbody>
+                </table>
+                <div class="col-md-12">
+                    <h3 id="message" style="color:white;padding:5px 5px 4px 20px; "></h3>
+                    
+                </div>
+                <div class="col-md-12">
+                    <h3 id="Balance">Balance Amount: <?php echo ($balance_amount == null)?$arr_loan_master['0']['EmployeeLoan']['loan_amount']:$balance_amount; ?> <?php if($balance_amount == '0'){} else { ?> <button class="btn btn-success pull-right" onclick="updatecompleted(this);">Update Loan as completed</button> <?php } ?></h3>
+                    
+                </div>
+                <div class="col-md-12">
+                    <?php
+                       //edited by megha on 03_06_19 divide by 0 error
+                    if($total >0){
+                        $completions = $total*100/$emi_pay;
+                    }
+                    else{
+                        $completions = 0;
+                    }
+                    //end
+                    ?>
+                    <h3>Loan Completion<span class="pull-right comple"><?php echo $completions; ?>% Completed</span></h3>
+<!--                    <div class="progress">
+
+                        <div class="progress-bar progress-bar-green" role="progressbar" aria-valuenow="<?php echo $completions; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $completions; ?>%">
+                            <span class="sr-only"><?php echo $completions; ?>% Completed</span>
+                        </div>
+                    </div>-->
+                    <div class="progress progress-xs" style="background:#ff7979; ">
+                        <div id="progr" class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" aria-valuenow="<?php echo $completions; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $completions; ?>%">
+                            <span class="sr-only"><?php echo $completions; ?>% Completed</span>
+                        </div>
+                    </div>
+                </div>
+                <?php if($completions > 90){ } else { ?>
+                <div class="col-md-12">
+                    <div class="col-md-12">
+                        <h4>Transfer an EMI To Another month?</h4>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            <div class="">
+                                <input type="text" class="form-control dateCalender" placeholder="Taken Month" value="" name="specifications" id="from_month" >
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="">
+                                <input type="text" class="form-control dateCalender"  placeholder="Affecting Month" value="" name="specifications" id="allocated_month" >
+                            </div>
+                        </div>
+                        <div class="col-md-4" >
+                            <div class="">
+                                <button id="loan_updates" class="btn btn-primary">Change EMI Month </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php } ?>
+                
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+function updatecompleted(s){
+    var mode= $('#loan_pkey').val();
+    $(s).html('<li class="fa fa-spin fa-spinner"></li>Updating Loan..... Please Wait');
+    $.ajax({
+            url:livesite+'EmployeeLoan/completed/' + mode,
+            success: function(resp){
+
+              $('#message').html("Loan Updated Successfully").css("background","green").css("height","32px");
+              $("#progr").css("width","100%").css("background","green");
+              $(".progress-xs").css("background","green");
+              $('#Balance').html("Balance Amount: 0");
+              $(".comple").html("100% Completed");
+            }
+        });
+}
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.dateCalender').datepicker({
+     format: 'yyyy-mm',
+        autoclose: true,
+        startView: "months",
+        minViewMode: "months"
+    
+    });
+});
+
+$('#loan_updates').on("click",function(){
+    var mode= $('#loan_pkey').val();
+    var taken_month = $('#from_month').val();
+    var affected_month = $('#allocated_month').val();
+    
+    if(taken_month == ''){
+        alert("Please Select Month");
+        return false;
+    }
+    if(affected_month == ''){
+        alert("Please Select Month");
+        return false;
+    }
+    if(taken_month == affected_month){
+        alert("Same Month Taken");
+        return false;
+    }
+//    send();
+    $(this).html('<li class="fa fa-spin fa-spinner"></li>Updating ..... Please Wait');
+    $.ajax({
+            url:livesite+'EmployeeLoan/update_transfer/' + mode,
+            data:{taken_month:taken_month,affected_month:affected_month},
+            type:'POST',
+            success: function(resp){
+              var response = JSON.parse(resp);
+              if(response.success == 0){
+              $('#loan_updates').html('Update Again');
+              }else{
+              $('#loan_updates').html('Updated').attr('disabled',true);
+              }
+              $('#message').html(response.msg).css("background","green").css("height","32px");
+            }
+        });
+    });
+    
+    
+    function send() {
+            var accessToken = "772935e475314a9ebe155af07d926510",
+        baseUrl = "https://api.api.ai/v1/",
+        $speechInput,
+        $recBtn,
+        recognition,
+        messageRecording = "Recording...",
+        messageCouldntHear = "I couldn't hear you, could you say that again?",
+        messageInternalError = "Oh no, there has been an internal server error",
+        messageSorry = "I'm sorry, I don't have the answer to that yet.";
+
+      var text = 'how old are you?';
+      $.ajax({ 
+        type: "POST",
+        url: baseUrl + "query",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        headers: {
+          "Authorization": "Bearer " + accessToken
+        },
+        data: JSON.stringify({query: text, lang: "en", sessionId: "runbarry"}),
+
+        success: function(data) {
+          prepareResponse(data);
+        },
+        error: function() {
+          respond(messageInternalError);
+        }
+      });
+    }
+function prepareResponse(val) {
+  var debugJSON = JSON.stringify(val, undefined, 2),
+      spokenResponse = val.result.speech;
+
+  respond(spokenResponse);
+  debugRespond(debugJSON);
+}
+function debugRespond(val) {
+  alert(val);
+}
+function respond(val) {
+  if (val == "") {
+    val = 'sorry';
+  }
+//  
+//  
+//    var msg = new SpeechSynthesisUtterance();
+//    var voices = window.speechSynthesis.getVoices();
+//    msg.voiceURI = "native";
+//    msg.text = val;
+//    msg.lang = "en-US";
+//      window.speechSynthesis.speak(msg);
+//
+//  $("#spokenResponse").addClass("is-active").find(".spoken-response__text").html(val);
+}
+</script>

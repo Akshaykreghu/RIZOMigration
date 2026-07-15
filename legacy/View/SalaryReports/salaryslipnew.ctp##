@@ -1,0 +1,2492 @@
+<?php
+//debug($arr_salary_for_template);
+/*
+* To change this template, choose Tools | Templates
+* and open the template in the editor.
+*/
+?>
+
+<?php if ($mode == '') { ?>
+    <style>
+        .model-content {
+            width: 104% !important;
+        }
+
+        .table,
+        td,
+        th,
+        tr {
+            border-style: 1px solid;
+            border-color: #cccccc;
+
+
+        }
+
+        .tds-border {
+            border-right-color: #cccccc !important;
+            border-left-color: #cccccc !important;
+        }
+    </style>
+    <?php //debug(array_filter($arr_salary_for_template)); 
+    ?>
+    <div class="modal-body" style="overflow-y: auto;">
+        <div class="row">
+            <div class="col-md-12">
+                <div class=" ">
+                    <?php
+
+                    $i = 0;
+                    if ($cr == 'EmployeeDetails') {
+                        foreach ($arr_salary_for_template as $value) {
+                            if (count($value['summary']) != 0) {
+                                $i += 1;
+                    ?>
+                                <!-- <h3 align="center"><b><?php echo 'Salary Slip - ' . "$mname1-" . $y1; ?></b> </h3> -->
+                                <!-- <table class="table table-bordered" style="margin-top: 10px;margin-bottom:0px;text-align: center;"> -->
+                                <!-- <tbody> -->
+                                <tr style="width : 120% ;">
+                                    <!-- <legend style="text-align:left;font-size: 19px;font-weight: bold;"> <?php
+                                                                                                                $empstatus = isset($value['summary']['0']['ed']['status']) && $value['summary']['0']['ed']['status'] == "2" ? '  (Resigned)' : '';
+
+                                                                                                                $emp_name = $value['summary']['0']['ed']['first_name'] . $empstatus;
+                                                                                                                echo $emp_name; ?></legend> -->
+
+                                </tr>
+                                <!-- </tbody> -->
+                                <!-- </table> -->
+
+                                <div>
+                                    <h3 style="font-size: 19px; text-align: center; color: #000066;font-weight:bold; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?></h3>
+                                    <h3 style="font-size: 15px; text-align:center; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['address'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['city'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['pincode'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['state']; ?></h3>
+                                </div>
+                                <div style="text-align: center;align-items: center; border: 1px solid black; width:450px; margin-top: 0px;  margin-left:auto;float:center;margin-right: auto; height: 25px;">
+                                    <h3 style="padding: 0px 20px; margin: 0; font-size: 16px;font-weight: bold;">
+                                        Pay Slip for the month of <?php echo $mname1 . " / " . $y1; ?>
+                                    </h3>
+                                </div>
+
+                                <!--
+        
+
+    
+</table>-->
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px;">
+                                    <div class="col-md-2 " style="background-color:#cccccc;">
+                                        Employee No.
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; word-wrap: break-word; "> <?php echo isset($value['summary']['0']['ep']['emp_company_id']) ? $value['summary']['0']['ep']['emp_company_id'] : ''; ?> </span><span style="float: right ;"></span>
+                                    </div>
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        Division
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ;  border-bottom: 0px solid white ; "> <?php
+                                                                                                                //edited by megha on 9_7_19 date format changed
+                                                                                                                echo isset($value['summary']['0']['division']['div_name']) ? ($value['summary']['0']['division']['div_name']) : '';
+                                                                                                                //echo isset($value['summary']['0']['ep']['joining_date']) ? $value['summary']['0']['ep']['joining_date'] : '';
+                                                                                                                ?> </span><span style="float: right ;"></span>
+                                    </div>
+                                </div>
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-left: 1px solid black;border: none;">
+
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        <span> Employee Name : </span><span></span>
+                                    </div>
+                                    <div class="col-md-4 ">
+                                        <span style="text-align: right ; word-wrap: break-word; "> <?php
+                                                                                                    echo isset($value['summary']['0']['ed']['first_name']) ? $value['summary']['0']['ed']['first_name'] : '';
+                                                                                                    echo ' ';
+                                                                                                    echo isset($value['summary']['0']['ed']['middile_name']) ? $value['summary']['0']['ed']['middile_name'] : '';
+                                                                                                    echo ' ';
+                                                                                                    echo isset($value['summary']['0']['ed']['last_name']) ? $value['summary']['0']['ed']['last_name'] : '';
+
+                                                                                                    ?> </span><span style="float: right ;"></span>
+                                    </div>
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        <span> PAN </span><span></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; word-wrap: break-word; "> <?php echo  wordwrap(isset($value['summary']['0']['ed']['pan_no']) ? strtoupper($value['summary']['0']['ed']['pan_no']) : '', 21, "<br>\n", TRUE); ?> </span><span style="float: right ;"></span>
+                                    </div>
+
+                                </div>
+
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        DOJ
+                                    </div>
+                                    <div class="col-md-4">
+                                        <!--           <span style="text-align: right ; ">: <?php //echo isset($value['empdet']['0']['payroll_master']['working_days']) ? $value['empdet']['0']['payroll_master']['working_days'] : ''; 
+                                                                                            ?>   </span><span style="float: right ;"></span>-->
+                                        <span style="text-align: right ; "> <?php echo isset($value['summary']['0']['ep']['joining_date']) ? date('d/m/Y', strtotime($value['summary']['0']['ep']['joining_date'])) : ''; ?> </span><span style="float: right ;"></span>
+                                    </div>
+                                    <?php
+
+
+                                    $acc_number = '';
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    if ($acc_number == '') {
+                                        $acc_number = isset($value['summary']['0']['ed']['account_no']) ? $value['summary']['0']['ed']['account_no'] : '';
+                                    } ?>
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        <span style="text-align:  left ; ">Bank A/c </span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: left ;  border-right: 0px solid white; border-bottom: 0px solid white ; "> <?php echo $acc_number; ?> </span><span style="float: right ;"></span>
+
+                                    </div>
+
+
+                                </div>
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        <span style="text-align:  left ; ">Designation </span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "><?php echo  wordwrap(isset($value['summary']['0']['desg']['desig_name']) ? $value['summary']['0']['desg']['desig_name'] : '', 30, "<br>\n", TRUE); ?> </span><span style="float: right ;"></span>
+
+                                    </div>
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        <span> UAN </span><span></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "> <?php echo isset($value['summary']['0']['ed']['pf']) ? $value['summary']['0']['ed']['pf'] : ''; ?> </span><span style="float: right ;"></span>
+
+                                    </div>
+
+                                </div>
+                                <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        Department
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "><?php echo  wordwrap(isset($value['summary']['0']['d']['dept_name']) ? $value['summary']['0']['d']['dept_name'] : '', 30, "<br>\n", TRUE); ?> </span><span style="float: right ;"></span>
+
+                                    </div>
+                                    <div class="col-md-2" style="background-color:#cccccc;">
+                                        Pay Days
+                                    </div>
+                                    <?php $leave = isset($value['summary']['0']['payroll_master']['days_leave']) ? $value['summary']['0']['payroll_master']['days_leave'] : '';
+                                    $present = isset($value['summary']['0']['payroll_master']['days_presant']) ? $value['summary']['0']['payroll_master']['days_presant'] : '';
+                                    $weekoff = isset($value['summary']['0']['ar']['weekoff_total']) ? $value['summary']['0']['ar']['weekoff_total'] : '';
+                                    $paydays = $leave + $present + $weekoff; ?>
+                                    <div class="col-md-4">
+                                        <span style="text-align: right ; "> <?php echo $paydays; ?> </span><span style="float: right ;"></span>
+
+                                    </div>
+                                </div><br>
+                                <table class="table table-bordered" align="center">
+                                    <tbody>
+                                        <tr>
+
+                                            <th>Earnings</th>
+                                            <th>Amount</th>
+                                            <th>Deductions</th>
+                                            <th>Amount</th>
+
+                                        </tr>
+                                        <?php $arr_data = $value['summary'];
+                                        $arr_withoutComponents = $value['withoutcomponent'];
+                                        ?>
+                                        <?php
+                                        if (count($arr_data) >= 0) {
+                                            $countss = count($arr_data);
+                                            if (count($arr_data) < count($arr_withoutComponents)) {
+                                                $countss = count($arr_withoutComponents);
+                                            }
+                                            $sum = 0;
+                                            $tot = 0;
+                                            $dd = 0;
+                                            $net = 0;
+                                        ?>
+                                            <?php for ($i = 0; $i < $countss; $i++) {
+                                            ?>
+                                                <tr> <?php
+                                                        $sum += isset($arr_data[$i]['ectc']['salary_amount']) ? $arr_data[$i]['ectc']['salary_amount'] : 0;
+                                                        if (isset($arr_withoutComponents[$i]['ectc']))
+                                                            $dd += isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? $arr_withoutComponents[$i]['ectc']['salary_amount'] : 0;
+                                                        ?>
+                                                    <!-- edited by megha on 30_05_19 round off  -->
+
+                                                    <td><?php echo isset($arr_data[$i]['ectc']['salary_head_item_desc']) ? $arr_data[$i]['ectc']['salary_head_item_desc'] : ''; ?></td>
+                                                    <!--<td><?php //echo isset($arr_data[$i]['ectc']['structure_det_value'])?round($arr_data[$i]['ectc']['structure_det_value'], 2):''; 
+                                                            ?></td>-->
+
+                                                    <td><?php echo isset($arr_data[$i]['ectc']['salary_amount']) ? number_format(abs(($arr_data[$i]['ectc']['salary_amount'])), 2) : ''; ?></td>
+
+                                                    <td><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_head_item_desc']) ? $arr_withoutComponents[$i]['ectc']['salary_head_item_desc'] : ''; ?></td>
+                                                    <!--<td><?php //echo round(isset($arr_withoutComponents[$i]['ectc']['structure_det_value']) ? $arr_withoutComponents[$i]['ectc']['structure_det_value'] : '', 2); 
+                                                            ?></td>-->
+                                                    <!-- edited by megha on 08_07_19 '0' values removed  -->
+                                                    <td><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? number_format(abs(($arr_withoutComponents[$i]['ectc']['salary_amount'])), 2) : ''; ?></td>
+
+                                                </tr>
+
+                                            <?php } ?>
+                                            <tr>
+                                                <th>Total</th>
+                                                <th><?php echo number_format((abs($sum)), 2); ?></th>
+                                                <th>Total </th>
+                                                <th><?php echo number_format((abs($dd)), 2); ?></th>
+                                            </tr>
+                                            <!-- edited by megha on 16/11/19 settlement amount  -->
+                                            <?php if ($value['summary']['0']['ed']['status'] == 2) { ?>
+                                                <!--                        <tr style="background: #cccccc ;" >
+                            <th style="text-align :center ; " colspan="3">Settlement Amount</th><th><?php echo $value['settle']; ?></th>
+                        </tr>-->
+                                            <?php } ?>
+                                            <!-- end -->
+                                            <!-- edited by megha on 30_05_19 round off, edited by megha on 16/11/19 settlement amount  -->
+
+                                            <!-- <tr style="background: #cccccc ;" > -->
+                                            <?php
+                                            $settle = isset($value['settle']) ? $value['settle'] : 0;
+                                            $netpay1 = (float)round($sum + $dd + $settle);
+                                            $netpay = $netpay1;
+                                            if ($netpay < 0) {
+                                                $direction = 'Negative';
+                                                $netpay = abs($netpay);
+                                            } else {
+                                                $direction = "";
+                                            }
+                                            $no = floor($netpay);
+                                            $point = round($netpay - $no, 2) * 100;
+                                            $hundred = null;
+                                            $digits_1 = strlen($no);
+                                            $i = 0;
+                                            $str = array();
+                                            $words = array(
+                                                '0' => '', '1' => 'one', '2' => 'two',
+                                                '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
+                                                '7' => 'seven', '8' => 'eight', '9' => 'nine',
+                                                '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
+                                                '13' => 'thirteen', '14' => 'fourteen',
+                                                '15' => 'fifteen', '16' => 'sixteen', '17' => 'seventeen',
+                                                '18' => 'eighteen', '19' => 'nineteen', '20' => 'twenty',
+                                                '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
+                                                '60' => 'sixty', '70' => 'seventy',
+                                                '80' => 'eighty', '90' => 'ninety'
+                                            );
+                                            $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
+                                            while ($i < $digits_1) {
+                                                $divider = ($i == 2) ? 10 : 100;
+                                                $netpay = floor($no % $divider);
+                                                $no = floor($no / $divider);
+                                                $i += ($divider == 10) ? 1 : 2;
+                                                if ($netpay) {
+
+                                                    $plural = (($counter = count($str)) && $netpay > 9) ? 's' : null;
+                                                    $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
+                                                    $str[] = ($netpay < 21) ? $words[$netpay] .
+                                                        " " . $digits[$counter] . $plural . " " . $hundred
+                                                        :
+                                                        $words[floor($netpay / 10) * 10]
+                                                        . " " . $words[$netpay % 10] . " "
+                                                        . $digits[$counter] . $plural . " " . $hundred;
+                                                } else $str[] = null;
+                                            }
+                                            $str = array_reverse($str);
+                                            $result = $direction . ' ' . implode('', $str);
+                                            ?>
+
+
+
+
+                                            <!-- </tr> -->
+                                            <?php $arr_withoutComponents = $value['withoutcomponent']; ?>
+
+                                            <?php if (count($arr_withoutComponents) > 0) {
+                                            ?>
+
+
+
+                                            <?php } ?>
+                                        <?php } else {
+                                        ?>
+                                            <tr>
+                                                <td colspan="4">No Components found under this data</td>
+                                            </tr>
+
+                                        <?php } ?>
+
+                                    </tbody>
+                                </table>
+                                <div style="text-align: left; font-size: 15px;"><b>Net Pay&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo number_format($netpay1, 2); ?> </b></div>
+
+                                <div style="text-align: left; font-size: 15px;text-transform: capitalize;"><b>In Words Rupees <?php echo $result; ?> Only</b></div><br>
+                                <table class="table table-bordered" align="center">
+                                    <tbody>
+                                        <tr style="background-color: #cccccc;">
+
+                                            <th colspan="2" style="text-align:left;" class="tds-border">New Tax Regime Opted</th>
+                                            <th colspan="2" style="text-align:center;" class="tds-border">TDS Details</th>
+                                            <th colspan="4" style="text-align:right;">PAN : <?php echo isset($value['summary']['0']['ed']['pan_no']) ? $value['summary']['0']['ed']['pan_no'] : ''; ?></th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="col-md-6" style="padding-left:0px;padding-right:2px;margin-top:-12px;">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th style="text-align:center;">Description</th>
+                                                <th style="text-align:center;">Gross</th>
+                                                <th style="text-align:center;">Exempt</th>
+                                                <th style="text-align:center;">Taxable</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Basic Salary</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>DA</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>HRA</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Conveyance</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Any Other Allowance</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Perquisites</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Other Components</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6" style="padding-left:2px;padding-right:0px;margin-top:-12px;">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th colspan="2" style="text-align:center;"><b>Income Tax Deduction</b></th>
+                                            </tr>
+                                            <tr>
+                                                <td>Gross Salary</td>
+                                                <td style="width:20%;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Profession Tax</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Other Ded. & Standard Ded.</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>House Property</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Income from Other Source</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Total VI-A deduction</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Taxable Income</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Total Tax</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Surcharge + Education Cess</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tax Deducted(Prev.Emplr+Other)</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tax Deducted Till date</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tax to be Deducted</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Monthly Projected Tax</td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6" style="margin-top:-152px;padding-left:0px;padding-right:2px;">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th colspan="2" style="text-align:center;"><b>Deduction Under Chapter VI-A</b></th>
+                                            </tr>
+
+                                            <tr>
+                                                <td style="width:80%;height:36px;"></td>
+                                                <td style="width:20%;height:36px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:80%;height:36px;"></td>
+                                                <td style="width:20%;height:36px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:80%;height:36px;"></td>
+                                                <td style="width:20%;height:36px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:80%;height:36px;"></td>
+                                                <td style="width:20%;height:36px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:80%;height:36px;"></td>
+                                                <td style="width:20%;height:36px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:80%;height:36px;"></td>
+                                                <td style="width:20%;height:36px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:80%;height:36px;"></td>
+                                                <td style="width:20%;height:36px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:80%;height:36px;"></td>
+                                                <td style="width:20%;height:36px;"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6" style="margin-top:-10px;padding-left: 2px;padding-right: 0px;">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th colspan="6" style="text-align:center;">Tax Paid Details</th>
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align:center;">APR</th>
+                                                <th style="text-align:center;">MAY</th>
+                                                <th style="text-align:center;">JUN</th>
+                                                <th style="text-align:center;">JUL</th>
+                                                <th style="text-align:center;">AUG</th>
+                                                <th style="text-align:center;">SEP</th>
+
+                                            </tr>
+                                            <tr>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align:center;">OCT</th>
+                                                <th style="text-align:center;">NOV</th>
+                                                <th style="text-align:center;">DEC</th>
+                                                <th style="text-align:center;">JAN</th>
+                                                <th style="text-align:center;">FEB</th>
+                                                <th style="text-align:center;">MAR</th>
+                                            </tr>
+                                            <tr>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                                <td style="height:36px;"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php }
+                        }
+                    } else {
+                        // debug($arr_salary_for_template); exit;
+                        foreach ($arr_salary_for_template as $val) {
+                            ?>
+                            <!-- <legend><?php echo $val['0']['summary']['0']['br']['branch_name']; ?> </legend> -->
+                            <?php foreach ($val as $value) {
+                                if (count($value['summary']) != 0) {
+                                    $i += 1;
+                            ?>
+                                    <div class="col-md-12">
+                                        <div>
+                                            <h3 style="font-size: 19px; text-align: center; color: #000066;font-weight:bold; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?></h3>
+                                            <h3 style="font-size: 15px; text-align:center; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['address'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['city'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['pincode'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['state']; ?></h3>
+                                        </div>
+                                        <div style="text-align: center;align-items: center; border: 1px solid black; width:450px; margin-top: 0px; margin-left:auto;float: center; margin-right: auto; height: 25px;">
+                                            <h3 style="padding: 0px 20px; margin: 0; font-size: 16px;font-weight: bold;">
+                                                Pay Slip for the month of <?php echo $mname1 . " / " . $y1; ?>
+                                            </h3>
+                                        </div>
+
+
+                                        <!--
+        
+
+    
+</table>-->
+                                        <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px;">
+                                            <div class="col-md-2 " style="background-color:#cccccc;">
+                                                Employee No.
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span style="text-align: right ; word-wrap: break-word; "> <?php echo isset($value['summary']['0']['ep']['emp_company_id']) ? $value['summary']['0']['ep']['emp_company_id'] : ''; ?> </span><span style="float: right ;"></span>
+                                            </div>
+                                            <div class="col-md-2" style="background-color:#cccccc;">
+                                                Division
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span style="text-align: right ;  border-bottom: 0px solid white ; "> <?php
+                                                                                                                        //edited by megha on 9_7_19 date format changed
+                                                                                                                        echo isset($value['summary']['0']['division']['div_name']) ? ($value['summary']['0']['division']['div_name']) : '';
+                                                                                                                        //echo isset($value['summary']['0']['ep']['joining_date']) ? $value['summary']['0']['ep']['joining_date'] : '';
+                                                                                                                        ?> </span><span style="float: right ;"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-left: 1px solid black;border: none;">
+
+                                            <div class="col-md-2" style="background-color:#cccccc;">
+                                                <span> Employee Name : </span><span></span>
+                                            </div>
+                                            <div class="col-md-4 ">
+                                                <span style="text-align: right ; word-wrap: break-word; "> <?php
+                                                                                                            echo isset($value['summary']['0']['ed']['first_name']) ? $value['summary']['0']['ed']['first_name'] : '';
+                                                                                                            echo ' ';
+                                                                                                            echo isset($value['summary']['0']['ed']['middile_name']) ? $value['summary']['0']['ed']['middile_name'] : '';
+                                                                                                            echo ' ';
+                                                                                                            echo isset($value['summary']['0']['ed']['last_name']) ? $value['summary']['0']['ed']['last_name'] : '';
+
+                                                                                                            ?> </span><span style="float: right ;"></span>
+                                            </div>
+                                            <div class="col-md-2" style="background-color:#cccccc;">
+                                                <span> PAN </span><span></span>
+                                            </div>
+                                            <div class="col-md-4 ">
+                                                <span style="text-align: right ; word-wrap: break-word; "> <?php echo  wordwrap(isset($value['summary']['0']['ed']['pan_no']) ? strtoupper($value['summary']['0']['ed']['pan_no']) : '', 21, "<br>\n", TRUE); ?> </span><span style="float: right ;"></span>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                            <div class="col-md-2" style="background-color:#cccccc;">
+                                                DOJ
+                                            </div>
+                                            <div class="col-md-4">
+                                                <!--           <span style="text-align: right ; ">: <?php //echo isset($value['empdet']['0']['payroll_master']['working_days']) ? $value['empdet']['0']['payroll_master']['working_days'] : ''; 
+                                                                                                    ?>   </span><span style="float: right ;"></span>-->
+                                                <span style="text-align: right ; "> <?php echo isset($value['summary']['0']['ep']['joining_date']) ? date('d/m/Y', strtotime($value['summary']['0']['ep']['joining_date'])) : ''; ?> </span><span style="float: right ;"></span>
+                                            </div>
+                                            <?php
+
+
+                                            $acc_number = '';
+
+
+
+                                            if ($acc_number == '') {
+                                                $acc_number = isset($value['summary']['0']['ed']['account_no']) ? $value['summary']['0']['ed']['account_no'] : '';
+                                            } ?>
+                                            <div class="col-md-2" style="background-color:#cccccc;">
+                                                <span style="text-align:  left ; ">Bank A/c </span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span style="text-align: left ;  border-right: 0px solid white; border-bottom: 0px solid white ; "> <?php echo $acc_number; ?> </span><span style="float: right ;"></span>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                            <div class="col-md-2" style="background-color:#cccccc;">
+                                                <span style="text-align:  left ; ">Designation </span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span style="text-align: right ; "><?php echo  wordwrap(isset($value['summary']['0']['desg']['desig_name']) ? $value['summary']['0']['desg']['desig_name'] : '', 30, "<br>\n", TRUE); ?> </span><span style="float: right ;"></span>
+
+                                            </div>
+                                            <div class="col-md-2" style="background-color:#cccccc;">
+                                                <span> UAN </span><span></span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span style="text-align: right ; "> <?php echo isset($value['summary']['0']['ed']['pf']) ? $value['summary']['0']['ed']['pf'] : ''; ?> </span><span style="float: right ;"></span>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="row  " style="padding-top: 10px; margin-left: 0px; margin-right: 0px; border-right: 1px solid black; border-left: 1px solid black;border: none;">
+                                            <div class="col-md-2" style="background-color:#cccccc;">
+                                                Department
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span style="text-align: right ; "><?php echo  wordwrap(isset($value['summary']['0']['d']['dept_name']) ? $value['summary']['0']['d']['dept_name'] : '', 30, "<br>\n", TRUE); ?> </span><span style="float: right ;"></span>
+
+                                            </div>
+                                            <div class="col-md-2" style="background-color:#cccccc;">
+                                                Pay Days
+                                            </div>
+                                            <?php $leave = isset($value['summary']['0']['payroll_master']['days_leave']) ? $value['summary']['0']['payroll_master']['days_leave'] : '';
+                                            $present = isset($value['summary']['0']['payroll_master']['days_presant']) ? $value['summary']['0']['payroll_master']['days_presant'] : '';
+                                            $weekoff = isset($value['summary']['0']['ar']['weekoff_total']) ? $value['summary']['0']['ar']['weekoff_total'] : '';
+                                            $paydays = $leave + $present + $weekoff; ?>
+                                            <div class="col-md-4">
+                                                <span style="text-align: right ; "> <?php echo $paydays; ?> </span><span style="float: right ;"></span>
+
+                                            </div>
+                                        </div><br>
+                                        <table class="table table-bordered" align="center">
+                                            <tbody>
+                                                <tr>
+
+
+
+
+                                                    <th style="width:40%">Earnings</th>
+                                                    <th style="width:10%">Amount</th>
+                                                    <th style="width:41%">Deductions</th>
+                                                    <th style="width:10%">Amount</th>
+
+                                                </tr>
+                                                <?php $arr_data = $value['summary'];
+                                                $arr_withoutComponents = $value['withoutcomponent'];
+                                                ?>
+                                                <?php
+                                                if (count($arr_data) >= 0) {
+                                                    $countss = count($arr_data);
+                                                    if (count($arr_data) < count($arr_withoutComponents)) {
+                                                        $countss = count($arr_withoutComponents);
+                                                    }
+                                                    $sum = 0;
+                                                    $tot = 0;
+                                                    $dd = 0;
+                                                    $net = 0;
+                                                ?>
+                                                    <?php for ($i = 0; $i < $countss; $i++) {
+                                                    ?>
+                                                        <tr> <?php
+                                                                $sum += isset($arr_data[$i]['ectc']['salary_amount']) ? $arr_data[$i]['ectc']['salary_amount'] : 0;
+                                                                if (isset($arr_withoutComponents[$i]['ectc']))
+                                                                    $dd += isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? $arr_withoutComponents[$i]['ectc']['salary_amount'] : 0;
+                                                                ?>
+                                                            <!-- edited by megha on 30_05_19 round off  -->
+
+                                                            <td><?php echo isset($arr_data[$i]['ectc']['salary_head_item_desc']) ? $arr_data[$i]['ectc']['salary_head_item_desc'] : ''; ?></td>
+                                                            <!--<td><?php //echo isset($arr_data[$i]['ectc']['structure_det_value'])?round($arr_data[$i]['ectc']['structure_det_value'], 2):''; 
+                                                                    ?></td>-->
+
+                                                            <td><?php echo isset($arr_data[$i]['ectc']['salary_amount']) ? number_format(abs(($arr_data[$i]['ectc']['salary_amount'])), 2) : ''; ?></td>
+
+                                                            <td><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_head_item_desc']) ? $arr_withoutComponents[$i]['ectc']['salary_head_item_desc'] : ''; ?></td>
+                                                            <!--<td><?php //echo round(isset($arr_withoutComponents[$i]['ectc']['structure_det_value']) ? $arr_withoutComponents[$i]['ectc']['structure_det_value'] : '', 2); 
+                                                                    ?></td>-->
+                                                            <!-- edited by megha on 08_07_19 '0' values removed  -->
+                                                            <td><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? number_format(abs(($arr_withoutComponents[$i]['ectc']['salary_amount'])), 2) : ''; ?></td>
+
+                                                        </tr>
+
+                                                    <?php } ?>
+                                                    <tr>
+                                                        <th>Total</th>
+                                                        <th><?php echo number_format((abs($sum)), 2); ?></th>
+                                                        <th>Total </th>
+                                                        <th><?php echo number_format((abs($dd)), 2); ?></th>
+                                                    </tr>
+                                                    <!-- edited by megha on 16/11/19 settlement amount  -->
+                                                    <?php if ($value['summary']['0']['ed']['status'] == 2) { ?>
+                                                        <!--                        <tr style="background: #cccccc ;" >
+                            <th style="text-align :center ; " colspan="3">Settlement Amount</th><th><?php //echo $value['settle']; 
+                                                                                                    ?></th>
+                        </tr>-->
+                                                    <?php } ?>
+                                                    <!-- end -->
+                                                    <!-- edited by megha on 30_05_19 round off, edited by megha on 16/11/19 settlement amount  -->
+
+                                                    <!-- <tr style="background: #cccccc ;" > -->
+                                                    <?php
+                                                    $settle = isset($value['settle']) ? $value['settle'] : 0;
+                                                    $netpay1 = (float)round($sum + $dd + $settle);
+                                                    $netpay = $netpay1;
+                                                    if ($netpay < 0) {
+                                                        $direction = 'Negative';
+                                                        $netpay = abs($netpay);
+                                                    } else {
+                                                        $direction = '';
+                                                    }
+                                                    $no = floor($netpay);
+                                                    $point = round($netpay - $no, 2) * 100;
+                                                    $hundred = null;
+                                                    $digits_1 = strlen($no);
+                                                    $i = 0;
+                                                    $str = array();
+                                                    $words = array(
+                                                        '0' => '', '1' => 'one', '2' => 'two',
+                                                        '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
+                                                        '7' => 'seven', '8' => 'eight', '9' => 'nine',
+                                                        '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
+                                                        '13' => 'thirteen', '14' => 'fourteen',
+                                                        '15' => 'fifteen', '16' => 'sixteen', '17' => 'seventeen',
+                                                        '18' => 'eighteen', '19' => 'nineteen', '20' => 'twenty',
+                                                        '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
+                                                        '60' => 'sixty', '70' => 'seventy',
+                                                        '80' => 'eighty', '90' => 'ninety'
+                                                    );
+                                                    $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
+                                                    while ($i < $digits_1) {
+                                                        $divider = ($i == 2) ? 10 : 100;
+                                                        $netpay = floor($no % $divider);
+                                                        $no = floor($no / $divider);
+                                                        $i += ($divider == 10) ? 1 : 2;
+                                                        if ($netpay) {
+                                                            $plural = (($counter = count($str)) && $netpay > 9) ? 's' : null;
+                                                            $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
+                                                            $str[] = ($netpay < 21) ? $words[$netpay] .
+                                                                " " . $digits[$counter] . $plural . " " . $hundred
+                                                                :
+                                                                $words[floor($netpay / 10) * 10]
+                                                                . " " . $words[$netpay % 10] . " "
+                                                                . $digits[$counter] . $plural . " " . $hundred;
+                                                        } else $str[] = null;
+                                                    }
+                                                    $str = array_reverse($str);
+                                                    $result = $direction . ' ' . implode('', $str);
+                                                    ?>
+
+
+
+
+                                                    <!-- </tr> -->
+                                                    <?php $arr_withoutComponents = $value['withoutcomponent']; ?>
+
+                                                    <?php if (count($arr_withoutComponents) > 0) {
+                                                    ?>
+
+
+
+                                                    <?php } ?>
+                                                <?php } else {
+                                                ?>
+                                                    <tr>
+                                                        <td colspan="4">No Components found under this data</td>
+                                                    </tr>
+
+                                                <?php } ?>
+
+                                            </tbody>
+                                        </table>
+                                        <div style="text-align: left; font-size: 15px;"><b>Net Pay&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo number_format($netpay1, 2); ?> </b></div>
+
+                                        <div style="text-align: left; font-size: 15px;text-transform: capitalize;"><b>In Words Rupees <?php echo $result; ?> Only</b></div><br>
+                                        <table class="table table-bordered" align="center">
+                                            <tbody>
+                                                <tr style="background-color: #cccccc;">
+
+                                                    <th colspan="2" style="text-align:left;" class="tds-border">New Tax Regime Opted</th>
+                                                    <th colspan="2" style="text-align:center;" class="tds-border">TDS Details</th>
+                                                    <th colspan="4" style="text-align:right;">PAN : <?php echo isset($value['summary']['0']['ed']['pan_no']) ? $value['summary']['0']['ed']['pan_no'] : ''; ?></th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="col-md-6" style="padding-left:0px;padding-right:2px;margin-top:-12px;">
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                    <tr>
+                                                        <th style="text-align:center;">Description</th>
+                                                        <th style="text-align:center;">Gross</th>
+                                                        <th style="text-align:center;">Exempt</th>
+                                                        <th style="text-align:center;">Taxable</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Basic Salary</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>DA</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>HRA</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Conveyance</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Any Other Allowance</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Perquisites</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Other Components</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-6" style="padding-left:2px;padding-right:0px;margin-top:-12px;">
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                    <tr>
+                                                        <th colspan="2" style="text-align:center;"><b>Income Tax Deduction</b></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gross Salary</td>
+                                                        <td style="width:20%;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Profession Tax</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Other Ded. & Standard Ded.</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>House Property</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Income from Other Source</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total VI-A deduction</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Taxable Income</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total Tax</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Surcharge + Education Cess</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Tax Deducted(Prev.Emplr+Other)</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Tax Deducted Till date</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Tax to be Deducted</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Monthly Projected Tax</td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-6" style="margin-top:-152px;padding-left:0px;padding-right:2px;">
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                    <tr>
+                                                        <th colspan="2" style="text-align:center;"><b>Deduction Under Chapter VI-A</b></th>
+
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td style="width:80%;height:36px;"></td>
+                                                        <td style="width:20%;height:36px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:80%;height:36px;"></td>
+                                                        <td style="width:20%;height:36px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:80%;height:36px;"></td>
+                                                        <td style="width:20%;height:36px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:80%;height:36px;"></td>
+                                                        <td style="width:20%;height:36px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:80%;height:36px;"></td>
+                                                        <td style="width:20%;height:36px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:80%;height:36px;"></td>
+                                                        <td style="width:20%;height:36px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:80%;height:36px;"></td>
+                                                        <td style="width:20%;height:36px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:80%;height:36px;"></td>
+                                                        <td style="width:20%;height:36px;"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-6" style="margin-top:-10px;padding-left: 2px;padding-right: 0px;">
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                    <tr>
+                                                        <th colspan="6" style="text-align:center;">Tax Paid Details</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th style="text-align:center;">APR</th>
+                                                        <th style="text-align:center;">MAY</th>
+                                                        <th style="text-align:center;">JUN</th>
+                                                        <th style="text-align:center;">JUL</th>
+                                                        <th style="text-align:center;">AUG</th>
+                                                        <th style="text-align:center;">SEP</th>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th style="text-align:center;">OCT</th>
+                                                        <th style="text-align:center;">NOV</th>
+                                                        <th style="text-align:center;">DEC</th>
+                                                        <th style="text-align:center;">JAN</th>
+                                                        <th style="text-align:center;">FEB</th>
+                                                        <th style="text-align:center;">MAR</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                        <td style="height:36px;"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+
+                                    </div>
+
+
+                        <?php
+                                }
+                            }
+                        }
+                        exit;
+                    }
+                    if ($i == '0') { ?>
+                        <page_header>
+
+                            <div>
+                                <h3> <b style="font-size: 19px; margin-top: 0px;margin-left: 550px; color: #000066; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?></b></h3><br>
+                                <h3 style="font-size: 15px; margin-top: -24px; margin-left: 630px; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['address'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['city'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['pincode'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['state']; ?></h3>
+                            </div>
+                            <div style="text-align: center; border: 1px solid black; width:450px; margin-top: 0px; margin-left: 520px; margin-right: ; height: 25px;">
+                                <h3 style="padding: 0px 20px; margin: 0; font-size: 16px;align-items: center;font-weight: bold;">
+                                    Pay Slip for the month of <?php echo $mname1 . " / " . $y1; ?>
+                                </h3>
+                            </div>
+                        </page_header>
+                        <div style="font-size: 16px;text-align:left; background-color:;">
+                            No data available under the selected criteria</div>
+                    <?php } ?>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+        </div>
+        <!--div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel </button>  
+    </div-->
+        <!--<div class="row">
+        <div class="form-group">
+            <div class="col-md-12" align="right">
+                <a href="#" class="btn btn-default" onclick="downloadReport('Salaryslip', 'pdf');" ><i class="icon-file"></i>Download As PDF</a>
+    <!--a href="#" class="btn btn-default" onclick="downloadReport('Salaryslip','excel');"><i class="icon-file"></i>Download As Excel</a>
+</div>
+</div>
+</div> -->
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?php } else { ?>
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            /*border: #000000 solid thin;*/
+        }
+
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+
+        .row {
+            height: 32px;
+        }
+
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+
+        table {
+            /*border: 1px solid #f4f4f4;*/
+            width: 80%;
+            max-width: 80%;
+            margin-bottom: 20px;
+            /*background-color: transparent;*/
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            text-align: left;
+            padding: 1px;
+            font-weight: normal;
+            /*font-size: 11px;*/
+            font-size: 12px;
+            /*font-family: serif;*/
+            line-height: 1.32857143;
+            word-wrap: break-word;
+            vertical-align: top;
+            color: black;
+            border: 1px solid;
+        }
+
+        .noborder th,
+        .noborder td {
+            border-left-style: hidden;
+            border-left: 0px solid white;
+            border-top-style: hidden;
+            border-top: 0px solid white;
+            border-bottom-style: hidden;
+            border-bottom: 0px solid white;
+            border-right-style: hidden;
+            border-right: 0px solid white;
+        }
+
+        /* Edited by Akshay on 6-7-2023 */
+        .table-no-row-borders tbody tr td {
+            border-top: none;
+            border-bottom: none;
+        }
+
+        .last-row td {
+            border-bottom: 1px solid grey;
+        }
+
+        .table-min-height tbody {
+            min-height: 40em !important;
+        }
+
+        .shrinknew {
+            /* border-bottom-color:#fff; */
+            border-right: 1px;
+            border-right-color: grey;
+        }
+
+        .shrink {
+            /* border-bottom-color:#fff;  */
+            border-bottom: none;
+        }
+    </style>
+
+    <!-- employeewise criteria PDF--->
+
+    <?php
+    //echo $this->element('reportadminheader', array(
+    //'title' => 'Salary Slip - '.date("M Y",strtotime($value['summary']['0']['ectc']['month_year']))));
+    ?>
+    <?php
+
+    $i = 0;
+    if ($cr == 'EmployeeDetails') {
+        foreach ($arr_salary_for_template as $value) {
+            if (count($value['summary']) != 0) {
+                $i += 1;
+            ?>
+                 <page backtop="30mm" backbottom="10mm" backleft="10mm" backright="10mm" style="font-size: 12pt">
+                    <page_header>
+
+                        <div style="text-align:left; width:100%; ">
+
+
+
+                            <!-- <img style=" margin-left: 40px; "<?php echo $arr_comp_contact_info['CompanyContactInfo']['logo']; ?>" height="60" width="70" class="img-circle" alt="Company Logo" /> -->
+
+                            <div style="align-items: center;">
+                                <b style="font-size: 19px; margin-top: 0px; color: #000066; margin-left: 300px;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?></b></br></br>
+																																																																																			   
+				  
+
+                                <p style="font-size: 13px; margin-top: -24px; text-align: center;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['address'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['city'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['pincode'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['state']; ?></p>
+																																					  
+															   
+																	  
+		 
+                            </div>
+				  
+				 
+
+                        </div>
+                        <div style="text-align: center; border: 1px solid black; width:450px; margin-top: 0px; margin-left: 160px; margin-right: auto; height: 25px;">
+                            <h3 style="padding: 0px 20px; margin: 0; font-size: 16px;color: black;">
+                                Pay Slip for the month of <?php echo $mname1 . " / " . $y1; ?>
+                            </h3>
+                        </div>
+                    </page_header>
+                    <page_footer>
+
+                        <!--        <div style="width: 100%; text-align: right">
+            page [[page_cu]]/[[page_nb]]
+        </div>
+        <div style="width: 100%; text-align: left">
+            Downloaded By <?php echo $user_name; ?> <?php echo date("l,F j, Y"); ?>
+        </div>-->
+                    </page_footer>
+                    <!--    <bookmark title="Sommaire" level="0"></bookmark>-->
+                   <table class="noborder" align="center" style="margin-top: -22px; border:hidden; width: 100% !important; border-bottom: double;  ">
+                        <tbody>
+
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Emp No.</th>
+                                <?php $emp_pkey = isset($value['summary']['0']['ed']['emp_pkey']) ? $value['summary']['0']['ed']['emp_pkey'] : ''; ?>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo  wordwrap(isset($value['summary']['0']['ep']['emp_company_id']) ? $value['summary']['0']['ep']['emp_company_id'] : ''); ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Division </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo isset($value['summary']['0']['division']['div_name']) ? $value['summary']['0']['division']['div_name'] : ''; ?></th>
+                            </tr><br>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Employee Name:</th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php
+                                                                                                                            echo isset($value['summary']['0']['ed']['first_name']) ? $value['summary']['0']['ed']['first_name'] : '';
+                                                                                                                            echo ' ';
+                                                                                                                            echo isset($value['summary']['0']['ed']['middile_name']) ? $value['summary']['0']['ed']['middile_name'] : '';
+                                                                                                                            echo ' ';
+                                                                                                                            echo isset($value['summary']['0']['ed']['last_name']) ? $value['summary']['0']['ed']['last_name'] : '';
+
+                                                                                                                            ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> PAN </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo isset($value['summary']['0']['ed']['pan_no']) ? $value['summary']['0']['ed']['pan_no'] : ''; ?> </th>
+                            </tr>
+                            <?php
+                            $acc_number = '';
+
+                            if ($acc_number == '') {
+                                $acc_number = isset($value['summary']['0']['ed']['account_no']) ? $value['summary']['0']['ed']['account_no'] : '';
+                            } ?>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> DOJ </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "> <?php echo isset($value['summary']['0']['ep']['joining_date']) ? date('d/m/Y', strtotime($value['summary']['0']['ep']['joining_date'])) : ''; ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Bank A/c </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo $acc_number; ?></th>
+                            </tr>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ; text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Designation </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;padding-left: 5px; "> <?php echo  wordwrap(isset($value['summary']['0']['desg']['desig_name']) ? $value['summary']['0']['desg']['desig_name'] : '', 30, "<br>\n", TRUE); ?></th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ; text-align:  left ;background-color: lightgrey;padding-left: 5px;"> UAN </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ; padding-left: 5px;"> <?php echo isset($value['summary']['0']['ed']['pf']) ? $value['summary']['0']['ed']['pf'] : ''; ?></th>
+                            </tr>
+                            <?php $leave = isset($value['summary']['0']['payroll_master']['days_leave']) ? $value['summary']['0']['payroll_master']['days_leave'] : '';
+                            $present = isset($value['summary']['0']['payroll_master']['days_presant']) ? $value['summary']['0']['payroll_master']['days_presant'] : '';
+                            $weekoff = isset($value['summary']['0']['ar']['weekoff_total']) ? $value['summary']['0']['ar']['weekoff_total'] : '';
+                            $paydays = $leave + $present + $weekoff; ?>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 0px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Department</th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; padding-left: 5px;"><?php echo  wordwrap(isset($value['summary']['0']['d']['dept_name']) ? $value['summary']['0']['d']['dept_name'] : '', 30, "<br>\n", TRUE); ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 0px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Pay Days </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo $paydays; ?></th>
+                            </tr>
+                            <tr>
+
+                                <th style="width:15%"></th>
+                                <th style="width:35%"></th>
+                                <th style="width:15%"></th>
+                                <th style="width:35%"></th>
+
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+
+                    <table class="table table-no-row-borders table-min-height" align="center" style="margin-top: 5px;border:1px solid black;  width: 550px !important; ">
+                        <tbody>
+                            <tr>
+
+
+                                <th style="width:32%; text-align: left; font-size: 12px;border-color: black;"><b> &nbsp;&nbsp;&nbsp;&nbsp; Earnings</b></th>
+                                <th style="width:18%; text-align: center; font-size: 12px;border-color: black;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Amount</b></th>
+                                <th style="border: .75px solid black !important;" class="shrinknew"></th>
+                                <th style="width:32%; text-align: left; font-size: 12px;border-color: black;padding-left: 2px;"><b> &nbsp;&nbsp;&nbsp;&nbsp; Deductions</b></th>
+
+                                <th style="width:18%; text-align: center; font-size: 12px;border-color: black;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Amount</b></th>
+
+                            </tr>
+                            <?php $arr_data = $value['summary'];
+                            // debug($arr_data);exit;
+                            $arr_withoutComponents = $value['withoutcomponent'];
+                            ?>
+                            <?php
+                            if (count($arr_data) >= 0) {
+                                $countss = count($arr_data);
+                                if (count($arr_data) < count($arr_withoutComponents)) {
+                                    $countss = count($arr_withoutComponents);
+                                }
+                                $sum = 0;
+                                $tot = 0;
+                                $dd = 0;
+                                $net = 0;
+                            ?>
+                                <?php for ($i = 0; $i < $countss; $i++) {
+                                ?>
+                                    <tr <?php if ($i === $countss - 1); ?>>
+
+                                        <?php
+                                        $sum += isset($arr_data[$i]['ectc']['salary_amount']) ? $arr_data[$i]['ectc']['salary_amount'] : 0;
+                                        if (isset($arr_withoutComponents[$i]['ectc']))
+                                            $dd += isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? $arr_withoutComponents[$i]['ectc']['salary_amount'] : 0;
+                                        ?>
+                                                    <td>Consolidated Pay<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></td>
+                                        <td style="border: .5px solid black;"><?php echo isset($arr_data[$i]['ectc']['salary_head_item_desc']) ? '&nbsp;' . trim($arr_data[$i]['ectc']['salary_head_item_desc']) : ''; ?></td>
+                                        <td style="text-align:right;border: .5px solid black;"><?php echo isset($arr_data[$i]['ectc']['salary_amount']) ? number_format(abs(($arr_data[$i]['ectc']['salary_amount'])), 2) . '&nbsp;&nbsp;' : ''; ?></td>
+                                        <td style="border: .5px solid black;" class="shrinknew"></td>
+                                        <td style="border: .5px solid black;"><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_head_item_desc']) ? '&nbsp;&nbsp;' . $arr_withoutComponents[$i]['ectc']['salary_head_item_desc'] . ' ' : ''; ?></td>
+                                        <td style="text-align:right;border: .5px solid black;"><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? number_format(abs(($arr_withoutComponents[$i]['ectc']['salary_amount'])), 2) . '&nbsp;&nbsp;' : ''; ?></td>
+
+                                    </tr>
+                                    <?php }
+
+                                // Add remaining blank rows if the number of rows is less than 20
+                                $remainingRows = 150 - $countss;
+                                if ($remainingRows > 0) {
+                                    for ($j = 0; $j < $remainingRows; $j++) {
+                                    ?>
+                                        <tr <?php if ($j == ($remainingRows - 1)) echo 'class="last-row"'; ?>>
+                                            <td style="border: .5px solid black;"></td>
+                                            <td style="border: .5px solid black;"></td>
+                                            <td style="border: .5px solid black;" class="shrinknew"></td>
+                                            <td style="border: .5px solid black;"></td>
+                                            <td style="border: .5px solid black;"></td>
+
+                                        </tr>
+                                <?php
+                                    }
+                                }
+                                ?>
+
+                                <tr style="border-collapse: seperate;border-color: black !important;">
+                                    <th style="border-color: black;border-bottom: double 1xpx solid black;"><b>&nbsp;Total</b></th>
+                                     <th style="border: .5px solid black;"><b><?php echo number_format(abs(round($sum))); ?></b></th> 
+                                    <th style="border-color: black;text-align:right;border-bottom: double 1px solid black;"><b><?php echo number_format((($sum)), 2) . '&nbsp;&nbsp;'; ?></b></th>
+                                    <th style="border-color: black;border-bottom: double 1px solid black;" class="shrinknew"></th>
+                                    <th style="border-color: black;border-bottom: double 1px solid black;"><b>&nbsp;&nbsp;Total </b></th>
+                                     <th style="text-align:right;border: .5px solid black;"><b><?php echo number_format(abs(round($dd, 2))); ?></b></th> 
+                                    <th style="text-align:right;border-color: black;border-bottom: double 1px solid black;"><b><?php echo number_format((abs($dd)), 2) . '&nbsp;&nbsp;'; ?></b></th>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" style="border-bottom: .75px solid black;padding-top: .75px; padding-bottom: .5px;"></td>
+                                </tr>
+
+                                <?php $settle = isset($value['settle']) ? $value['settle'] : 0;
+                                $netpay1 = (float)round($sum + $dd + $settle);
+                                // debug($netpay1); exit;
+
+                                ?>
+
+                                <?php
+                                $netpay = $netpay1;
+                                $no = floor($netpay);
+                                $point = round($netpay - $no, 2) * 100;
+                                $hundred = null;
+                                $digits_1 = strlen($no);
+                                $i = 0;
+                                $str = array();
+                                $words = array(
+                                    '0' => '', '1' => 'one', '2' => 'two',
+                                    '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
+                                    '7' => 'seven', '8' => 'eight', '9' => 'nine',
+                                    '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
+                                    '13' => 'thirteen', '14' => 'fourteen',
+                                    '15' => 'fifteen', '16' => 'sixteen', '17' => 'seventeen',
+                                    '18' => 'eighteen', '19' => 'nineteen', '20' => 'twenty',
+                                    '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
+                                    '60' => 'sixty', '70' => 'seventy',
+                                    '80' => 'eighty', '90' => 'ninety'
+                                );
+                                $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
+                                while ($i < $digits_1) {
+                                    $divider = ($i == 2) ? 10 : 100;
+                                    $netpay = floor($no % $divider);
+                                    $no = floor($no / $divider);
+                                    $i += ($divider == 10) ? 1 : 2;
+                                    if ($netpay) {
+                                        $plural = (($counter = count($str)) && $netpay > 9) ? null : null;
+
+                                        $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
+                                        $str[] = ($netpay < 21) ? $words[$netpay] .
+                                            " " . $digits[$counter] . $plural . " " . $hundred
+                                            :
+                                            $words[floor($netpay / 10) * 10]
+                                            . " " . $words[$netpay % 10] . " "
+                                            . $digits[$counter] . $plural . " " . $hundred;
+                                    } else $str[] = null;
+                                }
+                                $str = array_reverse($str);
+                                $result = implode('', $str);
+                                if ($netpay1 < 0) {
+                                    $result = 'Negative ' . $result;
+                                } ?>
+
+                            <?php } ?>
+                            <tr>
+                                <th style="display: flex; justify-content: space-between; align-items: center; width: 32%; font-size: 12px; border: .5px solid white;padding-top:10px;">
+                                    <span style="margin-right: auto;"><b>&nbsp;Net Pay</b></span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                    <span style="margin-left: auto;"><b><?php echo number_format($netpay1, 2); ?></b></span>
+                                </th>
+
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="text-align: left; font-size: 12px;text-transform: capitalize;"><b>&nbsp;&nbsp;In Words &nbsp;&nbsp;&nbsp;&nbsp;Rupees <?php echo $result; ?> Only</b></div>
+
+
+                    <table class="" style="border color: black;">
+                        <tbody>
+                            <tr style="background: #ccc; ">
+
+                                 <th colspan="4" style=" font-weight: bold;font-size: 12px; padding-right:540px;"> pan</th>
+<th colspan="4" style=" font-weight: bold;font-size: 12px;"> </th> 
+
+
+                                <th style=" font-weight: bold; text-align: ;font-size: 12px;text-align: left;width: 50%;border-right:none;border-color: ;"> New Tax Regime Opted </th>
+
+                                <th style=" font-weight: bold; text-align: center;font-size: 12px;width: 35%; border-right: #ccc;">TDS Details
+                                </th>
+
+                                <th style=" font-weight: bold; text-align:right ;font-size: 12px;text-align: right; width: 41%;border-color: ;"> PAN : <?php echo isset($value['summary']['0']['ed']['pan_no']) ? $value['summary']['0']['ed']['pan_no'] : ''; ?>
+                                </th>
+
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div>
+                        <table style="width: 120%; margin-top: 2px;">
+                            <tbody>
+                            <tr>
+                                <td style="vertical-align: top; width:46.5% ;padding:0; border:none;">
+                                    <table style="width:400px;margin-bottom: 0px; padding:0">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 144px; text-align: center; font-size: 12px;" colspan="1"><b>Description</b></td>
+                                                <td style="width: 70px; text-align: center; font-size: 12px;"><b>Gross</b></td>
+                                                <td style="width: 70px; text-align: center; font-size: 12px;"><b>Exempt</b></td>
+                                                <td style="width: 70px; text-align: center; font-size: 12px;"><b>Taxable</b></td>
+                                            </tr>
+
+
+
+
+                                            <?php
+                                            $taxable = '';
+                                            $excempt = '';
+                                            $values = '';
+                                            $count = 0;
+                                            // debug($arr_salary_for_template); exit;
+                                            foreach ($arr_salary_for_template as $value) {
+                                                $arr_data = isset($value['grossnew']) ? $value['grossnew'] : '';
+                                                $employee = $value;
+                                                if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                    if (count($arr_data) >= 0) {
+                                                        // debug($arr_data); exit;
+                                                        foreach ($arr_data as $employee => $val) {
+                                                            // debug($val);
+                                                            $component =  isset($val['SHI']['item']) ? $val['SHI']['item'] : 0;
+                                                            $values =  isset($val['EmpTaxSalTransNew']['availed_salary']) ? $val['EmpTaxSalTransNew']['availed_salary'] : 0;
+                                                            $taxable = $values - $excempt;
+                                                            $emp_fkey = isset($val['EmpTaxSalTransNew']['emp_fkey']) ? $val['EmpTaxSalTransNew']['emp_fkey'] : 0;
+
+                                                            if ($emp_fkey === $emp_pkey) {
+                                                                $count++;
+                                            ?>
+
+                                                                <tr>
+                                                                     <td style="width: 144px;"><?php echo $component; ?></td> 
+                                                                    <td style="width: 144px;"><?php echo preg_match('/\((.*?)\)/', $component, $matches) ? $matches[1] : trim($component); ?></td>
+                                                                    <td style="width: 70px; text-align: right;"><?php echo number_format($values, 2); ?></td>
+                                                                    <td style="width: 70px; text-align: right;"><?php echo $excempt; ?></td>
+                                                                    <td style="width: 70px; text-align: right;"><?php echo number_format($taxable, 2); ?></td>
+                                                                </tr>
+                                                    <?php
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            if ($count < 9) {
+                                                for ($k = 0; $k <= (8 - $count); $k++) { ?>
+                                                    <tr>
+                                                        <td style="width: 144px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                        <td style="width: 70px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                        <td style="width: 70px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                        <td style="width: 70px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                    </tr>
+
+                                            <?php }
+                                            }
+                                            ?>
+
+
+
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td style="vertical-align: top;padding:0; border:none;">
+                                    <table class="table table-bordered" style="width:675px; padding:0; margin-left: 5px;">
+                                        <tbody>
+                                            <tr>
+                                                <th colspan="2" style="text-align:center;"><b>Income Tax Deduction</b></th>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:29%">&nbsp;Gross Salary</td>
+                                                <?php foreach ($arr_salary_for_template as $value) {
+                                                    $arr_data = isset($value['gross']) ? $value['gross'] : '';
+                                                    $gross = '';
+                                                    $std = '';
+                                                    $Income_from_Other_Source = '';
+                                                    $Taxable_Income = '';
+                                                    $Total_Tax = '';
+                                                    $Surcharge = '';
+                                                    $Tax_Deducted_Till_date = '';
+                                                    $Tax_to_be_Deducted = '';
+                                                    $Monthly_tax = '';
+                                                    //         if (count($arr_data) >= 0) {
+                                                    //             foreach ($value['gross'] as $val) {
+                                                    //                 $Monthly_tax =  $val['tax_computation_report']['Monthly_Tax'];
+                                                    //             }
+                                                    //         }
+                                                    if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                        if (count($arr_data) >= 0) {
+                                                            foreach ($arr_data as $val) {
+                                                                $gross =  isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? $val['tax_computation_report']['Taxable_Income_from_Salary'] : 0;
+                                                                $std =  isset($val['tax_computation_report']['Standard_deduction']) ? $val['tax_computation_report']['Standard_deduction'] : 0;
+                                                                $Income_from_Other_Source = isset($val['tax_computation_report']['Taxable_Income_from_Other_Sources']) ? $val['tax_computation_report']['Taxable_Income_from_Other_Sources'] : 0;
+                                                                $Taxable_Income =  isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? $val['tax_computation_report']['Taxable_Income_from_Salary'] : 0;
+                                                                $Total_Tax =  isset($val['tax_computation_report']['Total_Tax']) ? $val['tax_computation_report']['Total_Tax'] : 0;
+                                                                $Surcharge =  isset($val['tax_computation_report']['Surcharge']) ? $val['tax_computation_report']['Surcharge'] : 0;
+                                                                $Tax_Deducted_Till_date = isset($val['tax_computation_report']['Tax_Deducted']) ? $val['tax_computation_report']['Tax_Deducted'] : 0;
+                                                                $Tax_to_be_Deducted = isset($val['tax_computation_report']['Balance_Tax']) ? $val['tax_computation_report']['Balance_Tax'] : 0;
+                                                                $Monthly_tax =  isset($val['tax_computation_report']['Monthly_Tax']) ? $val['tax_computation_report']['Monthly_Tax'] : 0;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                ?>
+
+                                                <?php
+
+                                                $totalValuesSum = 0;
+
+                                                foreach ($arr_salary_for_template as $value) {
+                                                    $arr_data = isset($value['grossnew']) ? $value['grossnew'] : '';
+                                                    $employee = $value;
+
+                                                    if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                        if (count($arr_data) >= 0) {
+                                                            foreach ($arr_data as $employee => $val) {
+
+                                                                $values = isset($val['EmpTaxSalTransNew']['availed_salary']) ? $val['EmpTaxSalTransNew']['availed_salary'] : 0;
+
+
+                                                                // Add $values to the total sum
+                                                                $totalValuesSum += $values;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                ?>
+
+                                                <td style="width:15%;text-align:right;"><?php echo number_format($totalValuesSum, 2); ?></td>
+                                            </tr>
+
+                                            <?php
+                                            $pt = 0;
+
+                                            foreach ($arr_salary_for_template as $value) {
+                                                $arr_data = isset($value['withoutcomponent']) ? $value['withoutcomponent'] : '';
+
+                                                if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                    if (count($arr_data) >= 0) {
+                                                        foreach ($arr_data as $val) {
+                                                            $pthead = isset($val['ectc']['salary_head_item_desc']) ? $val['ectc']['salary_head_item_desc'] : '';
+                                                            $ptAmount = isset($val['ectc']['salary_amount']) ? $val['ectc']['salary_amount'] : 0;
+
+
+                                                            if ($pthead == 'Professional Tax') {
+                                                                $pt = $ptAmount;
+                                                                break 3;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            ?>
+
+
+                                            <tr>
+                                                <td>&nbsp;Profession Tax</td>
+                                                <td style="text-align: right;"><?php echo number_format($pt, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Other Ded. & Standard Ded.</td>
+                                                <td style="text-align: right;"><?php echo number_format($std, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;House Property</td>
+                                                <?php
+                                                $TaxHead = 'House Property';
+                                                $houseProperty = 0;
+                                                $j = 0;
+                                                foreach ($arr_taxheadfields['Income']['tax_heads'] as $heads) {
+                                                    if ($heads['tax_name'] == $TaxHead) {
+
+                                                        foreach ($value['tax'] as $key => $val) {
+                                                            if ($heads['tax_heads_pkey'] == $key) {
+                                                                $houseProperty = $val['tax_value'];
+                                                                break;
+                                                            }
+                                                        }
+                                                        break;
+                                                    }
+
+                                                    $j++;
+                                                } ?>
+                                                <td style="text-align: right;"><?php echo number_format($houseProperty, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Income from Other Source</td>
+                                                <td style="text-align: right;"><?php echo number_format($Income_from_Other_Source, 2); ?></td>
+                                            </tr>
+                                            <tr>
+
+
+                                                <td>&nbsp;Total VI-A deduction</td>
+
+                                                <?php
+                                                $totalSum = 0;
+
+                                                foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $heads) {
+                                                    $result = 0;
+
+                                                    foreach ($value['tax'] as $key => $val) {
+                                                        if ($heads['tax_heads_pkey'] == $key) {
+                                                            $result = $val['tax_value'];
+                                                        }
+                                                    }
+
+                                                    $totalSum += $result;
+                                                } ?>
+                                                <td style="text-align: right;"><?php echo number_format($totalSum, 2); ?></td>
+                                            </tr>
+
+
+                                            <tr>
+                                                <td>&nbsp;Taxable Income</td>
+                                                <td style="text-align: right;"><?php echo number_format($Taxable_Income, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Total Tax</td>
+                                                <td style="text-align: right;"><?php echo number_format($Total_Tax, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Surcharge + Education Cess</td>
+                                                <td style="text-align: right;"><?php echo number_format($Surcharge, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Tax Deducted(Prev.Emplr+Other)</td>
+                                                <td style="text-align: right;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Tax Deducted Till date</td>
+                                                <td style="text-align: right;"><?php echo number_format($Tax_Deducted_Till_date, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Tax to be Deducted</td>
+                                                <td style="text-align: right;"><?php echo number_format($Tax_to_be_Deducted, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Monthly Projected Tax</td>
+                                                <td style="text-align: right;"><?php echo number_format($Monthly_tax, 2); ?></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                     ------------------------------------ 
+
+
+                    <div class="col-md-6">
+                        <table class="" style="width:100%;margin-top: -62px;">
+                            <tbody>
+                                <tr>
+                                    
+                                    <td colspan="2" style="font-size: 12px;width: 375px;text-align: center;"><b>&nbsp;Deduction Under Chapter VI-A</b></td>
+                                </tr>
+
+
+                                <?php $j = 0;
+                                // debug($value);
+                                // debug($arr_taxheadfields);exit;
+                                foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $heads) { ?>
+                                    <tr>
+                                        <td style="width:298px;"> <?php echo $heads['tax_name']; ?></td>
+
+                                        <td style="width:67px; text-align: right;">
+                                            <?php $result = 0;
+                                            foreach ($value['tax'] as $key => $val) {
+                                                if ($heads['tax_heads_pkey'] == $key) {
+                                                    $result = $val['tax_value'];
+                                                }
+                                            }
+                                            echo number_format($result, 2); ?>
+                                        </td>
+
+                                    </tr>
+                                <?php $j++;
+                                } ?>
+                                <?php for ($i = $j; $i < 8; $i++) {  ?>
+                                    <tr>
+                                        <td style="width:298px;height:36px;"></td>
+                                        <td style="width:67px;height:36px;"></td>
+                                    </tr>
+                                <?php } ?>
+
+                            </tbody>
+                        </table>
+                    </div>
+                     <div class="col-md-6" style="margin-top:0px;padding-left: px;padding-right: 0px;"> 
+                    <table class="table table-bordered" style="padding-left:385px;margin-top: -85px; margin-left: 5px;">
+                        <tbody>
+                            <?php foreach ($arr_salary_for_template as $value) {
+                                if (count($value['summary']) !== 0 || count($value['gross']) !== 0) {
+                                    $arr_data = $value['gross'];
+                                    if (count($arr_data) >= 0) {
+                                        foreach ($value['gross'] as $val) {
+
+                                            $Monthly_tax =  $val['tax_computation_report']['Monthly_Tax'];
+                                        }
+                                    }
+                                }
+                            }
+                            ?> <tr>
+                                <th colspan="6" style="text-align:center;width: 288px;"><b>Tax Paid Details</b></th>
+                            </tr>
+                            <tr>
+                                <th style="text-align:center;width: 40px;"><b>APR</b></th>
+                                <th style="text-align:center;width: 40px;"><b>MAY</b></th>
+                                <th style="text-align:center;width: 40px;"><b>JUN</b></th>
+                                <th style="text-align:center;width: 40px;"><b>JUL</b></th>
+                                <th style="text-align:center;width: 40px;"><b>AUG</b></th>
+                                <th style="text-align:center;width: 40px;"><b>SEP</b></th>
+
+                            </tr>
+                            <tr>
+                                <td style="width:20px;text-align:center;"><?php echo $Monthly_tax; ?></td>
+                                <td style="width:20px;text-align:center;"><?php echo $Monthly_tax; ?></td>
+                                <td style="width:20px;text-align:center;"><?php echo $Monthly_tax; ?></td>
+                                <td style="width:20px;text-align:center;"><?php echo $Monthly_tax; ?></td>
+                                <td style="width:20px;text-align:center;"><?php echo $Monthly_tax; ?></td>
+                                <td style="width:20px;text-align:center;"><?php echo $Monthly_tax; ?></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align:center;width: 40px;"><b>OCT</b></th>
+                                <th style="text-align:center;width: 40px;"><b>NOV</b></th>
+                                <th style="text-align:center;width: 40px;"><b>DEC</b></th>
+                                <th style="text-align:center;width: 40px;"><b>JAN</b></th>
+                                <th style="text-align:center;width: 40px;"><b>FEB</b></th>
+                                <th style="text-align:center;width: 40px;"><b>MAR</b></th>
+                            </tr>
+                            <tr>
+                                <td style="width:40px;text-align:center;"><?php echo $Monthly_tax; ?></td>
+                                <td style="width:40px;text-align:center;"><?php echo $Monthly_tax; ?></td>
+                                <td style="width:40px;text-align:center;"><?php echo $Monthly_tax; ?></td>
+                                <td style="width:40px;text-align:center;"><?php echo $Monthly_tax; ?></td>
+                                <td style="width:40px;text-align:center;"><?php echo $Monthly_tax; ?></td>
+                                <td style="width:40px;text-align:center;"><?php echo $Monthly_tax; ?></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     </div> 
+
+                    <p style="text-align:center;font-size: 11px; margin-bottom: 10px;">*This is a electronically generated document, does not require signature.</p>
+                </page>
+
+
+    <?php }
+        }
+    } else {
+        foreach ($arr_salary_for_template as $value) {
+            if (count($value['summary']) != 0) {
+                $i += 1;
+            ?>
+                <page backtop="30mm" backbottom="10mm" backleft="10mm" backright="10mm" style="font-size: 12pt">
+                    <page_header>
+
+                        <div style="text-align:left; width:100%; ">
+
+
+
+                             <img style=" margin-left: 40px; "<?php echo $arr_comp_contact_info['CompanyContactInfo']['logo']; ?>" height="60" width="70" class="img-circle" alt="Company Logo" /> 
+
+                            <div style="align-items: center;">
+                                <b style="font-size: 19px; margin-top: 0px; color: #000066; margin-left: 300px;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?></b><br><br>
+
+                                 <p style="font-size: 13px; margin-top: -24px; margin-left: 90px; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['address'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['city'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['pincode'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['state']; ?></p> 
+                            </div>
+
+                        </div>
+                        <div style="text-align: center; border: 1px solid black; width:450px; margin-top: 0px; margin-left: 160px; margin-right: auto; height: 25px;">
+                            <h3 style="padding: 0px 20px; margin: 0; font-size: 16px;color: black;">
+                                Pay Slip for the month of <?php echo $mname1 . " / " . $y1; ?>
+                            </h3>
+                        </div>
+                    </page_header>
+                    <page_footer>
+
+                                <div style="width: 100%; text-align: right">
+            page [[page_cu]]/[[page_nb]]
+        </div>
+        <div style="width: 100%; text-align: left">
+            Downloaded By <?php echo $user_name; ?> <?php echo date("l,F j, Y"); ?>
+        </div>
+                    </page_footer>
+                        <bookmark title="Sommaire" level="0"></bookmark>
+                    <table class="noborder" align="center" style="margin-top: -22px; border:hidden; width: 100% !important; border-bottom: double;  ">
+                        <tbody>
+
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Emp No.</th>
+                                <?php $emp_pkey = isset($value['summary']['0']['ed']['emp_pkey']) ? $value['summary']['0']['ed']['emp_pkey'] : ''; ?>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo  wordwrap(isset($value['summary']['0']['ep']['emp_company_id']) ? $value['summary']['0']['ep']['emp_company_id'] : ''); ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Division </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo isset($value['summary']['0']['division']['div_name']) ? $value['summary']['0']['division']['div_name'] : ''; ?></th>
+                            </tr><br>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Employee Name:</th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php
+                                                                                                                            echo isset($value['summary']['0']['ed']['first_name']) ? $value['summary']['0']['ed']['first_name'] : '';
+                                                                                                                            echo ' ';
+                                                                                                                            echo isset($value['summary']['0']['ed']['middile_name']) ? $value['summary']['0']['ed']['middile_name'] : '';
+                                                                                                                            echo ' ';
+                                                                                                                            echo isset($value['summary']['0']['ed']['last_name']) ? $value['summary']['0']['ed']['last_name'] : '';
+
+                                                                                                                            ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> PAN </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo isset($value['summary']['0']['ed']['pan_no']) ? $value['summary']['0']['ed']['pan_no'] : ''; ?> </th>
+                            </tr>
+                            <?php
+                            $acc_number = '';
+
+                            if ($acc_number == '') {
+                                $acc_number = isset($value['summary']['0']['ed']['account_no']) ? $value['summary']['0']['ed']['account_no'] : '';
+                            } ?>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> DOJ </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "> <?php echo isset($value['summary']['0']['ep']['joining_date']) ? date('d/m/Y', strtotime($value['summary']['0']['ep']['joining_date'])) : ''; ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Bank A/c </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo $acc_number; ?></th>
+                            </tr>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ; text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Designation </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ;padding-left: 5px; "> <?php echo  wordwrap(isset($value['summary']['0']['desg']['desig_name']) ? $value['summary']['0']['desg']['desig_name'] : '', 30, "<br>\n", TRUE); ?></th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ; text-align:  left ;background-color: lightgrey;padding-left: 5px;"> UAN </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 1px solid white ; padding-left: 5px;"> <?php echo isset($value['summary']['0']['ed']['pf']) ? $value['summary']['0']['ed']['pf'] : ''; ?></th>
+                            </tr>
+                            <?php $leave = isset($value['summary']['0']['payroll_master']['days_leave']) ? $value['summary']['0']['payroll_master']['days_leave'] : '';
+                            $present = isset($value['summary']['0']['payroll_master']['days_presant']) ? $value['summary']['0']['payroll_master']['days_presant'] : '';
+                            $weekoff = isset($value['summary']['0']['ar']['weekoff_total']) ? $value['summary']['0']['ar']['weekoff_total'] : '';
+                            $paydays = $leave + $present + $weekoff; ?>
+                            <tr>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; border-bottom: 0px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Department</th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white; padding-left: 5px;"><?php echo  wordwrap(isset($value['summary']['0']['d']['dept_name']) ? $value['summary']['0']['d']['dept_name'] : '', 30, "<br>\n", TRUE); ?> </th>
+                                <th style="border-right-style: hidden; border-bottom-style: hidden; border-right: 0px solid white; border-bottom: 0px solid white ;text-align:  left ;background-color: lightgrey;padding-left: 5px;"> Pay Days </th>
+                                <th style="border-right-style: hidden; border-right: 0px solid white;padding-left: 5px; "><?php echo $paydays; ?></th>
+                            </tr>
+                            <tr>
+
+                                <th style="width:15%"></th>
+                                <th style="width:35%"></th>
+                                <th style="width:15%"></th>
+                                <th style="width:35%"></th>
+
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+
+                    <table class="table table-no-row-borders table-min-height" align="center" style="margin-top: 5px;border:1px solid grey;  width: 550px !important; border: 1px solid grey; ">
+                        <tbody>
+                            <tr>
+
+
+                                <th style="width:32%; text-align: left; font-size: 12px;border: .75px solid black;"><b> &nbsp;&nbsp;&nbsp;&nbsp; Earnings</b></th>
+                                <th style="width:18%; text-align: center; font-size: 12px;border: .75px solid black;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Amount</b></th>
+                                <th style="border: .75px solid black !important;" class="shrinknew"></th>
+                                <th style="width:32%; text-align: left; font-size: 12px;border: .75px solid black;padding-left: 2px;"><b> &nbsp;&nbsp;&nbsp;&nbsp; Deductions</b></th>
+
+                                <th style="width:18%; text-align: center; font-size: 12px;border: .75px solid black;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Amount</b></th>
+
+                            </tr>
+                            <?php $arr_data = $value['summary'];
+                            // debug($arr_data);exit;
+                            $arr_withoutComponents = $value['withoutcomponent'];
+                            ?>
+                            <?php
+                            if (count($arr_data) >= 0) {
+                                $countss = count($arr_data);
+                                if (count($arr_data) < count($arr_withoutComponents)) {
+                                    $countss = count($arr_withoutComponents);
+                                }
+                                $sum = 0;
+                                $tot = 0;
+                                $dd = 0;
+                                $net = 0;
+                            ?>
+                                <?php for ($i = 0; $i < $countss; $i++) {
+                                ?>
+                                    <tr <?php if ($i === $countss - 1); ?>>
+
+                                        <?php
+                                        $sum += isset($arr_data[$i]['ectc']['salary_amount']) ? $arr_data[$i]['ectc']['salary_amount'] : 0;
+                                        if (isset($arr_withoutComponents[$i]['ectc']))
+                                            $dd += isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? $arr_withoutComponents[$i]['ectc']['salary_amount'] : 0;
+                                        ?>
+                                                    <td>Consolidated Pay<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></td>
+                                        <td style="border: .5px solid black;"><?php echo isset($arr_data[$i]['ectc']['salary_head_item_desc']) ? '&nbsp;' . trim($arr_data[$i]['ectc']['salary_head_item_desc']) : ''; ?></td>
+                                        <td style="text-align:right;border: .5px solid black;"><?php echo isset($arr_data[$i]['ectc']['salary_amount']) ? number_format(abs(($arr_data[$i]['ectc']['salary_amount'])), 2) . '&nbsp;&nbsp;' : ''; ?></td>
+                                        <td style="border: .5px solid black;" class="shrinknew"></td>
+                                        <td style="border: .5px solid black;"><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_head_item_desc']) ? '&nbsp;&nbsp;' . $arr_withoutComponents[$i]['ectc']['salary_head_item_desc'] . ' ' : ''; ?></td>
+                                        <td style="text-align:right;border: .5px solid black;"><?php echo isset($arr_withoutComponents[$i]['ectc']['salary_amount']) ? number_format(abs(($arr_withoutComponents[$i]['ectc']['salary_amount'])), 2) . '&nbsp;&nbsp;' : ''; ?></td>
+
+                                    </tr>
+                                    <?php }
+
+                                // Add remaining blank rows if the number of rows is less than 20
+                                $remainingRows = 150 - $countss;
+                                if ($remainingRows > 0) {
+                                    for ($j = 0; $j < $remainingRows; $j++) {
+                                    ?>
+                                        <tr <?php if ($j == ($remainingRows - 1)) echo 'class="last-row"'; ?>>
+                                            <td style="border: .5px solid black;"></td>
+                                            <td style="border: .5px solid black;"></td>
+                                            <td style="border: .5px solid black;" class="shrinknew"></td>
+                                            <td style="border: .5px solid black;"></td>
+                                            <td style="border: .5px solid black;"></td>
+
+                                        </tr>
+                                <?php
+                                    }
+                                }
+                                ?>
+
+                                <tr style="border-collapse: seperate">
+                                    <th style="border: .5px solid black;border-bottom: double .5px solid black;"><b>&nbsp;Total</b></th>
+                                     <th style="border: .5px solid black;"><b><?php echo number_format(abs(round($sum))); ?></b></th> 
+                                    <th style="border: .5px solid black;text-align:right;border-bottom: double .5px solid black;"><b><?php echo number_format((($sum)), 2) . '&nbsp;&nbsp;'; ?></b></th>
+                                    <th style="border: .75px solid black;border-bottom: double .5px solid black;" class="shrinknew"></th>
+                                    <th style="border: .5px solid black;border-bottom: double .5px solid black;"><b>&nbsp;&nbsp;Total </b></th>
+                                     <th style="text-align:right;border: .5px solid black;"><b><?php echo number_format(abs(round($dd, 2))); ?></b></th> 
+                                    <th style="text-align:right;border: .5px solid black;border-bottom: double .5px solid black;"><b><?php echo number_format((abs($dd)), 2) . '&nbsp;&nbsp;'; ?></b></th>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" style="border-bottom: .75px solid black;padding-top: .75px; padding-bottom: .5px;"></td>
+                                </tr>
+
+                                <?php $settle = isset($value['settle']) ? $value['settle'] : 0;
+                                $netpay1 = (float)round($sum + $dd + $settle);
+                                // debug($netpay1); exit;
+
+                                ?>
+
+                                <?php
+                                $netpay = $netpay1;
+                                $no = floor($netpay);
+                                $point = round($netpay - $no, 2) * 100;
+                                $hundred = null;
+                                $digits_1 = strlen($no);
+                                $i = 0;
+                                $str = array();
+                                $words = array(
+                                    '0' => '', '1' => 'one', '2' => 'two',
+                                    '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
+                                    '7' => 'seven', '8' => 'eight', '9' => 'nine',
+                                    '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
+                                    '13' => 'thirteen', '14' => 'fourteen',
+                                    '15' => 'fifteen', '16' => 'sixteen', '17' => 'seventeen',
+                                    '18' => 'eighteen', '19' => 'nineteen', '20' => 'twenty',
+                                    '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
+                                    '60' => 'sixty', '70' => 'seventy',
+                                    '80' => 'eighty', '90' => 'ninety'
+                                );
+                                $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
+                                while ($i < $digits_1) {
+                                    $divider = ($i == 2) ? 10 : 100;
+                                    $netpay = floor($no % $divider);
+                                    $no = floor($no / $divider);
+                                    $i += ($divider == 10) ? 1 : 2;
+                                    if ($netpay) {
+                                        $plural = (($counter = count($str)) && $netpay > 9) ? null : null;
+
+                                        $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
+                                        $str[] = ($netpay < 21) ? $words[$netpay] .
+                                            " " . $digits[$counter] . $plural . " " . $hundred
+                                            :
+                                            $words[floor($netpay / 10) * 10]
+                                            . " " . $words[$netpay % 10] . " "
+                                            . $digits[$counter] . $plural . " " . $hundred;
+                                    } else $str[] = null;
+                                }
+                                $str = array_reverse($str);
+                                $result = implode('', $str);
+                                if ($netpay1 < 0) {
+                                    $result = 'Negative ' . $result;
+                                } ?>
+
+                            <?php } ?>
+                            <tr>
+                                <th style="display: flex; justify-content: space-between; align-items: center; width: 32%; font-size: 12px; border: .5px solid white;padding-top:10px;">
+                                    <span style="margin-right: auto;"><b>&nbsp;Net Pay</b></span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                    <span style="margin-left: auto;"><b><?php echo number_format($netpay1, 2); ?></b></span>
+                                </th>
+
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="text-align: left; font-size: 12px;text-transform: capitalize;"><b>&nbsp;&nbsp;In Words &nbsp;&nbsp;&nbsp;&nbsp;Rupees <?php echo $result; ?> Only</b></div>
+
+
+                    <table class="table">
+                        <tbody>
+                            <tr style="background: #ccc; ">
+
+                                 <th colspan="4" style=" font-weight: bold;font-size: 12px; padding-right:540px;"> pan</th>
+<th colspan="4" style=" font-weight: bold;font-size: 12px;"> </th> 
+
+
+                                <th style=" font-weight: bold; text-align: ;font-size: 12px;text-align: left;width: 50%;border-right:none;"> New Tax Regime Opted </th>
+
+                                <th style=" font-weight: bold; text-align: center;font-size: 12px;width: 35%; border-right: none;">TDS Details
+                                </th>
+
+                                <th style=" font-weight: bold; text-align:right ;font-size: 12px;text-align: right; width: 41%;"> PAN : <?php echo isset($value['summary']['0']['ed']['pan_no']) ? $value['summary']['0']['ed']['pan_no'] : ''; ?>
+                                </th>
+
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <div>
+                        <table style="width: 120%; margin-top: 2px;">
+                            <tr>
+                                <td style="vertical-align: top; width:46.5% ;padding:0; border:none;">
+                                    <table style="width:400px;margin-bottom: 0px; padding:0">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 144px; text-align: center; font-size: 12px;" colspan="1"><b>Description</b></td>
+                                                <td style="width: 70px; text-align: center; font-size: 12px;"><b>Gross</b></td>
+                                                <td style="width: 70px; text-align: center; font-size: 12px;"><b>Exempt</b></td>
+                                                <td style="width: 70px; text-align: center; font-size: 12px;"><b>Taxable</b></td>
+                                            </tr>
+
+
+
+
+                                            <?php
+                                            $taxable = '';
+                                            $excempt = '';
+                                            $values = '';
+                                            $count = 0;
+                                            // debug($arr_salary_for_template); exit;
+                                            foreach ($arr_salary_for_template as $value) {
+                                                $arr_data = isset($value['grossnew']) ? $value['grossnew'] : '';
+                                                $employee = $value;
+                                                if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                    if (count($arr_data) >= 0) {
+                                                        // debug($arr_data); exit;
+                                                        foreach ($arr_data as $employee => $val) {
+                                                            // debug($val);
+                                                            $component =  isset($val['SHI']['item']) ? $val['SHI']['item'] : 0;
+                                                            $values =  isset($val['EmpTaxSalTransNew']['availed_salary']) ? $val['EmpTaxSalTransNew']['availed_salary'] : 0;
+                                                            $taxable = $values - $excempt;
+                                                            $emp_fkey = isset($val['EmpTaxSalTransNew']['emp_fkey']) ? $val['EmpTaxSalTransNew']['emp_fkey'] : 0;
+
+                                                            if ($emp_fkey === $emp_pkey) {
+                                                                $count++;
+                                            ?>
+
+                                                                <tr>
+                                                                     <td style="width: 144px;"><?php echo $component; ?></td> 
+                                                                    <td style="width: 144px;"><?php echo preg_match('/\((.*?)\)/', $component, $matches) ? $matches[1] : trim($component); ?></td>
+                                                                    <td style="width: 70px; text-align: right;"><?php echo number_format($values, 2); ?></td>
+                                                                    <td style="width: 70px; text-align: right;"><?php echo $excempt; ?></td>
+                                                                    <td style="width: 70px; text-align: right;"><?php echo number_format($taxable, 2); ?></td>
+                                                                </tr>
+                                                    <?php
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            if ($count < 9) {
+                                                for ($k = 0; $k <= (8 - $count); $k++) { ?>
+                                                    <tr>
+                                                        <td style="width: 144px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                        <td style="width: 70px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                        <td style="width: 70px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                        <td style="width: 70px; font-size: 12px; height: 9px;"><?php echo "  "; ?></td>
+                                                    </tr>
+
+                                            <?php }
+                                            }
+                                            ?>
+
+
+
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td style="vertical-align: top;padding:0; border:none;">
+                                    <table class="table table-bordered" style="width:675px; padding:0; margin-left: 5px;">
+                                        <tbody>
+                                            <tr>
+                                                <th colspan="2" style="text-align:center;"><b>Income Tax Deduction</b></th>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:29%">&nbsp;Gross Salary</td>
+                                                <?php foreach ($arr_salary_for_template as $value) {
+                                                    $arr_data = isset($value['gross']) ? $value['gross'] : '';
+                                                    $gross = '';
+                                                    $std = '';
+                                                    $Income_from_Other_Source = '';
+                                                    $Taxable_Income = '';
+                                                    $Total_Tax = '';
+                                                    $Surcharge = '';
+                                                    $Tax_Deducted_Till_date = '';
+                                                    $Tax_to_be_Deducted = '';
+                                                    $Monthly_tax = '';
+                                                    //         if (count($arr_data) >= 0) {
+                                                    //             foreach ($value['gross'] as $val) {
+                                                    //                 $Monthly_tax =  $val['tax_computation_report']['Monthly_Tax'];
+                                                    //             }
+                                                    //         }
+                                                    if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                        if (count($arr_data) >= 0) {
+                                                            foreach ($arr_data as $val) {
+                                                                $gross =  isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? $val['tax_computation_report']['Taxable_Income_from_Salary'] : 0;
+                                                                $std =  isset($val['tax_computation_report']['Standard_deduction']) ? $val['tax_computation_report']['Standard_deduction'] : 0;
+                                                                $Income_from_Other_Source = isset($val['tax_computation_report']['Taxable_Income_from_Other_Sources']) ? $val['tax_computation_report']['Taxable_Income_from_Other_Sources'] : 0;
+                                                                $Taxable_Income =  isset($val['tax_computation_report']['Taxable_Income_from_Salary']) ? $val['tax_computation_report']['Taxable_Income_from_Salary'] : 0;
+                                                                $Total_Tax =  isset($val['tax_computation_report']['Total_Tax']) ? $val['tax_computation_report']['Total_Tax'] : 0;
+                                                                $Surcharge =  isset($val['tax_computation_report']['Surcharge']) ? $val['tax_computation_report']['Surcharge'] : 0;
+                                                                $Tax_Deducted_Till_date = isset($val['tax_computation_report']['Tax_Deducted']) ? $val['tax_computation_report']['Tax_Deducted'] : 0;
+                                                                $Tax_to_be_Deducted = isset($val['tax_computation_report']['Balance_Tax']) ? $val['tax_computation_report']['Balance_Tax'] : 0;
+                                                                $Monthly_tax =  isset($val['tax_computation_report']['Monthly_Tax']) ? $val['tax_computation_report']['Monthly_Tax'] : 0;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                ?>
+
+                                                <?php
+
+                                                $totalValuesSum = 0;
+
+                                                foreach ($arr_salary_for_template as $value) {
+                                                    $arr_data = isset($value['grossnew']) ? $value['grossnew'] : '';
+                                                    $employee = $value;
+
+                                                    if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                        if (count($arr_data) >= 0) {
+                                                            foreach ($arr_data as $employee => $val) {
+
+                                                                $values = isset($val['EmpTaxSalTransNew']['availed_salary']) ? $val['EmpTaxSalTransNew']['availed_salary'] : 0;
+
+
+                                                                // Add $values to the total sum
+                                                                $totalValuesSum += $values;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                ?>
+
+                                                <td style="width:15%;text-align:right;"><?php echo number_format($totalValuesSum, 2); ?></td>
+                                            </tr>
+
+                                            <?php
+                                            $pt = 0;
+
+                                            foreach ($arr_salary_for_template as $value) {
+                                                $arr_data = isset($value['withoutcomponent']) ? $value['withoutcomponent'] : '';
+
+                                                if (count($value['summary']) !== 0 || count($arr_data) !== 0) {
+                                                    if (count($arr_data) >= 0) {
+                                                        foreach ($arr_data as $val) {
+                                                            $pthead = isset($val['ectc']['salary_head_item_desc']) ? $val['ectc']['salary_head_item_desc'] : '';
+                                                            $ptAmount = isset($val['ectc']['salary_amount']) ? $val['ectc']['salary_amount'] : 0;
+
+
+                                                            if ($pthead == 'Professional Tax') {
+                                                                $pt = $ptAmount;
+                                                                break 3;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            ?>
+
+
+                                            <tr>
+                                                <td>&nbsp;Profession Tax</td>
+                                                <td style="text-align: right;"><?php echo number_format($pt, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Other Ded. & Standard Ded.</td>
+                                                <td style="text-align: right;"><?php echo number_format($std, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;House Property</td>
+                                                <?php
+                                                $TaxHead = 'House Property';
+                                                $houseProperty = 0;
+                                                $j = 0;
+                                                foreach ($arr_taxheadfields['Income']['tax_heads'] as $heads) {
+                                                    if ($heads['tax_name'] == $TaxHead) {
+
+                                                        foreach ($value['tax'] as $key => $val) {
+                                                            if ($heads['tax_heads_pkey'] == $key) {
+                                                                $houseProperty = $val['tax_value'];
+                                                                break;
+                                                            }
+                                                        }
+                                                        break;
+                                                    }
+
+                                                    $j++;
+                                                } ?>
+                                                <td style="text-align: right;"><?php echo number_format($houseProperty, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Income from Other Source</td>
+                                                <td style="text-align: right;"><?php echo number_format($Income_from_Other_Source, 2); ?></td>
+                                            </tr>
+                                            <tr>
+
+
+                                                <td>&nbsp;Total VI-A deduction</td>
+
+                                                <?php
+                                                $totalSum = 0;
+
+                                                foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $heads) {
+                                                    $result = 0;
+
+                                                    foreach ($value['tax'] as $key => $val) {
+                                                        if ($heads['tax_heads_pkey'] == $key) {
+                                                            $result = $val['tax_value'];
+                                                        }
+                                                    }
+
+                                                    $totalSum += $result;
+                                                } ?>
+                                                <td style="text-align: right;"><?php echo number_format($totalSum, 2); ?></td>
+                                            </tr>
+
+
+                                            <tr>
+                                                <td>&nbsp;Taxable Income</td>
+                                                <td style="text-align: right;"><?php echo number_format($Taxable_Income, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Total Tax</td>
+                                                <td style="text-align: right;"><?php echo number_format($Total_Tax, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Surcharge + Education Cess</td>
+                                                <td style="text-align: right;"><?php echo number_format($Surcharge, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Tax Deducted(Prev.Emplr+Other)</td>
+                                                <td style="text-align: right;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Tax Deducted Till date</td>
+                                                <td style="text-align: right;"><?php echo number_format($Tax_Deducted_Till_date, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Tax to be Deducted</td>
+                                                <td style="text-align: right;"><?php echo number_format($Tax_to_be_Deducted, 2); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;Monthly Projected Tax</td>
+                                                <td style="text-align: right;"><?php echo number_format($Monthly_tax, 2); ?></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                     ------------------------------------ 
+
+
+                    <div class="col-md-6">
+                        <table class="" style="width:100%;margin-top: -62px;">
+                            <tbody>
+                                <tr>
+                                    
+                                    <td colspan="2" style="font-size: 12px;width: 375px;text-align: center;"><b>&nbsp;Deduction Under Chapter VI-A</b></td>
+                                </tr>
+
+
+                                <?php $j = 0;
+                                $emp_skey = isset($val['summary'][0]['ed']['emp_pkey'])? $val['summary'][0]['ed']['emp_pkey']:0;
+                                // debug($arr_taxheadfields);exit;
+                                foreach ($arr_taxheadfields['Deductions']['tax_heads'] as $heads) { ?>
+                                    <tr>
+                                        <td style="width:298px;"> <?php echo $heads['tax_name']; ?></td>
+
+                                        <td style="width:67px; text-align: right;">
+                                            <?php $result = 0;
+                                            // debug($value); exit;
+                                            foreach ($value['tax'] as $key => $val) {
+                                                if ($heads['tax_heads_pkey'] == $key && $emp_pkey == $emp_skey) {
+                                                    $result = $val['tax_value'];
+                                                }
+                                            }
+                                            echo number_format($result, 2); ?>
+                                        </td>
+
+                                    </tr>
+                                <?php $j++;
+                                } ?>
+                                <?php for ($i = $j; $i < 8; $i++) {  ?>
+                                    <tr>
+                                        <td style="width:298px;height:36px;"></td>
+                                        <td style="width:67px;height:36px;"></td>
+                                    </tr>
+                                <?php } ?>
+
+                            </tbody>
+                        </table>
+                    </div>
+                     <div class="col-md-6" style="margin-top:0px;padding-left: px;padding-right: 0px;"> 
+                    <table class="table table-bordered" style="padding-left:385px;margin-top: -85px; margin-left: 5px;">
+                        <tbody>
+                            <?php foreach ($arr_salary_for_template as $value) {
+                                if (count($value['summary']) !== 0 || count($value['gross']) !== 0) {
+                                    $arr_data = $value['gross'];
+                                    if (count($arr_data) >= 0) {
+                                        foreach ($value['gross'] as $val) {
+
+                                            $Monthly_tax =  $val['tax_computation_report']['Monthly_Tax'];
+                                        }
+                                    }
+                                }
+                            }
+                            ?> <tr>
+                                <th colspan="6" style="text-align:center;width: 288px;"><b>Tax Paid Details</b></th>
+                            </tr>
+                            <tr>
+                                <th style="text-align:center;width: 40px;"><b>APR</b></th>
+                                <th style="text-align:center;width: 40px;"><b>MAY</b></th>
+                                <th style="text-align:center;width: 40px;"><b>JUN</b></th>
+                                <th style="text-align:center;width: 40px;"><b>JUL</b></th>
+                                <th style="text-align:center;width: 40px;"><b>AUG</b></th>
+                                <th style="text-align:center;width: 40px;"><b>SEP</b></th>
+
+                            </tr>
+                            <tr>
+                                <td style="width:20px;text-align:center;"><b><?php echo $Monthly_tax; ?></b></td>
+                                <td style="width:20px;text-align:center;"><b><?php echo $Monthly_tax; ?></b></td>
+                                <td style="width:20px;text-align:center;"><b><?php echo $Monthly_tax; ?></b></td>
+                                <td style="width:20px;text-align:center;"><b><?php echo $Monthly_tax; ?></b></td>
+                                <td style="width:20px;text-align:center;"><b><?php echo $Monthly_tax; ?></b></td>
+                                <td style="width:20px;text-align:center;"><b><?php echo $Monthly_tax; ?></b></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align:center;width: 40px;"><b>OCT</b></th>
+                                <th style="text-align:center;width: 40px;"><b>NOV</b></th>
+                                <th style="text-align:center;width: 40px;"><b>DEC</b></th>
+                                <th style="text-align:center;width: 40px;"><b>JAN</b></th>
+                                <th style="text-align:center;width: 40px;"><b>FEB</b></th>
+                                <th style="text-align:center;width: 40px;"><b>MAR</b></th>
+                            </tr>
+                            <tr>
+                                <td style="width:40px;text-align:center;"><b><?php echo $Monthly_tax; ?></b></td>
+                                <td style="width:40px;text-align:center;"><b><?php echo $Monthly_tax; ?></b></td>
+                                <td style="width:40px;text-align:center;"><b><?php echo $Monthly_tax; ?></b></td>
+                                <td style="width:40px;text-align:center;"><b><?php echo $Monthly_tax; ?></b></td>
+                                <td style="width:40px;text-align:center;"><b><?php echo $Monthly_tax; ?></b></td>
+                                <td style="width:40px;text-align:center;"><b><?php echo $Monthly_tax; ?></b></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                 </div> 
+
+                    <p style="text-align:center;font-size: 11px; margin-bottom: 10px;">*This is a electronically generated document, does not require signature.</p>
+                </page>
+
+
+    <?php }
+        }
+    } ?>
+
+    <?php  ?>
+
+    <?php
+
+    if (empty($arr_salary_for_template)) { ?>
+
+
+        <div style="width:100%; ">
+
+
+
+            <!-- <img style=" margin-left: 40px; " src="https://v1.mypayrollmaster.online/<?php echo $arr_comp_contact_info['CompanyContactInfo']['logo']; ?>" height="60" width="70" class="img-circle" alt="Company Logo" /> -->
+
+            <div style="align-items: center;">
+                <b style="font-size: 19px; margin-top: 0px; color: #000066; margin-left: 150px;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?></b>
+                <p style="font-size: 13px; margin-top: -24px; margin-left: 90px; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['address'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['city'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['pincode'] . ', ' . $arr_comp_contact_info['CompanyContactInfo']['state']; ?></p>
+            </div>
+
+        </div>
+        <div style="text-align: center; border: 1px solid black; width:450px; margin-top: 0px; margin-left: 160px; margin-right: auto; height: 25px;">
+            <h3 style="padding: 0px 20px; margin: 0; font-size: 16px;">
+                Pay Slip for the month of <?php echo $mname1 . " / " . $y1; ?>
+            </h3>
+        </div>
+        <br>
+        <div style="font-size: 15px;text-align:center; background-color:white;">
+            No data available under the selected criteria</div>
+    <?php } ?>
+<?php } ?>

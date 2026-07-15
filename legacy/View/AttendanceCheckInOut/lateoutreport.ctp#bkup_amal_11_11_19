@@ -1,0 +1,224 @@
+<?php if( $mode== '' ){?>
+<div class="modal-body" style="overflow-y: auto;">
+
+    <div class="row">
+        <div class="col-md-12">
+           <h2 style="font-weight: bold;text-align: center;">Employee Late Out Report </h2>
+                   <?php $i=0; foreach ($arr_lateoutdata_for_template as $value){
+                   
+                   $i += 1; 
+                 // debug($value);
+                  ?>
+                <?php 
+                if(isset($value['summary']['0']['lateout']['EmpName']))
+                {?>
+            <h4 style="font-weight: bold">Late Out Report of <?php  echo isset($value['summary']['0']['lateout']['EmpName']) ? $value['summary']['0']['lateout']['EmpName'] : '' ; ?> <?php  echo isset($value['summary']['0']['ed']['status']) && $value['summary']['0']['ed']['status']=="2" ? '(Resigned)':'' ;?></h4>
+
+			    <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                  <th>Sl No .</th>
+                                  <th>Employee Name</th>
+                                  <th>User ID</th>
+                                  <th>Branch</th>
+                                  <th>Date</th>
+                                  <th>Location</th>
+                                  <th>Shift Out Time</th>
+                                  <th>Out Time</th>
+                                  <th>Late Out Time</th>
+                               
+                                  
+                                  
+                               
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <?php $arr_data  = $value['summary'];?> 
+                                <?php if(count($arr_data)>=0){ ?>
+                                    <?php
+                                    $i = 0;
+                                    foreach($arr_data as $val){
+                                       $latetime=$val['lateout']['LateOutTime'];
+                                        $lateouttime = date('H:i:s', strtotime($latetime));
+                                         $date=$val['lateout']['LogDate'];
+                                         $dateatt = date("d-m-Y", strtotime($date));
+                                         ?>
+
+                                        <tr> 
+                                            <?php $i += 1; ?>
+                                            <td><?php echo $i;?></td>
+                                            <td><?php echo $val['lateout']['EmpName'];?></td>
+                                            <td><?php echo $val['uc']['user_id'];?></td>
+                                            <td><?php echo $val['br']['branch_name'];?></td>
+                                            <td><?php echo $dateatt; ?></td>
+                                            <td><?php echo $val['lateout']['Location']; ?></td>
+                                            <td><?php echo $val['lateout']['OffDutyTime']; ?></td>
+                                            <td><?php echo $val['lateout']['OutTime']; ?></td>
+                                            <td><?php echo $lateouttime; ?></td>
+                                            
+                                             
+
+                                            
+                                            
+                  
+                                        </tr>
+
+
+                                    <?php } ?>
+                                
+                                   
+                            </tbody>
+                        </table>
+                    
+                <?php }else{
+                                          echo "No employees found under this Criteria"; 
+                                          
+                              
+                    
+                 
+                }}  } ?> <!-- /.box-body -->
+              
+        </div>
+    </div>    
+<!--    <div class="row">
+        <div class="form-group">
+            <div class="col-md-12" align="right">
+                <a href="#" class="btn btn-default" onclick="downloadReport('Attendance','pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                <a href="#" class="btn btn-default" onclick="downloadReport('Attendance','excel');"><i class="icon-file"></i>Download As Excel</a>
+            </div>
+        </div>
+    </div>-->
+</div>
+                <?php  } else{?>
+ <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+        .row {
+            height: 32px;
+        }
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+        table {
+            border: 1px solid #f4f4f4;
+            width: 80%;
+            max-width: 80%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        td, th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border: 1px solid #B2B2B2;
+        }
+    </style>
+<!--   <h1 style="font-weight: bold">Attendance Check In Out Report </h1>-->
+<?php
+echo $this->element('reportadminheader',array(
+'title'=>'Employee Late Out Report '));
+?>
+                   <?php $i=0; foreach ($arr_lateoutdata_for_template as $value){
+                   
+                   $i += 1; 
+//                 debug($value);
+                  ?>
+                <?php 
+                if(isset($value['summary']['0']['lateout']['EmpName']))
+                {?>
+
+                  
+   <h2 style="font-weight: bold">Late Out Report of <?php  echo isset($value['summary']['0']['lateout']['EmpName']) ? $value['summary']['0']['lateout']['EmpName'] : '' ; ?> <?php  echo isset($value['summary']['0']['ed']['status']) && $value['summary']['0']['ed']['status']=="2" ? '(Resigned)':'' ;?></h2>
+
+        
+                       
+                      
+                  
+                    <br>
+                    
+			
+                
+           
+			    <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                  <th>Sl No.</th>
+                                  <th style="width:80px;">Employee Name</th>
+                                  <th style="width: 80px;">User ID</th>
+                                  <th style="width:80px;">Branch</th>
+                                  <th style="width:50px;">Date</th>
+                                  <th style="width:100px;">Location</th>
+                                  <th style="width:50px;">Shift Out Time</th>
+                                  <th>Out Time</th>
+                                  <th style="width:50px;">Late Out Time</th>
+                               
+                                  
+                                  
+                               
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <?php $arr_data  = $value['summary'];?> 
+                                <?php if(count($arr_data)>=0){ ?>
+                                    <?php
+                                    $i = 0;
+                                    foreach($arr_data as $val){
+                                         $latetime=$val['lateout']['LateOutTime'];
+                                         $lateouttime = date('H:i:s', strtotime($latetime));
+                                         $date=$val['lateout']['LogDate'];
+                                         $dateatt = date("d-m-Y", strtotime($date));
+                                         ?>
+                                      <tr> 
+                                            <?php $i += 1; ?>
+                                            <td><?php echo $i;?></td>
+                                            <td style="width:80px;"><?php echo $val['lateout']['EmpName'];?></td>
+                                            <td style="width: 80px;"><?php echo $val['uc']['user_id'];?></td>
+                                            <td style="width:80px;"><?php echo $val['br']['branch_name'];?></td>
+                                            <td style="width:50px;"><?php echo $dateatt; ?></td>
+                                            <td style="width:100px;"><?php echo $val['lateout']['Location']; ?></td>
+                                            <td style="width:50px;"><?php echo $val['lateout']['OffDutyTime']; ?></td>
+                                            <td><?php echo $val['lateout']['OutTime']; ?></td>
+                                            <td style="width:50px;"><?php echo $lateouttime; ?></td>
+                                            </tr>
+
+
+                                    <?php } ?>
+                                
+                                   
+                            </tbody>
+                        </table>
+                    
+                <?php }else{
+                                          echo "No employees found under this Criteria"; 
+                                          
+                              
+                    
+                 
+                    } ?> <!-- /.box-body -->
+                
+ 
+    <!--</div>-->    
+<!--    <div class="row">
+        <div class="form-group">
+            <div class="col-md-12" align="right">
+                <a href="#" class="btn btn-default" onclick="downloadReport('Attendance','pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                <a href="#" class="btn btn-default" onclick="downloadReport('Attendance','excel');"><i class="icon-file"></i>Download As Excel</a>
+            </div>
+        </div>-->
+  
+<!--</div>-->
+                <?php  }} } ?>
+         

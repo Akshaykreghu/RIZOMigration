@@ -1,0 +1,534 @@
+<style>
+    .form-horizontal .control-label {
+
+        text-align: left;
+
+    }
+
+    .custom-file-upload {
+        border: 1px solid #0d0c0c52;
+        border-radius: 4px;
+        display: inline-block;
+        padding: 4px 12px;
+        cursor: pointer;
+        width: 100%;
+        height: 30px;
+        text-align: center;
+    }
+
+    /* edited by bindu 24-10-25 */
+      .heading {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        /* margin-left: 20px; */
+    }
+
+    .home {
+        background-color: #ffffffff;
+        border-radius: 50px;
+        padding: 2px 15px;
+        color: #1e516e !important;
+        /* margin-right: 15px; */
+        color: white;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: #1e516e 1px solid;
+    }
+
+    /* edited by bindu 24-10-25 */
+</style>
+<section class="content-header heading">
+
+    <!-- /* edited by bindu 24-08-25 */ -->
+    <h1 class="text-primary-18">Salary Advance</h1>
+  
+     <?php if ($plan !== 'basic') : ?>
+    
+    <div class="text-primary-16 home"
+         style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+        <i class="fa" style="font-size:16px;">&#xf104;</i>
+        Back
+    </div>
+
+<?php endif; ?>
+
+    <!-- end -->
+
+</section>
+<hr style="margin-top: 8px;margin-bottom: -2px;">
+<!-- Main content -->
+<section class="content">
+    <div class="col-md-12">
+        <br>
+        <!-- Employee import form -->
+        <form class="form-horizontal" method="post" action="" id="importemployeectcform">
+            <div class="row">
+
+                <!--                            <div class="col-md-4">
+                                                <label class="col-md-5 control-label" for="first_name">Choose Type</label>
+                                                <div class="col-md-7">
+                                                    <select id="ctc_upload_type" name="ctc_upload_type" class="form-control" >
+                                                        <option value="">--Select--</option>
+                                                        <option value="1">Integration</option>
+                                                        <option value="2">Revision</option>
+                                                    </select>
+                                                </div>
+                                            </div>-->
+                <!--                           <div class="col-sm-3">
+                                           </div>-->
+                <!--edited by sinsiya on 05-03-2025-->
+                <div class="col-md-4">
+                    <label for="filterby_month" class="col-md-4">Month</label>
+                    <div class="col-md-1">:</div>
+                    <div class="col-md-7">
+                        <select id="filterby_month" name="filterby_month" class="form-control" onchange="filterAttendanceupload(this);">
+                            <?php // Edited by Akshay on 31-10-2025
+                            $current = new DateTime('first day of this month');
+
+                            // Future months (clear variable names)
+                            $plus_two = clone $current;
+                            $plus_two->modify('+2 months');
+                            echo '<option value="' . $plus_two->format('m-Y') . '">' . $plus_two->format('M-Y') . '</option>';
+
+                            $plus_one = clone $current;
+                            $plus_one->modify('+1 month');
+                            echo '<option value="' . $plus_one->format('m-Y') . '">' . $plus_one->format('M-Y') . '</option>';
+
+                            // Current month
+                            echo '<option value="' . $current->format('m-Y') . '">' . $current->format('M-Y') . '</option>';
+
+                            // Previous months - direct output (no array needed)
+                            $date = clone $current;
+                            for ($i = 1; $i < 20; $i++) {
+                                $date->modify('-1 month');
+                                echo '<option value="' . $date->format('m-Y') . '">' . $date->format('M-Y') . '</option>';
+                            }
+                            // End
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="col-md-4 control-label" for="filterby_branch">Branch</label>
+                    <div class="col-md-1">:</div>
+                    <div class="col-md-6">
+                        <select id="filterby_branch" name="filterby_branch" class="form-control control-label js-example-basic-single" onchange="filterAttendanceupload(this);">
+                            <!-- edited by athira on 30-01-2025 -->
+                            <?php
+                            if ($is_ho == 1 || $user_group != 2) {
+                                echo '<option value="">All</option>';
+                            } ?>
+                            <!-- end -->
+                            <?php foreach ($arr_branches as $key => $value) { ?>
+                                <option value="<?php echo $value['Units']['branch_code']; ?>"><?php echo $value['Units']['branch_name']; ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="col-md-4 control-label" for="employee">Employee</label>
+                    <div class="col-md-1">:</div>
+                    <div class="col-md-6">
+                        <select id="emp_fkey" class="form-control js-example-basic-single" name="emp_fkey" onchange="filterAttendanceupload(this);">
+
+                        </select>
+
+                    </div>
+                </div>
+
+
+                <div class="col-md-4">
+                    <!--edited by sinsiya on 05-03-2025-->
+                    <br>
+                    <label class="col-md-4 control-label" for="file">Upload File</label>
+                    <div class="col-md-1">:</div>
+                    <div class="col-md-7">
+                        <label style="font-weight: normal;" for="attdatacsv" class="custom-file-upload">
+                            Click Here to Browse File
+                        </label>
+                        <input id="attdatacsv" name='attdatacsv' type="file" style="display:none;">
+                    </div>
+
+                </div>
+
+                <div class="col-md-2">
+                    <!--edited by sinsiya on 05-03-2025-->
+                    <br>
+                    <!--       <label class="col-md-5 control-label" for="file"></label>-->
+                    <div class="col-md-6">
+                        <button type="button" onclick="uploadEmployeeCTC();" id="btn-uploadattdata" class="btn btn-success btn-sm "><i class="fa fa-upload" aria-hidden="true"></i></button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" id="btn-uploadattdata" class="btn btn-danger btn-sm " onclick="downloadEmployeeCTCForm();"><i class="fa fa-download" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+
+                <!--                                <div class="col-md-4">
+                                                    <label class="col-sm-5 control-label" for="employee">Choose Employee</label>                        
+                                                    <div class="col-md-7">
+                                                        <select id="emp_fkey" class="form-control" name="emp_fkey" onchange="filterAttendanceupload(this);" >
+                                                            <option value="">All</option>
+                <?php //foreach ($arr_employees as $value) { 
+                ?>
+                                                                    <option value="<?php // echo $value['EmployeeDetails']['emp_pkey'];          
+                                                                                    ?>"><?php echo $value['EmployeeDetails']['first_name']; ?><?php echo $value['EmployeeDetails']['last_name']; ?></option>
+                <?php // } 
+                ?>
+                                                        </select>
+                                                    </div>    
+                                                </div>    -->
+            </div>
+
+        </form>
+        <div class="box box-primary" style="margin-top: 10px;">
+            <div class="box-body" style="margin-top: -11px;">
+                <br>
+                <table id="att_table" class="table table-bordered table-hover">
+                    <tbody>
+                    </tbody>
+                </table>
+            </div><!-- /.box-body -->
+        </div>
+    </div>
+
+</section>
+
+<script>
+    $('#attdatacsv').change(function() {
+        var i = $(this).prev('label').clone();
+        var file = $('#attdatacsv')[0].files[0].name;
+        $(this).prev('label').text(file);
+    });
+    //filtter using branch 
+    function filterEmployees(branch) {
+
+        var branch = $('#filterby_branch').val();
+
+
+        //alert(branch);
+        $("#emp_fkey").select2({
+            //closeOnSelect:false,
+            placeholder: "All",
+            allowClear: true,
+            ajax: {
+                url: livesite + "Employee/jsons/" + branch,
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term, // search term
+                        page: params.page
+                    };
+                },
+                processResults: function(data, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    params.page = params.page || 1;
+
+                    return {
+                        results: data.items,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                }
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            }
+        });
+    }
+
+    function filterAttendanceupload(obj) {
+        var branch = $('#importemployeectcform #filterby_branch').val();
+        var employee = $('#importemployeectcform #emp_fkey').val()
+        var month = $('#importemployeectcform #filterby_month').val()
+        $('#att_table').datagrid('load', {
+            branch: branch,
+            employee: employee,
+            month: month,
+        });
+
+        filterEmployees();
+
+    }
+
+    function downloadEmployeeCTCForm() {
+        var ctcuploadtype = 3;
+        if (ctcuploadtype == 3) {
+
+            var branch = $('#importemployeectcform #filterby_branch').val();
+            var employee = $('#importemployeectcform #emp_fkey').val()
+
+            window.open('<?php echo $this->webroot; ?>Employeeadvance/downloadempctcformat/' + ctcuploadtype + '/' + branch + '/' + employee, '_blank');
+        } else {
+            return false;
+        }
+    }
+
+    function uploadEmployeeCTC() {
+        var form = $('#importemployeectcform');
+        var fileSelect = document.getElementById('attdatacsv');
+        var ctcuploadtype = 3;
+        var files = fileSelect.files;
+        var result = "";
+        var resultM = "";
+
+        if (files.length == 0) {
+            $.notify("please choose any file to upload!", {
+                type: 'danger',
+                allow_dismiss: false
+            });
+            return false;
+        }
+
+        // The rest of the code will go here...
+        var files = fileSelect.files;
+        // Create a new FormData object.
+        var formData = new FormData();
+        // Loop through each of the selected files.
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            // Add the file to the request.
+            formData.append('empctc[]', file, file.name);
+        }
+
+        // Set up the request.
+        var xhr = new XMLHttpRequest();
+
+        // Open the connection.
+        xhr.open('POST', livesite + 'Employeeadvance/uploadandsaveempctc/' + ctcuploadtype, true);
+
+        // Set up a handler for when the request finishes.
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // File(s) uploaded.
+                var response = JSON.parse(xhr.responseText);
+                console.log('response', response);
+
+                if (response) {
+                    $('#att_table').datagrid('reload');
+                    // Edited by Akshay on 3-1-2024
+                    var length = response.rejected_ctc.length;
+                    var lenghtM = response.rejected_mctc.length;
+                    if (length > 0 || lenghtM > 0) {
+                        if (length > 0) {
+                            const rejectedCTC = response.rejected_ctc;
+                            result = rejectedCTC
+                                .map(item => `${item['Employee Name'].trim()} - ${item['Company Employee ID']}`)
+                                .join(', ');
+                        } else
+                        if (lenghtM > 0) {
+                            const rejectedMCTC = response.rejected_mctc;
+                            resultM = rejectedMCTC
+                                .map(item => `${item['Employee Name'].trim()} - ${item['Company Employee ID']}`)
+                                .join(', ');
+                        }
+                        // const alertMessage = `Amount exceed the monthly amount for: ${result}\nAmount exceed the advance limit for: ${resultM}`;
+                        let alertMessage = "";
+
+                        if (length > 0) {
+                            alertMessage += `Amount exceeds the monthly amount for : ${result}\n`;
+                        } else
+                        if (lenghtM > 0) {
+                            var companyCode = <?php echo json_encode($company_code); ?>;
+                            if (companyCode == 'GLET' || companyCode == 'ABSG') {
+                                alertMessage += `Amount exceeds the advance limit for : ${resultM}`;
+                            }
+                        }
+                        if (alertMessage !== '') {
+                            confirm(alertMessage);
+                        }
+                    } else {
+                        $.notify(response.msg, {
+                            type: (response.success == 0) ? 'danger' : 'success',
+                            allow_dismiss: false
+                        });
+                    }
+                    // End
+                } else {
+                    $.notify(response.msg, {
+                        type: 'error',
+                        allow_dismiss: false
+                    });
+                }
+            } else {
+                alert("Employee CTC import failed, please check informations given or try again.");
+            }
+        };
+
+        $('#attdatacsv').val('');
+        $("#filterby_branch").select2("val", "");
+        $("#emp_fkey").select2("val", "");
+
+        // Send the Data.
+        xhr.send(formData);
+    }
+
+
+
+    jQuery(document).ready(function() {
+
+        filterEmployees();
+        $("#filterby_branch").select2();
+        $("#filterby_month").select2();
+        var employee = $('#attendanceuploadfilter #emp_fkey').val();
+
+        $('#att_table').datagrid({
+            url: livesite + "Employeeadvance/employeelist",
+            pagination: true,
+            rownumbers: true,
+            singleSelect: true,
+            //width:'92%',
+            //edited by sinsiya on 05-03-2025
+            queryParams: {
+                employee: employee,
+                month: $('#filterby_month').val()
+
+            },
+            toolbar: [{
+                text: 'New',
+                iconCls: 'icon-add',
+                handler: function() {
+                    showModalForm(livesite + 'Employeeadvance/form')
+                }
+            }, '-', {
+                iconCls: 'icon-edit',
+                id: "btn",
+                text: 'Edit',
+                handler: function() {
+                    var row = $('#att_table').datagrid('getSelected');
+                    if (row) {
+
+                        showModalForm(livesite + 'Employeeadvance/form?emp_advance_pkey=' + row.emp_advance_pkey)
+                    } else {
+                        alert("Please select a record to edit")
+                    }
+                }
+            }, '-', {
+                iconCls: 'icon-remove',
+                text: 'Remove',
+                handler: function() {
+                    var rows = $('#att_table').datagrid('getSelections');
+                    if (rows) {
+                        var str_ids = "";
+                        for (var i = 0; i < rows.length; i++) {
+                            var data = rows[i];
+                            if (str_ids == "") {
+                                str_ids += data.emp_advance_pkey;
+                            } else {
+                                str_ids += "," + data.emp_advance_pkey;
+                            }
+                        }
+                        if (confirm("Are you sure want to delete ")) {
+
+                            $.ajax({
+                                url: livesite + "Employeeadvance/deleteEmployee",
+                                data: {
+                                    emp_advance_pkey: str_ids
+                                },
+                                success: function(response) {
+
+                                    var response = $.parseJSON(response);
+                                    if (response.msg) {
+                                        $('#att_table').datagrid('reload');
+                                        $.notify(response.msg, {
+                                            type: 'danger',
+                                            allow_dismiss: true
+
+                                        });
+                                    }
+
+
+                                }
+                            });
+
+                            reloadTable('att_table');
+                        }
+
+                    }
+
+                }
+
+            }],
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            columns: [
+                [
+                    //{field: 'emp_advance_pkey', title: '', width: "%"},
+                    {
+                        field: 'empname',
+                        title: 'Employee Name',
+                        width: "25%"
+                    },
+                    {
+                        field: 'id',
+                        title: 'Employee ID ',
+                        width: "15%"
+                    },
+                    {
+                        field: 'advance_amount',
+                        title: 'Advance amount',
+                        width: "15%"
+                    },
+                    {
+                        field: 'affected_month',
+                        title: 'Affected Month',
+                        width: '15%'
+                    },
+                    {
+                        field: 'is_credited',
+                        title: 'Credited',
+                        width: '10%'
+                    },
+                    {
+                        field: 'remarks',
+                        title: 'Remarks',
+                        width: '25%'
+                    },
+                ]
+            ],
+            onSelect: function(index, row) {
+
+                //var checkfkeys = row.fkey;
+                if (row.is_credited == 'N') {
+                    $('#btn').linkbutton('enable');
+                } else {
+                    $('#btn').linkbutton('disable');
+                }
+
+            }
+        });
+    });
+    
+
+    $(".home").on("click", function () {
+
+    $("#container").isLoading({
+        text: "Loading",
+        position: "overlay",
+    });
+
+    let url = "";
+    var userGroup = <?php echo json_encode($this->Session->read('user_group')); ?>;
+
+    if (userGroup == "1") {
+        url = livesite + "SalaryProcessing/index";
+    } 
+    else if (userGroup == "2") {
+        url = livesite + "EmployeeMenu/addon";
+    }
+
+    $("#container").load(url, function () {
+        isDashboardShown = false;
+    });
+
+});
+</script>

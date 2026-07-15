@@ -1,0 +1,257 @@
+<?php if(isset($arr_reportcriterias)){ ?>
+<script>
+        $(document).ready(function () {
+// $('#date').hide();
+
+  var v = $('#filterby_reporttype').val();
+       if(v == 'SummaryPayroll' || v =='Salaryslip' || v == 'Grosssalary' || v=='GrosssalarySummary' || v=='BankTranfer')
+{
+      $('#date').show();
+}
+else
+{
+//      $('#date').hide();
+}
+  
+     })
+
+</script>
+<form class="form-horizontal" method="post" action="" id="form-showreport">
+    <input type="hidden" id="hidden-report-type" name="hidden-report-type" value="<?php echo $type; ?>" />
+    <input type="hidden" id="hidden-criterias-count" name="hidden-criterias-count" value="1" />
+    <input type="hidden" id="hidden-reportfields" name="hidden-reportfields" value="" />
+    <div class="form-group" id="div-criteria1">
+        <div id="date">
+        <?php if ($type == "Allocation" || $type == "StockDetail" || $type == "Material" || $type == "PO" || $type == "GRN" || $type == "StockTransfer" || $type == "PoReturn" || $type == "AllocationEMI" ) {  ?>
+            <div class="col-md-1"><b>Month&nbsp; &nbsp;&nbsp;:</b></div>
+            <div class="col-md-2">
+
+
+
+                <div class="col-md-12" style="padding-left: 4px; padding-right: 4px; ">
+                    
+                        <div class="col-md-6" style="padding-left: 4px; padding-right: 4px; ">
+                            <input type="text" id="reporstfrom" name="reportfrom" class="form-control pickerDate" value="<?php echo date("Y-m-d"); ?>" />
+                        </div>
+                        <div class="col-md-6" style="padding-left: 4px; padding-right: 4px; ">
+                            <input type="text" id="reporstto" name="reportto" class="form-control pickerDate" value="<?php echo date("Y-m-d"); ?>" />
+                        </div>
+ 
+ 
+
+                        
+                    
+                </div>
+
+            </div>
+<!--            //edited by megha 16_04_2019-->
+            <?php }elseif ($type == "Stock" ){ ?>
+            <div class="col-md-1"><b>As on&nbsp; &nbsp;&nbsp;:</b></div>
+            <div class="col-md-2">
+                <div class="col-md-12" style="padding-left: 4px; padding-right: 4px; ">
+                        <div class="col-md-6" style="padding-left: 4px; padding-right: 4px; ">
+                            <input type="text" id="reporstfrom" name="reportfrom" class="form-control pickerDate" value="<?php echo date("Y-m-d"); ?>" />
+                        </div>
+                </div>
+
+            </div>
+            <?php }?>
+   <!--            //edited by megha 16_04_2019-->         
+        </div>
+        <input type="hidden" class="hidden-criterias" id="hidden-criteria1" name="hidden-criteria1" value="" />
+        <div class="col-md-1"><b>Criteria&nbsp; &nbsp;&nbsp;: </b></div>
+        <div class="col-md-3" style="margin-left: 60px;">
+            <select id="select-criteria1" name="select-criteria1" class="form-control" onchange="loadCriteriaItems(1);" >
+                <option value="">--Choose criteria--</option>
+                <?php
+                foreach ($arr_reportcriterias as $key => $value) {
+                    echo '<option value="' . $value['reportcriteria'] . '">' . $value['reportcriteria_desc'] . '</option>';
+                }
+                ?>
+            </select>
+        </div>
+        <div class="col-md-4" id="div-items-criteria1">
+            
+        </div>
+      
+    </div>
+    
+    <?php if($type == 'employee'){ ?>
+    <div class="row">
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-4">	<div id="allempfields" style="width:100%; height:270px; background-color:white;"></div>
+        </div>
+        <div class="col-sm-4">	<div id="reportfields" style="width:100%; height:270px; background-color:white;"></div>
+        </div>
+        <div class="col-sm-2">
+        </div>
+    </div>
+    <?php } ?>
+    
+    <div class="form-group">
+        <div class="col-md-12" align="right">
+            <button type="button" onclick="viewReport();" id="btn-submit" class="btn btn-primary"><li class="fa fa-eye"></li></button>
+            <button type="button" onclick="downloadReport('pdf');" id="btn-submit1" class="btn btn-danger"><li class="fa fa-file-pdf-o"></li></button>
+            <button type="button" onclick="downloadReport('excel');" id="btn-submit2" class="btn btn-success"><li class="fa fa-file-excel-o"></li></button>
+        </div>
+        
+    </div>
+    <div id="reportCon" class="box box-body">
+        
+    </div>
+</form>
+<script>
+function downloadReport(mode){
+          var type = $('#hidden-report-type').val();
+	var criteria = $('#select-criteria1').val();
+	if(criteria){
+        $('#form-showreport').attr('action',livesite+'StockReport/generatereport/'+type+'/'+mode);
+        $('#form-showreport').submit();
+        
+	}
+	else
+	{
+	alert("Please select a criteria first");
+	}
+    
+    
+    
+    
+    
+}
+<?php if($type == 'employee'){ ?>
+    var allempfields;
+    allempfields = new dhtmlXGridObject('allempfields');
+    allempfields.selMultiRows = true;
+    allempfields.setHeader("Fields");
+    allempfields.setInitWidths("*");
+    allempfields.setColAlign("left");
+    allempfields.setColSorting("str");
+    allempfields.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        /*var currentReportFields = $('#hidden-reportfields').val().split(',').filter(function(v){return v!==''});
+        var arrSelectedFields = sId.split(',');
+        var difference = [];
+        $.grep(arrSelectedFields, function(el) {
+            console.log(el);
+            if ($.inArray(el, currentReportFields) == -1) difference.push(el);
+        })
+        var newReportFields = $.unique(difference);
+        console.log(newReportFields);
+        //$('#hidden-reportfields').val(newReportFields.join(','));*/
+        return true;
+    });
+    allempfields.setMultiLine(false);
+    allempfields.enableDragAndDrop(true);
+    allempfields.init();    
+    allempfields.clearAndLoad("<?php echo $this->webroot; ?>StockReport/listemployeefields", "json");
+    
+    var reportfields;
+    reportfields = new dhtmlXGridObject('reportfields');
+    reportfields.selMultiRows = true;
+    reportfields.setHeader("Report Fields");
+    reportfields.setInitWidths("*");
+    reportfields.setColAlign("left");
+    reportfields.setColSorting("str");
+    reportfields.setMultiLine(false);
+    reportfields.enableDragAndDrop(true);
+    reportfields.init();    
+    reportfields.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        /*var currentReportFields = $('#hidden-reportfields').val().split(',').filter(function(v){return v!==''});
+        var arrSelectedFields = sId.split(',');
+        var newReportFields = $.unique($.merge(arrSelectedFields, currentReportFields));
+        $('#hidden-reportfields').val(newReportFields.join(','));*/
+        return true;
+    });
+<?php } ?>
+jQuery(document).ready(function() {
+    /*$('#reportfrom').datepicker({
+        format: 'yyyy-mm-dd'
+    })
+    $("#reportfrom").inputmask("yyyy-mm-dd");
+    $('#reportto').datepicker({
+        format: 'yyyy-mm-dd'
+    })
+    $("#reportto").inputmask("yyyy-mm-dd");*/   
+ 
+    $('#form-showreport').parsley();
+    
+    $('#reporstfrom').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+    });
+
+    $('#reporstto').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+    });
+    
+    /*var options = {
+        success : function(responseText, statusText, xhr, $form) {
+            var response = JSON.parse(responseText);
+            if (response.success) {
+                alert(response.message);
+            } else {
+                alert('Something wrong happened!');
+            }
+        }
+    };
+    // bind to the form's submit event
+    $('#form-showreport').submit(function(e) {
+        //$(this).ajaxSubmit(options);
+        e.preventDefault();
+        var container = $("#largeModalForm #largeModalForm-content");
+        var url = livesite+'Reports/generatereport/employee';
+	container.load(url,$(this).serialize(), function() {
+            $("#largeModalForm").modal('show')
+        });
+        return false;
+    });*/
+});
+function viewReport(){ 
+        var type = $('#hidden-report-type').val();
+	var criteria = $('#select-criteria1').val();
+	if(criteria){
+        //var container = $("#largeModalForm #largeModalForm-content");  
+        var container = $("#reportCon");
+        var url = livesite+'StockReport/generatereport/'+type;
+        toggleItemsDisplay(1);
+        $('body').addClass('sidebar-collapse');
+	container.load(url,$('#form-showreport').serialize(), function() {
+            //$("#largeModalForm").modal('show')
+        });
+	}
+	else
+	{
+	alert("Please select a criteria first");
+	}
+}
+function loadCriteriaItems(index){
+    var criteria = $('#select-criteria'+index).val();
+    $('#hidden-criteria'+index).val(criteria);
+    $('#div-items-criteria'+index).load(livesite+'StockReport/loadcriteriaitems/'+index+'/'+criteria);
+}
+function addOneReportCriteria(index){
+    var type = $('#hidden-report-type').val();
+        
+    var currentcriteriaschosen = '';
+    $('#form-showreport .hidden-criterias').each(function (){
+        currentcriteriaschosen += (currentcriteriaschosen == '')?this.value:','+this.value;
+    });
+    $('#form-showreport .link-removecriterias').remove();
+    var newIndex = index+1;
+    $('<div class="form-group" id="div-criteria'+newIndex+'"></div>').insertAfter($('#div-criteria'+index));
+    $('#div-criteria'+newIndex).load(livesite+'StockReport/addreportcriteria/'+type+'/'+newIndex+'/'+currentcriteriaschosen);
+    
+    var count = $('#hidden-criterias-count').val();
+    if(count >= 1){
+        $('#hidden-criterias-count').val(parseInt(count)+1);
+    }
+}
+function removeThisCriteria(index){
+    var count = $('#hidden-criterias-count').val();
+    $('#hidden-criterias-count').val(parseInt(count)-1);
+    $('#div-criteria'+index).remove();
+}
+</script>
+<?php } ?>

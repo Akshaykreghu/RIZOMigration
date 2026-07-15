@@ -1,0 +1,693 @@
+<style>
+    /* edited by athira on 06-05-2025 */
+    .grade-green {
+        color: green !important;
+    }
+
+    .grade-orange {
+        color: orange !important;
+    }
+
+    .grade-red {
+        color: red !important;
+    }
+
+    /* end */
+    .form-horizontal .control-label {
+        text-align: left;
+    }
+
+    /* Make readonly/disabled inputs and selects look like labels */
+    input[readonly],
+    select[disabled] {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding-top: 7px;
+        padding-left: 0;
+        color: #333;
+        pointer-events: none;
+    }
+
+    textarea[disabled] {
+        background-color: #fff !important;
+        border: 1px solid #ced4da !important;
+        color: #495057 !important;
+        pointer-events: auto !important;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075) !important;
+        padding: .375rem .75rem !important;
+        font-weight: normal !important;
+    }
+
+
+    /* Optionally: give select2 the same readonly look when disabled */
+    .select2-container--default.select2-container--disabled .select2-selection--single {
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        padding-top: 5px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    /* Remove the arrow in disabled select2 */
+    .select2-container--default.select2-container--disabled .select2-selection__arrow {
+        display: none;
+    }
+
+    select.form-control:disabled {
+        padding-left: 0.5rem !important;
+        /* Reduce left padding */
+        color: #495057;
+        /* Restore text color if grayed out */
+        background-color: #e9ecef;
+        /* Optional: consistent disabled look */
+    }
+</style>
+
+
+<div class="modal-content">
+    <div class="modal-header" style="background: #00659f; color: white">
+        <!-- edited by athira on 05-05-2025 -->
+        <h4 class="modal-title">Assessment of the Reporting & Reviewing Officer</h4>
+        <!-- end -->
+    </div>
+
+    <div class="modal-body" style="padding: 20px 30px;">
+        <form class="form-horizontal <?php echo (!$is_edit) ? 'readonly-mode' : ''; ?>" method="post" action="<?php echo $this->webroot; ?>HierarchyReview/saveHierarchyReview" id="deptForm">
+
+            <div class="form-group">
+                <label class="col-md-3 control-label" for="EmpPkey">Employee Name<span class="star">*</span></label>
+                <div class="col-md-1 text-center">:</div>
+
+                <div class="col-md-8">
+                    <?php
+                    if (isset($default_data['EmpPkey'])): ?>
+                        <!-- Hidden input to preserve value for submission -->
+                        <input type="hidden" name="EmpPkey" value="<?php echo $default_data['EmpPkey']; ?>" />
+                        <!-- Display selected name without a dropdown -->
+                        <div class="form-control-plaintext font-weight-bold">
+                            <?php
+                            $selectedEmployee = array_filter($arr_employees, function ($e) use ($default_data) {
+                                return $e['ei']['emp_pkey'] == $default_data['EmpPkey'];
+                            });
+                            $selected = array_shift($selectedEmployee);
+                            echo $selected['ei']['EmpName'] . ' - ' . $selected['ei']['employee_id'];
+                            ?>
+                        </div>
+                    <?php endif; ?>
+
+                </div>
+
+
+            </div>
+
+            <div class="form-group" id="DesignationBlock" style="<?php echo !empty($default_data['Designation']) ? 'display: block;' : 'display: none;'; ?>">
+                <label class="col-md-3 control-label">Designation</label>
+                <div class="col-md-1 text-center">:</div>
+
+                <div class="col-md-6">
+                    <input type="text" id="Designation" name="Designation" class="form-control" readonly
+                        value="<?php echo isset($default_data['Designation']) ? $default_data['Designation'] : ''; ?>">
+                </div>
+            </div>
+
+            <br>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <!-- edited by athira on 05-05-2025 -->
+                        <th style="width:8%;">SL. NO.</th>
+                        <th style="text-align:center;">ATTRIBUTES</th>
+                        <th style="width:20%;">MARKS (Out of 10)</th>
+                        <!-- end -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $sl = 1;
+                    foreach ($arr_attr as $attr) {
+                        $attrKey = $attr['aas']['attributes_staff_pkey'];
+                        $inputName = "reporting_officer_marks_$attrKey";
+                        $inputValue = isset($default_data[$inputName]) ? $default_data[$inputName] : '';
+                    ?>
+                        <tr>
+                            <td style="text-align:center;"><?php echo $sl++ . "."; ?></td>
+                            <td><?php echo htmlspecialchars($attr['aas']['attributes']); ?><span class="star">*</span></td>
+                            <td>
+                                <input type="number" class="form-control"
+                                    name="reporting_officer_marks_<?php echo $attrKey; ?>"
+                                    max="10" min="0" step="any" required
+                                    value="<?php echo htmlspecialchars($inputValue); ?>">
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    <!-- Total Marks Row -->
+                    <tr>
+                        <td colspan="2" style="text-align:center;"><strong>Total Marks</strong></td>
+                        <td>
+                            <input type="text" class="form-control" id="total_marks" name="reporting_officer_marks" readonly
+                                value="<?php echo isset($default_data['reporting_officer_marks']) ? $default_data['reporting_officer_marks'] : ''; ?>">
+                        </td>
+                    </tr>
+                    <!-- Grade Row -->
+                    <tr>
+                        <td colspan="2" style="text-align:center;"><strong>Grade</strong></td>
+                        <td>
+                            <input type="text" class="form-control" id="grade" name="reporting_officer_grade" readonly
+                                value="<?php echo isset($default_data['reporting_officer_grade']) ? $default_data['reporting_officer_grade'] : ''; ?>">
+                        </td>
+                    </tr>
+
+
+                </tbody>
+            </table>
+
+
+
+            <div class="form-group">
+                <div class="col-md-3 control-label"></div>
+                <div class="col-md-1 text-center"></div>
+                <div class="col-md-12">
+                    <p><strong style="text-decoration: underline;">Grading</strong></p>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th style="padding:8px;">Total Marks</th>
+                                <th style="padding:8px;">Grade</th>
+                            </tr>
+                            <tr>
+                                <td style="padding:8px;">Above 90</td>
+                                <td style="color: green;padding:8px;"><b>Outstanding</b></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:8px;">Above 80 upto 90</td>
+                                <td style="color: green;padding:8px;"><b>Very Good</b></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:8px;">Above 60 upto 80</td>
+                                <td style="color: orange;padding:8px;"><b>Good</b></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:8px;">Above 40 upto 60</td>
+                                <td style="color: orange;padding:8px;"><b>Average</b></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:8px;">Upto 40</td>
+                                <td style="color: red;padding:8px;"><b>Below Average</b></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- edited by athira on 05-05-2025 -->
+                    <small>(An employee should not be graded outstanding unless exceptional qualities and performance have been noticed. Grounds for giving outstanding / below average grading should be clearly brought out).</small>
+                    <!-- end -->
+                </div>
+            </div>
+            <?php
+            // debug($default_data);
+            ?>
+            <!-- Edited by Akshay on 28-5-2025 -->
+            <table class="table table-bordered" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: #d3d3d3;">
+                        <th style="width: 33%; text-align: center;">Description</th>
+                        <th style="width: 33%; text-align: center;">Reporting Officer</th>
+                        <?php if ($is_reviewing_officer): ?>
+                            <th style="width: 33%; text-align: center;">Reviewing Officer</th>
+                        <?php endif; ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><label>Training Need Assessment<span class="star">*</span></label></td>
+                        <td>
+                            <!-- Edited by Akshay on 22-7-2025 -->
+                            <textarea class="form-control" name="reporting_officer_training_needs" rows="4" maxlength="600"
+                                <?php echo ($is_reviewing_officer || !$is_edit) ? 'disabled' : ''; ?>><?php echo isset($default_data['reporting_officer_training_needs']) ? trim($default_data['reporting_officer_training_needs']) : ''; ?></textarea>
+                            <!-- End -->
+                        </td>
+                        <?php if ($is_reviewing_officer): ?>
+                            <td>
+                                <!-- Edited by Akshay on 22-7-2025 -->
+                                <textarea class="form-control" name="reviewing_officer_training_needs" rows="4" maxlength="600"
+                                    <?php echo (!$is_reviewing_officer || $status == 3) ? 'disabled' : ''; ?>><?php echo isset($default_data['reviewing_officer_training_needs']) ? trim($default_data['reviewing_officer_training_needs']) : ''; ?></textarea>
+                            </td>
+                            <!-- End -->
+                        <?php endif; ?>
+                    </tr>
+                    <tr>
+                        <td><label>Comments & Recommendation based on overall Performance<span class="star">*</span></label></td>
+                        <td>
+                            <!-- Edited by Akshay on 22-7-2025 -->
+                            <textarea class="form-control" name="reporting_officer_comments" rows="4" maxlength="600"
+                                <?php echo ($is_reviewing_officer || !$is_edit) ? 'disabled' : ''; ?>><?php echo isset($default_data['reporting_officer_comments']) ? trim($default_data['reporting_officer_comments']) : ''; ?></textarea>
+                            <!-- End -->
+                        </td>
+                        <?php if ($is_reviewing_officer): ?>
+                            <td>
+                                <!-- Edited by Akshay on 22-7-2025 -->
+                                <textarea class="form-control" name="reviewing_officer_comments" rows="4" maxlength="600"
+                                    <?php echo (!$is_reviewing_officer || $status == 3) ? 'disabled' : ''; ?>><?php echo isset($default_data['reviewing_officer_comments']) ? trim($default_data['reviewing_officer_comments']) : ''; ?></textarea>
+                                <!-- End -->
+                            </td>
+                        <?php endif; ?>
+                    </tr>
+                    <tr>
+                        <td><label>Signature</label></td>
+                        <td>
+                        </td>
+                        <?php if ($is_reviewing_officer): ?>
+                            <td>
+                            </td>
+                        <?php endif; ?>
+                    </tr>
+                    <tr>
+                        <td><label>Name</label></td>
+                        <td>
+                            <?php echo isset($default_data['reporting_officer_name']) ? htmlspecialchars($default_data['reporting_officer_name']) : ''; ?>
+                        </td>
+                        <?php if ($is_reviewing_officer): ?>
+                            <td>
+                                <?php echo isset($default_data['reviewing_officer_name']) ? htmlspecialchars($default_data['reviewing_officer_name']) : ''; ?>
+                            </td>
+                        <?php endif; ?>
+                    </tr>
+                    <tr>
+                        <td><label>Designation</label></td>
+                        <td>
+                            <!-- <input type="text" class="form-control" name="reporting_officer_designation"
+                                <?php echo ($is_reviewing_officer || !$is_edit) ? 'disabled' : ''; ?>
+                                value="<?php echo isset($default_data['reporting_officer_designation']) ? htmlspecialchars($default_data['reporting_officer_designation']) : ''; ?>"> -->
+                            <?php echo isset($default_data['reporting_officer_designation']) ? htmlspecialchars($default_data['reporting_officer_designation']) : ''; ?>
+                        </td>
+                        <?php if ($is_reviewing_officer): ?>
+                            <td>
+                                <!-- <input type="text" class="form-control" name="reviewing_officer_designation"
+                                <?php echo (!$is_reviewing_officer || $status == 3) ? 'disabled' : ''; ?>
+                                value="<?php echo isset($default_data['reviewing_officer_designation']) ? htmlspecialchars($default_data['reviewing_officer_designation']) : ''; ?>"> -->
+                                <?php echo isset($default_data['reviewing_officer_designation']) ? htmlspecialchars($default_data['reviewing_officer_designation']) : ''; ?>
+                            </td>
+                        <?php endif; ?>
+                    </tr>
+                    <tr>
+                        <td><label>Date</label></td>
+                        <td>
+                            <!-- <input type="date" class="form-control" name="reporting_officer_date"
+                                <?php echo ($is_reviewing_officer || !$is_edit) ? 'disabled' : ''; ?>
+                                value="<?php echo isset($default_data['reporting_officer_date']) ? $default_data['reporting_officer_date'] : ''; ?>"> -->
+
+                            <?php
+                            echo isset($default_data['reporting_officer_date']) ? $default_data['reporting_officer_date'] : '';
+                            ?>
+                        </td>
+                        <?php if ($is_reviewing_officer): ?>
+                            <td>
+                                <!-- <input type="date" class="form-control" name="reviewing_officer_date"
+                                <?php echo (!$is_reviewing_officer || $status == 3) ? 'disabled' : ''; ?>
+                                value="<?php echo isset($default_data['reviewing_officer_date']) ? $default_data['reviewing_officer_date'] : ''; ?>"> -->
+                                <?php
+                                echo isset($default_data['reviewing_officer_date']) ? $default_data['reviewing_officer_date'] : '';
+                                ?>
+                            </td>
+                        <?php endif; ?>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- End -->
+
+            <?php if (isset($attr_staff_details_pkey)) { ?>
+                <input type="hidden" name="attr_staff_details_pkey" value="<?php echo $attr_staff_details_pkey; ?>">
+            <?php } ?>
+
+            <input type="hidden" name="fin_year" value="<?php echo date('Y'); ?>">
+            <input type="hidden" name="emp_fkey" value="<?php echo $emp_fkey; ?>">
+            <input type="hidden" name="status" id="status" value="1">
+            <input type="hidden" name="created_by" value="<?php echo $emp_fkey; ?>">
+
+            <div class="modal-footer">
+                <?php if ($status != 3) { ?>
+                    <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
+                    <!-- edited by athira on 04-06-2025 -->
+                    <!-- <button type="button" class="btn btn-primary" id="submitBtn">Submit</button> -->
+                    <button type="button" class="btn btn-primary" id="submitBtn">
+                        <?= $is_reviewing_officer ? 'Approve' : 'Submit' ?>
+                    </button>
+                    <!-- end -->
+                    <?php if ($is_reviewing_officer): ?>
+                        <button type="button" class="btn btn-danger" id="sendBack">Send back</button>
+                    <?php endif; ?>
+                <?php } ?>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+
+
+<script>
+    $(document).ready(function() {
+
+        // Prevent modal from closing on clicking outside.
+        $('#largeModalForm').modal({
+            backdrop: 'static', // Prevents closing the modal by clicking outside
+            keyboard: false // Disables closing the modal with the keyboard (ESC key)
+        });
+
+        $('.modal').on('click', function(e) {
+            // Prevent closing modal if the click is not on a button and is outside .modal-content
+            if (!$(e.target).closest('.modal-content').length) {
+                e.stopPropagation(); // Prevent closing the modal if clicked outside .modal-content
+            }
+        });
+
+        //edited by athira on 06-05-2025
+        const gradeField = $('#grade');
+        const grade = gradeField.val();
+
+        // Remove old classes
+        gradeField.removeClass("grade-green grade-orange grade-red");
+
+        // Apply new class based on grade value
+        if (grade === "Outstanding" || grade === "Very Good") {
+            gradeField.addClass("grade-green");
+        } else if (grade === "Good" || grade === "Average") {
+            gradeField.addClass("grade-orange");
+        } else if (grade) { // if there's a value and it's not one of the above
+            gradeField.addClass("grade-red");
+        }
+
+        $('#EmpPkey').select2({
+            placeholder: "--Select Employee--",
+            width: '100%',
+            dropdownParent: $('#largeModalForm'), // important for modals
+            minimumResultsForSearch: 0 // force search box to show
+        });
+        //end
+        // Trim leading and trailing spaces from text areas
+        $('textarea.form-control').each(function() {
+            var currentValue = $(this).val();
+            $(this).val(currentValue.trim()); // Trim the value on load
+        });
+
+        $('#largeModalForm').modal({
+            //edited by athira on 06-05-2025
+            // backdrop: 'static',
+            //end
+            keyboard: false // Disables closing the modal with the keyboard (ESC key)
+        });
+
+        $('.modal').on('click', function(e) {
+            // Prevent closing modal if the click is not on a button and is outside .modal-content
+            if (!$(e.target).closest('.modal-content').length) {
+                e.stopPropagation(); // Prevent closing the modal if clicked outside .modal-content
+            }
+        });
+
+
+        const maxMarksPerItem = 10;
+        const totalAttributes = <?php echo count($arr_attr); ?>;
+        const maxTotalMarks = maxMarksPerItem * totalAttributes;
+
+        function calculateGrade(percentage) {
+            if (percentage > 90) return "Outstanding";
+            if (percentage > 80) return "Very Good";
+            if (percentage > 60) return "Good";
+            if (percentage > 40) return "Average";
+            return "Below Average";
+        }
+
+        function calculateTotalAndGrade() {
+            let total = 0;
+            $("input[name^='reporting_officer_marks_']").each(function() {
+                const val = parseFloat($(this).val());
+                if (!isNaN(val)) {
+                    total += val;
+                }
+            });
+            console.log('Updating total_marks to:', total, 'Input value is now:', $('#total_marks').val());
+
+            $('#total_marks').val(total.toFixed(2)).change(); // This forces a re-render.
+
+            const percentage = (total / maxTotalMarks) * 100;
+            const grade = calculateGrade(percentage);
+            $('#grade').val(grade).trigger('change');
+
+            //edited by athira on 06-05-2025
+
+            const gradeField = $('#grade'); // Make sure this is defined in your function if not already
+
+            // Reset previous classes
+            gradeField.removeClass("grade-green grade-orange grade-red");
+
+            // Apply the new class
+            if (grade === "Outstanding" || grade === "Very Good") {
+                gradeField.addClass("grade-green");
+            } else if (grade === "Good" || grade === "Average") {
+                gradeField.addClass("grade-orange");
+            } else {
+                gradeField.addClass("grade-red");
+            }
+
+            //end
+
+
+        }
+
+        $("input[name^='reporting_officer_marks_']").on('input', function() {
+            let val = $(this).val();
+
+            // Edited by Akshay on 3-6-2025
+            if (/^0[0-9]/.test(val)) {
+                val = val.replace(/^0+/, '');
+                $(this).val(val);
+            }
+            // End
+
+            // Allow only digits and one dot, and trim to 2 decimals
+            if (!/^\d*\.?\d{0,2}$/.test(val)) {
+                val = val.substring(0, val.length - 1); // remove last char
+                $(this).val(val);
+                return;
+            }
+
+            const numVal = parseFloat(val);
+            const max = 10;
+
+            if (numVal > max) {
+                alert("Please enter a value between 0 and 10");
+                $(this).val(max.toFixed(2));
+            } else if (numVal < 0) {
+                $(this).val('0.00');
+            }
+
+            calculateTotalAndGrade();
+        });
+
+
+        $("input[name^='reporting_officer_marks_']").on('keydown', function(e) {
+            // Disallow e, +, - and prevent multiple dots
+            if (['e', 'E', '+', '-'].includes(e.key) || /^[a-zA-Z]$/.test(e.key)) { // Edited by Akshay on 9-6-2025
+                e.preventDefault();
+            }
+
+            if (e.key === '.' && $(this).val().includes('.')) {
+                e.preventDefault();
+            }
+        });
+
+
+        // Submit
+        // AJAX Submit handler
+        function ajaxSubmitForm(statusValue, message) {
+            const form = $('#deptForm')[0];
+
+            // Check text area
+            if (message === 'Submitted') {
+                let isValid = true;
+
+                // Loop through all textareas in the form
+                $('#deptForm textarea:not([readonly]):not([disabled])').each(function() {
+                    if ($(this).val().trim() === '') {
+                        isValid = false;
+                        $(this).addClass('is-invalid'); // Optional: Add a red border class
+                    } else {
+                        $(this).removeClass('is-invalid'); // Remove red border if fixed
+                    }
+                });
+
+                if (!isValid) {
+                    $.notify('Please fill out all textareas before submitting.', {
+                        type: 'danger',
+                        delay: 3000,
+                        z_index: 9999
+                    });
+                    return; // Stop the AJAX submission
+                }
+            }
+            // End
+
+            if (!form.checkValidity()) {
+                // Trigger browser’s native validation UI
+                form.reportValidity();
+                return;
+            }
+
+            $('#status').val(statusValue);
+
+            const formData = $(form).serialize();
+            const actionUrl = $(form).attr('action');
+
+            $.ajax({
+                url: actionUrl,
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                beforeSend: function() {
+                    // Optional: disable buttons or show a loader
+                },
+                success: function(response) {
+                    if (response.success) {
+                        var statusText = message;
+                        // if (statusValue == 2) statusText = 'saved';
+                        // else if (statusValue == 3) statusText = 'submitted';
+                        // else statusText = 'processed';
+
+                        $.notify('Form ' + statusText + ' successfully!', {
+                            type: 'success',
+                            delay: 3000,
+                            z_index: 9999 // Ensure it's above all other elements
+                        });
+
+                        $('#myleaverequeststable').datagrid('reload');
+                        $('.modal').modal('hide');
+                    } else {
+                        $.notify('Error: ' + response.message, {
+                            type: 'danger',
+                            delay: 3000,
+                            z_index: 9999 // Ensure it's above all other elements
+                        });
+
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $.notify('Submission failed. Please try again.', {
+                        type: 'danger',
+                        delay: 3000,
+                        z_index: 9999 // Ensure it's above all other elements
+                    });
+                }
+            });
+        }
+
+
+        const isReviewer = <?php echo $is_reviewing_officer ? 'true' : 'false'; ?>;
+
+        // Save Button
+        $('#saveBtn').on('click', function() {
+            const status = isReviewer ? 2 : 1;
+            const message = 'Saved';
+            ajaxSubmitForm(status, message);
+        });
+
+        // Submit Button
+        $('#submitBtn').on('click', function() {
+            const status = isReviewer ? 3 : 2;
+            const message = 'Submitted';
+            ajaxSubmitForm(status, message);
+        });
+
+        // Send Back Button (always sets status 1)
+        // Custom Send Back Handler
+        $('#sendBack').on('click', function() {
+            const form = $('#deptForm')[0];
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+
+
+            $('#status').val(1); // Or any specific status you use for "sent back"
+
+            const formData = $(form).serialize();
+            const sendBackUrl = '<?php echo $this->webroot; ?>HierarchyReview/sendBackReview'; // Your custom PHP function
+
+            $.ajax({
+                url: sendBackUrl,
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                beforeSend: function() {
+                    // Optional loading spinner or disable buttons
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $.notify('Form sent back successfully!', {
+                            type: 'success',
+                            delay: 3000,
+                            z_index: 9999 // Ensure it's above all other elements
+                        });
+                        $('#myleaverequeststable').datagrid('reload');
+                        $('.modal').modal('hide');
+                    } else {
+                        $.notify('Error: ' + response.message, {
+                            type: 'danger',
+                            delay: 3000,
+                            z_index: 9999 // Ensure it's above all other elements
+                        });
+                    }
+                },
+                error: function() {
+                    $.notify('Send back failed. Please try again.', {
+                        type: 'danger',
+                        delay: 3000,
+                        z_index: 9999 // Ensure it's above all other elements
+                    });
+                }
+            });
+        });
+
+
+
+        if ($('.readonly-mode').length) {
+            $('.readonly-mode').find('input, select, textarea').each(function() {
+                const name = $(this).attr('name');
+                const type = $(this).attr('type');
+
+                // Keep hidden inputs enabled
+                if (type === 'hidden') return;
+
+                // Reviewer override logic
+                const isReviewer = <?php echo json_encode($is_reviewing_officer); ?>;
+                const reviewerFields = ['reviewing_officer_training_needs', 'reviewing_officer_comments'];
+
+                if (isReviewer && reviewerFields.includes(name)) {
+                    // Do not disable
+                    return;
+                }
+
+                // Disable selects in a stylable way
+                if ($(this).is('select')) {
+                    $(this).attr('disabled', true).addClass('readonly-select');
+                } else {
+                    $(this).attr('readonly', true);
+                }
+            });
+
+            // Hide buttons unless reviewer
+            if (!<?php echo json_encode($is_reviewing_officer); ?>) {
+                $('#saveBtn, #submitBtn').hide();
+            }
+        }
+
+
+
+    });
+</script>

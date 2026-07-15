@@ -1,0 +1,134 @@
+<?php if( $mode == '' ){ ?>
+<div class="modal-body" style="overflow-y: auto;">
+    <legend>Employee Information Report</legend>
+     <?php if(empty($arr_employee_report_details_merged))
+    {?>
+    <h3 style="color:red;">No record found</h3>
+    <?php }
+    else{
+      ?>
+    <table class="table table-bordered">
+    <thead>
+      <tr>
+          <th>Sl. No</th>
+          <?php
+          //debug($arr_employee_report_details_merged);
+          //debug($arr_emp_field_headings);
+            $heading_arr = isset($arr_employee_report_details_merged)?$arr_employee_report_details_merged['0']:array();
+            //debug($heading_arr);
+             foreach ($heading_arr as $key => $val){
+                echo '<th>'.$arr_emp_field_headings[$key].'</th>';
+             }
+             
+          ?>
+      </tr>
+    </thead>
+
+    <tbody>
+        <?php $i = 1; ?>
+      <?php foreach($arr_employee_report_details_merged as $value){ ?>
+        <tr>
+            <td><?php echo $i++; ?></td>
+        <?php foreach($value as $key=>$val){ ?>
+            
+            <?php if($key == 'date_of_birth'){ ?>
+                <td><?php echo date("d-m-Y",strtotime($val)); ?></td>
+            <?php } else if($key == 'joining_date') { ?>
+                <td><?php echo date("d-m-Y",strtotime($val)); ?></td>
+        <?php } else { ?>
+            <td><?php echo $val; ?></td>
+        <?php } } ?>
+        </tr>
+      <?php } ?>
+    </tbody>
+    </table>
+<!--    <div class="form-group">
+        <div class="col-md-12" align="right">
+            <a href="#" onclick="downloadReport('employee','pdf');" ><i class="icon-file"></i>Download As PDF</a>
+            <a href="#" onclick="downloadReport('employee','excel');"><i class="icon-file"></i>Download As Excel</a>
+        </div>
+    </div>-->
+</div>
+   <?php } }else{ ?>
+<style>
+    body {
+        line-height: 2em;
+    }
+    .block-container {
+        width: 95%;
+        padding: 20px;
+        border: #000000 solid thin;
+    }
+    .sub-head {
+        border-bottom: #000000 solid thin;
+    }
+    .row {
+        height: 32px;
+    }
+    .col-md-4 {
+        width: 33.33%;
+        float: left;
+    }
+    table {
+        border: 1px solid #f4f4f4;
+        width: 80%;
+        max-width: 80%;
+        margin-bottom: 20px;
+        background-color: transparent;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+    td, th {
+        width: auto;
+        text-align: left;
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border: 1px solid #B2B2B2;
+    }
+</style>
+
+<?php
+echo $this->element('reportadminheader',array(
+'title'=>'Employee Information Report'));
+?>
+     <table>
+    <thead>
+      <tr><!--
+          <th>Si. no</th>
+      <?php
+//      foreach($arr_emp_field_headings as $key => $value){
+//          if(in_array($key,$arr_report_field_headings)){
+//              echo '<th>'.$value.'</th>';
+//          }
+//        } 
+        ?>
+      <tr>-->
+          <th>Sl. No</th>
+          <?php
+             foreach ($arr_report_field_headings as $val){
+                echo '<th>'.isset($arr_emp_field_headings[$val])?$arr_emp_field_headings[$val]:"".'</th>';
+             }
+             
+          ?>
+      </tr>
+    </thead>
+    <tbody>
+        <?php $i = 1; ?>
+      <?php foreach($arr_employee_report_details_merged as $value){ ?>
+        <tr>
+            <td><?php echo $i++; ?></td>
+        <?php foreach($value as $key=>$val){ ?>
+            
+            <?php if($key == 'date_of_birth'){ ?>
+                <td><?php echo date("d-m-Y",strtotime($val)); ?></td>
+            <?php } else if($key == 'joining_date') { ?>
+                <td><?php echo date("d-m-Y",strtotime($val)); ?></td>
+        <?php } else { ?>
+            <td><?php echo $val; ?></td>
+        <?php } } ?>
+        </tr>
+      <?php } ?>
+    </tbody>
+    </table>
+<?php } ?>

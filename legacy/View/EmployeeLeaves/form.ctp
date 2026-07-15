@@ -1,0 +1,450 @@
+<style>
+
+    .form-horizontal .control-label{
+        text-align: right;
+
+
+    }
+    .modal-content{
+        /* new custom width */
+        width: 95% !important;
+        /* must be half of the width, minus scrollbar on the left (30px) */
+    }
+
+    .form-horizontal .control-label {
+        text-align: left;
+        /*padding-left: 76px;*/
+    }
+</style>
+<script>
+    $.validate({
+        form: '#leaveuploadtable'
+    });
+    var options = {
+        success: function (resp) {
+//            alert(resp);
+            var success = $.parseJSON(resp).success;
+            var message = $.parseJSON(resp).msg;
+//            alert(message);
+            if (success == false) {
+                alert(message);
+                $('#modalForm').modal('hide');
+            }
+            $('#modalForm').modal('hide');
+            $('#leave_table').datagrid('reload');
+            $('#btn-submit').html(' save ').attr('disabled', false);
+            $.notify($.parseJSON(resp).msg, {
+                type: 'success',
+                allow_dismiss: false
+            });
+        }  // post-submit callback
+    };
+    $('#leaveuploadtable').on('submit', function (event) {
+        event.preventDefault();
+        if (confirm(" Do You Want  To Save The Form")) {
+            $('#btn-submit').html('<li class="fa fa-spinner"></li> saving...').attr('disabled', 'disabled');
+            $('#leaveuploadtable').ajaxSubmit(options)
+        }
+    });</script>
+<div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header" style="background: #00659f;color: white">
+            <h4 class="modal-title"> Employee Leave Upload Form</h4>  
+        </div>
+        <div class="modal-body">
+            <!-- Form starts -->
+
+            <form class="form-horizontal" id="leaveuploadtable" action="<?php echo $this->webroot; ?>EmployeeLeaveUpload/leavesave" method="POST">
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-sm-4 control-label">Choose Employee<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-sm-7">
+                                <!--                          <select id="emp_fkey" class="form-control" name="emp_fkey" onchange="loadExistingCTCInfo();" >-->
+                                <select id="emp_fkey1" class="form-control js-example-basic-single" style="width: 100%" name="emp_fkey1" required="required" >
+                                    <option value="">[--Select--]</option>
+
+                                    <?php
+                                    foreach ($arr_employees as $value) {
+                                        $selected = ($data['emp_fkey'] == $value['EmployeeDetails']['emp_pkey']) ? 'selected="selected"' : '';
+
+                                        echo '<option value="' . $value['EmployeeDetails']['emp_pkey'] . '" ' . $selected . '>' . $value['EmployeeDetails']['first_name'] . ' ' . $value['EmployeeDetails']['last_name']. ' - ' . $value['EmployeeProfessionalDetails']['emp_company_id']   . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>    
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="leave_type" class="col-sm-4 control-label">Leave Type<span class="star">*</span></label>
+                          <div class="col-md-1">:</div>
+                            <div class="col-sm-7">
+                                <select id="leave_type" name="leave_type" class="form-control disable_first" required="required">                                    
+                                    <option value="">[--Select--]</option>                                   
+                                    <?php foreach ($arr_leavetypes as $key => $value) { ?> 
+                                        <?php
+                                        if ($value['SalaryHeadItems']['salary_head_item_pkey'] === $data['leave_type']) {
+                                            $selected = 'selected="selected"';
+                                        } else {
+                                            $selected = '';
+                                        }
+                                        ?>
+                                        <option <?php echo $selected; ?> value="<?php echo $value['SalaryHeadItems']['salary_head_item_pkey']; ?>"><?php echo $value['SalaryHeadItems']['item']; ?> </option>
+                                    <?php } ?>                                      
+                                </select>
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group" id="leave-balance-info">
+                        <div class="col-md-12">
+                            <label id="balance" class="col-sm-4 control-label">Balance Leaves </label>
+                           <div class="col-md-1">:</div>
+                            <div class="col-sm-7">
+                                <label id="Leavebalance" class="col-md-12 control-label disable_first"></label>
+                                <input type="hidden" id="hid_yearly_balance" name="hid_yearly_balance" />
+                                <input type="hidden" id="hid_monthly_balance" name="hid_monthly_balance" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="leave_start_date" class="col-sm-4 control-label">Leave Start Date<span class="star">*</span></label>
+                           <div class="col-md-1">:</div>
+                            <div class="col-sm-7">
+                                <input type="text" required="required" class="form-control strict-field disable_first" placeholder="Leave Start Date " value="<?php echo $data['leave_start_date'] ?>  " name="leave_start_date" id="leave_start_date"   >
+
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="leave_start_session" class="col-sm-4 control-label">Leave Start Session<span class="star">*</span></label>
+                           <div class="col-md-1">:</div>
+                            <div class="col-sm-7">
+                                <!--oninvalid="this.setCustomValidity('Please Select Start Date');"--> 
+                                <select class="form-control input-md strict-field disable_first" id="leave_start_session" onchange="session_validation()" name="leave_start_session" required="required" " > 
+                                    <!--   //edited by megha on 28_06_19 leave session selection -- start-->
+                                    <option value="">Select Session</option>
+                                    <option value="1"  <?php // echo($data['leave_end_session'] == '1') ? 'selected="selected"' : ''; ?>>First Half</option>
+                                    <option value="2" <?php // echo($data['leave_end_session'] == '2') ? 'selected="selected"' : ''; ?>>Second Half</option>              
+                                    <!--  //edited by megha on 28_06_19 leave session selection -- end-->                      
+                                </select>
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="" class="col-sm-4 control-label ">Leave End Date<span class="star">*</span></label>
+                           <div class="col-md-1">:</div>
+                            <div class="col-sm-7">
+                                <!--                                onchange="checkdate(event);"-->
+                                <input type="text" required="required" class="form-control strict-field disable_first" placeholder="Leave end Date " value="<?php echo $data['leave_end_date'] ?>  " name="leave_end_date" id="leave_end_date"     >
+
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="leave_end_session" class="col-sm-4 control-label disable_first">Leave End Session<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-sm-7">
+                                <select required="required"  class="form-control input-md strict-field disable_first" id="leave_end_session" onchange="session_validation()" name="leave_end_session"    >
+                                    <!--   //edited by megha on 28_06_19 leave session selection -- start-->
+                                    <option value="">Select Session</option>
+                                    <option value="1"  <?php // echo($data['leave_end_session'] == '1') ? 'selected="selected"' : ''; ?>>First Half</option>
+                                    <option value="2" <?php // echo($data['leave_end_session'] == '2') ? 'selected="selected"' : ''; ?>>Second Half</option>              
+                                    <!--  //edited by megha on 28_06_19 leave session selection -- end-->
+                                </select>
+                            </div> 
+                        </div>
+                    </div>
+  
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="col-sm-4 control-label" for="Reason">Reason&nbsp;<span style="color:red;">*</span></label>
+                           <div class="col-md-1">:</div>
+                            <div class="col-sm-7">
+                                <textarea id="Reason" name="Reason" type="text" placeholder="Reason" class="form-control input-md strict-field disable_first" required="" ></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <!--div class="form-group" id="totel_days" style="display:none">
+                        <div class="col-md-12">
+                            <label for="balancE_leave" class="col-sm-6 control-label" style="color:#890AEC;">Total Days</label>
+                            <div class="col-md-6">
+                                <input id="totel_day_sum" value="" disabled class="form-control">
+
+                            </div> 
+                        </div>
+                    </div>-->
+                    <div class="modal-footer">
+                        <input type="hidden" id="emp_leave_upload_pkey" name="emp_leave_upload_pkey" value="<?php echo $data['emp_leave_upload_pkey']; ?>" >
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        <button type="submit" name="btn-submit" id="btn-submit" class="btn btn-primary strict-field">Save</button>
+
+                    </div>
+
+
+
+                </div>
+
+
+
+            </form>
+            <!-- Tax Head Detail Form -->
+
+
+
+
+
+            <!-- form ends-->
+        </div>
+
+    </div>
+
+</div>
+<script type="text/javascript">
+    function datevalidation() {
+        alert('hi');
+    }
+    function setdate(s) {
+        $('#leave_end_date').datepicker('setStartDate', s);
+        setenddate();
+    }
+    function session_validation() {
+        var start = $('#leave_start_date').val();
+        var end_date = $('#leave_end_date').val();
+
+        if (start == end_date) {
+            if ($('#leave_end_session').val() == '1' && $('#leave_start_session').val() == '2') {
+                alert("please choose proper Leave Sessions ");
+                $('#leave_end_session').val('2').trigger("change");
+                $('#leave_start_session').val('1').trigger("change");
+            }
+        }
+    }
+    function setenddate() {
+        //$('#leave_start_date').datepicker('setEndDate', '2017-10-01');
+        $('#leave_start_date').prop("readonly", false);
+    }
+
+
+//date only
+    function checkdate(event) {
+        event.preventDefault();
+        var start = $('#leave_start_date').val();
+        var end_date = $('#leave_end_date').val();
+        var emp_id = $('#emp_fkey1').val();
+        var url = 'EmployeeLeaveUpload/leavecheck';
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: {
+                start: start,
+                end: end_date,
+                emp_id: emp_id
+            },
+//success time hide                     
+            success: function (resp) {
+                //alert(resp);
+                var json_obj = $.parseJSON(resp);
+                if (json_obj.rows.length > 0) {
+                    $.notify(json_obj.msg, {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                    $("#btn-submit").hide();
+                } else {
+                    $("#btn-submit").show();
+                }
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+        $('select').select2();
+        $('#emp_fkey1').select2();
+        $(".select2-container").css("width", "100%");
+        $('.disable_first').prop("disabled", true);
+
+<?php if (isset($data['emp_leave_upload_pkey']) && $data['emp_leave_upload_pkey'] != 0) { ?>
+            getLeaveBalance(<?php echo $data['leave_type']; ?>, <?php echo $data['emp_fkey']; ?>, <?php echo $data['leave_end_date']; ?>);
+<?php } else { ?>
+            $('#leave-balance-info').hide();
+<?php } ?>
+        $('#emp_fkey1').change(function () {
+            $("#bal_leave").hide();
+            $.ajax({
+                url: livesite + 'EmployeeLeaveUpload/getLeaveType/' + $(this).val(),
+                success: function (response) {
+                    var leaveTypes = $.parseJSON(response);
+                    if (leaveTypes == '') {
+                        alert('Please Allocate Leave Policy to this Employee');
+                    }
+                    $('#leave_type').empty();
+                    var option = new Option("[--Select--]", "");
+                    $('#leave_type').append($(option));
+                    $.each(leaveTypes, function (index, item) {
+                        var option = new Option(item.item, item.salary_head_item_pkey);
+                        $('#leave_type').append($(option));
+                    });
+                    $('.disable_first').prop("disabled", false).val("");
+                    $('#Leavebalance').html("");
+                }
+            });
+        });
+
+        $('#leave_start_date').change(function () {
+            var start = $('#leave_start_date').val();
+            setdate(start);
+            var end_date = $('#leave_end_date').val();
+            var emp_id = $('#emp_fkey1').val();
+            if ((end_date) && (end_date.trim() != ''))
+            {
+                if (start > end_date)
+                {
+                    alert("start date should be less than end date");
+                    $('#leave_start_date').val('');
+                }
+            }
+
+        });
+        $('#leave_end_date').change(function () {
+            var start = $('#leave_start_date').val();
+            var end_date = $('#leave_end_date').val();
+            var emp_id = $('#emp_fkey1').val();
+            var Leave_salary_head_item_fkey = $('#leave_type').val();
+            if ((start) && (start.trim() != ''))
+            {
+                if (start > end_date)
+                {
+                    alert("end date should be greater than start date");
+                    $('#leave_end_date').val('');
+                    return false;
+                }
+            }
+            $.ajax({
+                url: livesite + 'EmployeeLeaveUpload/leavecheck',
+                type: 'post',
+                data: {
+                    employee: emp_id,
+                    start: start,
+                    enddate: end_date,
+                    salary_head_item_fkey: Leave_salary_head_item_fkey
+                },
+                success: function (response) {
+                    if (response != 0) {
+                        alert(response);
+                        $('#leave_start_date').val('');
+                        $('#leave_end_date').val('');
+                    }
+
+                }
+            });
+
+            var type = $('#leave_type').val();
+
+        });
+
+        $('#leave_type').change(function () {
+            if ($(this).val() == '')
+            {
+                alert('Please Choose Another ');
+                $('#btn-submit').prop("disabled", "disabled");
+
+            } else {
+                $('#btn-submit').prop("disabled", false);
+            }
+            var Leave_salary_head_item_fkey = $(this).val();
+            var emp_pkey = $('#emp_fkey1').val();
+            if (emp_pkey == '') {
+                alert('Choose a Employee to apply leave');
+            }
+            getLeaveBalance(Leave_salary_head_item_fkey, emp_pkey);
+        });
+
+        $('#leave_start_date').datepicker({
+            format: 'yyyy-mm-dd',
+            //    startDate: '2017-09-01',
+            autoclose: true
+        })
+//edited by megha on 08/08/2019 leave balance condition for last date
+        $('#leave_end_date').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        }).on('changeDate', function (e) {
+                var Leave_salary_head_item_fkey = $('#leave_type').val();
+                var emp_pkey = $('#emp_fkey1').val();
+                if (emp_pkey == '') {
+                alert('Choose a Employee to apply leave');
+                }
+                getLeaveBalance(Leave_salary_head_item_fkey, emp_pkey);
+            });
+
+        $('#in_time').timepicker({'timeFormat': 'H:i:s'});
+
+        $('#out_time').timepicker({'timeFormat': 'H:i:s'});
+
+        function display(msg) {
+            $("<p>").html(msg).appendTo(document.body);
+        }
+    });
+    /*
+     * Get leave balanace for the current employee for the leave type chosen
+     * On 15 Oct 2016
+     */
+    function getLeaveBalance(type, employee) {
+        $.ajax({
+            url: livesite + 'EmployeeLeaveUpload/GetLeaveBalance/' + type + '/' + employee,
+            type: 'POST',
+            success: function (resp)
+            {
+                var yearly_balance = $.parseJSON(resp).yearly_balance;
+               
+                 //edited by megha on 7/4/19 Indirect Leaves
+                if(yearly_balance != 365){
+                     console.log(yearly_balance);
+                var monthly_balance = $.parseJSON(resp).monthly_balance;
+                $('#hid_yearly_balance').val(parseFloat(yearly_balance).toFixed(1));
+                $('#hid_monthly_balance').val(parseFloat(monthly_balance).toFixed(1));
+                 $('#Leavebalance').show();
+//                alert(parseFloat(yearly_balance).toFixed(2));
+                $('#Leavebalance').html('Yearly Balance : <span class="label label-danger">' + parseFloat(yearly_balance).toFixed(1) + '</span>, Monthly Balance : <span class="label label-danger">' + parseFloat(monthly_balance).toFixed(1) + '</span><hr>');
+                $('#leave-balance-info').show();
+                var allow_negative = $.parseJSON(resp).allow_negative;
+                //if (yearly_balance <= 0 && allow_negative != 'Y') {
+                if (yearly_balance <= 0) {
+                    $('.disable_first').attr('disabled', true);
+                    $('#btn-submit').prop("disabled", "disabled");
+                    alert("Employee have no leave balance to taken ");
+                    $('#leave_type').attr('disabled', false);
+                } else {
+                    $('.disable_first').attr('disabled', false);
+                    $('#btn-submit').prop("disabled", false);
+                }
+                //edited by megha on 7/4/19 Indirect Leaves
+               }else{
+                $('#Leavebalance').html('');
+                $('#Leavebalance').hide();
+                $('#leave-balance-info').hide();
+                $('#hid_yearly_balance').val(365);
+                $('#hid_monthly_balance').val(31);
+                 $('.disable_first').attr('disabled', false);
+                    $('#btn-submit').prop("disabled", false);
+               }
+               //edited by megha on 7/4/19 Indirect Leaves end
+
+            }
+        });
+    }
+    //Ends
+</script>

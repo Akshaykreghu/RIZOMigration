@@ -1,0 +1,283 @@
+<form class="form-horizontal" method="post" action="<?php echo $this->webroot; ?>Attendance/submitregisterentry" id="updateregisterentryform">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Update Register</h4>
+    </div>
+    <div class="modal-body">
+        <input type="hidden" id="hid-registerid" name="hid-registerid" value="<?php echo $registerid; ?>" />
+        <div class="form-group">
+            <div class="col-md-12">
+			<div class="col-md-4">
+				<select id="select-reg-date-all" name="select-reg-date-all" class="form-control">
+					<option value="">--No Change--</option>
+					<option value="LOP">Set As LOP</option>
+					<!--option value="COFF">Comp Off </option-->
+					<option value="WFH">Work From Home</option>
+					<!--option value="NA">Not Applicable</option-->
+				</select>
+			</div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-primary" onclick="setToAll();">Set</button>
+                </div>
+                
+                <div class="col-md-6">
+<!--                    <table class="table table-bordered">
+                        <tr>
+                            <th>Leave type</th>
+                            <th>Leave Balance</th>
+                        </tr>
+                        
+                        <?php foreach($arr_leave as $val) { ?>
+                        <input type="hidden" value="<?php echo isset($val['leaveBalance'])?$val['leaveBalance']:0; ?>" name="leaveBalance[]" id="<?php echo isset($val['Head'])?$val['Head']:''; ?>" >
+                        <tr>
+                            <td><?php echo isset($val['Head'])?$val['Head']:''; ?></td>
+                        
+                            <td id="<?php echo isset($val['Head'])?$val['Head']."bal":''; ?>"><?php echo isset($val['leaveBalance'])?$val['leaveBalance']:0; ?></td>
+                        </tr>
+                        <?php } ?>
+                    </table>-->
+                    <table class="table table-bordered">
+                        <tr>
+                        <?php foreach($arr_leave as $val) { ?>
+                        <input type="hidden" value="<?php echo isset($val['leaveBalance'])?$val['leaveBalance']:0; ?>" name="leaveBalance[]" id="<?php echo isset($val['Head'])?$val['Head']:''; ?>" >
+                        
+                            <td><?php echo isset($val['Head'])?$val['Head']:''; ?></td>
+                        
+                            <td id="<?php echo isset($val['Head'])?$val['Head']."bal":''; ?>"><?php echo isset($val['leaveBalance'])?$val['leaveBalance']:0; ?></td>
+                        
+                        <?php } ?>
+                            </tr>
+                    </table>
+                </div>
+            </div>
+            
+		</div>
+        
+        <div class="form-group">
+            <?php $i = 0;
+            foreach ($arr_dates as $fieldno => $date) { 
+            
+                                ?>
+                <!--div class="col-md-6">
+                    <label style="text-align:left;" class="col-md-6 control-label" for="reg-date-<?php echo $i; ?>"><?php echo date('Y-m-d D', strtotime($date)); ?></label>
+                    <input type="hidden" id="hid-reg-field-<?php echo $i; ?>" name="hid-reg-field-<?php echo $i; ?>" value="<?php echo $fieldno; ?>" />
+                    <div class="col-md-6">
+                        <select id="reg-date-<?php echo $i; ?>" name="reg-date-<?php echo $i; ?>" class="form-control">
+                            <option value="">--No Change--</option>
+                            <option value="LOP">Set As LOP</option>
+                        </select>
+                    </div>
+                </div-->
+                <!-- On 02 Mar 2015 -->
+                <?php
+                    if(is_array($date) && !empty($date)){
+                        $arr_dt = $date;
+                        $date = $arr_dt[0];
+                        $half = ($arr_dt[1]==1)?" - First Half":" - Second Half";
+                        $hf = $arr_dt[1];
+                        $day = date('j', strtotime($date));
+                    }else{
+                        $half = "";
+                        $hf = "";
+                        $day = date('j', strtotime($date));
+                    }
+                ?>
+              <?php  $div = "<div class='col-md-6'>";
+              $count = 0;
+              for($j=0;$j<count($leave_details);$j++){ 
+                  
+                                if($leave_details[$j]['emp_leave_transactions']['leave_date'] == date('d-m-Y', strtotime($date))){ 
+                                    $count =$count + 1;
+                                $div = "<div class='col-md-6' style='color:red;'>"; 
+                                    continue; ?>
+                                <?php                 
+                                ?>
+              <?php  } }  if($count > 0) { //echo $div; ?> <div class='col-md-6' style='color:red;'>
+              <?php } else { ?> <div class='col-md-6'> <?php } ?>
+                    <label style="text-align:left;" class="col-md-6 control-label" for="reg-date-<?php echo $i; ?>"><?php echo date('d-m-Y D', strtotime($date)); ?> <?php echo $half; ?></label>
+                    <!--input type="hidden" id="hid-reg-field-<?php echo $i; ?>" name="hid-reg-field-<?php echo $i; ?>" value="<?php echo $day; ?>" /-->
+                    <input type="hidden" id="hid-reg-field-<?php echo $i; ?>" name="hid-reg-field-<?php echo $i; ?>" value="<?php echo $fieldno; ?>" />
+					<input type="hidden" id="hid-reg-field-half-<?php echo $i; ?>" name="hid-reg-field-half-<?php echo $i; ?>" value="<?php echo $hf; ?>" />
+                    <div class="col-md-6">
+                      <?php //   if(count($date)>1){ $date = $date['0']; }
+                            //for($i=0;$i<count($leave_details);$i++){
+                               // if($leave_details[$i]['emp_leave_transactions']['leave_date'] == date('Y-m-d', strtotime($date))){ ?>
+<!--                                  <select onFocus=(this.olds=this.value) class="bg-color" onchange="leavabalance(this,this.olds);this.olds=this.value" id="reg-date-<?php echo $i; ?>" name="reg-date-<?php echo $i; ?>" class="form-control">   -->
+                         <?php     //   } } ?>
+                         <select onFocus=(this.olds=this.value) onchange="leavabalance(this,this.olds);this.olds=this.value" id="reg-date-<?php echo $i; ?>" name="reg-date-<?php echo $i; ?>" class="form-control">   
+                       
+                            <option value="">--No Change--</option>
+                            <option value="LOP">Set As LOP</option>
+                            <!--option value="COFF">Comp Off </option-->
+                            <option value="WFH">Work From Home</option>
+                            <?php foreach($arr_leaves as $val){ ?>
+                            <option value="<?php echo $val['salary_head_items']['occurance']; ?>"><?php echo $val['salary_head_items']['occurance']; ?></option>
+                            <?php } ?>
+                            <!--option value="NA">Not Applicable</option-->
+                        </select>
+                    </div>
+                                 
+                </div>
+                <?php $i++; } ?>
+        
+          <!-- The below code is to check whether the employee already leave applied for listed dates. BY ***ARUL P DAS on 22/11/2019*** -->
+           <div class="form-group">
+                    <div class="col-md-12" style="color: red;padding-left: 30px;margin-top:10px;">
+                      
+                          <?php $k = 0;
+            foreach ($arr_dates as $fieldno => $date) {  
+                if(count($date)>1){ $date = $date['0']; }?>
+                       
+                        <?php
+                            for($k=0;$k<count($leave_details);$k++){
+                                if($leave_details[$k]['emp_leave_transactions']['leave_date'] == date('Y-m-d', strtotime($date))){ ?>
+                                <div class="col-md-6">    
+                               <?php     $occurance=$leave_details[$k]['salary_head_items']['occurance'];
+                                    $leave_session=$leave_details[$k]['emp_leave_transactions']['leave_session'];
+                                    $ls="";
+                                    if($leave_session==1){
+                                        $ls="First half";
+                                    }elseif ($leave_session==2) {
+                                        $ls="Second half";
+                                    }else{
+                                        $ls="Full day";
+                                    }
+                                    echo "<b> $ls $occurance applied on ".$leave_details[$k]['emp_leave_transactions']['leave_date']."</b><br>"; ?>
+                                </div>
+                             <?php       }
+                            }
+                        ?>  
+                            <?php $k++; } ?>
+                          <div class="col-md-12" style="color: black;"><b><sup style="color: red;">*</sup>Further actions for applied leaves choose Approve/Cancel Leaves option.</b></div>
+                      
+                    </div>
+           </div>   
+                    <!-- ENDS HERE -->
+        </div>
+        <input type="hidden" id="hid-count-missing" name="hid-count-missing" value="<?php echo $i; ?>" />
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
+<script>
+    
+    $('#updateregisterentryform').parsley();
+    var options = {
+        success: function (responseText, statusText, xhr, $form) {
+            var response = JSON.parse(responseText);
+            if (response.success == 1) {
+                //alert('Attendance verified successfully');
+                $.notify("Attendance register updated successfully", {
+                    type: 'success',
+                    allow_dismiss: false
+                });
+            }/* else if (response.success == 2) {
+                //alert('Some attendance verification failed');
+                $.notify("Some attendance verification failed", {
+                    type: 'danger',
+                    allow_dismiss: false
+                });
+            } */else {
+               if (response.success == 2) {
+                   $.notify(response.type+ " is already exists on " +response.day+ " in " +response.status+ " status ", {
+                    type: 'danger',
+                    allow_dismiss: false
+                });  
+               }else{
+                //alert('Something wrong happened!');
+                $.notify("Something wrong happened!", {
+                    type: 'danger',
+                    allow_dismiss: false
+                });
+                }
+            }
+
+            $('#modalForm').modal('hide');
+
+            var branch = $('#attendanceregisterfilter #filterby_branch').val();
+            var employee = $('#filterby_employee').val();
+            var month = $('#attendanceregisterfilter #filterby_month').val();
+
+            $('#attendanceregistertable').datagrid('load', {
+                branch: branch,
+                employee: employee,
+                month: month
+            });
+            $('#verifiedattendanceregistertable').datagrid('load', {
+                branch: branch,
+                employee: employee,
+                month: month
+            });
+        }
+    };
+
+    function leavabalance(s,d){
+        var type = $(s).val();
+//        alert($(s).parent().closest('input').attr('class'));
+        var  input_string = $(s).attr('id');
+        
+        var dates = input_string.substring(12,9);
+        
+        var half_type = $('#hid-reg-field-half-'+dates).val();
+        if(half_type != ''){
+            var session = .5;
+        }else{
+            var session = 1;
+        }
+        if($('#'+d).length  && d != '' ){
+            var leavebalance = $('#'+d).val();
+            var bal = parseFloat(leavebalance)+session;
+            $('#'+d).val(bal);
+            $('#'+d+"bal").html(bal);
+        }
+        if($('#'+type).length   ){
+            var leavebalance = $('#'+type).val();
+            var bal = parseFloat(leavebalance);
+            if(bal < session){
+                alert("This Employee have Insufficient Leavebalance For "+type+" Leave");
+                $(s).val('');
+                return false;
+            }else{
+            $('#'+type).val(bal-session);
+            $('#'+type+"bal").html(bal-session);
+        }
+        }
+    }
+  
+    // bind to the form's submit event
+//    $('#updateregisterentryform').submit(function () {
+//        $(this).ajaxSubmit(options);
+//        return false;
+//    });
+//edited by megha on 10_07_19 error on set empty save
+    $('#updateregisterentryform').submit(function () {
+        var i = 0;
+        var selectedValue = $( '#select-reg-date-all' ).val();
+        if(selectedValue){
+            i++;
+        }
+	$('select[id^=reg-date-]').each(function() {
+	 var setval = $(this).val();
+         if(setval){
+            i++;
+         }
+	});
+        if(i >0){
+        $(this).ajaxSubmit(options);
+        return false;
+        }
+        else{
+            alert("No changes available for update.");
+            return false;
+        }
+    });
+	
+	function setToAll(obj){
+		var selectedValue = $( '#select-reg-date-all' ).val();
+		$('select[id^=reg-date-]').each(function() {
+		  $( this ).val(selectedValue);
+		});
+	}
+</script>

@@ -1,0 +1,262 @@
+<style>
+    
+    .table , td, th,tr {
+        border-style: solid;
+        border-color: #d4d4de;
+   
+
+    }
+    .modal-content {
+        width: 125%   !important;
+
+    }
+
+</style>
+
+<?php  //debug($gross);   ?>
+<?php if ($mode == '') { ?>
+<div class="modal-body" style="overflow-y:auto; padding-left:3%; padding-right:3%; padding-bottom:3%;">
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <?php if (count($gross) <= 0) { ?>
+            <div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+                There is no data available with respect to your report</div>
+            <?php } else { ?>
+            <h3 align="center"  >Gross Salary Report</h3>
+            <h3>Month-<?php echo $month;?></h3>
+            <table class="table ">
+                <tbody>
+                    <tr style="background-color:#f0f0ff;">
+                        <th>Slno</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Designation</th>
+                        <th>Department</th>
+                        <th>Branch</th>
+                        <th>Total Days</th>
+                        <th>Days Type</th>
+                        <th>Present Days</th>
+                        <th>Overtime (In Hrs.)</th>
+                        <th>Gross Salary</th>
+                        <th>Total Deduction</th>
+                        <th>Net Salary</th>
+
+
+
+                    </tr>
+                    <?php 
+                    $i=1;
+                    // debug($gross);
+                    foreach($gross as $val){?>
+
+                    <tr>
+                        <td ><?php echo $i;?></td>
+                        <td><?php  echo $val['emp_info']['employee_id'];?></td>
+                        <td><?php echo $val['emp_info']['EmpName'];?><?php echo (isset($val['emp_details']['status'])) && $val['emp_details']['status'] =="2" ? '  (Resigned)':'';?></td>
+                        <td><?php  echo $val['emp_info']['designation'];?></td>
+                        <td><?php echo $val['emp_info']['department'];?></td>
+                        <td><?php echo $val['emp_info']['branch'];?></td>
+                        <td><?php echo $val['prodata']['days'];?></td>
+                        <td><?php echo $val['prodata']['type'];?></td>
+                        <td><?php echo $val['prodata']['present'];?></td>
+                        <td><?php echo isset($val['ot']) ? round(($val['ot'] / 60), 2) :0; ?></td>
+                        <?php $count_addition= count($val['Addition']['keys']); 
+                        $grss_amt=0;
+                        for($m=0;$m<$count_addition;$m++)
+                        {
+                        $number=round($val['Addition']['value'][$m],2);
+                        $grss_amt=$number+$grss_amt;
+
+
+                        ?>
+
+                        <?php } ?>
+                        <td><?php echo round($grss_amt); ?></td> 
+                        <?php $count_addition= count($val['Deduction']['keys']); 
+
+                        $dd_amt=0;
+                        for($m=0;$m<$count_addition;$m++)
+                        {
+                        $number=round($val['Deduction']['value'][$m],2);
+                        $dd_amt=$number+$dd_amt;
+
+
+                        ?>
+
+
+                        <?php } 
+
+
+                        $netamt=$grss_amt+$dd_amt;
+                        ?>
+
+
+                        <td><?php echo $dd_amt; ?></td>
+                        <td><?php echo round($netamt); ?></td>
+
+
+                    </tr>
+
+
+                    <?php    $i++; }
+
+
+                    ?>
+
+                </tbody>
+            </table>
+
+
+
+        </div>
+    </div>    
+    <!--div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel </button>  
+    </div-->
+    <!-- <div class="row">
+         <div class="form-group">
+             <div class="col-md-12" align="right">
+                 <a href="#" class="btn btn-default" onclick="downloadReport('Grosssalary', 'pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                 <a href="#" class="btn btn-default" onclick="downloadReport('Grosssalary', 'excel');"><i class="icon-file"></i>Download As Excel</a>
+             </div>
+         </div>
+     </div> -->
+</div>
+<?php }
+?>
+<?php }else{ ?>
+<?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>'; ?>
+<style type="text/css">
+    body {
+        line-height: 2em;
+    }
+    .block-container {
+        width: 95%;
+        padding: 20px;
+        border: #000000 solid thin;
+    }
+    .sub-head {
+        border-bottom: #000000 solid thin;
+    }
+    .row {
+        height: 32px;
+    }
+    .col-md-4 {
+        width: 33.33%;
+        float: left;
+    }
+    table {
+        border: 1px solid #f4f4f4;
+        width: 80%;
+        max-width: 80%;
+        margin-bottom: 20px;
+        background-color: transparent;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+    td, th {
+        text-align: left;
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border: 1px solid #B2B2B2;
+    }
+</style>
+
+<?php
+echo $this->element('reportadminheader',array(
+'title'=>'Gross Salary Report'));
+?>
+<?php if (count($gross) <= 0) { ?>
+<div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+    There is no data available with respect to your report</div>
+<?php } else { ?>
+<br><br>
+<br><br>
+<h3>Month-<?php echo $month;?></h3>
+<table class="table table-bordered">
+    <tbody>
+        <tr style="background-color:#f0f0ff;">
+            <th>Slno</th>
+
+            <th>ID</th>
+            <th>Name</th>
+            <th>Designation</th>
+            <th>Department</th>
+            <th>Branch</th>
+            <th>Total Days</th>
+            <th>Days Type</th>
+            <th>Present Days</th>
+            <th>Overtime (In Hrs.)</th>
+            <th>Gross Salary</th>
+            <th>Total Deduction</th>
+            <th>Net Salary</th>
+
+        </tr>
+        <?php 
+        $i=1;
+        foreach($gross as $val){?>
+
+        <tr>
+            <td ><?php echo $i;?></td>
+            <td><?php  echo $val['emp_info']['employee_id'];?></td>
+            <td><?php echo $val['emp_info']['EmpName'];?><?php //echo (isset($val['emp_details']['status'])) && $val['emp_details']['status'] =="2" ? '  (Resigned)':'';?></td>
+            <td><?php  echo $val['emp_info']['designation'];?></td>
+            <td><?php echo $val['emp_info']['department'];?></td>
+            <td><?php echo $val['emp_info']['branch'];?></td>
+            <td><?php echo $val['prodata']['days']?></td>
+            <td><?php echo $val['prodata']['type'];?></td>
+            <td><?php echo $val['prodata']['present'];?></td>
+            <td><?php echo isset($val['ot']) ? round(($val['ot'] / 60), 2) :0; ?></td>
+            <?php $count_addition= count($val['Addition']['keys']); 
+            $grss_amt=0;
+            for($m=0;$m<$count_addition;$m++)
+            {
+            $number=round($val['Addition']['value'][$m],2);
+            $grss_amt=$number+$grss_amt;
+
+
+            ?>
+
+
+
+            <?php } ?>
+            <td><?php echo round($grss_amt); ?></td> 
+            <?php $count_addition= count($val['Deduction']['keys']); 
+
+            $dd_amt=0;
+            for($m=0;$m<$count_addition;$m++)
+            {
+            $number=round($val['Deduction']['value'][$m],2);
+            $dd_amt=$number+$dd_amt;
+
+
+            ?>
+
+            <?php } 
+
+
+            $netamt=$grss_amt+$dd_amt;
+            ?>
+
+
+            <td><?php echo $dd_amt; ?></td>
+            <td><?php echo round($netamt); ?></td>
+
+
+        </tr>
+
+
+
+        <?php    $i++; }
+
+
+        ?>
+
+    </tbody>
+</table>
+
+
+<?php } }?>

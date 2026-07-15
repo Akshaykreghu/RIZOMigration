@@ -1,0 +1,221 @@
+<section class="content-header">
+    <h1 style="font-size: 30px;">Employee Leave Request(s)</h1>
+    <hr style="margin-top: 6px;margin-bottom: -2px;">
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- My Leave Requests -->
+            <!-- DIRECT CHAT DANGER -->
+            <div class="box box-primary">
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="myleaverequeststable" class="table table-bordered table-hover">
+                     
+                    </table>
+                </div><!-- /.box-body -->
+            </div><!--/.direct-chat -->
+        </div><!-- /.col -->
+    </div>
+</section>
+<script>
+jQuery(document).ready(function() {
+    $('#myleaverequeststable').datagrid({
+                url:livesite+"EmployeeLeaveRequest/listleaves",
+                pagination:true,
+                singleSelect:true,
+                rownumbers:true,
+                toolbar: [{
+                text:'New Leave',
+                iconCls:'icon-add',
+                handler: function(){
+                    showLargeModalForm(livesite+'EmployeeLeaveRequest/addeditleave/0');
+                }
+                },{
+                iconCls: 'icon-edit',
+                text:'Leave Details',
+                handler: function(){
+                        var row = $('#myleaverequeststable').datagrid('getSelected');
+                        //if (row && row.LEAVESTATUS != 'Cancelled'){
+                        if(row)
+                            {
+                                    showLargeModalForm(livesite+'EmployeeLeaveRequest/addeditleave/' + row.LEAVEENTRYID);
+                        /*}else{
+                            //alert("Please select a record to edit")
+                
+                                            $.notify("Please select a record to edit",{
+                                type: 'error',
+                                allow_dismiss: false
+                                                                                        
+                            });
+                        }*/
+                            }
+                            else
+                                {
+                                    $.notify("Please Select a Row",{Type: 'warnig'});
+                                }
+                }
+                },
+                {
+                iconCls: 'icon-edit',
+                text:'Show Leave Days',
+                handler: function(){
+                        var row = $('#myleaverequeststable').datagrid('getSelected');
+                        //if (row && row.LEAVESTATUS != 'Cancelled'){
+                        if(row)
+                            {
+                                   showSmallModalForm(livesite + 'EmployeeLeaveRequest/showleavedays/' + row.LEAVEENTRYID);
+                        /*}else{
+                            //alert("Please select a record to edit")
+                            $.notify("Please select a record to edit",{
+                                type: 'error',
+                                allow_dismiss: false
+                                                                                        
+                            });
+                        }*/
+                            }
+                            else
+                                {
+                                    $.notify("Please Select a Row",{Type: 'warnig'});
+                                }
+                }
+                }
+            //     {
+            //     iconCls: 'icon-remove',
+            //     text:'Remove',
+            //     handler: function(){
+			// 				var leaveStatus= ["Authorized", "Approved", "Cancelled", "Rejected"];
+            //                 var rows = $('#myleaverequeststable').datagrid('getSelected');
+            //                 if (rows){
+			// 					var str_ids = "";
+								
+			// 						var data = rows;
+            //                                                           //alert(data.LEAVESTATUS == 'Approved' || data.LEAVESTATUS == 'Authorized');
+			// 						//if(leaveStatus.indexOf(data.LEAVESTATUS)!=-1){
+			// 						if(data.LEAVESTATUS == 'Approved' || data.LEAVESTATUS == 'Authorized')
+            //                                                                 {
+            //                                                                     $.notify("You Cannot remove Approved/Authorized Leaves",{type:'danger'});
+			// 							return false;
+			// 						}
+                                   
+			// 							str_ids += data.LEAVEENTRYID;
+			// //	alert(str_ids);
+								
+            //                                 if (confirm("Do you want to delete the selected leave request(s)?")) {
+                                                
+            //                                         $.ajax({
+            //                                  url:  livesite+"EmployeeLeaveRequest/deleteLeaveRequests",
+            //                                         data : {
+            //                                         ids : str_ids
+            //                                         },
+            //                                         success : function(response) {
+            //                                         //var text = response.responseText;
+            //                                         // process server response here\
+            //                                         $.notify("Removed",{type:'success'});
+            //                                                 reloadTable('myleaverequeststable')
+            //                                             }
+            //                                         });
+                                        
+            //                                 }
+                            
+            //                     }
+            //                     else
+            //                     {
+            //                     $.notify("Please Select a Row",{type:'warning'});
+            //                     }
+                    
+            //     }
+            //     }
+            ],
+                fitColumns:true,
+                pageList:[2,5,10,50,100],
+				rowStyler: function(index,row){
+                    if (row.LEAVESTATUS =='Can not Apply'){
+                        return 'background-color:#FF6666;color:#fff;font-weight:bold;';
+                    }
+                },
+                columns:[
+                [          
+                          
+                          {field:'empname', title: 'Employee Name', width: "21%"},
+                          {field:'leave_type',title:'Leave Type',width:"12%"},
+                          {field:'FROMDATE',title:'From Date',width:"8%"},
+                          {field:'FROMHALF',title:'',width:"8%"},
+                          {field:'TODATE',title:'To Date',width:"8%"},
+                          {field:'TOHALF',title:'',width:"8%"},
+                          {field:'leave_days',title:'No of Days',width:"8%"},
+                          {field:'applied_date',title:'Applied Date',width:"8%"},
+                          {field:'LEAVESTATUS',title:'Leave Status',width:"10%"},
+                          {field:'doc',title:'Document',width:"8%"}
+                          
+                ]
+                ]
+                });
+});
+
+
+  function printleave(pkey = 0, pass = false) {
+    // Create form element
+    var form = document.createElement('form');
+    form.style.display = 'none'; // Hide the form
+
+    // Construct the URL
+    var url = livesite + 'EmployeeLeaveRequest/printleave/';
+    if (pkey) {
+        url += pkey;
+    }
+
+    // Set form attributes
+    form.method = 'GET';
+    form.action = url;
+
+    // Append the form to the body
+    document.body.appendChild(form);
+
+    // Prevent the default form submission (which causes a page reload)
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+    });
+
+    // Submit the form
+    form.submit();
+
+    // Remove the form from the body
+    document.body.removeChild(form);
+}
+
+    function downloadPdf(htmlContent, fileName) {
+        // Append a style element to set the top margin to 0
+        const style = document.createElement('style');
+        style.textContent = '@page { margin-top: 0mm; }';
+        document.head.appendChild(style);
+
+        // Create an html2pdf instance with margin-top set to 0
+        const pdf = new html2pdf(htmlContent, {
+            margin: [0, 20, 0, 20], // [top, right, bottom, left] margins in mm
+        });
+
+        // console.log('Pdf', pdf);
+        // Generate the PDF
+        pdf.toPdf().then(function(pdfObject) {
+            // Create a Blob from the PDF data
+            const blob = pdfObject;
+
+            // Create a link element
+            const link = document.createElement('a');
+            // Set the download attribute and create an object URL for the Blob
+            link.download = fileName;
+            link.href = URL.createObjectURL(blob);
+
+            // Append the link to the document body
+            document.body.appendChild(link);
+
+            // Trigger a click on the link
+            link.click();
+
+            // Remove the link from the document body
+            document.body.removeChild(link);
+        });
+    }
+</script>

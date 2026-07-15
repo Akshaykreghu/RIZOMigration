@@ -1,0 +1,251 @@
+<style>
+
+    .table , td, th,tr {
+        border-style: solid;
+        border-color: #d4d4de;
+
+
+    }
+
+</style>
+
+
+<?php if ($mode == '') { ?>
+    <div class="modal-body" style="overflow-y:initial; padding-left:3%; padding-right:3%; padding-bottom:3%;" >
+        <h3 align="center" style="font-weight:bold; font-size: 30px;">PO Return Report : <?php echo $month; ?></h3>
+        <h4 align="center" style="font-weight:bold;">(<?php echo isset($user_id) ? "Report run by " . ($user_id) . " - " . $date_time : ''; ?>)</h4>
+        <div class="row">
+            <div class="col-md-12">
+
+                <?php
+                $i = 0;
+                if (count($arr_poreturn_for_template) == 0) {
+                    echo "<h2>No Data Available With The Selected Criteria</h2> ";
+                } else {
+                    foreach ($arr_poreturn_for_template as $value) {
+                        if (count($value) !== 0) {
+                            $i += 1;
+                            ?>
+
+                            <fieldset> 
+
+
+                                <legend> <?php
+                                    echo isset($value['0']['sm']['store_location']) ? "Store - " . $value['0']['sm']['store_location'] : '';
+                                    echo ' ';
+                                    ?> 
+                                </legend>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <br>
+                            <fieldset>
+
+
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+
+                                            <th>Sl No</th>
+                                            <th>PO Return Number</th>
+                                            <th>PO Return Date</th>
+                                            <th>GRN Number </th>
+                                            <th>GRN Date</th>
+                                            <th>PO Number</th>
+                                            <th>Item Code</th>
+                                            <th>Item Name</th>
+                                            <th>Received Qty</th>
+                                            <th>Returned Qty</th>
+
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <?php $arr_data = $value; ?>
+                                        <?php
+                                        if (count($arr_data) >= 0) {
+                                            $i = 0;
+                                            $sum = 0;
+                                            ?>
+                                            <?php foreach ($arr_data as $val) { ?>
+                                                <tr>
+                                                    <?php
+                                                    $i = $i + 1;
+                                                    //$sum += $val['0']['balance_qty']; 
+                                                    ?>
+                                                    <td><?php echo $i; ?></td>
+                                                    <td><?php echo $val['ri']['return_number']; ?></td>
+                                                    <td><?php echo $val['ri']['return_date']; ?></td>
+                                                    <td><?php echo $val['gr']['gr_number']; ?></td>
+                                                    <td><?php echo $val['gr']['gr_date']; ?></td>
+                                                    <td><?php echo $val['po']['po_number']; ?></td>
+                                                    <td><?php echo $val['im']['item_code']; ?></td>
+                                                    <td><?php echo $val['im']['item_desc']; ?></td>
+                                                    <td><?php echo $val['gi']['received_qty']; ?></td>
+                                                    <td><?php echo $val['ri']['return_qty']; ?></td>
+                                                </tr>
+
+                                            <?php } ?>
+
+                                        <?php } else { ?>
+                                            <tr>
+                                                <td colspan="4">No Orders found under this data</td>
+                                            </tr>  
+                                        <?php } ?>
+
+
+                                    </tbody>
+                                </table>
+
+                            </fieldset>
+                            <br>
+
+
+                            <?php
+                        }
+                    }
+                }
+                ?> <!-- /.box-body -->
+
+            </div>
+        </div>  
+
+    </div>
+<?php } else { ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';  ?>
+
+    <?php
+    echo $this->element('reportadminheader', array(
+      'title' => 'PO Return Item Report - '.$month));
+    ?>
+    <h3 align="center" ><?php echo isset($user_id) ? "Report run by " . ($user_id) . " - " . $date_time : ''; ?></h3>
+
+    <?php
+    $i = 0;
+    if (count($arr_poreturn_for_template) == 0) {
+        echo "<h2>No Data Available With The Selected Criteria</h2> ";
+    } else {
+        foreach ($arr_poreturn_for_template as $value) {
+            if (count($value) !== 0) {
+                $i += 1;
+                ?>
+                <h3 style="text-align: left;padding-bottom: 0px;padding-top: 10px;">Store  : <?php echo isset($value['0']['sm']['store_location']) ? $value['0']['sm']['store_location'] : ''; ?>  
+                </h3>
+
+
+                <hr>
+
+                <br>
+
+
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>PO Return Number</th>
+                            <th>PO Return Date</th>
+                            <th>GRN Number </th>
+                            <th>GRN Date</th>
+                            <th>PO Number</th>
+                            <th>Item Code</th>
+                            <th>Item Name</th>
+                            <th>Received Qty</th>
+                            <th>Returned Qty</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <?php $arr_data = $value; ?>
+                        <?php
+                        if (count($arr_data) >= 0) {
+                            $i = 0;
+                            $sum = 0;
+                            ?>
+                            <?php foreach ($arr_data as $val) { ?>
+                                <tr>
+                                    <?php
+                                    $i = $i + 1;
+                                    //$sum += $val['0']['balance_qty']; 
+                                    ?>
+                                    <td><?php echo $i; ?></td>
+                                    <td><?php echo $val['ri']['return_number']; ?></td>
+                                    <td><?php echo $val['ri']['return_date']; ?></td>
+                                    <td><?php echo $val['gr']['gr_number']; ?></td>
+                                    <td><?php echo $val['gr']['gr_date']; ?></td>
+                                    <td><?php echo $val['po']['po_number']; ?></td>
+                                    <td><?php echo $val['im']['item_code']; ?></td>
+                                    <td><?php echo $val['im']['item_desc']; ?></td>
+                                    <td><?php echo $val['gi']['received_qty']; ?></td>
+                                    <td><?php echo $val['ri']['return_qty']; ?></td>
+                                </tr>
+
+
+
+
+
+                            <?php } ?>
+
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4">No Orders found under this data</td>
+                            </tr>  
+                        <?php } ?>
+
+
+                    </tbody>
+                </table>
+
+
+                <br>
+
+
+                <?php
+            }
+        }
+    }
+    ?> <!-- /.box-body -->
+
+<?php } ?>
+<style type="text/css">
+    body {
+        line-height: 2em;
+    }
+    .block-container {
+        width: 95%;
+        padding: 20px;
+        border: #000000 solid thin;
+    }
+    .sub-head {
+        border-bottom: #000000 solid thin;
+    }
+    .row {
+        height: 32px;
+    }
+    .col-md-4 {
+        width: 33.33%;
+        float: left;
+    }
+    table {
+        border: 2px solid #f4f4f4;
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+        background-color: transparent;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+    td, th {
+        text-align: left;
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border: 1px solid #B2B2B2;
+    }
+</style>

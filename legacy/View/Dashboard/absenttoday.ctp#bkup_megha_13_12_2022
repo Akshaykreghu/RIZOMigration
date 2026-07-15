@@ -1,0 +1,112 @@
+<style>
+td,th
+{
+    text-align: left;
+}
+</style>
+
+<div class="modal-body" style="overflow-y: auto;">
+    <form id="form-showreport" class="form-horizontal" method="post" action="" >
+        
+    <legend>Absent Employees</legend>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box ">
+                  
+                <div class="box-body">
+                 
+                    <fieldset>
+			
+
+			    <table class="table table-bordered" id="todays_absent_details" >
+                            <thead>
+                              <tr>
+                                  
+                                  <th>Employee NAME</th>
+                                  
+                                 
+                              
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <?php $i=0; foreach ($results1 as $val) {
+                  
+                   $i++;
+                  ?>
+                                    
+                                        <tr> 
+                                            <td><?php echo $val['emp_details']['first_name'].' '.$val['emp_details']['last_name']; ?></td>
+                                            
+                                     
+                                        </tr>
+                            <?php  } ?>
+                            </tbody>
+                        </table>
+		
+                    </fieldset>
+                    <br>
+                  
+                </div>
+                 <!-- /.box-body -->
+            </div>
+        </div>
+    </div>
+</form>
+    <div class="row">
+        <div class="form-group">
+            <div class="col-md-12" align="right">
+                <a href="#" class="btn btn-default" onclick="downloadReport();" ><i class="icon-file"></i>Download As PDF</a>
+                <a href="#" class="btn btn-default" onclick="downloadReport('shiftpolicy','excel');"><i class="icon-file"></i>Download As Excel</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+function downloadReport(type,mode){
+    var mode= 1;
+    if(mode != ''){
+        $('#form-showreport').attr('action',livesite+'Dashboard/absenttoday/'+mode);
+        $('#form-showreport').submit();
+    }
+    else{
+        return false;
+    }
+}
+</script>
+<script> 
+    $(document).ready(function () {
+        $('#todays_absent_details').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                     extend: 'print',
+                     messageTop: 'My Payroll Master Employees Absent Today Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'pdf',
+                     messageTop: 'My Payroll Master Employees Absent Today Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'excel',
+                     messageTop: 'My Payroll Master Employees Absent Today Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                }
+            ]
+        });
+        $('.buttons-print').ready(function () {
+            $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');
+            ;
+        });
+        $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');
+        ;
+        $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+    });
+</script>

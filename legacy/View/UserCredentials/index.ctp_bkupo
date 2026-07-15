@@ -1,0 +1,216 @@
+<section class="content-header">
+    <h1 style="text-align:left; font-size: 3em;"> User Credentials </h1>
+ <p>You can reset your employee passwords and control online and mobile login access here.</p>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- DIRECT CHAT DANGER -->
+            <div class="box box-body">
+   <!-- /.box-header -->
+                <div class="box-body" id="div-reportcriterias">
+                     <div class="col-md-12">
+                     
+                <input type="text" id="user" class="form-control" name="user" placeholder="Search Your Employee Name" />
+            </div>
+                </div><!-- /.box-body -->
+            </div>
+            <div class="box box-body">
+                <table id="uaccess" >
+    </table>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    //reload data grid with username start
+    function reloadDatagrid(user_fkey)
+   {
+    $("#uaccess").datagrid('load',{
+            user_fkey:user_fkey
+        });
+    }
+    
+    
+    
+    $(document).ready(function(){
+        
+     //   alert("doness");
+        
+                var usersoptions = {
+            url: function (phrase) {
+                return "UserCredentials/getusers?username=" + phrase;
+            },
+            getValue: "full_name",
+            list: {
+                onClickEvent: function () {
+                     var selectedItem = $("#user").getSelectedItemData();
+                    var site_fkey = selectedItem.emp_pkey;
+
+                  
+                    reloadDatagrid(site_fkey);
+
+                }
+            }
+        };
+
+        $('#user').easyAutocomplete(usersoptions);
+
+
+
+        
+        $('#uaccess').datagrid();
+        var user_fkey=$('#usr').val();
+        reloadDatagrid(user_fkey);       
+        $('#usr').on('change',function(){
+        var user_fkey=$(this).val();
+        reloadDatagrid(user_fkey);
+       });
+       
+       
+    
+
+       // end
+      $('#uaccess').datagrid({
+            url:'UserCredentials/listCredentials',
+            rownumbers:true,
+            title:"User Credentials",
+            fitColumns:true,
+            singleSelect:true,
+            autoRowHeight:false,
+            pagination:true,
+            pageSize:10,
+            toolbar: [{
+				iconCls: 'icon-edit',
+				text:'Edit',
+				handler: function(){
+						var row = $('#uaccess').datagrid('getSelected');
+						if (row){
+                                                    var bank_id = row.emp_fkey;
+								 showModalForm(livesite+'UserCredentials/form?id='+bank_id)
+						}else{
+						alert("Please select a record to edit")
+						}
+				}
+				},'-',
+//                                {
+//				iconCls: 'icon-remove',
+//				text:'Remove',
+//				handler: function(){
+//                        var row = $('#uaccess').datagrid('getSelections');
+//                        if (row) {
+//                              var r=confirm("Do You Want  To Remove The Selected Item")
+//                                    if(r==true){
+//                                          
+//                            var bank_id = row.emp_fkey;
+//                            $.ajax({
+//                                url:'UserCredentials/deleteuser/' + bank_id,
+//                                success: function(resp){
+//                                    $('#uaccess').datagrid('reload');
+//                                    $.notify($.parseJSON(resp).msg,{
+//                                        type: 'success',
+//                                        allow_dismiss: false
+//                                    });
+//                                }
+//                            });
+//                            
+//                            
+//            }
+//            else
+//            {
+//                alert("Canceled");
+//            }
+//                            
+//                            
+//                            
+//                        }
+//                    }
+//				}
+                            ],
+            columns:[[
+                    {field:'parent',title:'User Name',width:40,sortable:true,order:'asc'},
+                    {field:'company_code',title:'Company Code',width:20,sortable:true,order:'asc'},
+                   {field:'user_id',title:'User ID',width:30,sortable:true,order:'asc'},
+                    //{field:'password',title:'Password',width:30,sortable:true,order:'asc'},
+                    {field:'access_allowed',title:'Access Allowed',width:20,sortable:true,order:'asc'},
+                   {field:'email',title:'Email',width:30,sortable:true,order:'asc'},
+                    {field:'phone',title:'Phone',width:30,sortable:true,order:'asc'},
+                {field:'reset_login_flag',title:'Reset login Flag',width:30,sortable:true,order:'asc'},
+                  
+               
+            ]],
+            onCheck:function(index,row){
+                var menu_id = row.menu_id;
+                var user_pkey = $("#usr").val();
+                
+                var active = 'Y';
+                if($('#chk-useraccess-'+menu_id).length != 0){
+                    if($('#chk-useraccess-'+menu_id).prop('checked') == true){
+                        active = 'Y';
+                    }else{
+                        active = 'N';
+                    }
+                }else{
+                    return false;
+                }
+                
+                var url = 'UserCredential/saveuseraccess';
+                $.ajax({
+                    url:url,
+                    type: 'post',
+                    data: { 
+                        menu_id : menu_id,
+                        user_pkey:user_pkey,
+                        active:active
+                    },
+                    success: function(resp){
+                        $.notify($.parseJSON(resp).msg,{
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+                    }
+                });
+            },
+            onUncheck:function(index,row){
+                var menu_id = row.menu_id;
+                var user_pkey = $("#usr").val();                
+                
+                var active = 'N';
+                if($('#chk-useraccess-'+menu_id).length != 0){
+                    if($('#chk-useraccess-'+menu_id).prop('checked') == true){
+                        active = 'Y';
+                    }else{
+                        active = 'N';
+                    }
+                }else{
+                    return false;
+                }
+                
+                var url = 'UserCredential/saveuseraccess';
+                $.ajax({
+                    url:url,
+                    type: 'post',
+                    data: { 
+                        menu_id : menu_id,
+                        user_pkey:user_pkey,
+                        active:active
+                    },
+                    success: function(resp){
+                        $.notify($.parseJSON(resp).msg,{
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+                    }
+                });
+            }
+        });
+    })
+ function reloadDatagrid(site_fkey) {        
+        //fetch current status for site
+     
+        $('#uaccess').datagrid('load', {
+            user_fkey: site_fkey
+        });
+    }
+</script>

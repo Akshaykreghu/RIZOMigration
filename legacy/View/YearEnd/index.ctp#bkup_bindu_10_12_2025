@@ -1,0 +1,59 @@
+<?php
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+?>
+<section class="content-header">
+    <h1 class="text-primary-18"> Year End Process </h1>
+    <hr style="margin-top: 8px;margin-bottom: -2px;">
+</section>
+<section class="content">
+    <div class="row">
+<!--        <div class="col-md-12">
+            <div class="box box-header">
+                <h3>Leave Year End Process</h3>
+            </div>
+        </div>-->
+        <div class="col-md-12">
+            <div class="">
+                <div class="col-md-6">
+                     <div class="col-md-8">
+<!--                    <label>Please Choose a branch to process</label>-->
+<div class="col-md-3">
+<b> Branch : </b> 
+</div><div class="col-md-9"><select class="form-control pull-left" id="branch" name="branch" >
+                        <?php
+                        foreach ($branches as $branch) {
+                            echo '<option value="' . $branch['branch_code'] . '" >' . $branch['branch_name'] . '</option>';
+                        }
+                        ?>
+                    </select>
+</div>
+                </div>
+                    <div class="col-md-4"><button class="btn btn-success" onclick="selectbranch(this);">Process</button></div>
+                </div>
+                <div class="col-md-4">
+                    <span id="showfinyear"></span>
+                </div>
+                <div class="col-md-12" id="loadprocess">
+
+                </div>
+        </div>
+        </div>
+    </div>
+</section>
+<script>
+function selectbranch(s){
+    $(s).html("Processing ... ").prop("disabled",true);
+    var abranch = $('#branch').val();
+    $('#loadprocess').load(livesite+'YearEnd/loadprocess/',{id:abranch},function(){
+        $(s).html("Process").prop("disabled",false);
+        $.notify("Loaded Successfully", {
+            type: 'success',
+            allow_dismiss: false
+        });
+    });
+    $('#showfinyear').html('<h3>Year end process </h3>');
+}
+</script>

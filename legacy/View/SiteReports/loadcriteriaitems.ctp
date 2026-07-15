@@ -1,0 +1,258 @@
+<!--<div class="col-md-1">
+    <a onclick="toggleItemsDisplay(<?php echo $index; ?>);"><i class="fa fa-minus"></i></a>
+</div>-->
+<div class="col-md-12" style="float: inherit; ">
+    <ul title="<?php
+                if ($criteria == 'Contacts') {
+                    echo 'Select Client';
+                } else if ($criteria == 'Units') {
+                    echo 'Select Branch';
+                } else {
+                    echo 'Select ' . $criteria;
+                }
+                ?>" lines="true" style="width:100%;min-height:200px;height:auto;max-height:500px;">
+        <li></li>
+    </ul>
+    <input type="hidden" id="rsndempid" value="0" name="resigned">
+</div>
+<div class="col-md-12" style="float: inherit; ">
+    <form method="post" action="" id="form-storelist">
+        <input id="storelist" name="storelist" type="hidden">
+    </form>
+</div>
+<input type="hidden" id="test_test" value="">
+<script>
+    function toggleItemsDisplay(index) {
+        $('#div-items-criteria' + index + ' .panel-body').fadeToggle('slow', function() {
+            $('#div-items-criteria' + index + ' a .fa').toggleClass('fa-plus');
+            $('#div-items-criteria' + index + ' a .fa').toggleClass('fa-minus');
+            //        if($(this).is(":visible")){
+            //            $('#div-items-criteria'+index+' a .fa').removeClass('fa-plus');
+            //            $('#div-items-criteria'+index+' a .fa').addClass('fa-minus');
+            //        }else{
+            //            $('#div-items-criteria'+index+' a .fa').removeClass('fa-minus')
+            //            $('#div-items-criteria'+index+' a .fa').addClass('fa-plus');
+            //        }
+        });
+    }
+
+    function setwidth(criteria) {
+        //alert("hi");
+        //        $('.checkw').parent().parent().addClass('checkw').css("width", "30px");
+        $('.checkw').parent().parent().css("width", "30px");
+        var criteria = $('#hidden-criteria<?php echo $index; ?>').val();
+
+        if ($('#checkrsgnd').length == 0) {
+            // exists.
+            //        $('.datagrid-toolbar').find('tr').append('<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name"rsgnemp" id="checkrsgnd" onclick="showrsgnd();" value="0">&nbsp;Include Resigned </td>');
+
+            if (criteria != 'Contacts') {
+
+                $('.datagrid-toolbar').find('tr').append('<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name"rsgnemp" id="checkrsgnd" onclick="showrsgnd();" value="0">&nbsp;Include Resigned </td>');
+
+            }
+
+        }
+    }
+
+    function showrsgnd() {
+
+        if ($('#checkrsgnd').is(":checked")) {
+            $('#rsndempid').val('1');
+
+        } else {
+            $('#rsndempid').val('0');
+
+        }
+        $('#div-items-criteria<?php echo $index; ?> ul').datalist('load', {
+            name: $('#rsndempid').val(),
+        });
+    }
+
+    function get_items(data) {
+        $('#hidden-criteria1').val("Contacts");
+        //        $('#div-items-criteria' + newindex).load(livesite + 'SiteReports/loadcriteriaitems/' + newindex + '/Contacts');
+        var keys = [];
+        for (var i = 0; i < data.length; i++) {
+            keys[i] = data[i].key;
+            $("#sitelist").val(keys);
+
+        }
+        var site = $("#sitelist").val();
+        //        console.log(site);
+        $.ajax({
+            url: livesite + "SiteReports/itemcriteria/" + site,
+            success: function(resp) {
+                //                $("#items-criteria1").html(resp);
+                $("#div-items-criteria2").html(resp);
+            }
+        });
+    }
+
+    function get_items_site(data) {
+        $('#hidden-criteria1').val("Site");
+       // let resigned = $("#checkrsgnd").val();
+        let date = $("#reportfrom").val();
+        if (data.length) {
+            $.ajax({
+                url: livesite + "SiteReports/itemcriteriaSite/" + data + "/" + date ,
+                success: function(resp) {
+                    $("#div-items-criteria2").html(resp);
+                }
+            });
+        } else {
+            $("#div-items-criteria2").html('');
+        }
+    }
+
+    $(document).ready(function() {
+        var count = 0;
+        var criteria = $('#hidden-criteria<?php echo $index; ?>').val();
+        var type = $('#hidden-report-type').val();
+        if (type === "ClientReport(Actual)" && criteria === "Units" || type === "RottaMaster" && criteria === "AccessSite" || type === "RottaMasternew" && criteria === "AccessSite") {
+            $('#div-items-criteria<?php echo $index ?> ul').datalist({
+                toolbar: [],
+            });
+        } else {
+            $('#div-items-criteria<?php echo $index ?> ul').datalist({
+                toolbar: [{
+                    text: 'Select all',
+                    iconCls: 'icon-ok',
+                    handler: function() {
+                        $('#div-items-criteria<?php echo $index; ?> ul').datalist('checkAll');
+                        let array_test = [];
+                        $('#div-items-criteria<?php echo $index; ?> .datagrid-view input:checkbox').each(function() {
+                            if (type === "ClientReport(Actual)" && criteria === "EmployeeDetails") {
+                                array_test.push(this.value);
+                            }
+                            this.checked = true;
+                        });
+                        if (type === "ClientReport(Actual)" && criteria === "EmployeeDetails") {
+                            get_items_site(array_test);
+                        }
+//                        if (type === "RottaMaster" && criteria === "AccessSite" || type === "RottaMasternew" && criteria === "AccessSite") {
+//                            get_items_site(0);
+//                        }
+                    }
+                }, {
+                    text: 'Deselect all',
+                    iconCls: 'icon-delete',
+                    handler: function() {
+                        $('#div-items-criteria<?php echo $index; ?> ul').datalist('clearChecked');
+                        $('#div-items-criteria<?php echo $index; ?> .datagrid-view input:checkbox').each(function() {
+                            this.checked = false;
+                        });
+                        if (type === "ClientReport(Actual)" && criteria === "EmployeeDetails") {
+                            let array_test = [];
+                            get_items_site(array_test);
+                        }
+                    }
+                }],
+            });
+        }
+        $('#div-items-criteria<?php echo $index; ?> ul').datalist({
+            rowStyler: function(index, row) {
+                var style = "";
+                if (row.status == '2') {
+                    style += 'background-color:#cac3c3;color:#fff;';
+                }
+                return style;
+            },
+            //frozenColumns:[[
+            columns: [
+                [{
+                        field: criteria + '[]',
+                        formatter: function(value, row, index) {
+                            if (type === "ClientReport(Actual)" && criteria === "Units" || criteria === "AccessSite") {
+                                return '<input type="radio" class="checkw" name="' + criteria + '[]" value="' + row.key + '" />';
+                            } else {
+                                return '<input type="checkbox" class="checkw" name="' + criteria + '[]" value="' + row.key + '" />';
+                            }
+                        }
+                    },
+                    {
+                        field: 'Name',
+                        formatter: function(value, row, index) {
+                            return row.text;
+                        }
+                    }
+                ]
+            ],
+            url: livesite + 'SiteReports/listcriteriaitems/' + criteria,
+            //checkbox: true,
+            checkOnSelect: true,
+            searchFilter: false,
+            singleSelect: true,
+            lines: true,
+            valueField: "key",
+            onCheck: function(i, rows) {
+
+            },
+            onSelect: function(i, rows) {
+                //                var newindex =<?php echo $index + 1; ?> + "";
+                console.log(type);
+                
+                if (type === "ClientReport(Actual)" && criteria === "Units") {
+                    //                    document.getElementById("sitelist").value = $('#div-items-criteria<?php echo $index; ?> ul').datalist('getSelections');
+                    $("#sitelist").val($('#div-items-criteria<?php echo $index; ?> ul').datalist('getSelections'));
+                    get_items($('#div-items-criteria<?php echo $index; ?> ul').datalist('getSelections'));
+                } else if (type === "ClientReport(Actual)" && criteria === "EmployeeDetails") {
+                    // $("#sitelist").val($('#div-items-criteria<?php echo $index; ?> ul').datalist('getSelections'));
+                    let checked_values = [];
+                    $('#div-items-criteria<?php echo $index; ?> .datagrid-view input:checkbox').each(function() {
+                        if (this.checked) {
+                            checked_values.push(this.value);
+                        }
+                    });
+                    // get_items_site($('#div-items-criteria<?php echo $index; ?> ul').datalist('getSelections'));
+                    get_items_site(checked_values);
+                }
+                if(type === "RottaMaster" && criteria === "AccessSite" ||type === "RottaMasternew" && criteria === "AccessSite" ){
+                     let selectedEmp = $('#div-items-criteria<?php echo $index; ?> ul').datalist('getSelections');
+                        if(selectedEmp.length) {
+                            get_items_site(selectedEmp[0]['key']);
+                        }
+                   
+                }
+//                count = count + 1;
+//                if (criteria === "AccessSite") {
+//                  count = count + 1;
+//                    if (count <= 1) {
+//                        document.getElementById("storelist").value = $('#div-items-criteria<?php echo $index; ?> ul').datalist('getSelections');
+//                        let selectedEmp = $('#div-items-criteria<?php echo $index; ?> ul').datalist('getSelections');
+//                        if(selectedEmp.length) {
+//                            get_items_site(selectedEmp[0]['key']);
+//                        }
+//                    } else { 
+//                        count = count - 2;
+//                    alert("Only one site manager is allowed to be selected.");
+//                        $('#div-items-criteria<?php echo $index; ?> ul').datalist('clearChecked');
+//                        $('#div-items-criteria<?php echo $index; ?> input:checkbox').each(function() {
+//                            this.checked = false;
+//                        });
+//                    }
+//                }
+            },
+            onUncheck: function(i, rows) {},
+            onLoadSuccess: function() {
+                console.log(type + ' ' + criteria);
+                $("#div-items-criteria2").html('');
+                setwidth(criteria);
+            }
+        });
+        //The search field added by ****ARUL P DAS on 18/9/2020
+        $('#div-items-criteria<?php echo $index; ?> div.datagrid-toolbar').after('<input type="text" id="search<?php echo $index; ?>" class="form-control" autocomplete="off" placeholder="Search">');
+    });
+    $(document).ready(function() {
+        //The below keyup function is used to search elements. By ****ARUL P DAS on 18/9/2020
+        $('#search<?php echo $index; ?>').keyup(function() {
+            //            alert('<?php echo $index; ?>');
+            var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+
+            $('#div-items-criteria<?php echo $index; ?> .datagrid-btable tr').show().filter(function() {
+                var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                return !~text.indexOf(val);
+            }).hide();
+        });
+    });
+</script>

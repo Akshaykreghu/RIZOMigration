@@ -1,0 +1,165 @@
+<style>
+    div.inflow {
+
+    }
+    div.positioner {position: absolute; right: 0;} /*may not be needed: see below*/
+    div.fixed {
+        overflow: auto;
+
+    }
+    /*tr td.fix{
+        position:fixed;
+    }*/
+    
+    
+</style>
+    <div class="modal-body">
+        <legend style="text-align: center; ">Employee Check In/Out Logs Report - <?php echo $report_month; ?></legend>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box ">
+                    
+
+                    <div class="box-body">
+                                    <fieldset>
+                                        
+                                        
+                                        <div class="row">
+                                            <div class="col-md-12">
+
+                                            </div>
+                                        </div>
+
+
+                                    </fieldset>
+                        
+                                    <br>
+                                    <fieldset>
+
+                                        <div class="inflow">
+                                            <div class="fixed">
+                                                <div class="table-responsive">
+                                                    <table class="table no-margin" id="todayattandence">
+                                                        <thead>
+                                                            <tr>
+                                                                 <!--Added by megha sl.no added on 16/08/19 1-->
+                                                                <th>Sl.No</th>
+                                                                <th>Name</th>
+                                                                <th>Branch</th>
+                                                                <th>Date</th>
+                                                                <th>Time</th>
+                                                                <th>Check-In/Out</th>
+                                                                <th>Location</th>
+                                                                <!--Added by megha device id on 20/07/19-->
+                                                                <th>Punch Type</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <!--Added by megha sl.no added on 16/08/19 2-->
+                                                            <?php $i = 1; ?>
+                                                            <?php $data = $arr_leavepolicydetails_for_template['data']; ?>
+                                                            <?php foreach ($data as $val){ ?>
+                                                            <tr>
+                                                                <!--Added by megha sl.no added on 16/08/19 3-->
+                                                                <td><?php echo $i; ?></td>
+                                                                <td><?php echo $val[0]; if($val[7]==2){echo ' (Resigned)';} ?></td>
+                                                                <td><?php echo $val[1]; ?></td>
+                                                                <td><?php echo $val[2]; ?></td>
+                                                                <td><?php echo $val[3]; ?></td>
+                                                                <td><?php echo $val[4]; ?></td>
+                                                                <td><?php echo $val[5]; ?></td>
+                                                                <!--Added by megha device id on 20/07/19-->
+                                                                <td><?php echo $val[6]; ?></td>
+                                                            </tr>
+                                                            
+                                                            <?php $i++; } ?>
+                                                            
+                                                        </tbody>
+                                                    </table>
+                                                </div> 
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <br>
+
+     <!-- /.box-body -->
+                </div>
+            </div>
+        </div>   
+    </div>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';  ?>
+    <script>
+        $(document).ready(function () {
+   //$('#todayattandence').append('<caption style="caption-side: top;"><b>My Payroll Master - Employee Check-in/out logs - </b><?php echo $report_month; ?></caption>');
+ 
+        $('#todayattandence').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+             //edited by megha on 03_08_2019 order changed 3
+            "ordering": false,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                     extend: 'print',
+                     messageTop: 'My payroll Master Employee Check-in/out logs - <?php echo $report_month; ?>',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Employee Check-in/out logs'
+                },
+                {
+                     extend: 'excel',
+                     messageTop: 'My payroll Master Employee Check-in/out logs - <?php echo $report_month; ?>',
+                     messageBottom: null,
+                     title: 'My payroll Master - Employee Check-in/out logs',
+                     sheetName:'Check In Out Report',
+                     //edited by megha on 20_08_2019 heading styles 
+                     "customize": function( xlsx ) {
+                        var sSh = xlsx.xl['styles.xml'];
+                        var lastXfIndex = $('cellXfs xf', sSh).length - 1;
+                        var i; var y;
+                        //n1, n2 ... are number formats; s1, s2, ... are styles
+                        var n1 = '<numFmt formatCode="##0.0000%" numFmtId="300"/>';
+                        var s1 = '<xf numFmtId="300" fontId="0" fillId="0" borderId="0" applyFont="1" applyFill="1" applyBorder="1" xfId="0" applyNumberFormat="1"/>';
+                        var s2 = '<xf numFmtId="0" fontId="2" fillId="2" borderId="0" applyFont="1" applyFill="1" applyBorder="1" xfId="0" applyAlignment="1">'+
+                        '<alignment horizontal="center"/></xf>';
+                        //s3 is a combination of built in fonts 64 (2 dec places which has numFmtId="4") AND 2 (bold)
+                        //just copied the xf of "two decimal places" and and changed the fontId based on "bold" 
+                        var s3 = '<xf numFmtId="4" fontId="2" fillId="0" borderId="0" applyFont="1" applyFill="1" applyBorder="1" xfId="0" applyNumberFormat="1"/>'
+                        var s4 = '<xf numFmtId="0" fontId="2" fillId="2" borderId="0" applyFont="1" applyFill="1" applyBorder="1" xfId="0" applyAlignment="1">'+
+                        '<alignment horizontal="center" wrapText="1"/></xf>'
+                        sSh.childNodes[0].childNodes[0].innerHTML += n1;
+                        sSh.childNodes[0].childNodes[5].innerHTML += s1 + s2 + s3 + s4;
+ 
+                        var fourDecPlaces    = lastXfIndex + 1;
+                        var greyBoldCentered = lastXfIndex + 2;
+                        var twoDecPlacesBold = lastXfIndex + 3;
+                        var greyBoldWrapText = lastXfIndex + 4;
+                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                        $('row:eq(0) c', sheet).attr( 's', greyBoldCentered );  //grey background bold and centered, as added above
+                        $('row:eq(1) c', sheet).attr( 's', greyBoldWrapText );  //grey background bold, text wrapped
+                        //$('row c[r=A2]', sheet).attr( 's', greyBoldCentered );
+
+            }
+                }
+            ],
+            "info": true,
+            "autoWidth": false,
+            "initComplete": function () {
+                //actions
+            },
+//             "createdRow": function ( row, data, index ) {
+//                if ( data[5].replace(/[\$,]/g, '') * 1 > 150000 ) {
+//                    $('td', row).eq(5).addClass('highlight');
+//                }
+//            },
+            "scrollCollapse": true,
+        });
+        
+        
+        $('.buttons-print').ready(function(){
+            $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');;
+        });
+        $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');;
+        $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+    });
+    </script>

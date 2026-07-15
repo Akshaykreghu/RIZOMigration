@@ -1,0 +1,55 @@
+<section class="content-header">
+    <!-- edited by athira on 22-02-2025 -->
+    <h1>Performance</h1>
+    <hr style="border:1px solid #d2d6de;">
+    <!-- end -->
+</section>
+<!-- Main content -->
+<section class="content">
+                <div class="form-group" style=" display:flex; align-items:center;" style="gap: 20px;">
+    <label for="filterby_reporttype">
+        <h3 >Criterias Types For <label id="current_reporttype"></label></h3>
+    </label>
+
+    <div style="width: 30%;margin-left: 20px;">
+        <select id="filterby_reporttype" name="filterby_reporttype" class="form-control" onchange="changeReportType(this);">
+            <?php
+            foreach ($arr_reporttypes as $key => $value) {
+                echo '<option value="' . $key . '">' . $value . '</option>';
+            }
+            ?>
+        </select>
+    </div>
+</div>
+
+                <div class="box-body" id="div-reportcriterias">
+                            </div>
+              
+</section>
+<script>
+jQuery(document).ready(function() {
+    $('#start_date').datepicker({
+        format: 'yyyy-mm-dd'
+    })
+    $("#reportfrom").inputmask("yyyy-mm-dd");
+    $('#end_date').datepicker({
+        format: 'yyyy-mm-dd'
+    })
+    $("#reportto").inputmask("yyyy-mm-dd");
+});
+</script>
+<script>
+jQuery(document).ready(function() {
+    //Load report criterias for default one
+    var reporttype = $('#filterby_reporttype').val();
+    var reportname = $("#filterby_reporttype option:selected").text();
+    $('#current_reporttype').html(reportname);
+    $('#div-reportcriterias').load(livesite+'Performance/changereporttype/'+reporttype);
+});
+function changeReportType(obj){
+        var reporttype = $(obj).val();
+        var reportname = $("#"+obj.id+" option:selected").text();
+        $('#current_reporttype').html(reportname);
+        $('#div-reportcriterias').load(livesite+'Performance/changereporttype/'+reporttype);
+}
+</script>

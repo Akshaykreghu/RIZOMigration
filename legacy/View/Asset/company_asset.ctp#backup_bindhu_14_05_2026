@@ -1,0 +1,320 @@
+<style>
+    #assetToolbar.datagrid-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    #assetToolbar .right {
+        margin-left: auto;
+
+        display: inline-flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    #searchAsset {
+        width: 220px;
+
+    }
+
+    /* // edited by bindu 03-01-2026 */
+    /* .datagrid-wrap {
+        height: 450px
+    }
+
+    .datagrid-view {
+        height: 420px;
+    } */
+    /* // edited by bindu 03-01-2026 - end*/
+    #AssetsTable_wrapper {
+        display: none;
+    }
+
+    /* <!-- // edited by bindu 30-08-25 --> */
+    .heading {
+        display: flex;
+        flex-direction: row;
+        align-items: end;
+        justify-content: space-between;
+    }
+
+    .home {
+        background-color: #ffffffff;
+        border-radius: 50px;
+        padding: 2px 15px;
+        color: #1e516e !important;
+        /* margin-right: 15px; */
+        color: white;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: #1e516e 1px solid;
+    }
+
+    /* <!-- // edited by bindu 30-08-25 --> */
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div>
+                <div class="col-md-12 col-xs-12">
+
+                    <section class="content-header heading" style="padding-right: 0px;padding-left: 0px">
+                        <!-- // edited by bindu 30-08-25 -->
+                        <h1 class="text-primary-18">All Assets</h1>
+                        <div class="text-primary-16 home" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                            <i class="fa" style="font-size:16px;">&#xf104;</i>
+                            Back
+                        </div>
+                        <!-- // edited by bindu 30-08-25 -->
+
+                    </section>
+                    <hr style="margin-top: 8px;margin-bottom: -2px;">
+
+                    <div class="form-group" style="margin:10px 0;display:flex;justify-content: space-between;">
+
+                        <!-- // edited by bindu 03-01-20256 -->
+                        <div>
+                            <button type="button" onclick="AddnewAssets();" class="btn btn-primary">Create</button>
+                            <button type="button" id="NewAssets" class="btn btn-primary">Edit</button>
+                            <button type="button" id="Detailed" class="btn btn-primary">View Details</button>
+                        </div>
+
+                        <div style="display:flex; gap:8px;">
+                            <select id="assetStatusFilter" class="form-control" style="width:180px;">
+                                <option value="not_allocated" selected>Not Allocated</option>
+                                <option value="allocated">Allocated</option>
+                                <option value="returned">Returned</option>
+                            </select>
+
+                            <input type="text" id="user" class="form-control"
+                                placeholder="Search assets..." style="width:250px;">
+                        </div>
+                        <!-- // edited by bindu 03-01-2026  end-->
+
+                    </div>
+
+                    <table id="AssetsTable"
+                        style="width:100%;"
+                        url="<?php echo $this->webroot; ?>Asset/listAllAssets"
+                        method="post"
+                        rownumbers="true"
+                        pagination="true"
+                        singleSelect="true"
+                        fitColumns="true">
+                        <thead>
+                            <tr>
+                                <th field="name" width="25%">Asset Name</th>
+                                <th field="type" width="12%">Type</th>
+                                <th field="model" width="18%">Model</th>
+                                <th field="status" width="15%">Asset Status</th>
+                                <th field="asset_state" width="15%">Asset Condition</th>
+                                <th field="value" width="14.9%">Value</th>
+                            </tr>
+
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalDetailForm" class="modal fade">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content" id="modaldetails-content"></div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    var selected = null;
+
+
+    function AddnewAssets() {
+        var url = livesite + 'Asset/addnew';
+        var container = $("#modalDetailForm #modaldetails-content");
+        container.load(url, function() {
+            $("#modalDetailForm").modal('show');
+        });
+    }
+
+    $(function() {
+
+        $('#AssetsTable').datagrid({
+            onClickRow: function(index, row) {
+                selected = row.asset_pkey;
+            },
+            onLoadSuccess: function(data) {
+                var rows = $('#AssetsTable').datagrid('getRows');
+                var totalRows = rows.length;
+
+                for (var i = 0; i < totalRows; i++) {
+                    if (rows[i].asset_state === "Not Working") {
+                        $('tr[datagrid-row-index="' + i + '"]').css('background-color', '#DF9292');
+                    }
+                }
+
+                var pageSize = $('#AssetsTable').datagrid('getPager')
+                    .data("pagination").options.pageSize;
+                if (pageSize === 10) {
+                    if (totalRows === 10) {
+                        forceFixedHeight();
+                    } else {
+                        adjustGridHeight(totalRows);
+                    }
+                } else {
+                    adjustGridHeight(totalRows);
+                }
+            }
+        });
+
+
+        let searchTimer;
+        $('#user').on('keyup', function() {
+            clearTimeout(searchTimer);
+            let val = $(this).val();
+            searchTimer = setTimeout(function() {
+                $('#AssetsTable').datagrid('load', {
+                    q: val
+                });
+            }, 300);
+        });
+
+        $('#NewAssets').click(function() {
+            if (selected) {
+                var url = livesite + 'Asset/addnew/' + selected;
+                var container = $("#modalDetailForm #modaldetails-content");
+                container.load(url, function() {
+                    $("#modalDetailForm").modal('show');
+                });
+            } else {
+                alert("Please select a row first");
+            }
+        });
+
+        $('#Detailed').click(function() {
+            if (selected) {
+                var url = livesite + 'Asset/details/' + selected;
+                var container = $("#modalDetailForm #modaldetails-content");
+                container.load(url, function() {
+                    $("#modalDetailForm").modal('show');
+                });
+            } else {
+                alert("Please select a row first");
+            }
+        });
+
+
+       
+/* edited by bindu 19-02-26 */
+   $(".home").on("click", function () {
+
+    $("#container").isLoading({
+        text: "Loading",
+        position: "overlay",
+    });
+
+    let url = "";
+    var userGroup=<?php echo json_encode($user_group); ?>
+
+    if (userGroup == "1") {
+        url = livesite + "CompanySetup/index";
+    } 
+    else if (userGroup == "2") {
+        url = livesite + "EmployeeMenu/addon";
+    }
+
+    $("#container").load(url, function () {
+        isDashboardShown = false;
+    });
+
+});
+
+	/* edited by bindu 19-02-26 */
+    });
+
+
+    function forceFixedHeight() {
+        setTimeout(function() {
+            $('.datagrid-view').css('height', '420px');
+            $('.datagrid-wrap').css('height', '450px');
+            $('#AssetsTable').datagrid('resize', {
+                height: 420
+            });
+        }, 100);
+    }
+
+    function adjustGridHeight(totalRows) {
+        let rowHeight = 40;
+        let headerHeight = 40;
+        let minHeight = 200;
+        let maxHeight = 600;
+
+        let newHeight = (totalRows * rowHeight) + headerHeight;
+
+        if (newHeight < minHeight) newHeight = minHeight;
+        if (newHeight > maxHeight) newHeight = maxHeight;
+
+        $('#AssetsTable').datagrid('resize', {
+            height: newHeight
+        });
+    }
+    // edited by bindu 03-01-2026
+    var selected = null;
+
+    $(function() {
+
+        /* ---------- DATAGRID INIT ---------- */
+        $('#AssetsTable').datagrid({
+            queryParams: {
+                asset_status: 'not_allocated'
+            },
+            onClickRow: function(i, row) {
+                selected = row.asset_pkey;
+            },
+            onLoadSuccess: function() {
+                var rows = $('#AssetsTable').datagrid('getRows');
+                rows.forEach(function(r, i) {
+                    if (r.asset_state === 'Not Working') {
+                        $('tr[datagrid-row-index="' + i + '"]')
+                            .css('background-color', '#DF9292');
+                    }
+                });
+            }
+        });
+
+        /* ---------- SEARCH ---------- */
+        let timer;
+        $('#user').on('keyup', function() {
+            clearTimeout(timer);
+            timer = setTimeout(reloadGrid, 300);
+        });
+
+        /* ---------- STATUS DROPDOWN CHANGE ---------- */
+        $('#assetStatusFilter').on('change', function() {
+            reloadGrid();
+        });
+    });
+
+    /* ---------- COMMON RELOAD ---------- */
+    function reloadGrid() {
+        $('#AssetsTable').datagrid('load', {
+            q: $('#user').val(),
+            asset_status: $('#assetStatusFilter').val() // ✅ FIX
+        });
+    }
+</script>
+<script>
+    $(document).ready(function() {
+
+        $('#modalDetailForm').on('hidden.bs.modal', function() {
+
+            $('#AssetsTable').datagrid('reload'); // ✅ reload grid
+            selected = null; // reset selection
+        });
+
+    });
+    // edited by bindu 03-01-2026 end
+</script>

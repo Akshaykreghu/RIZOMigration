@@ -1,0 +1,168 @@
+<div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Details</h4>
+      </div>
+<div class="modal-body">
+ <form class="form-horizontal" method="post" action="" id="form-showreport">
+        <input type="hidden" id="month" value="<?php echo $month; ?>">
+        <input type="hidden" id="empss"  value="<?php echo $emp; ?>">
+    </form>
+<?php
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+$total = 0;
+     
+?>
+    <table class="table table-bordered table-responsive" cellspacing="0" border="0">
+     <tr><th></th>
+     <?php
+         foreach($attendances as $value)
+            {  
+             ?>
+           <td <?php if ($value['emp_ot_timeattandance']['weekoff']) { ?> style="background:greenyellow ;color:black ;font-weight:bold ;  " <?php }; ?> <?php if ($value['emp_ot_timeattandance']['holiday']) { ?> style="background:green ;color:black ;font-weight:bold ;  " <?php }; ?> <?php if ($value['emp_ot_timeattandance']['present'] == 'A/A') { ?> style="color:red ;font-weight:bold ;  " <?php }; ?><?php if ($value['emp_ot_timeattandance']['present'] == '') { ?> style="background:#0AC5B6 ;font-weight:bold ;  " <?php }; ?><?php if ($value['emp_ot_timeattandance']['present'] == 'P/P') { ?> style="color:green ;font-weight:bold ;  " <?php }; ?><?php if ($value['emp_ot_timeattandance']['present'] == 'P/A') { ?> style="color:red ;font-weight:bold ;  " <?php }; ?><?php if ($value['emp_ot_timeattandance']['present'] == 'A/P') { ?> style="color:red ; " <?php }; ?> >
+               <?php
+           echo date('d',strtotime($value['emp_ot_timeattandance']['att_date']));
+           ?>
+           </th>
+           <?php
+            }
+     ?>
+            </tr>
+            
+     <th></th>
+     <tr>
+     <td style='width:110px !important;'>Att In:</td>
+            <?php
+              foreach($attendances as $value)
+            {  
+           ?>
+     <td><?php echo $value['emp_ot_timeattandance']['att_in_time']; ?></td>
+   
+           <?php
+            }
+            ?>
+           </tr>
+           <tr>
+     <td style='width:110px !important;'>Att Out:</td>
+            <?php
+              foreach($attendances as $value)
+            {  
+           ?>
+     <td><?php echo $value['emp_ot_timeattandance']['att_out_time']; ?></td>
+   
+           <?php
+            }
+            ?>
+           </tr>
+           <?php
+           
+           //ot attendance
+           
+            echo  '<tr>';
+        echo "<td>Min before on duty ot:</td>";
+              foreach($attendances as $val3)
+            {  
+           echo '<td>';
+          echo $val3['emp_ot_timeattandance']['min_bfr_on_dutty_cal_ot'];
+           echo '</td>';
+            }
+           echo '</tr>';
+ echo  '<tr>';
+        echo "<td>Min after off duty OT:</td>";
+              foreach($attendances as $val4)
+            {  
+           echo '<td>';
+          echo $val4['emp_ot_timeattandance']['min_aftr_off_dutty_cal_ot'];
+           echo '</td>';
+            }
+           echo '</tr>';
+ echo  '<tr>';
+        echo "<td>OT Duration:</td>";
+              foreach($attendances as $val6)
+            { 
+                  $total = $total + $val6['emp_ot_timeattandance']['ot_duration'];
+           echo '<td>';
+          echo $val6['emp_ot_timeattandance']['ot_duration'];
+           echo '</td>';
+            }
+           echo '</tr>';
+		   echo  '<tr>';
+        echo "<td>OT Duration Hrs:</td>";
+              foreach($attendances as $val6)
+            { 
+                  
+           echo '<td>';
+          echo isset($val6['emp_ot_timeattandance']['ot_duration'])?round(($val6['emp_ot_timeattandance']['ot_duration'] / 60),2):'';
+           echo '</td>';
+            }
+           echo '</tr>';
+           echo '<tr>';
+           echo '<td>Total OT Duration</td>';
+           echo '<td colspan="30">';
+           echo $total .' Min  -     '.round(($total / 60),2).' Hrs.';
+           echo '</td>';
+           echo '</tr>';
+		   echo '</tr>';
+           echo "</table>";
+           ?>
+           <div class="col-md-12">
+                                                            <div class="col-md-3" style="margin-top: 10px;">
+                                    <div class="col-md-5" style="color:white;background-color: #0AC5B6; ">P</div>
+                                    <div class="col-md-7">Present</div>
+                                </div>
+                                                            <div class="col-md-3" style="margin-top: 10px;">
+                                    <div class="col-md-5" style="color:white;background-color: orange">FDL</div>
+                                    <div class="col-md-7">Full Day Leave</div>
+                                </div>
+                                                            <div class="col-md-3" style="margin-top: 10px;">
+                                    <div class="col-md-5" style="color:white;background-color: orange">FHL</div>
+                                    <div class="col-md-7">First Half Leave</div>
+                                </div>
+                                                            <div class="col-md-3" style="margin-top: 10px;">
+                                    <div class="col-md-5" style="color:white;background-color: orange">SHL</div>
+                                    <div class="col-md-7">Second Half Leave</div>
+                                </div>
+                                                            <div class="col-md-3" style="margin-top: 10px;">
+                                    <div class="col-md-5" style="color:black;background-color: greenyellow; ">WO</div>
+                                    <div class="col-md-7">Week Off</div>
+                                </div>
+                                                            <div class="col-md-3" style="margin-top: 10px;">
+                                    <div class="col-md-5" style="color:white;background-color: green; ">HO</div>
+                                    <div class="col-md-7">Holiday</div>
+                                </div>
+                                                            <div class="col-md-3" style="margin-top: 10px;">
+                                    <div class="col-md-5" style="color:white;background-color: red">A</div>
+                                    <div class="col-md-7">Absent</div>
+                                </div>
+                                                            <div class="col-md-3" style="margin-top: 10px;">
+                                    <div class="col-md-5" style="color:white;background-color: #34F593">AWT</div>
+                                    <div class="col-md-7">Above Minimum Working Minutes</div>
+                                </div>
+                                                            <div class="col-md-3" style="margin-top: 10px;">
+                                    <div class="col-md-5" style="color:white;background-color: #FF967E">BMW</div>
+                                    <div class="col-md-7">Below Minimum Working Minutes</div>
+                                </div>
+                                                    </div>
+</div>
+<div class="form-group">
+        <div class="col-md-12" align="right">
+            <button type="button" onclick="downloadReport();" id="btn-submit" class="btn btn-primary">Generate</button>
+        </div>
+    </div>
+<script>
+function downloadReport(type,mode){
+    var month = $('#month').val();
+    var empss = $('#empss').val();
+    if(mode != ''){
+        $('#form-showreport').attr('action',livesite+'OtAttendance/subtablegenpdf/' + empss +'/'+month);
+        $('#form-showreport').submit();
+    }
+    else{
+        return false;
+    }
+}
+</script>

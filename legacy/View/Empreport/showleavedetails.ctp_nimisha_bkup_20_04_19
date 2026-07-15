@@ -1,0 +1,116 @@
+ <div class=" box box-primary " style="margin-top: 12px;"> 
+<div class="box-body">
+                    <div class="row>" <span style="font-size: 23px;padding-left: 15px;">Leave Details</span><span style="font-size: 23px;font-weight: lighter;padding-left: 16px; float: right;"> <?php echo $arr_leave_details['0']['salary_head_items']['item']?></span> </div>
+                      <hr>
+                    <div class="row" style="padding-left: 15px;">
+                        <div class="col-md-4 col-sm-4 col-xs-4" style="font-size: 16px;font-weight: 600;" ><?php echo $arr_leave_details['0']['leaveentries']['FROMDATE']?><span style="font-size: 15px;font-weight: 300"><?php echo isset($arr_leave_details['0']['leaveentries']['FROMHALF']) && $arr_leave_details['0']['leaveentries']['FROMHALF']=="1" ? '&nbsp;(First Half)' : '&nbsp;(Second Half)'?></span></div>
+                        <div class="col-md-1 col-sm-1 col-xs-1" style="padding-top: 4px;"> To</div>
+                        <div class="col-md-4 col-sm-4 col-xs-4" style="font-size: 16px;font-weight: 600;"><?php echo $arr_leave_details['0']['leaveentries']['TODATE']?><span style="font-size: 15px;font-weight: 300"><?php echo isset($arr_leave_details['0']['leaveentries']['TOHALF']) && $arr_leave_details['0']['leaveentries']['TOHALF']=="1" ? '&nbsp;(First Half)' : '&nbsp;(Second Half)'?></span> </div>
+                        <div class="col-md-1 col-sm-1 col-xs-1" style="padding-top: 4px;margin-left: -7px;">-</div>
+                        <div class="col-md-2 col-sm-2 col-xs-2" style="font-size: 16px;font-weight: 600;margin-left: -26px;"><?php echo $arr_leave_details['0']['leaveentries']['leave_days']?>&nbsp;Day(s)</div></div>
+               <hr>
+                <div class="form-group " >
+                    <div class="row" style="padding-top: 2px;padding-left: 18px;">
+                        <div class="col-md-2 col-sm-2 col-xs-2" style="padding-right: 0;">
+                            <span>
+                               Applied date 
+                            </span>
+                        </div>
+                        
+                        <div class="col-md-4 col-sm-4 col-xs-4"style="padding-right: 0;">
+                       <b>   :  <?php echo $arr_leave_details['0']['leaveentries']['applied_date']?></b>
+                        </div>
+                         <div class="col-md-3 col-sm-3 col-xs-3"style="padding-right: 0;">
+                            <span>
+                               Leave Status 
+                            </span>
+                        </div>
+                       
+                        <div class="col-md-3 col-sm-3 col-xs-3"style="padding-right: 0;">
+                        <b>   <span style="margin-left: -7px;">:</span> <?php echo $arr_leave_details['0']['leaveentries']['LEAVESTATUS']?></b>
+                        </div>
+                        
+                    </div>
+                    <div class="row" style="padding-top: 10px;padding-left: 18px;">
+                        <div class="col-md-2 col-sm-2 col-xs-2"style="padding-right: 0;">
+                            <span>
+                               Reason
+                            </span>
+                        </div>
+                        
+                        <div class="col-md-4 col-sm-4 col-xs-4"style="padding-right: 0;">
+                            <b>   : <?php echo $arr_leave_details['0']['leaveentries']['Reason']?></b>
+                        </div>
+                         <div class="col-md-3 col-sm-3 col-xs-3"style="padding-right: 0;">
+                            <span>
+                             Duties Handover to 
+                            </span>
+                        </div>
+                       
+                        <div class="col-md-3 col-sm-3 col-xs-3"style="padding-right: 0;">
+                      <b>   <span style="margin-left: -7px;">:</span> <?php echo $arr_leave_details['0']['leaveentries']['contact_person']?></b>
+                        </div>
+                        
+                    </div>
+                    <!--<hr style="margin-left: 17px;margin-right: 17px;border-color: silver;margin-top: 9px;margin-bottom: 2px">-->
+                        <div class="row" style="padding-top: 10px;padding-left: 18px;">
+                        <div class="col-md-2 col-sm-2 col-xs-2"style="padding-right: 0;">
+                            <span >
+                             Authorized By 
+                            </span>
+                        </div>
+                        
+                        <div class="col-md-4 col-sm-4 col-xs-4"style="padding-right: 0;">
+                            <b>  : <?php echo $arr_leave_details['0']['0']['Autherizedby']?></b>
+                        </div>
+                         <div class="col-md-3 col-sm-3 col-xs-3">
+                            <span>
+                             Authorized Date
+                            </span>
+                        </div>
+                        
+                        <div class="col-md-3 col-sm-3 col-xs-3"style="padding-right: 0;">
+                       <b>  <span style="margin-left: -7px;">:</span> <?php echo isset($arr_leave_details['0']['leaveentries']['Autherized_date']) && $arr_leave_details['0']['leaveentries']['Autherized_date'] == '0000-00-00' ? '': $arr_leave_details['0']['leaveentries']['Autherized_date'] ?></b>
+                        </div>
+                        
+                    </div>
+                       <div class="row" style="padding-top: 10px;padding-left: 18px;">
+                        <div class="col-md-2 col-sm-2 col-xs-2"style="padding-right: 0;">
+                            <span>
+                             Approved By 
+                            </span>
+                        </div>
+                       
+                        <div class="col-md-4 col-sm-4 col-xs-4"style="padding-right: 0;">
+                       <b> : <?php echo $arr_leave_details['0']['0']['APPROVEDBY']?></b>
+                        </div>
+                         <div class="col-md-3 col-sm-3 col-xs-3"style="padding-right: 0;">
+                            <span>
+                             Approved Date
+                            </span>
+                        </div>
+                    
+                        <div class="col-md-3 col-sm-3 col-xs-3"style="padding-right: 0;">
+                            <b>  <span style="margin-left: -7px;"><b>:</b></span> <?php echo $arr_leave_details['0']['leaveentries']['APPROVED_date']?></b>
+                        </div>
+                        
+                    </div>
+<!--                       <div class="row" style="padding-top: 10px;padding-left: 18px;">
+                        <div class="col-md-2 col-sm-2 col-xs-2"style="padding-right: 0;">
+                            <span>
+                             LEave Type Remarks<span style="margin-left: 50px;">:</span>
+                            </span>
+                        </div>
+                       
+                            
+                              
+                        </div>-->
+<!--                      
+                        <div class="col-md-10 col-sm-10 col-xs-10"style="padding-right: 0;margin-left: 113px;margin-top: -20px;">
+                       <b>   <?php // echo $arr_leave_details['0']['leaveentries']['REMARKS']; ?></b>
+                        </div>-->
+                       
+                    </div>
+                </div>
+            </div>
+ </div>

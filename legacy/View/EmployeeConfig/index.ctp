@@ -1,0 +1,2606 @@
+<style type="text/css">
+    /**
+     * Nestable
+     */
+    .tree-folder-open {
+        background: none;
+    }
+
+    .fa-user:before {
+        content: "\f007";
+    }
+
+    .tree-folder {
+        background: none;
+    }
+
+    .tree-folder:before {
+        content: "\f007";
+    }
+
+    .tree-file:before {
+        content: "\f007";
+    }
+
+    .tree-file {
+        background: none;
+    }
+
+    .custom_css {
+        /* //added by megha on 14/09/2019  */
+        position: absolute;
+        z-index: 999999;
+        height: 250px;
+        width: 383px;
+    }
+
+    #loaded {
+        transition: 1s;
+    }
+
+    /* Edited by Akshay on 26-9-2024 */
+    .pws_tabs_container ul.pws_tabs_controll li a {
+        width: 180px;
+        height: 56px;
+        text-align: center;
+
+    }
+
+    /* End */
+    /* Edited by bindu 24-10-2025 */
+    .heading {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        /* margin-left: 15px; */
+    }
+
+    .home {
+        background-color: #ffffffff;
+        border-radius: 50px;
+        padding: 2px 15px;
+        color: #1e516e !important;
+        /* margin-right: 15px; */
+        color: white;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: #1e516e 1px solid;
+    }
+
+    /* End */
+</style>
+<!--script src="<?php //echo $this->webroot;         
+                ?>plugins/nestable/jquery.nestable.js"></script--->
+
+<section class="content-header heading">
+    <!-- edited by athira on 03-07-2025 -->
+    <!-- /* edited by bindu 20-08-25 */ -->
+    <h1 class="text-primary-18">Bulk Policy Allocation</h1>
+   <?php if ($plan !== 'basic') : ?>
+    
+    <div class="text-primary-16 home"
+         style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+        <i class="fa" style="font-size:16px;">&#xf104;</i>
+        Back
+    </div>
+
+<?php endif; ?>
+
+    <!-- end -->
+</section>
+<br>
+<!-- Main content -->
+<?php
+$restrictedCompanies = [
+    'ABSG','VGFS','VSFS','DRRC','DJIC','AGNG','AYRK',
+    'GTRA','VGNN','SHYD','SRTS'
+];
+?>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="tabset0">
+                <?php if (in_array($company_code, $restrictedCompanies) || $company_code=='HDFN' || $company_code=='HDEQ' || $company_code=='HDSC' || $company_code=='HDCM') { ?>
+                    <div data-pws-tab="tab1" data-pws-tab-name="Shift" data-pws-tab-icon="fa-cog">
+                        <br>
+
+                        <div class="box box-primary " style="margin-top: -21px;">
+                            <div class="box-body" style="    margin-top: -11px;">
+
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <h3>Shift</h3>
+                                        <div id="shiftpolicylist" style="width:100%; height:370px; background-color:white;"></div>
+
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <h3> Non-Allocated Employees</h3>
+                                        <div id="allempsforsp" style="width:100%; height:370px; background-color:white;"></div>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <h3>Employees in selected shift policy </h3>
+                                        <div id="empsinsp" style="width:100%; height:370px; background-color:white;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php } ?>
+                    <?php if (in_array($company_code, $restrictedCompanies)) {?>
+                    <!-- Edited by Akshay on 30-12-2023 -->
+                    <div data-pws-tab="tab11" data-pws-tab-name="Additional Shift" data-pws-tab-icon="fa-cog">
+                        <br>
+                        <div class="box box-primary " style="margin-top: -21px;">
+                            <div class="box-body" style="    margin-top: -11px;">
+
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <h3>Additional Shift</h3>
+                                        <div id="multishiftpolicylist" style="width:100%; height:370px; background-color:white;"></div>
+
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <h3> Non-Allocated Employees</h3>
+                                        <div id="multiallempsforsp" style="width:100%; height:370px; background-color:white;"></div>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <h3>Employees in selected shift policy </h3>
+                                        <div id="multiempsinsp" style="width:100%; height:370px; background-color:white;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
+                <!-- edited by athira on 06-11-2025 -->
+                <?php
+                if (!in_array($company_code, $restrictedCompanies)) { ?>
+
+                    <div data-pws-tab="tab12" data-pws-tab-name="Shift Allocation" data-pws-tab-icon="fa-cog">
+                        <br>
+                        <div class="box box-primary " style="margin-top: -21px;">
+                            <div class="box-body" style="    margin-top: -11px;">
+
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <h3>Shift Allocation</h3>
+                                        <div id="employee_list" style="width:100%; height:370px; background-color:white;"></div>
+
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <h3> SHIFTS</h3>
+                                        <div id="shifts" style="width:100%; height:370px; background-color:white;"></div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <h3>Allocated SHIFTS </h3>
+                                        <div id="allocated_shift" style="width:100%; height:370px; background-color:white;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
+                <!-- end -->
+                <div data-pws-tab="tab2" data-pws-tab-name="Leave Policy " data-pws-tab-icon="fa-cog">
+                    <br>
+                    <!--                        <div class="box-header with-border">
+                                                <h3 class="box-title">Leave Policy </h3>
+                                                <div class="box-tools pull-right">
+                                                    <button class="btn btn-box-tool" data-widget="collapse">
+                                                        <i class="fa fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>-->
+                    <div class="box box-primary " style="margin-top: -21px;">
+                        <div class="box-body" style="    margin-top: -11px;">
+
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <h3>Leave Policy</h3>
+                                    <div id="leavepolicylist" style="width:100%; height:370px; background-color:white;"></div>
+
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Non-Allocated Employees</h3>
+                                    <div id="allempsforlp" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Employees in selected leave policy </h3>
+                                    <div id="empsinlp" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div data-pws-tab="tab3" data-pws-tab-name="Holiday" data-pws-tab-icon="fa-cog">
+
+                    <br>
+                    <!--                        <div class="box-header with-border">
+                                                <h3 class="box-title">Holiday</h3>
+                                                <div class="box-tools pull-right">
+                                                    <button class="btn btn-box-tool" data-widget="collapse">
+                                                        <i class="fa fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>-->
+                    <div class="box box-primary " style="margin-top: -21px;">
+                        <div class="box-body" style="    margin-top: -11px;">
+
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <h3>Holiday Policy</h3>
+                                    <div id="holidaypolicylist" style="width:100%; height:370px; background-color:white;"></div>
+
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Non-Allocated Employees</h3>
+                                    <div id="allempsforholiday" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Employees in selected holiday policy </h3>
+                                    <div id="empsinholiday" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div data-pws-tab="tab4" data-pws-tab-name="Employee Hierarchy" data-pws-tab-icon="fa-cog">
+
+
+                    <!--div class="row">
+                        <div class="col-sm-6"-->
+
+                    <br>
+                    <!--                                <div class="box-header with-border">
+                                                        <h3 class="box-title">Employee Hierarchy Allocation</h3>
+                                                        <div class="box-tools pull-right">
+                                                            a  class="btn btn-app" onclick="updateData()" title="Update"><i class="fa fa-save"></i></a>
+                                                            <a class="btn btn-app" onclick="refreshEmpHierarchy();" title="Refresh"><i class="fa fa-repeat"></i></a
+                                                            <button class="btn btn-box-tool" data-widget="collapse">
+                                                                <i class="fa fa-minus"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>-->
+                    <div class="box box-primary " style="margin-top: -21px;">
+                        <div class="box-body" style="    margin-top: -11px;">
+
+                            <!--ul class="easyui-tree" id="emptree" ></ul-->
+
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <h3>Employees</h3>
+                                    <div id="emphierarchylist" style="width:100%; height:370px; background-color:white;"></div>
+
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Non-Allocated Employees</h3>
+                                    <div id="allempsforhierarchy" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Employees under selected employee </h3>
+                                    <div id="empsinhierarchy" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <!--/div>
+
+                    <div class="col-sm-6">
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">Employee Details</h3>
+                            </div>
+                            <div class="box-body no-padding">
+                                <table class="table table-condensed" id="emp_details" style="display: none">
+
+                                    <tr>
+                                        <td style="font-weight: 600">First Name:</td>
+                                        <td  id="fname_holder"></td>
+
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600">Last Name:</td>
+                                        <td  id="lname_holder">
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600">Designation:</td>
+                                        <td  id="designation_holder"></td>
+
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600">DOB:</td>
+                                        <td  id="dob_holder"></td>
+
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div-->
+
+
+                </div>
+
+                <div data-pws-tab="tab5" data-pws-tab-name="Salary Structure" data-pws-tab-icon="fa-cog">
+                    <br>
+                    <!--                        <div class="box-header with-border">
+                                                <h3 class="box-title">Salary Structure</h3>
+                                                <div class="box-tools pull-right">
+                                                    <button class="btn btn-box-tool" data-widget="collapse">
+                                                        <i class="fa fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>-->
+                    <div class="box box-primary " style="margin-top: -21px;">
+                        <div class="box-body" style="    margin-top: -11px;">
+
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <h3>Salary</h3>
+                                    <div id="salarystruct" style="width:100%; height:370px; background-color:white;"></div>
+
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Non-Allocated Employees</h3>
+                                    <div id="allempsforss" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Employees in selected salary structure </h3>
+                                    <div id="empinss" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div data-pws-tab="tab6" data-pws-tab-name="Notice Period" data-pws-tab-icon="fa-cog">
+                    <br>
+                    <!--                        <div class="box-header with-border">
+                                                <h3 class="box-title">Notice Period</h3>
+                                                <div class="box-tools pull-right">
+                                                    <button class="btn btn-box-tool" data-widget="collapse">
+                                                        <i class="fa fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>-->
+                    <div class="box box-primary " style="margin-top: -21px;">
+                        <div class="box-body" style="    margin-top: -11px;">
+
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <!--<h3 id="divload">Notice Days <button id="divnotice" class="btn" onclick="addnewnoticedays(this);"><li id="mybutton" class="fa fa-plus-square pull-right"></li></button><div style="margin-left:93px;" id="loaded"></div></h3>-->
+                                    <h3>Notice Period</h3>
+                                    <div id="period_master" style="width:100%; height:370px; background-color:white;"></div>
+
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Non-Allocated Employees</h3>
+                                    <div id="allempsinperiods" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Employees in selected Notice Period </h3>
+                                    <div id="empinperiods" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div data-pws-tab="tab7" data-pws-tab-name="Division" data-pws-tab-icon="fa-cog">
+                    <br>
+                    <div class="box box-primary " style="margin-top: -21px;">
+                        <div class="box-body" style="    margin-top: -11px;">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <h3>Division</h3>
+                                    <div id="div_master" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Non-Allocated Employees</h3>
+                                    <div id="allempsindiv" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Employees in selected Division </h3>
+                                    <div id="empindiv" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div data-pws-tab="tab8" data-pws-tab-name="Section" data-pws-tab-icon="fa-cog">
+                    <br>
+                    <div class="box box-primary " style="margin-top: -21px;">
+                        <div class="box-body" style="    margin-top: -11px;">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <h3>Section</h3>
+                                    <div id="section_master" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Non-Allocated Employees</h3>
+                                    <div id="allempsinsection" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Employees in selected Section </h3>
+                                    <div id="empinsection" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div data-pws-tab="tab9" data-pws-tab-name="Grade" data-pws-tab-icon="fa-cog">
+                    <br>
+                    <div class="box box-primary " style="margin-top: -21px;">
+                        <div class="box-body" style="    margin-top: -11px;">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <h3>Grade</h3>
+                                    <div id="grade_master" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Non-Allocated Employees</h3>
+                                    <div id="allempsingrade" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Employees in selected Grade </h3>
+                                    <div id="empingrade" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div data-pws-tab="tab10" data-pws-tab-name="Leave Hierarchy" data-pws-tab-icon="fa-cog">
+                    <br>
+                    <div class="box box-primary " style="margin-top: -21px;">
+                        <div class="box-body" style="    margin-top: -11px;">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <h3>Leave Hierarchy</h3>
+                                    <div id="empleavehierarchy_master" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Non-Allocated Employees</h3>
+                                    <div id="allempsforleavehierarchy" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <h3>Employees in selected Leave Hierarchy </h3>
+                                    <div id="empsinleavehierarchy" style="width:100%; height:370px; background-color:white;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</section>
+<script>
+    //      $("#divnotice").click(function(this){
+    //    $("#contents").load(livesite+'EmployeeConfig/form/0');
+    //    return false;
+    //  });
+    function addnewnoticedays(thiss) {
+        //showSmallModalForm(livesite+'EmployeeConfig/form/0');
+        var div = $('#loaded').addClass('box box-body custom_css').css('border-style', 'outset');
+        div.load(livesite + 'EmployeeConfig/form/0', function() {
+            //div.fadeIn(6);
+        });
+        $(thiss).attr("onclick", "removenoticedays(this);");
+        $('#mybutton').addClass('fa-minus-square').removeClass('fa-plus-square');
+        //$('#divload').append(div);  
+        return false;
+    }
+
+    function removenoticedays(thiss) {
+        //showSmallModalForm(livesite+'EmployeeConfig/form/0');
+        var div = $('#loaded').removeClass('box box-body custom_css').css('border-style', 'none');
+        div.html('');
+        $(thiss).attr("onclick", "addnewnoticedays(this);");
+        $('#mybutton').addClass('fa-plus-square').removeClass('fa-minus-square');
+        //$('#divload').append(div);
+
+    }
+
+    function closediv() {
+        var btn = $('.btn');
+        removenoticedays(btn);
+    }
+
+    function refreshEmpHierarchy() {
+        $('#emptree').tree('reload');
+
+    }
+
+    function showEmployeeDetails(data) {
+
+        //console.log(data)
+
+        if (data) {
+            $("#emp_details").show();
+            $("#fname_holder").html(data.first_name)
+            $("#lname_holder").html(data.last_name)
+            $("#designation_holder").html(data.designation)
+            $("#dob_holder").html(data.dob)
+
+        }
+
+    }
+
+    function updateData() {
+
+        $.ajax({
+            url: "EmployeeHierarchy/saveData",
+            data: {
+                data: JSON.stringify($('#emptree').tree('getRoots'))
+            },
+            type: "POST",
+            success: function(response) {
+                var response = $.parseJSON(response);
+                if (response.msg) {
+                    $.notify(response.msg, {
+                        type: 'success',
+                        allow_dismiss: true
+                    });
+                }
+            }
+
+        })
+
+    }
+
+
+
+    jQuery(document).ready(function($) {
+        /*$('#emptree').tree({
+         dnd: true,
+         animate: true,
+         lines: true,
+         onSelect: function (node)
+         {
+         showEmployeeDetails(node)
+         },
+         url: 'EmployeeConfig/getEmployeeTree'
+         });
+         $.ajax({
+         url: "EmployeeConfig/getEmployeeTree",
+         type: "GET",
+         success: function (obj) {
+         
+         }
+         });*/
+
+        $('.tabset0').pwstabs({
+            effect: 'scale', // You can change effects of your tabs container: scale / slideleft / slideright / slidetop / slidedown / none
+            defaultTab: 1, // The tab we want to be opened by default
+            containerWidth: '105%', // Set custom container width if not set then 100% is used
+            tabsPosition: 'horizontal', // Tabs position: horizontal / vertical
+            horizontalPosition: 'top', // Tabs horizontal position: top / bottom
+            verticalPosition: 'left', // Tabs vertical position: left / right
+            responsive: true, // Make tabs container responsive: true / false - boolean
+            theme: '',
+            rtl: false // Right to left support: true/ false
+        });
+
+
+
+    });
+
+    // edited by athira on 06-11-2025
+    <?php  //if ($company_code == 'NRMY' || $company_code == 'AELY' || $company_code =='GRNH' || $company_code =='ATNE'){ 
+    $restrictedCompanies = [
+    'ABSG','VGFS','VSFS','DRRC','DJIC','AGNG','AYRK',
+    'GTRA','VGNN','SHYD','SRTS'
+];
+
+    if (!in_array($company_code, $restrictedCompanies) || $company_code=='HDFN' || $company_code=='HDEQ' || $company_code=='HDSC' || $company_code=='HDCM')  { ?>
+        var shifts;
+        var allocated_shift;
+
+        function doOnEmployeeSelect(id) {
+            $('#emptree').tree('reload');
+
+            shifts.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listshiftsforemployees?employee=" + id, "json");
+            allocated_shift.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listshiftsinemployees?employee=" + id, "json");
+
+        }
+
+        var employee_list = new dhtmlXGridObject('employee_list');
+
+        employee_list.setHeader("Employee Name,Branch");
+        employee_list.setColAlign("left,left");
+        // employee_list.setColumnIds("full_name,branch");
+
+        // Use pixel widths for better control
+        employee_list.setInitWidths("300,175"); // Employee Name wider, Branch smaller
+
+        employee_list.attachHeader("#text_search,#text_search");
+        employee_list.setColTypes("ro,ro");
+
+        // Enable horizontal scroll by fixing total width smaller than container
+        employee_list.enableAutoWidth(false);
+        employee_list.enableSmartRendering(true); // improves performance for large data
+
+        employee_list.attachEvent("onRowSelect", doOnEmployeeSelect);
+        employee_list.attachEvent("onDataReady", function() {
+            // Optional actions
+        });
+
+        employee_list.init();
+        employee_list.load("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesforpolicy", "json");
+
+
+        shifts = new dhtmlXGridObject('shifts');
+        shifts.selMultiRows = true;
+        shifts.setHeader("Shift Name");
+        shifts.attachHeader("#text_filter");
+        // shifts.setInitWidths("150");
+        shifts.setColAlign("left");
+        //	shifts.attachHeader("#text_search,#combo_filter");
+        shifts.setColSorting("str");
+        shifts.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+            if (employee_list.getSelectedRowId()) {
+                // showLoader();
+                $.ajax({
+                    url: livesite + "EmployeeConfig/removeShiftFromEmp",
+                    data: {
+                        shift: sId,
+                        emp_fkey: employee_list.getSelectedRowId()
+                    },
+                    success: function(response) {
+                        $.notify("Employee Removed From Selected Shift Policy", {
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+
+                        var empId = employee_list.getSelectedRowId();
+
+                        // Artificial delay (e.g., 1.5 seconds)
+                        // setTimeout(function() {
+                        shifts.clearAndLoad(livesite + "EmployeeConfig/listshiftsforemployees?employee=" + empId, "json");
+                        allocated_shift.clearAndLoad(livesite + "EmployeeConfig/listshiftsinemployees?employee=" + empId, "json");
+                        // employee_list.clearAndLoad(livesite + "EmployeeConfig/listemployeesforpolicy", "json");
+                        // hideLoader();
+                        // }, 1000);
+                    },
+                    error: function() {
+                        // Hide loader on error as well
+                        hideLoader();
+                    }
+                });
+            }
+            return true;
+        });
+
+
+        shifts.setMultiLine(false);
+        shifts.enableDragAndDrop(true);
+        shifts.init();
+
+        allocated_shift = new dhtmlXGridObject('allocated_shift');
+        allocated_shift.selMultiRows = true;
+        //	empsinsp.setImagePath("../../../codebase/imgs/");
+        allocated_shift.setHeader("Shift Name");
+        allocated_shift.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter");
+
+        allocated_shift.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+            if (employee_list.getSelectedRowId()) {
+                // showLoader();
+                $.ajax({
+                    url: livesite + "EmployeeConfig/addShiftToEmp",
+                    data: {
+                        shift: sId,
+                        emp_fkey: employee_list.getSelectedRowId()
+                    },
+                    success: function(response) {
+                        $.notify("Employee Added To Selected Shift Policy", {
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+
+                        var empId = employee_list.getSelectedRowId();
+
+                        // Artificial delay (e.g., 1.5 seconds)
+                        // setTimeout(function() {
+                        shifts.clearAndLoad(livesite + "EmployeeConfig/listshiftsforemployees?employee=" + empId, "json");
+                        allocated_shift.clearAndLoad(livesite + "EmployeeConfig/listshiftsinemployees?employee=" + empId, "json");
+                        // employee_list.clearAndLoad(livesite + "EmployeeConfig/listemployeesforpolicy", "json");
+                        // hideLoader();
+                        // }, 1000);
+                    },
+                    error: function() {
+                        hideLoader();
+                    }
+                });
+            }
+            return true;
+        });
+
+        // allocated_shift.setInitWidths("150,110,110,110");
+        allocated_shift.setColAlign("left");
+        //	empsinsp.setColTypes("ed,ed");
+        allocated_shift.setColSorting("str");
+        allocated_shift.setMultiLine(false);
+        allocated_shift.enableDragAndDrop(true);
+        allocated_shift.init();
+
+
+        function showLoader() {
+            document.getElementById('loading-overlay').style.display = 'block';
+        }
+
+        function hideLoader() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+    <?php } ?>
+    //end
+
+    <?php if (in_array($company_code, $restrictedCompanies) || $company_code=='HDFN' || $company_code=='HDEQ' || $company_code=='HDSC' || $company_code=='HDCM') { ?>
+        var shiftpolicylist;
+        var allempsforsp;
+        var empsinsp;
+
+        var leavepolicylist;
+        var allempsforlp;
+        var empsinlp;
+
+        function doOnShiftSelect(id) {
+            $('#emptree').tree('reload');
+
+            allempsforsp.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesforshift?shift=" + id, "json");
+            empsinsp.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesinshift?shift=" + id, "json");
+
+        }
+        shiftpolicylist = new dhtmlXGridObject('shiftpolicylist');
+        shiftpolicylist.setHeader("Shift Policy");
+        shiftpolicylist.setColAlign("left");
+        shiftpolicylist.setColumnIds("day_time_desc");
+        shiftpolicylist.setInitWidthsP("100");
+        shiftpolicylist.attachHeader("#text_search");
+        //myGrid.enableAutoHeight(true,400);
+        shiftpolicylist.attachEvent("onRowSelect", doOnShiftSelect);
+        shiftpolicylist.attachEvent("onDataReady", function() {
+            //        alert("hi");
+            //        $('#empsinsp .objbox').append('<div class="col-md-12" style="text-align: center;position: absolute;top: 50%;font-size: 24px;font-weight: 200;" >Drag & Drop here</div>');
+        });
+        shiftpolicylist.enableAutoWidth(true);
+        shiftpolicylist.setColTypes("ro");
+        shiftpolicylist.init();
+        shiftpolicylist.load("<?php echo $this->webroot; ?>DayTimeProcedure/listpoliciesforconfig", "json");
+
+        allempsforsp = new dhtmlXGridObject('allempsforsp');
+        allempsforsp.selMultiRows = true;
+        allempsforsp.setHeader("Name,Branch,Designation,Department");
+        allempsforsp.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter");
+        allempsforsp.setInitWidths("150,110,110,110");
+        allempsforsp.setColAlign("left,left,left,left");
+        //	allempsforsp.attachHeader("#text_search,#combo_filter");
+        allempsforsp.setColSorting("str,str,str,str");
+        allempsforsp.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+            //edited  by sinsiya 
+            if (shiftpolicylist.getSelectedRowId()) {
+                console.log(sId)
+                // Check if the selected employee has 'upload' in the created_by column
+                $.ajax({
+                    url: livesite + "EmployeeConfig/checkEmpShift",
+                    data: {
+                        emp_id: sId // The ID of the employee being dragged
+                    },
+                    dataType: 'json', // Expecting a JSON response from the server
+
+                    success: function(response) {
+                        // Assuming the server returns a JSON object like { created_by: 'upload' }
+                        console.log(response);
+
+                        if (response.shift_value != '') {
+                            console.log(response.created_by);
+                            // Display a confirmation dialog using the standard JavaScript confirm() method
+                            if (confirm("You are about to change the policy/rule/settings of the selected employee(s). The previous settings will be lost and new ones will be applied. Do you still need to proceed?")) {
+                                $.ajax({
+                                    url: livesite + "EmployeeConfig/removeEmpFromShift",
+                                    data: {
+                                        id: sId,
+                                        shift: shiftpolicylist.getSelectedRowId()
+                                    },
+                                    success: function(response) {
+                                        //var text = response.responseText;
+                                        // process server response here
+
+                                        $.notify("Empolyee removed from Selected Shift Policy", {
+                                            type: 'success',
+                                            allow_dismiss: false
+
+                                        });
+                                    }
+                                });
+                            } else {
+                                $shiftid = shiftpolicylist.getSelectedRowId();
+                                doOnShiftSelect($shiftid)
+
+                            }
+                        } else {
+                            // If the 'created_by' condition is not met, proceed with the original logic
+                            $.ajax({
+                                url: livesite + "EmployeeConfig/removeEmpFromShift",
+                                data: {
+                                    id: sId,
+                                    shift: shiftpolicylist.getSelectedRowId()
+                                },
+                                success: function(response) {
+                                    //var text = response.responseText;
+                                    // process server response here
+
+                                    $.notify("Empolyee Removed From Selected Shift Policy", {
+                                        type: 'success',
+                                        allow_dismiss: false
+
+                                    });
+                                }
+                            });
+                        }
+                    },
+                    error: function() {
+                        $.notify("Error checking employee information", {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                    }
+                });
+            }
+
+
+
+            return true;
+        });
+        allempsforsp.setMultiLine(false);
+        allempsforsp.enableDragAndDrop(true);
+        allempsforsp.init();
+        //
+        //
+        empsinsp = new dhtmlXGridObject('empsinsp');
+        empsinsp.selMultiRows = true;
+        //	empsinsp.setImagePath("../../../codebase/imgs/");
+        empsinsp.setHeader("Name,Branch,Designation,Department");
+        empsinsp.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter");
+        empsinsp.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+            // your code here
+            console.log(sId)
+            if (shiftpolicylist.getSelectedRowId()) {
+                $.ajax({
+                    url: livesite + "EmployeeConfig/addEmpToShift",
+                    data: {
+                        id: sId,
+                        shift: shiftpolicylist.getSelectedRowId()
+                    },
+                    success: function(responseText) {
+                        var response = JSON.parse(responseText); //Edited by Akshay on 26-9-2024
+                        $.notify(response.message, {
+                            type: response.status,
+                            allow_dismiss: false
+
+                        });
+
+                    }
+                });
+            }
+
+            // console.log(tId)
+            //console.log(sObj)
+            // console.log(tObj)
+            return true;
+        });
+        empsinsp.setInitWidths("150,110,110,110");
+        empsinsp.setColAlign("left,left,left,left");
+        //	empsinsp.setColTypes("ed,ed");
+        empsinsp.setColSorting("str,str,str,str");
+        empsinsp.setMultiLine(false);
+        empsinsp.enableDragAndDrop(true);
+        empsinsp.init();
+    <?php } ?>
+
+    <?php if (in_array($company_code, $restrictedCompanies)) { ?>
+        //-------------Additional Shift--- Edited by Akshay on 30-12-2023
+        var multishiftpolicylist;
+        var multiallempsforsp;
+        var multiempsinsp;
+
+        var leavepolicylist;
+        var allempsforlp;
+        var empsinlp;
+
+        function doOnMultiShiftSelect(id) {
+            $('#emptree').tree('reload');
+
+            multiallempsforsp.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesformultishift?shift=" + id, "json");
+            multiempsinsp.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesinmultishift?shift=" + id, "json");
+
+        }
+        multishiftpolicylist = new dhtmlXGridObject('multishiftpolicylist');
+        multishiftpolicylist.setHeader("Additional Shift Policy");
+        multishiftpolicylist.setColAlign("left");
+        multishiftpolicylist.setColumnIds("day_time_desc");
+        multishiftpolicylist.setInitWidthsP("100");
+        multishiftpolicylist.attachHeader("#text_search");
+        //myGrid.enableAutoHeight(true,400);
+        multishiftpolicylist.attachEvent("onRowSelect", doOnMultiShiftSelect);
+        multishiftpolicylist.attachEvent("onDataReady", function() {
+            //        alert("hi");
+            //        $('#empsinsp .objbox').append('<div class="col-md-12" style="text-align: center;position: absolute;top: 50%;font-size: 24px;font-weight: 200;" >Drag & Drop here</div>');
+        });
+        multishiftpolicylist.enableAutoWidth(true);
+        multishiftpolicylist.setColTypes("ro");
+        multishiftpolicylist.init();
+        multishiftpolicylist.load("<?php echo $this->webroot; ?>DayTimeProcedure/listpoliciesforconfig", "json");
+
+        multiallempsforsp = new dhtmlXGridObject('multiallempsforsp');
+        multiallempsforsp.selMultiRows = true;
+        multiallempsforsp.setHeader("Name,Branch,Designation,Department");
+        multiallempsforsp.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter");
+        multiallempsforsp.setInitWidths("150,110,110,110");
+        multiallempsforsp.setColAlign("left,left,left,left");
+        //	allempsforsp.attachHeader("#text_search,#combo_filter");
+        multiallempsforsp.setColSorting("str,str,str,str");
+        multiallempsforsp.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+            //edited by sinsiya
+            if (multishiftpolicylist.getSelectedRowId()) {
+                $.ajax({
+                    url: livesite + "EmployeeConfig/checkEmpMultiShift",
+                    data: {
+                        emp_id: sId // The ID of the employee being dragged
+                    },
+                    dataType: 'json', // Expecting a JSON response from the server
+
+                    success: function(response) {
+
+                        console.log(response);
+
+                        if (response.multishift_value != '') {
+                            console.log(response.created_by);
+                            // Display a confirmation dialog using the standard JavaScript confirm() method
+                            if (confirm("You are about to change the policy/rule/settings of the selected employee(s). The previous settings will be lost and new ones will be applied. Do you still need to proceed?")) {
+                                $.ajax({
+                                    url: livesite + "EmployeeConfig/removeEmpFromMultiShift",
+                                    data: {
+                                        id: sId,
+                                        shift: multishiftpolicylist.getSelectedRowId()
+                                    },
+                                    success: function(response) {
+                                        //var text = response.responseText;
+                                        // process server response here
+
+                                        $.notify("Empolyee Removed From Selected Shift Policy", {
+                                            type: 'success',
+                                            allow_dismiss: false
+
+                                        });
+                                    }
+                                });
+                            } else {
+                                $multishift = multishiftpolicylist.getSelectedRowId();
+                                doOnMultiShiftSelect($multishift);
+                            }
+                        } else {
+                            $.ajax({
+                                url: livesite + "EmployeeConfig/removeEmpFromMultiShift",
+                                data: {
+                                    id: sId,
+                                    shift: multishiftpolicylist.getSelectedRowId()
+                                },
+                                success: function(response) {
+                                    //var text = response.responseText;
+                                    // process server response here
+
+                                    $.notify("Empolyee Removed From Selected Shift Policy", {
+                                        type: 'success',
+                                        allow_dismiss: false
+
+                                    });
+                                }
+                            });
+
+                        }
+                    },
+                    error: function() {
+                        $.notify("Error checking employee information", {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                    }
+                });
+            }
+
+            return true;
+        });
+        multiallempsforsp.setMultiLine(false);
+        multiallempsforsp.enableDragAndDrop(true);
+        multiallempsforsp.init();
+        //
+        //
+        multiempsinsp = new dhtmlXGridObject('multiempsinsp');
+        multiempsinsp.selMultiRows = true;
+        //	empsinsp.setImagePath("../../../codebase/imgs/");
+        multiempsinsp.setHeader("Name,Branch,Designation,Department");
+        multiempsinsp.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter");
+        multiempsinsp.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+            // your code here
+            console.log(sId)
+            if (multishiftpolicylist.getSelectedRowId()) {
+                $.ajax({
+                    url: livesite + "EmployeeConfig/addEmpToMultiShift",
+                    data: {
+                        id: sId,
+                        shift: multishiftpolicylist.getSelectedRowId()
+                    },
+                    success: function(responseText) {
+                        var response = JSON.parse(responseText);
+                        console.log('responseText', response);
+                        console.log("Response", response.status);
+
+                        //var text = response.responseText;
+                        // process server response here
+                        $.notify(response.message, {
+                            type: response.status,
+                            allow_dismiss: false
+
+                        });
+
+                    }
+                });
+            }
+
+            // console.log(tId)
+            //console.log(sObj)
+            // console.log(tObj)
+            return true;
+        });
+        multiempsinsp.setInitWidths("150,110,110,110");
+        multiempsinsp.setColAlign("left,left,left,left");
+
+        multiempsinsp.setColSorting("str,str,str,str");
+        multiempsinsp.setMultiLine(false);
+        multiempsinsp.enableDragAndDrop(true);
+        multiempsinsp.init();
+    <?php } ?>
+
+    //--------------Leave---
+
+    function doOnLeaveSelect(id) {
+
+        allempsforlp.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesforleave?leavegroup=" + id, "json");
+        empsinlp.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesinleave?leavegroup=" + id, "json");
+
+    }
+    leavepolicylist = new dhtmlXGridObject('leavepolicylist');
+    leavepolicylist.setHeader("Leave Policy");
+    leavepolicylist.setColAlign("left");
+    leavepolicylist.setColumnIds("day_time_desc");
+    leavepolicylist.setInitWidthsP("100");
+    leavepolicylist.attachHeader("#text_search");
+    //myGrid.enableAutoHeight(true,400);
+    leavepolicylist.attachEvent("onRowSelect", doOnLeaveSelect);
+    leavepolicylist.enableAutoWidth(true);
+    leavepolicylist.setColTypes("ro");
+    leavepolicylist.init();
+    leavepolicylist.load("<?php echo $this->webroot; ?>LeavePolicy/listpolicygroupforconfig", "json");
+
+    allempsforlp = new dhtmlXGridObject('allempsforlp');
+    allempsforlp.selMultiRows = true;
+    allempsforlp.setHeader("Name,Branch,Designation,Department");
+    allempsforlp.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter");
+    allempsforlp.setInitWidths("150,110,110,110");
+    allempsforlp.setColAlign("left,left,left,left");
+    //	allempsforsp.attachHeader("#text_search,#combo_filter");
+    allempsforlp.setColSorting("str,str,str,str");
+    allempsforlp.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        //edited by sinisya
+        if (leavepolicylist.getSelectedRowId()) {
+            $.ajax({
+                url: livesite + "EmployeeConfig/checkEmpLeavepolicy",
+                data: {
+                    emp_id: sId // The ID of the employee being dragged
+                },
+                dataType: 'json', // Expecting a JSON response from the server
+
+                success: function(response) {
+
+                    console.log(response);
+
+                    if (response.leave_value != '') {
+                        console.log(response.created_by);
+                        // Display a confirmation dialog using the standard JavaScript confirm() method
+                        if (confirm("You are about to change the policy/rule/settings of the selected employee(s). The previous settings will be lost and new ones will be applied. Do you still need to proceed?")) {
+
+                            $.ajax({
+                                url: livesite + "EmployeeConfig/removeEmpFromLeave",
+                                data: {
+                                    id: sId,
+                                    leavegroup: leavepolicylist.getSelectedRowId()
+                                },
+                                success: function(response) {
+                                    //var text = response.responseText;
+                                    // process server response here
+
+                                    $.notify("Empolyee Removed From Selected Leave Policy", {
+                                        type: 'success',
+                                        allow_dismiss: false
+
+                                    });
+                                }
+                            });
+                        } else {
+                            $leavepolicy = leavepolicylist.getSelectedRowId();
+                            doOnLeaveSelect($leavepolicy);
+                        }
+                    } else {
+                        $.ajax({
+                            url: livesite + "EmployeeConfig/removeEmpFromLeave",
+                            data: {
+                                id: sId,
+                                leavegroup: leavepolicylist.getSelectedRowId()
+                            },
+                            success: function(response) {
+                                //var text = response.responseText;
+                                // process server response here
+
+                                $.notify("Empolyee Removed From Selected Leave Policy", {
+                                    type: 'success',
+                                    allow_dismiss: false
+
+                                });
+                            }
+                        });
+                    }
+                },
+                error: function() {
+                    $.notify("Error checking employee information", {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        }
+        return true;
+    });
+    allempsforlp.setMultiLine(false);
+    allempsforlp.enableDragAndDrop(true);
+    allempsforlp.init();
+    //
+    //
+    empsinlp = new dhtmlXGridObject('empsinlp');
+    empsinlp.selMultiRows = true;
+    //	empsinsp.setImagePath("../../../codebase/imgs/");
+    empsinlp.setHeader("Name,Branch,Designation,Department");
+    empsinlp.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter");
+    empsinlp.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        // your code here
+        console.log(sId)
+        if (leavepolicylist.getSelectedRowId()) {
+            $.ajax({
+                url: livesite + "EmployeeConfig/addEmpToLeave",
+                data: {
+                    id: sId,
+                    leavegroup: leavepolicylist.getSelectedRowId()
+                },
+                success: function(response) {
+                    //var text = response.responseText;
+                    // process server response here
+                    $.notify("Empolyee Added To Selected Leave Policy", {
+                        type: 'success',
+                        allow_dismiss: false
+
+                    });
+
+                }
+            });
+
+        }
+
+        // console.log(tId)
+        //console.log(sObj)
+        // console.log(tObj)
+        return true;
+    });
+    empsinlp.setInitWidths("150,110,110,110");
+    empsinlp.setColAlign("left,left,left,left");
+    //	empsinsp.setColTypes("ed,ed");
+    empsinlp.setColSorting("str,str,str,str");
+    empsinlp.setMultiLine(false);
+    empsinlp.enableDragAndDrop(true);
+    empsinlp.init();
+
+    //--------------Holiday---
+
+    var holidaypolicylist;
+    var allempsforholiday;
+    var empsinholiday;
+
+    function doOnHolidaySelect(id) {
+
+        allempsforholiday.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesforholiday?holiday=" + id, "json");
+        empsinholiday.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesinholiday?holiday=" + id, "json");
+
+    }
+    holidaypolicylist = new dhtmlXGridObject('holidaypolicylist');
+    holidaypolicylist.setHeader("Holiday Allocation");
+    holidaypolicylist.setColAlign("left");
+    holidaypolicylist.setColumnIds("day_time_desc");
+    holidaypolicylist.setInitWidthsP("100");
+    holidaypolicylist.attachHeader("#text_search");
+    //myGrid.enableAutoHeight(true,400);
+    holidaypolicylist.attachEvent("onRowSelect", doOnHolidaySelect);
+    holidaypolicylist.enableAutoWidth(true);
+    holidaypolicylist.setColTypes("ro");
+    holidaypolicylist.init();
+    holidaypolicylist.load("<?php echo $this->webroot; ?>HolidayCalendar/listholidaygroupforconfig", "json");
+
+    allempsforholiday = new dhtmlXGridObject('allempsforholiday');
+    allempsforholiday.selMultiRows = true;
+    allempsforholiday.setHeader("Name,Branch,Designation,Department");
+    allempsforholiday.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter");
+    allempsforholiday.setInitWidths("150,110,110,110");
+    allempsforholiday.setColAlign("left,left,left,left");
+    allempsforholiday.setColSorting("str,str,str,str");
+    allempsforholiday.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        //edited by sinsiya
+        if (holidaypolicylist.getSelectedRowId()) {
+            $.ajax({
+                url: livesite + "EmployeeConfig/checkEmpHoliday",
+                data: {
+                    emp_id: sId // The ID of the employee being dragged
+                },
+                dataType: 'json', // Expecting a JSON response from the server
+
+                success: function(response) {
+
+                    console.log(response);
+
+                    if (response.holiday_value != '') {
+                        console.log(response.created_by);
+                        // Display a confirmation dialog using the standard JavaScript confirm() method
+                        if (confirm("You are about to change the policy/rule/settings of the selected employee(s). The previous settings will be lost and new ones will be applied. Do you still need to proceed?")) {
+                            $.ajax({
+                                url: livesite + "EmployeeConfig/removeEmpFromHoliday",
+                                data: {
+                                    id: sId,
+                                    holiday: holidaypolicylist.getSelectedRowId()
+                                },
+                                success: function(response) {
+                                    //var text = response.responseText;
+                                    // process server response here
+
+                                    $.notify("Empolyee Removed From Selected Holiday Group", {
+                                        type: 'success',
+                                        allow_dismiss: false
+
+                                    });
+                                }
+                            });
+                        } else {
+                            $holiday = holidaypolicylist.getSelectedRowId();
+                            doOnHolidaySelect($holiday);
+                        }
+                    } else {
+                        $.ajax({
+                            url: livesite + "EmployeeConfig/removeEmpFromHoliday",
+                            data: {
+                                id: sId,
+                                holiday: holidaypolicylist.getSelectedRowId()
+                            },
+                            success: function(response) {
+                                //var text = response.responseText;
+                                // process server response here
+
+                                $.notify("Empolyee Removed From Selected Holiday Group", {
+                                    type: 'success',
+                                    allow_dismiss: false
+
+                                });
+                            }
+                        });
+                    }
+                },
+                error: function() {
+                    $.notify("Error checking employee information", {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        }
+        return true;
+    });
+    allempsforholiday.setMultiLine(false);
+    allempsforholiday.enableDragAndDrop(true);
+    allempsforholiday.init();
+    //
+    //
+    empsinholiday = new dhtmlXGridObject('empsinholiday');
+    empsinholiday.selMultiRows = true;
+    //	empsinsp.setImagePath("../../../codebase/imgs/");
+    empsinholiday.setHeader("Name,Branch,Designation,Department");
+    empsinholiday.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter");
+    empsinholiday.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        // your code here
+        console.log(sId)
+        if (holidaypolicylist.getSelectedRowId()) {
+            $.ajax({
+                url: livesite + "EmployeeConfig/addEmpToHoliday",
+                data: {
+                    id: sId,
+                    holiday: holidaypolicylist.getSelectedRowId()
+                },
+                success: function(response) {
+                    //var text = response.responseText;
+                    // process server response here
+                    $.notify("Empolyee Added To Selected Holiday Group", {
+                        type: 'success',
+                        allow_dismiss: false
+
+                    });
+
+                }
+            });
+        }
+
+        // console.log(tId)
+        //console.log(sObj)
+        // console.log(tObj)
+        return true;
+    });
+    empsinholiday.setInitWidths("150,110,110,110");
+    empsinholiday.setColAlign("left,left,left,left");
+    //	empsinsp.setColTypes("ed,ed");
+    empsinholiday.setColSorting("str,str,str,str");
+    empsinholiday.setMultiLine(false);
+    empsinholiday.enableDragAndDrop(true);
+    empsinholiday.init();
+
+    /*var allempsforstruct;
+     var allempsforholiday;
+     var empsinholiday;
+     
+     function doOnEMPSelect(id)
+     {
+     
+     emplist1.clearAndLoad("<?php echo $this->webroot; ?>EmployeeHierarchy/listemployeesforhierarchy?parentEmpKey=" + id, "json");
+     
+     emplist2.clearAndLoad("<?php echo $this->webroot; ?>EmployeeHierarchy/listchildEmployee?parentEmpKey=" + id, "json");
+     
+     }*/
+
+
+
+    //--------------Holiday---
+
+    var emphierarchylist;
+    var allempsforhierarchy;
+    var empsinhierarchy;
+
+    function doOnEmployeeSelectEmployee(id) {
+
+        allempsforhierarchy.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesforhierarchy?emp_pkey=" + id, "json");
+        empsinhierarchy.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesinhierarchy?emp_pkey=" + id, "json");
+
+    }
+    emphierarchylist = new dhtmlXGridObject('emphierarchylist');
+    emphierarchylist.setHeader("Hierarchy Allocation");
+    emphierarchylist.setColAlign("left");
+    emphierarchylist.setColumnIds("emp_pkey");
+    emphierarchylist.setInitWidthsP("100");
+    emphierarchylist.attachHeader("#text_search");
+    //myGrid.enableAutoHeight(true,400);
+    emphierarchylist.attachEvent("onRowSelect", doOnEmployeeSelectEmployee);
+    emphierarchylist.enableAutoWidth(true);
+    emphierarchylist.setColTypes("ro");
+    emphierarchylist.init();
+    emphierarchylist.load("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesforconfig", "json");
+
+    allempsforhierarchy = new dhtmlXGridObject('allempsforhierarchy');
+    allempsforhierarchy.selMultiRows = true;
+    allempsforhierarchy.setHeader("Name,Branch,Designation,Department");
+    allempsforhierarchy.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter");
+    allempsforhierarchy.setInitWidths("150,110,110,110");
+    allempsforhierarchy.setColAlign("left,left,left,left");
+    allempsforhierarchy.setColSorting("str,str,str,str");
+    allempsforhierarchy.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        // edited by sinsiya 
+        if (emphierarchylist.getSelectedRowId()) {
+            $.ajax({
+                url: livesite + "EmployeeConfig/checkEmphierarchy",
+                data: {
+                    emp_id: sId // The ID of the employee being dragged
+                },
+                dataType: 'json', // Expecting a JSON response from the server
+
+                success: function(response) {
+                    // Assuming the server returns a JSON object like { created_by: 'upload' }
+                    console.log(response);
+
+                    if (response.Emphierarchy_value != '') {
+                        console.log(response.created_by);
+                        // Display a confirmation dialog using the standard JavaScript confirm() method
+                        if (confirm("You are about to change the policy/rule/settings of the selected employee(s). The previous settings will be lost and new ones will be applied. Do you still need to proceed?")) {
+                            $.ajax({
+                                url: livesite + "EmployeeConfig/removeEmpFromHierarchy",
+                                data: {
+                                    id: sId,
+                                    parent_emp_pkey: emphierarchylist.getSelectedRowId()
+                                },
+                                success: function(response) {
+                                    //var text = response.responseText;
+                                    // process server response here
+
+                                    $.notify("Employee removed from selected hierarchy and order removed.", {
+                                        type: 'success',
+                                        allow_dismiss: false
+
+                                    });
+                                }
+                            });
+                        } else {
+                            $emphierarchy = emphierarchylist.getSelectedRowId()
+                            doOnEmployeeSelectEmployee($emphierarchy);
+                        }
+                    } else {
+                        $.ajax({
+                            url: livesite + "EmployeeConfig/removeEmpFromHierarchy",
+                            data: {
+                                id: sId,
+                                parent_emp_pkey: emphierarchylist.getSelectedRowId()
+                            },
+                            success: function(response) {
+                                //var text = response.responseText;
+                                // process server response here
+
+                                $.notify("Employee removed from selected hierarchy and order removed.", {
+                                    type: 'success',
+                                    allow_dismiss: false
+
+                                });
+                            }
+                        });
+                    }
+                },
+                error: function() {
+                    $.notify("Error checking employee information", {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        }
+
+        return true;
+    });
+    allempsforhierarchy.setMultiLine(false);
+    allempsforhierarchy.enableDragAndDrop(true);
+    allempsforhierarchy.init();
+    //
+    //
+    empsinhierarchy = new dhtmlXGridObject('empsinhierarchy');
+    empsinhierarchy.selMultiRows = true;
+    //	empsinsp.setImagePath("../../../codebase/imgs/");
+    empsinhierarchy.setHeader("Name,Branch,Designation,Department,Order");
+    empsinhierarchy.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+    empsinhierarchy.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        // your code here
+        console.log(sId)
+        if (emphierarchylist.getSelectedRowId()) {
+            $.ajax({
+                url: livesite + "EmployeeConfig/addEmpToHierarchy",
+                data: {
+                    id: sId,
+                    parent_emp_pkey: emphierarchylist.getSelectedRowId()
+                },
+                success: function(response) {
+                    //var text = response.responseText;
+                    // process server response here
+                    $.notify("Employee added to selected hierarchy and order updated.", {
+                        type: 'success',
+                        allow_dismiss: false
+
+                    });
+
+                }
+            });
+        }
+
+        // console.log(tId)
+        //console.log(sObj)
+        // console.log(tObj)
+        return true;
+    });
+    empsinhierarchy.attachEvent("onGridReconstructed", function(grid_obj) {
+        // your code here
+
+        var ids = empsinhierarchy.getAllRowIds();
+        console.log("rearranged", ids);
+        saveDateToTable(ids);
+    });
+    empsinhierarchy.setInitWidths("150,110,110,110,110");
+    empsinhierarchy.setColAlign("left,left,left,left,left");
+    //	empsinsp.setColTypes("ed,ed");
+    empsinhierarchy.setColSorting("str,str,str,str,str");
+    empsinhierarchy.setMultiLine(false);
+    empsinhierarchy.enableDragAndDrop(true);
+    empsinhierarchy.init();
+
+    function saveDateToTable(sId) {
+        $.ajax({
+            url: livesite + "EmployeeConfig/reOrderEmps",
+            data: {
+                id: sId,
+                parent_emp_pkey: emphierarchylist.getSelectedRowId()
+            },
+            success: function(response) {
+
+                //$.notify("Empolyee Order Updated", {
+                //    type: 'success',
+                //   allow_dismiss: false
+                // });
+            }
+        });
+    }
+
+
+    /////////////////////////////
+
+
+
+
+    var salarystruct;
+    var allempsforss;
+    var empinss;
+
+    function doOnsalarySelect(id) {
+
+        allempsforss.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesforsalary?emp_pkey=" + id, "json");
+        empinss.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesinsalary?emp_pkey=" + id, "json");
+
+    }
+    salarystruct = new dhtmlXGridObject('salarystruct');
+    salarystruct.setHeader("Salary Allocation");
+    salarystruct.setColAlign("left");
+    salarystruct.setColumnIds("structure_id");
+    salarystruct.setInitWidthsP("100");
+    salarystruct.attachHeader("#text_filter");
+    //myGrid.enableAutoHeight(true,400);
+    salarystruct.attachEvent("onRowSelect", doOnsalarySelect);
+    salarystruct.enableAutoWidth(true);
+    salarystruct.setColTypes("ro");
+    salarystruct.init();
+    salarystruct.load("<?php echo $this->webroot; ?>EmployeeConfig/listsalaryemployeesforconfig", "json");
+
+    allempsforss = new dhtmlXGridObject('allempsforss');
+    allempsforss.selMultiRows = true;
+
+    <?php
+    // edited by sinsiya
+    // Example condition to check if the user's payro_priv is null or '0'
+    if (($company_code != 'LNWY' && $company_code != 'GAAR') || $user_group == 1) { // Edited by Akshay on 14-5-2025
+        // Set header with Gross Salary
+    ?>
+        allempsforss.setHeader("Name,Branch,Designation,Gross Salary");
+        allempsforss.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter");
+        allempsforss.setInitWidths("150,110,110,110");
+        allempsforss.setColAlign("left,left,left,left");
+        allempsforss.setColSorting("str,str,str,str");
+    <?php
+    } else {
+        // Set header without Gross Salary
+    ?>
+        allempsforss.setHeader("Name,Branch,Designation");
+        allempsforss.attachHeader("#text_filter,#text_filter,#text_filter");
+        allempsforss.setInitWidths("150,110,110");
+        allempsforss.setColAlign("left,left,left");
+        allempsforss.setColSorting("str,str,str");
+    <?php
+    }
+    ?>
+
+    allempsforss.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+
+        //edited by sinsiya
+        if (salarystruct.getSelectedRowId()) {
+            // Check if the selected employee has 'upload' in the created_by column
+            $.ajax({
+                url: livesite + "EmployeeConfig/checkEmpSalaryStructure",
+                data: {
+                    emp_id: sId // The ID of the employee being dragged
+                },
+                dataType: 'json', // Expecting a JSON response from the server
+
+                success: function(response) {
+                    // Assuming the server returns a JSON object like { created_by: 'upload' }
+                    console.log(response);
+                    // Edited by Akshay on 29-11-2024
+                    if (true) {
+                        console.log(response.created_by);
+                        // Display a confirmation dialog using the standard JavaScript confirm() method
+                        if (confirm("You are about to change the policy/rule/settings of the selected employee(s). The previous settings will be lost and new ones will be applied. Do you still need to proceed?")) {
+                            $.ajax({
+                                url: livesite + "EmployeeConfig/removeEmpFromSallary",
+                                data: {
+                                    id: sId,
+                                    parent_emp_pkey: salarystruct.getSelectedRowId()
+                                },
+                                success: function(response) {
+                                    //var text = response.responseText;
+                                    // process server response here
+
+                                    $.notify("Employee removed from selected salary structure", {
+                                        type: 'success',
+                                        allow_dismiss: false
+
+                                    });
+                                }
+                            });
+                        } else {
+                            $salarystruct = salarystruct.getSelectedRowId();
+                            doOnsalarySelect($salarystruct);
+                        }
+                    }
+                    //End
+                },
+                error: function() {
+                    $.notify("Error checking employee information", {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        }
+        return true;
+    });
+    allempsforss.setMultiLine(false);
+    allempsforss.enableDragAndDrop(true);
+    allempsforss.init();
+    //
+    //
+    empinss = new dhtmlXGridObject('empinss');
+    empinss.selMultiRows = true;
+    //	empsinsp.setImagePath("../../../codebase/imgs/");
+
+    <?php
+    // Assuming you have access to $payroUser array
+    // Example condition to check if the user's payro_priv is null or '0'
+    if (($company_code != 'LNWY' && $company_code != 'GAAR') || $user_group == 1) { // Edited by Akshay on 14-5-2025
+        // Set header with Gross Salary
+    ?>
+        empinss.setHeader("Name,Branch,Designation,Gross Salary");
+        empinss.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter");
+    <?php
+    } else {
+        // Set header without Gross Salary
+    ?>
+        empinss.setHeader("Name,Branch,Designation");
+        empinss.attachHeader("#text_filter,#text_filter,#text_filter");
+    <?php
+    }
+    ?>
+    empinss.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        console.log(sId);
+        //edited by sinsiya
+        if (salarystruct.getSelectedRowId()) {
+            // Check if the selected employee has 'upload' in the created_by column
+            $.ajax({
+                url: livesite + "EmployeeConfig/checkEmpSalaryStructure",
+                data: {
+                    emp_id: sId // The ID of the employee being dragged
+                },
+                dataType: 'json', // Expecting a JSON response from the server
+
+                success: function(response) {
+                    // Assuming the server returns a JSON object like { created_by: 'upload' }
+                    console.log(response);
+
+                    // Edited by Akshay on 29-11-2024
+                    if (true) {
+                        console.log(response.created_by);
+                        // Display a confirmation dialog using the standard JavaScript confirm() method
+                        if (confirm("After completing the salary structure allocation, please upload any components again if you have them.")) {
+                            // If the user clicks 'OK', proceed with saving the employee
+                            $.ajax({
+                                url: livesite + "EmployeeConfig/addEmpToSallary",
+                                data: {
+                                    id: sId,
+                                    parent_emp_pkey: salarystruct.getSelectedRowId()
+                                },
+                                success: function(response) {
+                                    if (response == 1) {
+                                        $.notify("Employee Added To Selected Salary Structure", {
+                                            type: 'success',
+                                            allow_dismiss: false
+                                        });
+                                    } else {
+                                        $.notify("Employee Not Added To Selected Salary Structure", {
+                                            type: 'danger',
+                                            allow_dismiss: false
+                                        });
+                                    }
+                                }
+                            });
+                        } else {
+                            $salarystruct = salarystruct.getSelectedRowId();
+                            doOnsalarySelect($salarystruct);
+                            //doOnsalarySelect(sId);
+                        }
+                    }
+                    // End
+                },
+                error: function() {
+                    $.notify("Error checking employee information", {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        }
+
+        return true;
+    });
+
+
+    empinss.setInitWidths("150,110,110,110");
+    empinss.setColAlign("left,left,left,left");
+    //	empsinsp.setColTypes("ed,ed");
+    empinss.setColSorting("str,str,str,str");
+    empinss.setMultiLine(false);
+    empinss.enableDragAndDrop(true);
+    empinss.init();
+
+
+
+    //////////////////////////////
+    // NOTICE PERIOD//////////////
+
+    // var noticemaster;
+    // var allempsfornotice;
+    // var empsinotice;
+
+    // function doOnNoticeSelect(id)
+    // {
+
+    //     allempsfornotice.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesforperiod?emp_pkey=" + id, "json");
+    //     empsinotice.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesinperiod?emp_pkey=" + id, "json");
+
+    // }
+    // function reloadtablenoticeperiod() {
+    //     noticemaster.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listnoticemaster", "json");
+    // }
+    // noticemaster = new dhtmlXGridObject('period_master');
+    // noticemaster.setHeader("Notice Periods");
+    // noticemaster.setColAlign("left");
+    // noticemaster.setColumnIds("notice_id");
+    // noticemaster.setInitWidthsP("100");
+    // noticemaster.attachHeader("#text_filter");
+    // //myGrid.enableAutoHeight(true,400);
+    // noticemaster.attachEvent("onRowSelect", doOnNoticeSelect);
+    // noticemaster.enableAutoWidth(true);
+    // noticemaster.setColTypes("ro");
+    // noticemaster.init();
+    // noticemaster.load("<?php echo $this->webroot; ?>EmployeeConfig/listnoticemaster", "json");
+
+    // allempsfornotice = new dhtmlXGridObject('allempsinperiods');
+    //  allempsforss.selMultiRows = true;
+    // allempsfornotice.setHeader("Name,Branch,Designation");
+    // allempsfornotice.attachHeader("#text_filter,#text_filter,#text_filter");
+    // allempsfornotice.setInitWidths("150,150,150,150");
+    // allempsfornotice.setColAlign("left,left,left,left");
+    // allempsfornotice.setColSorting("str,str,str,str");
+    // allempsfornotice.attachEvent("onDrag", function (sId, tId, sObj, tObj, sInd, tInd) {
+
+    //     if (noticemaster.getSelectedRowId()) {
+    //         $.ajax({
+    //             url: livesite + "EmployeeConfig/removeEmpFromNotice",
+    //             data: {
+    //                 id: sId,
+    //                 parent_emp_pkey: noticemaster.getSelectedRowId()
+    //             },
+    //             success: function (response) {
+    //                 //var text = response.responseText;
+    //                 // process server response here
+
+    //                 $.notify("Employee Removed From Selected Notice Period", {
+    //                     type: 'success',
+    //                     allow_dismiss: false
+
+    //                 });
+    //             }
+    //         });
+    //     }
+    //     return true;
+    // });
+    // allempsfornotice.setMultiLine(false);
+    // allempsfornotice.enableDragAndDrop(true);
+    // allempsfornotice.init();
+    // //
+    // //
+    // empsinotice = new dhtmlXGridObject('empinperiods');
+    // empsinotice.selMultiRows = true;
+    // //	empsinsp.setImagePath("../../../codebase/imgs/");
+    // empsinotice.setHeader("Name,Branch,Designation");
+    // empsinotice.attachHeader("#text_filter,#text_filter,#text_filter");
+    // empsinotice.attachEvent("onDrag", function (sId, tId, sObj, tObj, sInd, tInd) {
+    //     // your code here
+    //     console.log(sId)
+    //     if (noticemaster.getSelectedRowId()) {
+    //         $.ajax({
+    //             url: livesite + "EmployeeConfig/addEmpToNotice",
+    //             data: {
+    //                 id: sId,
+    //                 parent_emp_pkey: noticemaster.getSelectedRowId()
+    //             },
+    //             success: function (response) {
+    //                 //var text = response.responseText;
+    //                 // process server response here
+    //                 $.notify("Empolyee Added To Selected Notice Period", {
+    //                     type: 'success',
+    //                     allow_dismiss: false
+
+    //                 });
+
+    //             }
+    //         });
+    //     }
+
+    //     // console.log(tId)
+    //     //console.log(sObj)
+    //     // console.log(tObj)
+    //     return true;
+    // });
+    // empsinotice.setInitWidths("150,160,160,160");
+    // empsinotice.setColAlign("left,left,left,left");
+    // //	empsinsp.setColTypes("ed,ed");
+    // empsinotice.setColSorting("str,str,str,str");
+    // empsinotice.setMultiLine(false);
+    // empsinotice.enableDragAndDrop(true);
+    // empsinotice.init();
+    var noticemaster;
+    var allempsfornotice;
+    var empsinotice;
+
+    function doOnNoticeSelect(id) {
+        allempsfornotice.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesforperiod?emp_pkey=" + id, "json");
+        empsinotice.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesinperiod?emp_pkey=" + id, "json");
+    }
+
+    function reloadtablenoticeperiod() {
+        noticemaster.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listnoticemaster", "json");
+    }
+
+    noticemaster = new dhtmlXGridObject('period_master');
+    noticemaster.setHeader("Notice Periods");
+    noticemaster.setColAlign("left");
+    noticemaster.setColumnIds("notice_id");
+    noticemaster.setInitWidthsP("100");
+    noticemaster.attachHeader("#text_filter");
+    noticemaster.attachEvent("onRowSelect", doOnNoticeSelect);
+    noticemaster.enableAutoWidth(true);
+    noticemaster.setColTypes("ro");
+    noticemaster.init();
+    noticemaster.load("<?php echo $this->webroot; ?>EmployeeConfig/listnoticemaster", "json");
+
+    allempsfornotice = new dhtmlXGridObject('allempsinperiods');
+    allempsfornotice.selMultiRows = true; // Enable multi-row selection
+    allempsfornotice.setHeader("Name,Branch,Designation");
+    allempsfornotice.attachHeader("#text_filter,#text_filter,#text_filter");
+    allempsfornotice.setInitWidths("150,150,150,150");
+    allempsfornotice.setColAlign("left,left,left,left");
+    allempsfornotice.setColSorting("str,str,str,str");
+    allempsfornotice.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        //edited by sinsiya
+        if (noticemaster.getSelectedRowId()) {
+            $.ajax({
+                url: livesite + "EmployeeConfig/checkEmpNoticedays",
+                data: {
+                    emp_id: sId // The ID of the employee being dragged
+                },
+                dataType: 'json', // Expecting a JSON response from the server
+
+                success: function(response) {
+
+                    console.log(response);
+
+                    if (response.Empnotice_value != '') {
+                        console.log(response.created_by);
+                        // Display a confirmation dialog using the standard JavaScript confirm() method
+                        if (confirm("You are about to change the policy/rule/settings of the selected employee(s). The previous settings will be lost and new ones will be applied. Do you still need to proceed?")) {
+                            $.ajax({
+                                url: livesite + "EmployeeConfig/removeEmpFromNotice",
+                                data: {
+                                    id: sId,
+                                    parent_emp_pkey: noticemaster.getSelectedRowId()
+                                },
+                                success: function(response) {
+                                    $.notify("Employee Removed From Selected Notice Period", {
+                                        type: 'success',
+                                        allow_dismiss: false
+                                    });
+                                }
+                            });
+                        } else {
+                            $notice = noticemaster.getSelectedRowId()
+                            doOnNoticeSelect($notice);
+                        }
+                    } else {
+                        $.ajax({
+                            url: livesite + "EmployeeConfig/removeEmpFromNotice",
+                            data: {
+                                id: sId,
+                                parent_emp_pkey: noticemaster.getSelectedRowId()
+                            },
+                            success: function(response) {
+                                $.notify("Employee Removed From Selected Notice Period", {
+                                    type: 'success',
+                                    allow_dismiss: false
+                                });
+                            }
+                        });
+                    }
+                },
+                error: function() {
+                    $.notify("Error checking employee information", {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        }
+        return true;
+    });
+    allempsfornotice.setMultiLine(false);
+    allempsfornotice.enableDragAndDrop(true);
+    allempsfornotice.init();
+
+    empsinotice = new dhtmlXGridObject('empinperiods');
+    empsinotice.selMultiRows = true; // Enable multi-row selection
+    empsinotice.setHeader("Name,Branch,Designation");
+    empsinotice.attachHeader("#text_filter,#text_filter,#text_filter");
+    empsinotice.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        if (noticemaster.getSelectedRowId()) {
+
+            $.ajax({
+                url: livesite + "EmployeeConfig/addEmpToNotice",
+                data: {
+                    id: sId,
+                    parent_emp_pkey: noticemaster.getSelectedRowId()
+                },
+                success: function(response) {
+                    $.notify("Employee Added To Selected Notice Period", {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        }
+        return true;
+    });
+    empsinotice.setInitWidths("150,160,160,160");
+    empsinotice.setColAlign("left,left,left,left");
+    empsinotice.setColSorting("str,str,str,str");
+    empsinotice.setMultiLine(false);
+    empsinotice.enableDragAndDrop(true);
+    empsinotice.init();
+
+    //////////////////////////////
+    // DIVISIONS//////////////
+
+    var division;
+    var allempsfordivision;
+    var empsindivision;
+
+    function doOnDivisionSelect(id) {
+        allempsfordivision.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesfordiv?emp_pkey=" + id, "json");
+        empsindivision.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesindiv?emp_pkey=" + id, "json");
+    }
+
+    function reloadtabledivision() {
+        division.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listdivmaster", "json");
+    }
+
+    division = new dhtmlXGridObject('div_master');
+    division.setHeader("Divisions");
+    division.setColAlign("left");
+    division.setColumnIds("id");
+    division.setInitWidthsP("100");
+    division.attachHeader("#text_filter");
+    division.attachEvent("onRowSelect", doOnDivisionSelect);
+    division.enableAutoWidth(true);
+    division.setColTypes("ro");
+    division.init();
+    division.load("<?php echo $this->webroot; ?>EmployeeConfig/listdivmaster", "json");
+
+    allempsfordivision = new dhtmlXGridObject('allempsindiv');
+    allempsfordivision.selMultiRows = true; // Enable multi-row selection
+    allempsfordivision.setHeader("Name,Branch,Designation");
+    allempsfordivision.attachHeader("#text_filter,#text_filter,#text_filter");
+    allempsfordivision.setInitWidths("150,150,150,150");
+    allempsfordivision.setColAlign("left,left,left,left");
+    allempsfordivision.setColSorting("str,str,str,str");
+    allempsfordivision.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        //edited by sinsiya
+        if (division.getSelectedRowId()) {
+
+            console.log(sId)
+            // Check if the selected employee has 'upload' in the created_by column
+            $.ajax({
+                url: livesite + "EmployeeConfig/checkEmpDivision",
+                data: {
+                    emp_id: sId // The ID of the employee being dragged
+                },
+                dataType: 'json', // Expecting a JSON response from the server
+
+                success: function(response) {
+
+                    console.log(response);
+
+                    if (response.Empdivision_value != '') {
+                        console.log(response.created_by);
+                        // Display a confirmation dialog using the standard JavaScript confirm() method
+                        if (confirm("You are about to change the policy/rule/settings of the selected employee(s). The previous settings will be lost and new ones will be applied. Do you still need to proceed?")) {
+                            $.ajax({
+                                url: livesite + "EmployeeConfig/removeEmpFromDiv",
+                                data: {
+                                    id: sId,
+                                    parent_emp_pkey: division.getSelectedRowId()
+                                },
+                                success: function(response) {
+                                    $.notify("Employee Removed From Selected Division", {
+                                        type: 'success',
+                                        allow_dismiss: false
+                                    });
+                                }
+                            });
+                        } else {
+                            $division = response.Empdivision_value
+                            doOnDivisionSelect($division)
+                        }
+                    } else {
+                        $.ajax({
+                            url: livesite + "EmployeeConfig/removeEmpFromDiv",
+                            data: {
+                                id: sId,
+                                parent_emp_pkey: division.getSelectedRowId()
+                            },
+                            success: function(response) {
+                                $.notify("Employee Removed From Selected Division", {
+                                    type: 'success',
+                                    allow_dismiss: false
+                                });
+                            }
+                        });
+                    }
+                },
+                error: function() {
+                    $.notify("Error checking employee information", {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        }
+        return true;
+    });
+    allempsfordivision.setMultiLine(false);
+    allempsfordivision.enableDragAndDrop(true);
+    allempsfordivision.init();
+
+    empsindivision = new dhtmlXGridObject('empindiv');
+    empsindivision.selMultiRows = true; // Enable multi-row selection
+    empsindivision.setHeader("Name,Branch,Designation");
+    empsindivision.attachHeader("#text_filter,#text_filter,#text_filter");
+    empsindivision.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        console.log(sId);
+        if (division.getSelectedRowId()) {
+            $.ajax({
+                url: livesite + "EmployeeConfig/addEmpToDiv",
+                data: {
+                    id: sId,
+                    parent_emp_pkey: division.getSelectedRowId()
+                },
+                success: function(response) {
+                    $.notify("Employee Added To Selected Division", {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        }
+        return true;
+    });
+    empsindivision.setInitWidths("150,160,160,160");
+    empsindivision.setColAlign("left,left,left,left");
+    empsindivision.setColSorting("str,str,str,str");
+    empsindivision.setMultiLine(false);
+    empsindivision.enableDragAndDrop(true);
+    empsindivision.init();
+
+    // SECTION//////////////
+
+    var section;
+    var allempsforsection;
+    var empsinsection;
+
+    function doOnSectionSelect(id) {
+        allempsforsection.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesforsection?emp_pkey=" + id, "json");
+        empsinsection.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesinsection?emp_pkey=" + id, "json");
+    }
+
+    function reloadtablesection() {
+        section.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listsectionmaster", "json");
+    }
+
+    section = new dhtmlXGridObject('section_master');
+    section.setHeader("Sections");
+    section.setColAlign("left");
+    section.setColumnIds("id");
+    section.setInitWidthsP("100");
+    section.attachHeader("#text_filter");
+    section.attachEvent("onRowSelect", doOnSectionSelect);
+    section.enableAutoWidth(true);
+    section.setColTypes("ro");
+    section.init();
+    section.load("<?php echo $this->webroot; ?>EmployeeConfig/listsectionmaster", "json");
+
+    allempsforsection = new dhtmlXGridObject('allempsinsection');
+    allempsforsection.selMultiRows = true; // Enable multi-row selection
+    allempsforsection.setHeader("Name,Branch,Designation");
+    allempsforsection.attachHeader("#text_filter,#text_filter,#text_filter");
+    allempsforsection.setInitWidths("150,150,150,150");
+    allempsforsection.setColAlign("left,left,left,left");
+    allempsforsection.setColSorting("str,str,str,str");
+    allempsforsection.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        //edited by sinsiya
+        if (section.getSelectedRowId()) {
+            $.ajax({
+                url: livesite + "EmployeeConfig/checkEmpSection",
+                data: {
+                    emp_id: sId // The ID of the employee being dragged
+                },
+                dataType: 'json', // Expecting a JSON response from the server
+
+                success: function(response) {
+
+                    console.log(response);
+
+                    if (response.Empsection_value != '') {
+
+                        // Display a confirmation dialog using the standard JavaScript confirm() method
+                        if (confirm("You are about to change the policy/rule/settings of the selected employee(s). The previous settings will be lost and new ones will be applied. Do you still need to proceed?")) {
+                            $.ajax({
+                                url: livesite + "EmployeeConfig/removeEmpFromSection",
+                                data: {
+                                    id: sId,
+                                    parent_emp_pkey: section.getSelectedRowId()
+                                },
+                                success: function(response) {
+                                    $.notify("Employee Removed From Selected Section", {
+                                        type: 'success',
+                                        allow_dismiss: false
+                                    });
+                                }
+                            });
+                        } else {
+                            $section = section.getSelectedRowId();
+                            doOnSectionSelect($section);
+                        }
+                    } else {
+                        $.ajax({
+                            url: livesite + "EmployeeConfig/removeEmpFromSection",
+                            data: {
+                                id: sId,
+                                parent_emp_pkey: section.getSelectedRowId()
+                            },
+                            success: function(response) {
+                                $.notify("Employee Removed From Selected Section", {
+                                    type: 'success',
+                                    allow_dismiss: false
+                                });
+                            }
+                        });
+                    }
+
+                },
+                error: function() {
+                    $.notify("Error checking employee information", {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        }
+
+        return true;
+    });
+    allempsforsection.setMultiLine(false);
+    allempsforsection.enableDragAndDrop(true);
+    allempsforsection.init();
+
+    empsinsection = new dhtmlXGridObject('empinsection');
+    empsinsection.selMultiRows = true; // Enable multi-row selection
+    empsinsection.setHeader("Name,Branch,Designation");
+    empsinsection.attachHeader("#text_filter,#text_filter,#text_filter");
+    empsinsection.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        if (section.getSelectedRowId()) {
+            $.ajax({
+                url: livesite + "EmployeeConfig/addEmpToSection",
+                data: {
+                    id: sId,
+                    parent_emp_pkey: section.getSelectedRowId()
+                },
+                success: function(response) {
+                    $.notify("Employee Added To Selected Section", {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        }
+        return true;
+    });
+    empsinsection.setInitWidths("150,160,160,160");
+    empsinsection.setColAlign("left,left,left,left");
+    empsinsection.setColSorting("str,str,str,str");
+    empsinsection.setMultiLine(false);
+    empsinsection.enableDragAndDrop(true);
+    empsinsection.init();
+
+
+    // GRADE//////////////
+
+    var grade;
+    var allempsforgrade;
+    var empsingrade;
+
+    function doOnGradeSelect(id) {
+        allempsforgrade.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesforgrade?emp_pkey=" + id, "json");
+        empsingrade.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesingrade?emp_pkey=" + id, "json");
+    }
+
+    function reloadtablegrade() {
+        grade.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listgrademaster", "json");
+    }
+
+    grade = new dhtmlXGridObject('grade_master');
+    grade.setHeader("Grades");
+    grade.setColAlign("left");
+    grade.setColumnIds("id");
+    grade.setInitWidthsP("100");
+    grade.attachHeader("#text_filter");
+    grade.attachEvent("onRowSelect", doOnGradeSelect);
+    grade.enableAutoWidth(true);
+    grade.setColTypes("ro");
+    grade.init();
+    grade.load("<?php echo $this->webroot; ?>EmployeeConfig/listgrademaster", "json");
+
+    allempsforgrade = new dhtmlXGridObject('allempsingrade');
+    allempsforgrade.selMultiRows = true; // Enable multi-row selection
+    allempsforgrade.setHeader("Name,Branch,Designation");
+    allempsforgrade.attachHeader("#text_filter,#text_filter,#text_filter");
+    allempsforgrade.setInitWidths("150,150,150,150");
+    allempsforgrade.setColAlign("left,left,left,left");
+    allempsforgrade.setColSorting("str,str,str,str");
+    allempsforgrade.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        //edited by sinsiya
+        if (grade.getSelectedRowId()) {
+            $.ajax({
+                url: livesite + "EmployeeConfig/checkEmpgrade",
+                data: {
+                    emp_id: sId // The ID of the employee being dragged
+                },
+                dataType: 'json', // Expecting a JSON response from the server
+
+                success: function(response) {
+                    console.log(response);
+                    if (response.Empgrade_value != '') {
+                        if (confirm("You are about to change the policy/rule/settings of the selected employee(s). The previous settings will be lost and new ones will be applied. Do you still need to proceed?")) {
+                            $.ajax({
+                                url: livesite + "EmployeeConfig/removeEmpFromGrade",
+                                data: {
+                                    id: sId,
+                                    parent_emp_pkey: grade.getSelectedRowId()
+                                },
+                                success: function(response) {
+                                    $.notify("Employee Removed From Selected Grade", {
+                                        type: 'success',
+                                        allow_dismiss: false
+                                    });
+                                }
+                            });
+                        } else {
+                            $grade = grade.getSelectedRowId();
+                            doOnGradeSelect($grade);
+                        }
+                    } else {
+                        $.ajax({
+                            url: livesite + "EmployeeConfig/removeEmpFromGrade",
+                            data: {
+                                id: sId,
+                                parent_emp_pkey: grade.getSelectedRowId()
+                            },
+                            success: function(response) {
+                                $.notify("Employee Removed From Selected Grade", {
+                                    type: 'success',
+                                    allow_dismiss: false
+                                });
+                            }
+                        });
+                    }
+                },
+                error: function() {
+                    $.notify("Error checking employee information", {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        }
+        return true;
+    });
+    allempsforgrade.setMultiLine(false);
+    allempsforgrade.enableDragAndDrop(true);
+    allempsforgrade.init();
+
+    empsingrade = new dhtmlXGridObject('empingrade');
+    empsingrade.selMultiRows = true; // Enable multi-row selection
+    empsingrade.setHeader("Name,Branch,Designation");
+    empsingrade.attachHeader("#text_filter,#text_filter,#text_filter");
+    empsingrade.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        if (grade.getSelectedRowId()) {
+            $.ajax({
+                url: livesite + "EmployeeConfig/addEmpToGrade",
+                data: {
+                    id: sId,
+                    parent_emp_pkey: grade.getSelectedRowId()
+                },
+                success: function(response) {
+                    $.notify("Employee Added To Selected Grade", {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        }
+        return true;
+    });
+    empsingrade.setInitWidths("150,160,160,160");
+    empsingrade.setColAlign("left,left,left,left");
+    empsingrade.setColSorting("str,str,str,str");
+    empsingrade.setMultiLine(false);
+    empsingrade.enableDragAndDrop(true);
+    empsingrade.init();
+
+
+    // Employee Leave Hierarchy ////////////////////
+    var empleavehierarchylist;
+    var allempsforleavehierarchy;
+    var empsinleavehierarchy;
+
+    function doOnEmployeeSelectLeaveHierarchy(id) {
+
+        allempsforleavehierarchy.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesforleavehierarchy?emp_pkey=" + id, "json");
+        empsinleavehierarchy.clearAndLoad("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesinleavehierarchy?emp_pkey=" + id, "json");
+
+    }
+    empleavehierarchylist = new dhtmlXGridObject('empleavehierarchy_master');
+    empleavehierarchylist.setHeader("Leave Hierarchy Allocation");
+    empleavehierarchylist.setColAlign("left");
+    empleavehierarchylist.setColumnIds("emp_pkey");
+    empleavehierarchylist.setInitWidthsP("100");
+    empleavehierarchylist.attachHeader("#text_search");
+    //myGrid.enableAutoHeight(true,400);
+    empleavehierarchylist.attachEvent("onRowSelect", doOnEmployeeSelectLeaveHierarchy);
+    empleavehierarchylist.enableAutoWidth(true);
+    empleavehierarchylist.setColTypes("ro");
+    empleavehierarchylist.init();
+    empleavehierarchylist.load("<?php echo $this->webroot; ?>EmployeeConfig/listemployeesforleaveconfig", "json");
+
+    allempsforleavehierarchy = new dhtmlXGridObject('allempsforleavehierarchy');
+    allempsforleavehierarchy.selMultiRows = true;
+    allempsforleavehierarchy.setHeader("Name,Branch,Designation,Department");
+    allempsforleavehierarchy.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter");
+    allempsforleavehierarchy.setInitWidths("150,110,110,110");
+    allempsforleavehierarchy.setColAlign("left,left,left,left");
+    allempsforleavehierarchy.setColSorting("str,str,str,str");
+    allempsforleavehierarchy.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        //edited by sinsiya
+        if (empleavehierarchylist.getSelectedRowId()) {
+            $.ajax({
+                url: livesite + "EmployeeConfig/checkEmpleavehierarchy",
+                data: {
+                    emp_id: sId // The ID of the employee being dragged
+                },
+                dataType: 'json', // Expecting a JSON response from the server
+
+                success: function(response) {
+
+                    console.log(response);
+
+                    if (response.Empleavehierarchy_value != '') {
+
+                        // Display a confirmation dialog using the standard JavaScript confirm() method
+                        if (confirm("You are about to change the policy/rule/settings of the selected employee(s). The previous settings will be lost and new ones will be applied. Do you still need to proceed?")) {
+                            $.ajax({
+                                url: livesite + "EmployeeConfig/removeEmpFromLeaveHierarchy",
+                                data: {
+                                    id: sId,
+                                    parent_emp_pkey: empleavehierarchylist.getSelectedRowId()
+                                },
+                                success: function(response) {
+                                    //var text = response.responseText;
+                                    // process server response here
+
+                                    $.notify("Employee removed from selected hierarchy.", {
+                                        type: 'success',
+                                        allow_dismiss: false
+
+                                    });
+                                }
+                            });
+                        } else {
+                            $empleavehierarchy = empleavehierarchylist.getSelectedRowId();
+                            doOnEmployeeSelectLeaveHierarchy($empleavehierarchy);
+                        }
+                    } else {
+                        $.ajax({
+                            url: livesite + "EmployeeConfig/removeEmpFromLeaveHierarchy",
+                            data: {
+                                id: sId,
+                                parent_emp_pkey: empleavehierarchylist.getSelectedRowId()
+                            },
+                            success: function(response) {
+                                //var text = response.responseText;
+                                // process server response here
+
+                                $.notify("Employee removed from selected hierarchy.", {
+                                    type: 'success',
+                                    allow_dismiss: false
+
+                                });
+                            }
+                        });
+                    }
+                },
+                error: function() {
+                    $.notify("Error checking employee information", {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        }
+        return true;
+    });
+    allempsforleavehierarchy.setMultiLine(false);
+    allempsforleavehierarchy.enableDragAndDrop(true);
+    allempsforleavehierarchy.init();
+    //
+    //
+    empsinleavehierarchy = new dhtmlXGridObject('empsinleavehierarchy');
+    empsinleavehierarchy.selMultiRows = true;
+    //	empsinsp.setImagePath("../../../codebase/imgs/");
+    empsinleavehierarchy.setHeader("Name,Branch,Designation,Department");
+    empsinleavehierarchy.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter");
+    empsinleavehierarchy.attachEvent("onDrag", function(sId, tId, sObj, tObj, sInd, tInd) {
+        // your code here
+        console.log(sId)
+        if (empleavehierarchylist.getSelectedRowId()) {
+            $.ajax({
+                url: livesite + "EmployeeConfig/addEmpToLeaveHierarchy",
+                data: {
+                    id: sId,
+                    parent_emp_pkey: empleavehierarchylist.getSelectedRowId()
+                },
+                success: function(response) {
+                    //var text = response.responseText;
+                    // process server response here
+                    $.notify("Employee Added To Selected Hierarchy", {
+                        type: 'success',
+                        allow_dismiss: false
+
+                    });
+
+                }
+            });
+        }
+
+        // console.log(tId)
+        //console.log(sObj)
+        // console.log(tObj)
+        return true;
+    });
+    empsinleavehierarchy.setInitWidths("150,110,110,110");
+    empsinleavehierarchy.setColAlign("left,left,left,left");
+    //	empsinsp.setColTypes("ed,ed");
+    empsinleavehierarchy.setColSorting("str,str,str,str");
+    empsinleavehierarchy.setMultiLine(false);
+    empsinleavehierarchy.enableDragAndDrop(true);
+    empsinleavehierarchy.init();
+
+    /////////////////////////////
+    //edited by athira on 06-11-2025
+    <?php
+    //    if ($company_code == 'NRMY' || $company_code == 'AELY' || $company_code =='GRNH' || $company_code =='ATNE'){
+    $restrictedCompanies = [
+    'ABSG','VGFS','VSFS','DRRC','DJIC','AGNG','AYRK',
+    'GTRA','VGNN','SHYD','SRTS'
+];
+    if (!in_array($company_code, $restrictedCompanies) || $company_code=='HDFN' || $company_code=='HDEQ' || $company_code=='HDSC' || $company_code=='HDCM') { ?>
+
+        function addShiftToEmp() {
+            var emp = $('#employeeCombo').val();
+            var shift = $('#shiftCombo').val();
+
+            if (emp && shift) {
+                $.ajax({
+                    type: "POST",
+                    url: livesite + "EmployeeConfig/addShiftToEmp",
+                    data: {
+                        emp_fkey: emp,
+                        shift: shift
+                    },
+                    success: function(response) {
+                        var resp = JSON.parse(response);
+                        if (resp.success === 1) {
+                            $.notify(resp.message, {
+                                type: 'success',
+                                allow_dismiss: false
+                            });
+                            refreshShiftGrid(); // Reload the grid after update
+                        } else {
+                            $.notify(resp.message, {
+                                type: 'error',
+                                allow_dismiss: false
+                            });
+                        }
+                    }
+                });
+            } else {
+                alert("Please select an Employee and Shift Policy");
+            }
+        }
+    <?php } ?>
+    //end
+    /* edited by bindu 20-02-26 */
+   $(".home").on("click", function () {
+
+    $("#container").isLoading({
+        text: "Loading",
+        position: "overlay",
+    });
+
+    let url = "";
+    var userGroup = <?php echo json_encode($this->Session->read('user_group')); ?>
+
+    if (userGroup == "1") {
+        url = livesite + "EmployeeManage/index";
+    } 
+    else if (userGroup == "2") {
+        url = livesite + "EmployeeMenu/addon";
+    }
+
+    $("#container").load(url, function () {
+        isDashboardShown = false;
+    });
+
+});
+
+	/* edited by bindu 20-02-26 */
+</script>

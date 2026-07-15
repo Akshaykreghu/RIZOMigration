@@ -1,0 +1,372 @@
+<style>
+    //.ui-datepicker-calendar {
+    //    display: none;
+   // }
+.select2-container--default{
+width:285px!important;
+}
+</style>
+<script>
+    $.validate({
+        form: '#componentupload'
+    });
+    var options = {
+        success: function(resp) {
+            $("#importcomponents").resetForm();
+            $('#modalForm').modal('hide');
+            $('#att_table').datagrid('reload');
+            $('#empctccsv').val('');
+            $("#filterby_branch").select2("val", "");
+            $("#emp_fkey").select2("val", "");
+            $.notify($.parseJSON(resp).msg, {
+                type: 'success',
+                allow_dismiss: false
+            });
+        } // post-submit callback
+    };
+
+
+    $('#componentupload').on('submit', function(event) {
+        event.preventDefault();
+        if (confirm(" Do You Want  To Save The Form")) {
+            $('#componentupload').ajaxSubmit(options)
+        }
+    });
+</script>
+
+<div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header" style="background: #00659f;color: white">
+            <h4 class="modal-title"> Salary Component Upload Form</h4>
+        </div>
+        <div class="modal-body">
+            <!-- Form starts -->
+
+            <form class="form-horizontal" id="componentupload" action="<?php echo $this->webroot; ?>SalaryComponentUpload/saveuploads" method="POST">
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-md-4 control-label">Choose Branch<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <!--                          <select id="emp_fkey" class="form-control" name="emp_fkey" onchange="loadExistingCTCInfo();" >-->
+                                <select id="select_branch" class="form-control " name="branch_code" required="" onchange="filterEmployees(this);">
+                                    <option value="">Select </option>
+                                    <?php foreach ($arr_branches as $value) { ?>
+                                        <option value="<?php echo $value['ed']['branch_code']; ?>"> <?php echo $value['branch']['branch_name'] ?></option>
+                                    <?php }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-md-4 control-label">Choose Employee<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <!--                          <select id="emp_fkey" class="form-control" name="emp_fkey" onchange="loadExistingCTCInfo();" >-->
+                                <!-- <select id="select_emp" onchange="loadEmployeeComponents();" class="form-control" name="emp_pkey" required="">
+                                    <option value="">Select </option>
+
+                                </select> -->
+                                    <select id="filterby_employee" name="filterby_employee" style="width: 100%; " class="form-control js-example-basic-single" onChange="loadEmployeeComponents();" >
+                                        <!--<option value="">All</option>-->
+                                        <?php //foreach ($arr_employees as $key => $value) { ?>                              
+                                            <!-- <option  value="<?php echo $value['EmployeeDetails']['emp_pkey']; ?>"><?php echo $value['0']['name'] . "-" . $value['emp_proff']['emp_company_id']; ?></option>-->
+                                        <?php //} ?>
+                                    </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-md-4 control-label">Choose Structure<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="select_structure" class="form-control" name="structure_key" required="" onchange="findcomponents();">
+                                    <option value="">Select </option>
+                                    <?php foreach ($arr_structure as $value) { ?>
+                                        <option value="<?php echo $value['salary_structure']['structure_id']; ?>"> <?php echo $value['salary_structure']['structure_name']; ?></option>
+                                    <?php } ?>
+
+                                </select>
+                            </div>
+
+                        </div>
+                    </div> -->
+
+                    <div class="loadCTCComponents">
+
+                    </div>
+
+                    <!-- <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-md-4 control-label">Components<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="select_components" class="form-control" name="Components" required="">
+                                    <option value="">Select </option>
+
+
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <!-- <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="out_time" class="col-md-4 control-label">Amount<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input type="number" name="comp_amount" class="form-control" id="comp_amount" value="">
+                            </div>
+                        </div>
+                    </div> -->
+                    <!--                    <div class="form-group">
+                                            <div class="col-md-10">
+                                                <label for="out_time" class="col-sm-5 control-label">End Date Effective<span class="star">*</span></label>
+                                                <div class="col-md-7">
+                                                    <input type="text" onchange="enddatecheck()" required="required" class="form-control" value="<?php // echo isset($data['end_date_effective']) ? $data['end_date_effective'] : "";       
+                                                                                                                                                    ?>" name="end_date_effective" name="out_time" id="out_time" >
+                                                </div> 
+                                            </div>
+                                        </div>-->
+                    <div class="modal-footer">
+                        <input type="hidden" required="required" class="form-control" value="<?php echo isset($data['emp_ctc_upload_pkey']) ? $data['emp_ctc_upload_pkey'] : ""; ?>" name="emp_ctc_upload_pkey" id="emp_ctc_upload_pkey">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        <button type="submit" id="btn-submit" class="btn btn-primary">Save</button>
+
+                    </div>
+
+
+
+                </div>
+
+
+
+            </form>
+            <!-- Tax Head Detail Form -->
+
+
+
+
+
+            <!-- form ends-->
+        </div>
+
+    </div>
+
+</div>
+<div id="emp-ctc-info"></div>
+<script type="text/javascript">
+
+    jQuery(document).ready(function () {
+        $("#filterby_employee").select2();
+        $("#select_branch").select2();
+
+    });
+
+    function filterEmployees(branch) {
+
+        var branch = $('#select_branch').val();
+        //var structure = $('#filterby_structure').val();
+         $("#filterby_employee").select2({
+            //closeOnSelect:false,
+            //placeholder: "All",
+            allowClear: true,
+            ajax: {
+                url: livesite + "SalaryComponentUpload/jsonbranchemp/" + branch,
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term, // search term
+                        page: params.page
+                    };
+                },
+                processResults: function(data, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    params.page = params.page || 1;
+                    
+                    return {
+                        results: data.items,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                }
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            }
+        });
+
+        $('#filterby_employee').on('select2:select', function (e) {
+            // Do something
+            loadEmployeeComponents();
+        });
+
+    }
+    //validation form amount
+    function findamount() {
+        var rate = $('#emp_anual_ctc').val();
+        //number format
+        ///^[1-9][0-9\.]{0,15}$/
+        ///^\d+$/
+        //        if (rate.match(/^[1-9][0-9\.]{0,15}$/)) {
+        //            if (rate < 1)
+        //edited by megha on 03/08/2019 to add 0 values salary
+        if (rate.match(/^[0-9][0-9\.]{0,15}$/)) {
+            if (rate < 0) {
+                alert('Please Enter A Valid Amount');
+                $("#emp_anual_ctc").val('');
+            }
+        } else {
+            $("#emp_anual_ctc").val('');
+        }
+    }
+
+    function findcomponents() {
+        var emp = $('#select_emp').val();
+        var branch = $('#select_branch').val();
+        var struc = $('#select_structure').val();
+        var url = 'SalaryComponentUpload/getComp';
+
+        // alert(url);
+        // $('.form-control').attr("disabled",true);
+        //value passiing ajax   
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: {
+                employee: emp,
+                branch: branch,
+                struct: struc,
+            },
+            success: function(resp) {
+                var json_obj = $.parseJSON(resp);
+
+
+                if (json_obj.success == 1) {
+
+                    $('#select_components').html(json_obj.data);
+
+                }
+                //  else {
+                //     $('.form-control').attr("disabled",false);
+                // }
+            }
+        });
+    }
+    //date validation start
+    function startdatecheck() {
+        var startDate = new Date($('#in_time').val());
+        var endDate = new Date($('#out_time').val());
+
+        if (startDate > endDate) {
+            alert("expected starting date should be less than ending date");
+            $("#in_time").val('');
+        }
+    }
+    //date validation  end
+    function enddatecheck() {
+        var startDate = new Date($('#in_time').val());
+        var endDate = new Date($('#out_time').val());
+
+        if (startDate > endDate) {
+            alert("expected ending date should be greater than starting date");
+            $("#out_time").val('');
+        }
+    }
+
+
+
+    $(document).ready(function() {
+        //        $(".monthPicker").datepicker({
+        //            dateFormat: 'mm-yy',
+        //            changeMonth: true,
+        //            changeYear: true,
+        //            showButtonPanel: true,
+        //            onClose: function (dateText, inst) {
+        //                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+        //                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+        //                $(this).val($.datepicker.formatDate('yy-mm', new Date(year, month, 1)));
+        //            }
+        //        });
+
+        //        $(".monthPicker").focus(function () {
+        //            $(".ui-datepicker-calendar").hide();
+        //            $("#ui-datepicker-div").position({
+        //                my: "center top",
+        //                at: "center bottom",
+        //                of: $(this)
+        //            });
+        //        });
+
+
+        //$("#pincode").inputmask("999");
+        //$('#attendanceuploadtable').parsley();
+        //        var options = {
+        //            success: function (responseText, statusText, xhr, $form) {
+        //                //alert("Employee Gross Salary Successfully");
+        //                //closeModal('att_table');
+        //            }
+        //        };
+
+        // bind to the form's submit event 
+        //        $('#attendanceuploadtable').submit(function () {
+        //            $(this).ajaxSubmit(options);
+        //            return false;
+        //        });
+
+        $('#in_time').datepicker({
+            format: 'yyyy-mm',
+            autoclose: true,
+            startView: "months",
+            minViewMode: "months"
+        })
+
+        $('#out_time').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            //            onSelect: function (selected) {
+            //                var ecdt = new Date(selected);
+            //                var selectedstartdate = $("#in_date").val();
+            //                var esdt = new Date(selectedstartdate);
+            //                if (esdt > ecdt) {
+            //                    alert('Expected Out Date Should Be Greater Than Expected In Date');
+            //                    $("#out_date").val('');
+            //                }
+            //
+            //            }
+        })
+        $("#out_date").inputmask("yyyy-mm-dd");
+        //  loadExistingCTCInfo();
+    });
+    //    function loadExistingCTCInfo() {
+    //        var emp_fkey = $('#attendanceuploadtable #emp_fkey').val();
+    //        $.ajax({
+    //            url: livesite + 'employee/getctcinfo/' + emp_fkey,
+    //            success: function (result) {
+    //                $("#emp-ctc-info").html(result);
+    //            }
+    //        });
+    //    }
+
+
+    function loadEmployeeComponents() {
+        var employee_pkey = $("#filterby_employee").val();
+        console.log("function excecuted");
+        $(".loadCTCComponents").load(livesite + "SalaryComponentUpload/loadcomponents/" + employee_pkey);
+
+    }
+</script>

@@ -1,0 +1,187 @@
+<style>
+    .tabset-approvepayroll {
+        min-height: 350px !important;
+    }    
+</style>
+
+<section class="content-header">
+    <h1 class="text-primary-18">Approve Payroll </h1>
+    <hr style="margin-top: 8px;margin-bottom: -2px;">
+</section>
+<!-- Main content -->
+<section class="content" id="div-showapprovepayroll">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- DIRECT CHAT DANGER -->
+            <div class=" ">
+                <div class="">
+                    <!-- Employee import form -->
+                    <form class="form-horizontal" method="post" action="" id="approvepayrollfilter"> 
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <label class="col-md-4 control-label" for="filterby_branch"> Branch : </label>
+                                <div class="col-md-8">
+                                    <select id="filterby_branch" name="filterby_branch" class="form-control" onchange="filterPayroll();">
+                                        <?php
+                                        if ((isset($payroUser[0]['emp_proff']['payro_priv'])&& ($payroUser[0]['emp_proff']['payro_priv'] == null || $payroUser[0]['emp_proff']['payro_priv'] == '0')|| $user_group == 1)) {
+                                        foreach ($arr_branches as $key => $value) {
+                                            echo '<option value="' . $value['branch_code'] . '">' . $value['branch_name'] . '</option>';
+                                        }
+                                        }else{
+                                            foreach ($arr_branches as $key => $value) {
+                                            if($payroUser[0]['emp_proff']['emp_branch'] != $value['branch_code']){
+                                            echo '<option value="' . $value['branch_code'] . '">' . $value['branch_name'] . '</option>';
+                                            }
+                                            }
+                                           // echo '<option value="' . $payroUser[0]['emp_proff']['emp_branch'] . '">' . $payroUser[0]['branches']['branch_name'] . '</option>';
+                                            
+                                      }
+                                        ?>
+                                    </select> 
+                                </div>
+                            </div>
+                            <!--div class="col-md-3">
+                                <label class="col-md-6 control-label" for="filterby_employee">Choose Employee</label>
+                                <div class="col-md-6">
+                                    <select id="filterby_employee" name="filterby_employee" class="form-control" onchange="filterPayroll();">
+                                        <option value="">--All--</option>
+                                        <?php
+                                        foreach ($arr_employees as $key => $value) {
+                                            echo '<option value="' . $value['emp_pkey'] . '">' . $value['emp_name'] . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div-->
+                            <div class="col-md-3">
+                                <label class="col-md-4 control-label" for="filterby_month"> Month : </label>
+                                <div class="col-md-8">
+                                    <select id="filterby_month" name="filterby_month" class="form-control" onchange="filterPayroll();">
+                                        <?php
+                                        $start_month = strtotime(date('Y-m', strtotime("+1 month", strtotime(date('Y-m')))));
+                                        for ($i = 0; $i < 34; $i++) {
+                                            $month = date('Y-m', strtotime("-$i month", $start_month));
+                                            if ($month == date('Y-m')) {
+                                                echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                            } else {
+                                                echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Employee List -->
+            <!-- DIRECT CHAT DANGER -->
+            <div class="box ">
+<!--                <div class="box-header with-border">
+                    <div class="col-md-12 col-sm-12 col-xs-12 col-lg-6">
+                        <h3 class="box-title"> Payroll for  <label id="current_register_month"><?php echo date('M-Y'); ?></label></h3>
+                    </div>
+                </div>-->
+                <div class="box-body">
+                    <div class="tabset-approvepayroll">
+                        <div id="tab1" data-pws-tab="tab1" data-pws-tab-name="Not Approved" data-pws-tab-icon="fa-money">
+                            
+                        </div>
+                        <div id="tab2" data-pws-tab="tab2" data-pws-tab-name="Approved" data-pws-tab-icon="fa-money">
+                            
+                        </div>
+                    </div>
+                </div><!-- /.box-body -->
+
+            </div><!--/.direct-chat -->
+        </div><!-- /.col -->
+    </div>
+</section>
+<script>
+    jQuery(document).ready(function () {        
+        $('.tabset-approvepayroll').pwstabs({
+            effect: 'scale', // You can change effects of your tabs container: scale / slideleft / slideright / slidetop / slidedown / none
+            defaultTab: 1, // The tab we want to be opened by default
+            containerWidth: '100%', // Set custom container width if not set then 100% is used
+            tabsPosition: 'horizontal', // Tabs position: horizontal / vertical
+            horizontalPosition: 'top', // Tabs horizontal position: top / bottom
+            verticalPosition: 'left', // Tabs vertical position: left / right
+            responsive: true, // Make tabs container responsive: true / false - boolean
+            theme: '',
+            rtl: false                    // Right to left support: true/ false
+        });
+        $('.tabset-approvepayroll #tab1').load(livesite + "payroll/showapprovepayrolltab/0");
+        //$('.tabset-approvepayroll #tab2').load(livesite + "payroll/showapprovepayrolltab/1");
+    });
+	
+	jQuery('#div-showapprovepayroll .pws_tabs_controll a').on('click', function(){
+		var tabIndex = $(this).data('tabId');
+		if(tabIndex == "tab1"){
+			$('.tabset-approvepayroll #tab1').load(livesite + "payroll/showapprovepayrolltab/0");
+		}else{
+			$('.tabset-approvepayroll #tab2').load(livesite + "payroll/showapprovepayrolltab/1");
+		}
+	});
+    
+    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    function filterPayroll() {
+        
+        var month = $('#approvepayrollfilter #filterby_month').val();
+        var branch = $('#approvepayrollfilter #filterby_branch').val();
+        
+        var dt = new Date(month);
+        $('#current_register_month').html(monthNames[dt.getMonth()]+'-'+dt.getFullYear());
+        
+        $('.tabset-approvepayroll #tab1').load(livesite + "payroll/showapprovepayrolltab/0",{month:month,branch:branch});
+        $('.tabset-approvepayroll #tab2').load(livesite + "payroll/showapprovepayrolltab/1",{month:month,branch:branch});
+        $('#approvepayrolltable').datagrid('load');  
+        
+    }
+
+    function approvePayroll() {
+        var branch = $('#approvepayrollfilter #filterby_branch').val();
+        var month = $('#approvepayrollfilter #filterby_month').val();
+        
+        var arr_payroll_pkeys = [];
+        var checkedRows = $('#approvepayrolltable').datagrid('getChecked');
+        for (var register in checkedRows) {
+            arr_payroll_pkeys.push(checkedRows[register]['payroll_master_pkey']);
+        }
+        $.ajax({
+            url: livesite + "payroll/approvepayroll",
+            type: 'post',
+            data: {
+                payroll_pkey: arr_payroll_pkeys.join(',')
+            },
+            success: function (response) {
+                //process server response here
+                var success = $.parseJSON(response).success;
+                if (success) {
+                    $.notify("Payroll approved successfully", {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                    $('#approvepayrolltable').datagrid('load', {
+                        branch: branch,
+                        month: month
+                    });
+                    $('#approvedpayrolltable').datagrid('load', {
+                        branch: branch,
+                        month: month
+                    });
+                } else {
+                    //alert('Attendance process failed!');
+                    $.notify("Payroll approve failed!", {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                }
+            }
+        });
+    }
+</script>

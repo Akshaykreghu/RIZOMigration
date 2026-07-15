@@ -1,0 +1,491 @@
+<!-- <div class="modal-dialog"> -->
+<style>
+    .notify-container {
+        z-index: 2000 !important;
+    }
+
+    #inputTable {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    #inputTable,
+    #inputTable th,
+    #inputTable td {
+        border: 1px solid black;
+    }
+
+    #inputTable th,
+    #inputTable td {
+        padding: 8px;
+        text-align: left;
+    }
+
+    #inputTable input {
+        width: 100%;
+    }
+</style>
+<!-- Modal content-->
+<div class="modal-content">
+    <!-- <div class="modal-header">
+            <h4 class="modal-title">Upload File</h4>
+        </div> -->
+    <div class="modal-header" style="background: #00659f; color: white; display: flex; justify-content: space-between;">
+        <h4 class="modal-title" style="margin: 0;">Out Pass</h4>
+
+
+    </div>
+    <div class="modal-body">
+        <!-- Form starts -->
+        <div class="container" style="width:100%;">
+            <form class="form-horizontal" method="post" action="<?php echo $this->webroot; ?>OutPass/savePass" id="uploadForm">
+                <!-- <input id="gate_pass_pkey" name="gate_pass_pkey" value="<?php echo isset($arr_out_pass["gate_pass_pkey"]) ? $arr_out_pass["gate_pass_pkey"] : ''; ?>" type="hidden" class="form-control input-md"> -->
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label style="text-align:left;" class="col-md-4 control-label" for="classification">Out Pass No &nbsp;<span style="color:red;">*</span></label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <input id="out_pass_number" readonly name="out_pass_number" value="<?php echo isset($arr_out_pass['out_pass_number']) ? $arr_out_pass['out_pass_number'] : ''; ?>" type="text" placeholder="" class="form-control input-md" required autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label style="text-align:left;" class="col-md-4 control-label" for="req_person">Date<span style="color:red;">*</span></label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <input id="out_pass_date" onchange="checkPersonalOutPass()" name="out_pass_date" value="<?php echo isset($arr_out_pass['out_pass_date']) ? $arr_out_pass['out_pass_date'] : ''; ?>" type="text" placeholder="" class="form-control input-md timepicker" required readonly autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label style="text-align:left;" class="col-md-4 control-label" for="classification">Out Pass Type &nbsp;<span style="color:red;">*</span></label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <select id="type" name="type" onchange="updateReturnDateState(); checkPersonalOutPass(); " class="form-control js-example-basic-single" style="width: 100%" required>
+                                <option value="">--Select--</option>
+                                <option value="Personal" <?php echo (isset($arr_out_pass["type"]) && $arr_out_pass["type"] == 'Personal') ? 'selected="selected"' : ''; ?>>Personal</option>
+                                <option value="Official" <?php echo (isset($arr_out_pass["type"]) && $arr_out_pass["type"] == 'Official') ? 'selected="selected"' : ''; ?>>Official</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label style="text-align:left;" class="col-md-4 control-label" for="staff_pkey">Staff Name<span style="color:red;">*</span></label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <select id="staff_pkey" name="staff_pkey" onchange="checkPersonalOutPass()" class="form-control js-example-basic-single" style="width: 100%" required="">
+                                <option value="">--Select--</option>
+                                <?php
+                                foreach ($arr_emp as $emp) { ?>
+                                    <option value="<?php echo $emp['ei']['emp_pkey']; ?>" <?php echo (isset($arr_out_pass["staff_pkey"]) && $arr_out_pass["staff_pkey"] == $emp['ei']['emp_pkey']) ? 'selected="selected"' : ''; ?>><?php echo $emp['ei']['EmpName'] . ' - ' . $emp['ei']['employee_id']; ?></option>
+                                <?php }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label style="text-align:left;" class="col-md-4 control-label" for="out_time">Out Time &nbsp;<span style="color:red;">*</span></label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <input id="out_time" readonly name="out_time" value="<?php echo isset($arr_out_pass['out_time']) ? $arr_out_pass['out_time'] : ''; ?>" type="text" placeholder="" class="form-control input-md timepicker" required autocomplete="off">
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label style="text-align:left;" class="col-md-4 control-label" for="in_time">In Time &nbsp;<span style="color:red;">*</span></label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <input id="in_time" readonly name="in_time" value="<?php echo isset($arr_out_pass['in_time']) ? $arr_out_pass['in_time'] : ''; ?>" type="text" placeholder="" class="form-control input-md timepicker" required autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label style="text-align:left;" class="col-md-4 control-label" for="remarks">Remarks &nbsp;<span style="color:red;">*</span></label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <textarea id="remarks" name="remarks" maxlength="50" class="form-control input-md" required autocomplete="off"><?php echo isset($arr_out_pass['remarks']) ? $arr_out_pass['remarks'] : ''; ?></textarea>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label style="text-align:left;" class="col-md-4 control-label" for="req_person">Sanctioned by<span style="color:red;">*</span></label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <select id="sanctioned_by" name="sanctioned_by" class="form-control js-example-basic-single" style="width: 100%" required="">
+                                <option value="">--Select--</option>
+                                <?php
+                                foreach ($arr_emp as $emp) { ?>
+                                    <option value="<?php echo $emp['ei']['emp_pkey']; ?>" <?php echo (isset($arr_out_pass["sanctioned_by"]) && $arr_out_pass["sanctioned_by"] == $emp['ei']['emp_pkey']) ? 'selected="selected"' : ''; ?>><?php echo $emp['ei']['EmpName'] . ' - ' . $emp['ei']['employee_id']; ?></option>
+                                <?php }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label style="text-align:left;" class="col-md-4 control-label" for="req_person">Issue By<span style="color:red;">*</span></label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <select id="issued_by" name="issued_by" class="form-control js-example-basic-single" style="width: 100%" required="">
+                                <option value="">--Select--</option>
+                                <?php
+                                foreach ($arr_emp as $emp) { ?>
+                                    <option value="<?php echo $emp['ei']['emp_pkey']; ?>" <?php echo (isset($arr_out_pass["issued_by"]) && $arr_out_pass["issued_by"] == $emp['ei']['emp_pkey']) ? 'selected="selected"' : ''; ?>><?php echo $emp['ei']['EmpName'] . ' - ' . $emp['ei']['employee_id']; ?></option>
+                                <?php }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" id="btn-submit" onclick="btnIssue()" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-danger" onclick="$('#modalForm').modal('hide');">Close</button>
+                </div>
+
+            </form>
+        </div>
+        <!-- form ends-->
+    </div>
+</div>
+<!-- </div> -->
+
+<script>
+    function checkPersonalOutPass() {
+        $("#btn-submit").prop("disabled", true);
+        var type = $('#type').val();
+        if (type == 'Personal') {
+            var date = $('#out_pass_date').val();
+            var pkey = $('#staff_pkey').val();
+
+            // Perform AJAX request
+            if (date != '' && pkey != '') {
+                $.ajax({
+                    type: 'GET',
+                    url: "<?php echo $this->webroot; ?>OutPass/checkPersonalPass/" + date + "/" + pkey,
+                    success: function(response) {
+                        // Handle the success response here
+                        console.log('Status', response);
+                        if (response.status == 'failure') {
+                            $("#btn-submit").prop("disabled", true);
+                            $.notify(response.message, {
+                                type: 'danger',
+                                placement: {
+                                    from: "bottom",
+                                    align: "left"
+                                },
+                                allow_dismiss: true,
+                                z_index: 9999
+                            });
+                        } else if (response.status == 'success') {
+                            $("#btn-submit").prop("disabled", false);
+                        }
+                    },
+                    error: function(error) {
+                        // Handle the error here
+                        console.error(error);
+                    }
+                });
+            }
+
+        } else {
+            $("#btn-submit").prop("disabled", false);
+        }
+    }
+
+    function toggleTableDivVisibility() {
+        var rowCount = $('#inputTable tbody tr').length;
+        console.log('rowCount', rowCount);
+        $('#tableDiv').toggle(rowCount > 0);
+    }
+
+    function btnIssue() {
+        // Flag to check if all fields have values
+        var allFieldsFilled = true;
+        var compareTime = true;
+        // Iterate through each input field within the form
+        $("#uploadForm input[type='text'], #uploadForm select, #uploadForm textarea").each(function() {
+            // Check if the field has a value
+            if ($(this).val() === "") {
+                allFieldsFilled = false;
+                emptyField = $(this).attr('id') || $(this).attr('name');
+                return false; // Stop the iteration if any field is empty
+            }
+        });
+
+
+        var inTime = $('#in_time').val();
+        var outTime = $('#out_time').val();
+
+        if (inTime && outTime) {
+            if (new Date('2000-01-01 ' + outTime) >= new Date('2000-01-01 ' + inTime)) {
+                // alert('In time must be greater than out time');
+                // $('#in_time').val('');
+                compareTime = false
+            }
+        }
+
+        if (true) {
+            if (allFieldsFilled) {
+                // Add any additional actions you want to perform when all fields are filled
+
+                //var confirmation = confirm("Are you sure you want to submit the form?");
+var confirmation = true;
+                if (confirmation) {
+                    // Collect form data
+                    var pkey = <?php echo json_encode($pkey); ?>;
+                    var formData = $("#uploadForm").serialize();
+
+                    // Perform AJAX request
+                    $.ajax({
+                        url: "<?php echo $this->webroot; ?>OutPass/savePass/" + pkey,
+                        type: "POST",
+                        data: formData,
+                        success: function(response) {
+                            // Handle the response from the server
+                            //$.notify('Form submitted successfully!', {
+                               // type: 'success',
+                               // allow_dismiss: false,
+                                //className: 'notify-container',
+                               // z_index: 9999
+                          //  });
+
+                            var passPkey = response.pkey
+                            console.log('Response', response);
+
+                            // Simulate loading delay
+                           // $('.loading-overlay').show();
+                         //   setTimeout(function() {
+                                // Hide loading overlay after a delay (simulating content loading)
+                             //   $('.loading-overlay').hide();
+                           // }, 2000);
+                          $("#modalForm").modal("hide");
+                            showLargeModalForm(livesite + 'OutPass/savePreview/' + passPkey);
+
+                           
+
+
+
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle errors
+                            console.error(xhr.responseText);
+                            $.notify('Error submitting the form. Please try again.', {
+                                type: 'danger',
+                                placement: {
+                                    from: "bottom",
+                                    align: "left"
+                                },
+                                allow_dismiss: false,
+                                className: 'notify-container',
+                                //z_index: 9999
+                            });
+                            $("#modalForm").modal("hide");
+                        }
+                    });
+                } else {
+                    // $("#modalForm").modal("hide");
+                }
+                $('#documents_manager').datagrid('reload');
+            } else {
+                // alert("Please fill the required fields.");
+                $.notify('Please fill the required fields.', {
+                    type: 'danger',
+                    placement: {
+                        from: "bottom",
+                        align: "left"
+                    },
+                    allow_dismiss: false,
+                    className: 'notify-container',
+                    z_index: 9999
+                });
+            }
+        } else {
+
+            $.notify('IN time must be greater than OUT time', {
+                type: 'danger',
+                placement: {
+                    from: "bottom",
+                    align: "left"
+                },
+                allow_dismiss: false,
+                className: 'notify-container',
+                z_index: 9999
+            });
+        }
+    }
+
+
+
+    function updateReturnDateState() {
+        console.log('Gate pass', $('#type').val());
+        if ($('#type').val() === 'Material Gate Pass - Return') {
+            $('.return_date').prop('disabled', false);
+        } else {
+            $('.return_date').prop('disabled', true);
+        }
+    }
+
+
+    //Amount
+    function updateAmount(input) {
+        // Get the row containing the input field
+        var row = input.closest('tr');
+
+        // Find the related input fields and amount element within the same row
+        var qtyInput = row.querySelector('.qty');
+        var rateInput = row.querySelector('.rate');
+        var amountInput = row.querySelector('.amount');
+
+        // Get the values of qty and rate
+        var qty = parseFloat(qtyInput.value) || 0;
+        var rate = parseFloat(rateInput.value) || 0;
+
+        // Calculate the product of qty and rate
+        var amount = qty * rate;
+        console.log('Amount', amount);
+        // Update the amount field in the same row
+        amountInput.value = amount.toFixed(2);
+    }
+
+
+
+    $(document).ready(function() {
+
+        $('#type').select2();
+        $('#staff_pkey').select2();
+        $('#issued_to').select2();
+        $('#issued_by').select2();
+        $('#sanctioned_by').select2();
+
+        if ($('#type').val() === 'Material Gate Pass - Return') {
+            $('.return_date').prop('disabled', false);
+        } else {
+            $('.return_date').prop('disabled', true);
+        }
+
+        var currentIssuedDate = $("#issued_date").val();
+
+        var rowCount = rowCount = $('#inputTable tbody tr').length;
+        if (rowCount > 0) {
+            $('#tableDiv').show();
+        } else {
+            $('#tableDiv').hide();
+        }
+
+
+        // Set the datepicker with the current value of issued_date as the default value
+        $("#out_pass_date").datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
+
+        // $('.timepicker').timepicker({
+        //     showMeridian: false, // Use 24-hour format
+        //     minuteStep: 1, // Set the minute step
+        //     defaultTime: false, // Do not set a default time
+        //     timeFormat: 'H:i:s' // Set the time format to HH:mm:ss
+        // });
+        // $('.timepicker').val(new Date().toTimeString().split(' ')[0]);
+
+        $('#in_time').timepicker({
+            format: 'hh:mm:ss A',
+            showMeridian: true,
+            showSeconds: true,
+        });
+
+        $('#out_time').timepicker({
+            format: 'hh:mm:ss A',
+            showMeridian: true,
+            explicitMode: false,
+            showSeconds: true,
+        });
+
+
+
+        // Add item button click event
+        $('#addItemBtn').on('click', function() {
+            $('#tableDiv').toggle(true);
+            // Clone the first row and append it to the tbody
+            var rowCount = $('#inputTable tbody tr').length + 1;
+            var newRow = $('<tr><td>' + rowCount + '</td>' +
+                '<td><input name="item_name[]" type="text" value="" placeholder=""></td>' +
+                '<td><input name="qty[]" class="qty" oninput="updateAmount(this)" type="text" value="" placeholder=""></td>' +
+                '<td><select name="units[]" class="form-control"><option value="">--Select--</option><option value="Meter">Meter</option><option value="Kilogram">Kilogram</option><option value="Litre">Litre</option></select></td>' +
+                '<td><input name="rate[]" class="rate" oninput="updateAmount(this)" type="text" value="" placeholder=""></td>' +
+                '<td><input name="amount[]" class="amount" readonly type="text" value="" placeholder=""></td>' +
+                '<td><input name="return[]"  class="return_date"  type="date" value="" placeholder="" disabled ></td></tr>');
+
+
+            newRow.find('td:first').text(rowCount);
+
+            // Clear input values in other columns
+            newRow.find('td:not(:first) input').val('');
+
+            console.log('newRow', newRow);
+            // Append the new row to the tbody
+            $('#inputTable tbody').append(newRow);
+
+            if ($('#type').val() === 'Material Gate Pass - Return') {
+                $('.return_date').prop('disabled', false);
+            } else {
+                $('.return_date').prop('disabled', true);
+            }
+
+            // Show the table if it was hidden
+            $('#inputTable').show();
+            $('#tableDiv').show();
+
+            // toggleTableDivVisibility();
+        });
+
+        // Initial check and hide the table if there are zero rows
+        toggleTableDivVisibility();
+
+        // Initial check and hide the table if there are zero rows
+        if ($('#inputTable tbody tr').length === 0) {
+            $('#inputTable').hide();
+        }
+
+        // Handle change in Gate Pass Type select
+        $('#type').on('change', function() {
+            var isReturnable = $(this).val() === 'Material Gate Pass - Returnable';
+
+            // Set readonly attribute for the 7th column textarea in all rows
+            $('#inputTable tbody tr').find('td:nth-child(7) textarea').prop('readonly', !isReturnable);
+            // Clear value if not returnable
+            if (!isReturnable) {
+                $('#inputTable tbody tr').find('td:nth-child(7) textarea').val('');
+            }
+        });
+
+
+
+
+        $("#cancelButton").click(function() {
+            // Hide the modal when the Cancel button is clicked
+            $("#modalForm").modal("hide");
+        });
+    });
+</script>

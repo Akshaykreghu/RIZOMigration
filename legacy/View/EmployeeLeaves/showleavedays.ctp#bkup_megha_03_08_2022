@@ -1,0 +1,112 @@
+<div class="modal-body">
+    <legend><?php echo $head; ?></legend>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-4" style="padding-right: 0px;padding-left: 0px;">
+            <label style="text-align:left;" >Leave Type: <?php echo $leave_type; ?></label>
+            <!--<label style="text-align:left;" class="col-md-6 control-label"></label>-->
+        </div>
+            <div class="col-md-3 " style="padding-right: 0px;padding-left: 0px;">
+            <label style="text-align:left;" >Leave Balance: <?php echo $leavebalance; ?></label>
+            <!--<label style="text-align:left;" class="col-md-6 control-label"><?php echo $leavebalance; ?></label>-->
+        </div>
+        <div class="col-md-2"style="padding-right: 0px;padding-left: 0px;">
+            <label><!--input type="checkbox" value="1" <?php if ($allow_negative == 'Y') {
+                    echo 'checked="checked"';
+                } ?> readonly="readonly"-->Negative : <?php echo ($allow_negative == 'Y')?'Yes':'No'; ?></label>
+        </div>
+        <div class="col-md-3" style="padding-right: 0px;padding-left: 0px;">
+            <label><!--input type="checkbox" value="1" <?php if ($is_sandwitch == 'Y') {
+    echo 'checked="checked"';
+} ?> readonly="readonly"-->Sandwhich : <?php echo ($is_sandwitch == 'Y')?'Yes':'No'; ?></label>
+        </div>
+        </div>      
+    </div>
+    <hr style="margin-top: 12px; margin-bottom: -1px;">
+    <div class="row">
+        <div class="col-md-12" style="padding-top: 10px;">
+            <table class="table ">
+                <thead>
+                    <tr class="danger">
+                        <th>Leave Days</th>
+                        <th>Leave Status</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php $status = 0; $apply = 0;
+                foreach ($resp_leavetransactions as $leavetransaction) { 
+                    if($leavetransaction['Leavestatus'] == 'Applied' || $leavetransaction['Leavestatus'] == 'Authorized' || $leavetransaction['Leavestatus'] == 'Approved'){
+                        $status = 1;
+                    }
+                    if($leavetransaction['Leavestatus'] == 'Applied' || $leavetransaction['Leavestatus'] == 'Authorized'){
+                        $apply = 1;
+                    }
+                ?>
+                        <tr class="success">
+                            <td><?php echo date('d-M-Y', strtotime($leavetransaction['leave_date'])); ?></td>
+                            <td><?php echo $leavetransaction['Leavestatus']; ?></td>
+                            <td><?php echo $leavetransaction['Remarks']; ?></td>
+                        </tr>
+                <?php } ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <?php if($status == 1){ ?>
+    <button type="submit" id="btn-submit" class="btn btn-danger" onclick="cancelleave()"data-dismiss="modal">
+        Cancel Leave
+    </button>
+    <?php } 
+    if($apply == 1){ ?> 
+    <button type="submit" id="btn-submit" class="btn btn-success" onclick="approveleave()"data-dismiss="modal">
+        Approve Leave
+    </button>
+    <?php } ?>
+</div>
+     
+<script>
+function approveleave(){
+if (confirm("Are you sure want to approve this leave? ")) {
+                                  $.ajax({
+                                    url: livesite + "EmployeeLeaves/approveleave",
+                                    data: {
+                                        LEAVEENTRYIDS: <?php echo $id; ?>
+                                    },
+                                    success: function (response) {
+                                          var response = $.parseJSON(response);
+                                        if (response.msg) {
+                                            $.notify(response.msg, {
+                                                type: 'success',
+                                                allow_dismiss: true
+                                             });
+                                        }
+                                        reloadTable('leave_table');
+                                    }
+                                });
+                            }
+}
+function cancelleave(){
+if (confirm("Are you sure want to cancel the leave? ")) {
+                                  $.ajax({
+                                    url: livesite + "EmployeeLeaves/deleteleave",
+                                    data: {
+                                        LEAVEENTRYIDS: <?php echo $id; ?>
+                                    },
+                                    success: function (response) {
+                                          var response = $.parseJSON(response);
+                                        if (response.msg) {
+                                            $.notify(response.msg, {
+                                                type: 'success',
+                                                allow_dismiss: true
+                                             });
+                                        }
+                                        reloadTable('leave_table');
+                                    }
+                                });
+                            }
+}
+</script>

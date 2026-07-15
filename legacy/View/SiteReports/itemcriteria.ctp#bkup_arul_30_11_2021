@@ -1,0 +1,79 @@
+<div class="col-md-10" style="float: inherit;" id="criteriasite">
+    <ul title="Select Client" lines="true" style="width:100%;min-height:200px;height:auto;max-height:500px;"><li></li></ul>
+</div>
+<script>
+    function siteCriteria() {
+        var criteria ="Contacts";
+        $('#criteriasite ul').datalist({
+            toolbar: [{
+                    text: 'Select all',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        $('#criteriasite ul').datalist('checkAll');
+                        $('#criteriasite .datagrid-view input:checkbox').each(function () {
+                            this.checked = true;
+                        });
+                    }
+                }, {
+                    text: 'Deselect all',
+                    iconCls: 'icon-delete',
+                    handler: function () {
+                        $('#criteriasite ul').datalist('clearChecked');
+                        $('#criteriasite .datagrid-view input:checkbox').each(function () {
+                            this.checked = false;
+                        });
+                    }
+                }],
+            //frozenColumns:[[
+            columns: [[
+                    {
+                        field: criteria + '[]',
+                        formatter: function (value, row, index) {
+                            return '<input type="checkbox" class="checkw" name="' + criteria + '[]" value="' + row.key + '" />';
+                        }
+                    },
+                    {
+                        field: 'Name',
+                        formatter: function (value, row, index) {
+                            return row.text;
+                        }
+                    }
+                ]],
+            url: livesite + 'SiteReports/itemcriterialist/<?php echo $branch;?>',
+            //checkbox: true,
+            checkOnSelect: true,
+            searchFilter: false,
+            singleSelect: false,
+            lines: true,
+            valueField: "key",
+            onCheck: function (i, rows) {
+
+            },
+            onUncheck: function (i, rows) {
+
+            },
+            onLoadSuccess: function () {
+                setwidth();
+            }
+        });
+        //The search field added by ****ARUL P DAS on 18/9/2020
+        $('#div-items-criteria2 div.datagrid-toolbar').after('<input type="text" id="search2" class="form-control" autocomplete="off" placeholder="Search">');
+    }
+    siteCriteria();
+    $(document).ready(function () {
+        //The below keyup function is used to search elements. By ****ARUL P DAS on 16/1/2020
+        $('#search2').keyup(function () {
+            var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+
+            $('#div-items-criteria2 .datagrid-btable tr').show().filter(function () {
+                var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                return !~text.indexOf(val);
+            }).hide();
+        });
+    });
+</script>
+<style type="text/css">
+    div .datagrid-body{/*This is to solve the issue when adding three criterias(jQuery issue). By ***ARUL P DAS on 27/12/2019*/
+        width: auto !important;
+    }
+</style>

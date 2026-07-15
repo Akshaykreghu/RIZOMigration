@@ -1,0 +1,500 @@
+<style>
+    #editpunchform table tr td {
+        padding: 5px;
+        width: 100%;
+    }
+
+    .form-horizontal .control-label {
+
+        text-align: left;
+        padding-left: 2px;
+    }
+</style>
+
+<section class="content-header">
+    <h1 class="col-md-4" style="font-size: 30px;">Attendance Regularisation</h1>
+    <div class="col-md-8" align="right">
+        <button title="if you are finished missing in/out punches of the employee then you should use the
+                            Amendments button then only it will effect in attendance records" class="btn btn-primary pull-right" type="button" onclick="updatemem();">Refresh </button>
+    </div>
+
+    <hr style="margin-top: 38px;margin-bottom: -2px;">
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="col-md-12">
+        <br>
+        <form class="form-horizontal" method="post" action="">
+            <div id="tb" class="form-group" style="padding:5px;height:auto">
+
+                <?php
+                if ($arr_employees && count($arr_employees)) {
+                ?>
+                    <div class="col-md-4">
+                        <label for="month" class="col-md-3 control-label">Employee </label>
+                        <div class="col-md-1 control-label">:</div>
+                        <div class="col-md-8">
+                            <select id="employeeCombo" onchange="refresheditpunchgrid();" style="width: 250px;">
+                                <?php foreach ($arr_employees as $employee) { ?>
+                                    <option value="<?php echo $employee->id; ?>" <?php echo (isset($emp_id) && $emp_id == $employee->id) ? 'selected="selected"' : ''; ?>><?php echo $employee->text; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                <?php
+                } else {
+                ?>
+                    <input type="hidden" id="employeeCombo" name="employeeCombo" value="<?php echo (isset($emp_id)) ? $emp_id : ""; ?>" />
+                <?php
+                }
+                ?>
+                <div class="col-md-4">
+
+                    <label for="month" class="col-md-3 control-label">Month </label>
+                    <div class="col-md-1 control-label">:</div>
+                    <div class="col-md-8">
+                        <select id="monthCombo" onchange="refresheditpunchgrid();" style="width: 250px;">
+                            <?php
+                            $start_month = strtotime(date('Y-m', strtotime("+1 month", strtotime(date('Y-m')))));
+                            for ($i = 0; $i < 24; $i++) {
+                                $month = date('Y-m', strtotime("-$i month", $start_month));
+                                if ($month == date('Y-m')) {
+                                    echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                } else {
+                                    echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+        <div>
+            <div class="box-body">
+
+                <div class="tabset-regularisation-grid">
+                    <div id="tab1" data-pws-tab="tab1" data-pws-tab-name="Attendance">
+                        <div class="row">
+                            <div class="col-md-12" style="padding-bottom: 10px;">
+                                <input type="button" onclick="bulkEdit()" id="bulkEditButton" class="btn btn-primary pull-right" value="Update in Bulk" title="It helps to provide attendance in bulk on selected days">
+                            </div>
+                            <div class="col-md-12">
+                                <table class="easyui-datagrid" id="editpunches" class="table table-bordered table-hover">
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab2" data-pws-tab="tab2" data-pws-tab-name="Regularisation" data-pws-tab-icon="fa-check">
+                        <div class="row">
+                            <!-- <div class="col-md-12" style="padding-bottom: 10px;">
+                                <input type="button" onclick="bulkApprove()" id="bulkApproveButton" class="btn btn-primary pull-right" value="Update in Bulk Approve">
+                            </div> -->
+                            <div class="col-md-12">
+                                <table class="easyui-datagrid" id="regularisation" class="table table-bordered table-hover">
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    function refresheditpunchgrid() {
+        //var emp = $('#employeeCombo').combobox("getValue");
+        //var mnth = $('#monthCombo').combobox("getValue");
+        var emp = $('#employeeCombo').val();
+        var mnth = $('#monthCombo').val();
+        //var includeinactive = $('#includeinactive').is(":checked") ? "Y" : "N";
+
+        $('#editpunches').datagrid('load', {
+            emp: emp,
+            month: mnth,
+            //includeinactive: includeinactive
+        });
+
+        $('#regularisation').datagrid('load', {
+            emp: emp,
+            month: mnth,
+            //includeinactive: includeinactive
+        });
+
+        if ('<?php echo $current_emp_id ?>' != emp) {
+            $("#bulkEditButton").hide();
+        } else {
+            $("#bulkEditButton").show();
+        }
+    }
+</script>
+<script>
+    function updatemem() {
+        var emp = $('#employeeCombo').val();
+        var mnth = $('#monthCombo').val();
+
+        if (emp) {
+            $.ajax({
+                type: "POST",
+                url: livesite + "Regularisation/Updateame",
+                data: {
+                    emp: emp,
+                    month: mnth
+                },
+                success: function(resp) {
+                    // $.notify("Attandence Updates successfully", {
+                    //     type: 'success',
+                    //     allow_dismiss: false
+                    // });
+                    refresheditpunchgrid();
+                }
+            });
+        } else {
+            alert("Please Select a Employee");
+        }
+    }
+</script>
+<script>
+    $(document).ready(function() {
+
+        $('.tabset-regularisation-grid').pwstabs({
+            effect: 'scale', // You can change effects of your tabs container: scale / slideleft / slideright / slidetop / slidedown / none
+            defaultTab: 1, // The tab we want to be opened by default
+            containerWidth: '100%', // Set custom container width if not set then 100% is used
+            tabsPosition: 'horizontal', // Tabs position: horizontal / vertical
+            horizontalPosition: 'top', // Tabs horizontal position: top / bottom
+            verticalPosition: 'left', // Tabs vertical position: left / right
+            responsive: false, // Make tabs container responsive: true / false - boolean
+            theme: '',
+            rtl: false // Right to left support: true/ false
+        });
+
+        myInterval = setInterval(() => { // This is to click first tab when load the modal. by Arul on 13-09-22
+            console.log("clicked" + $("#tab1").css('display'));
+            if ($("#tab1").css('display') == "block") {
+                $('[data-tab-id="tab1"]').trigger('click');
+                clearInterval(myInterval); // after clicked, the loop exits here.
+            }
+        }, 100);
+
+        // $('[data-tab-id="tab1"]').trigger('click');
+
+
+        $('#tipeditpunches').fadeOut(10000);
+
+        // $('#monthCombo').val((new Date().getFullYear()) + '-' + (new Date().getMonth() + 1));
+
+        $("#monthCombo").select2({
+            //placeholder: "Choose Month"
+        });
+        $("#employeeCombo").select2({
+            placeholder: "Choose Employee"
+        });
+
+
+
+        $('#editpunches').datagrid({
+            queryParams: {
+                emp: '<?php echo isset($emp_id) ? $emp_id : '0'; ?>',
+                month: $('#monthCombo').val(),
+            },
+            height: '600px',
+            url: livesite + "Regularisation/listpunches",
+            pagination: true,
+            singleSelect: true,
+            iconCls: 'icon-edit',
+            pageSize: 32,
+            onLoadSuccess: function(data) {
+                //            $.messager.show({
+                //                title:'Info',
+                //                msg:data.message
+                //            });
+                $.notify(data.message, {
+                    type: data.type,
+                    allow_dismiss: false
+                });
+
+            },
+            fitColumns: true,
+            pageList: [2, 5, 10, 20, 32, 50, 100],
+            rowStyler: function(index, row) {
+                var style = "";
+                if (row.status == 'N') {
+                    style += 'background-color:rgba(214, 110, 13, 0.92);color:#FFFFFF';
+                } else {
+
+
+                    if (row.C1 == 'out') {
+                        style += 'background-color:#A9F5A9;';
+                    } else if (row.C1 == 'in') {
+                        style += 'background-color:#FAAC58;';
+                    }
+                }
+                return style;
+            },
+
+            //New List starts
+            columns: [
+                [{
+                        field: 'select',
+                        title: 'Select',
+                        width: "5%",
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            if (row.isdelete == 'Y' && row.joining_date <= row.att_date && '<?php echo $current_pkey ?>' == row.emp_pkey) {
+
+                                //var e = '<a href="#" onclick="showEditOnPopup(\'' + row.att_date + '\',\'' + row.emp_id + '\',\'' + row.att_in_time + '\',\'' + row.att_out_time + '\');">Edit</a> ';
+                                // var e = '<a href="#" onclick="showEditOnPopup(\'' + window.btoa(JSON.stringify(row)) + '\');">Edit</a> ';
+                                var e = '<input type="checkbox" name="selectDate[]" value="' + row.att_date + '" /> ';
+                                return e;
+                            }
+                            return "";
+                        }
+                    },
+                    {
+                        field: 'att_date',
+                        title: 'Log Date',
+                        width: "10%",
+                    },
+                    {
+                        field: 'att_in_time',
+                        title: 'Start',
+                        width: "20%",
+                        formatter: function(value, row, index) {
+                            if(row.applied_in_time) {
+                                return row.applied_in_time;
+                            } else {
+                                return value;
+                            }
+                        }
+                    },
+                    {
+                        field: 'att_out_time',
+                        title: 'End',
+                        width: "20%",
+                        formatter: function(value, row, index) {
+                            if(row.applied_out_time) {
+                                return row.applied_out_time;
+                            } else {
+                                return value;
+                            }
+                        }
+                    },
+                    {
+                        field: 'duration',
+                        title: 'Duration',
+                        width: "15%",
+                    },
+                    {
+                        field: 'status',
+                        title: 'Status',
+                        width: "15%",
+                        formatter: function(value, row, index) {
+                            let applied_attendance = '';
+                            if (row.applied_attendance) {
+                                applied_attendance = ' (Regularisation Pending) ';
+                            }
+                            // if(row.leave_date === row.att_date){
+
+                            // var e = "<div style=\"background-color: "+row.status_color+"; float: left; width: 100%; padding: 14% 0;\">"+value+"</div>";
+                            var e = "<strong style=\"color: " + row.status_color + ";\">" + row.leaves + "" + '  ' + "" + value + "" + ' ' + "" + applied_attendance + " </strong>";
+                            // alert(e);
+                            // }
+                            //               else{
+                            // var e = "<strong style=\"color: "+row.status_color+";\">"+value+"</strong>";
+                            //               }
+                            return e;
+                            // alert(e);
+                        }
+                    },
+                    {
+                        field: 'action',
+                        title: 'Action',
+                        width: "15%",
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            if (row.isdelete == 'Y' && row.joining_date <= row.att_date && '<?php echo $current_pkey ?>' == row.emp_pkey) {
+
+                                //var e = '<a href="#" onclick="showEditOnPopup(\'' + row.att_date + '\',\'' + row.emp_id + '\',\'' + row.att_in_time + '\',\'' + row.att_out_time + '\');">Edit</a> ';
+                                var e = '<a href="#" onclick="showEditOnPopup(\'' + window.btoa(JSON.stringify(row)) + '\');">Edit</a> ';
+                                return e;
+                            }
+                            return "";
+                        }
+                    }
+                ]
+            ],
+            //Ends
+        });
+
+
+        $('#regularisation').datagrid({
+            queryParams: {
+                emp: '<?php echo isset($emp_id) ? $emp_id : '0'; ?>',
+                month: $('#monthCombo').val(),
+            },
+            height: '600px',
+            url: livesite + "Regularisation/listregularization",
+            pagination: true,
+            singleSelect: true,
+            iconCls: 'icon-edit',
+            pageSize: 32,
+            onLoadSuccess: function(data) {
+                // $.notify(data.message, {
+                //     type: data.type,
+                //     allow_dismiss: false
+                // });
+
+            },
+            fitColumns: true,
+            pageList: [2, 5, 10, 20, 32, 50, 100],
+            //New List starts
+            columns: [
+                [
+                    // {
+                    //     field: 'select',
+                    //     title: 'Select',
+                    //     width: "5%",
+                    //     align: 'center',
+                    //     formatter: function(value, row, index) {
+                    //         if ('<?php echo $current_pkey ?>' != row.emp_pkey && row.approved == 'P') {
+                    //             var e = '<input type="checkbox" name="selectRegDate[]" value="' + row.att_date + '" /> ';
+                    //             return e;
+                    //         }
+                    //         return "";
+                    //     }
+                    // },
+                    {
+                        field: 'att_date',
+                        title: 'Log Date',
+                        width: "10%"
+                    },
+                    {
+                        field: 'C1',
+                        title: 'Direction',
+                        width: "10%"
+                    },
+                    {
+                        field: 'LOGTIME',
+                        title: 'Time',
+                        width: "10%",
+                    },
+                    {
+                        field: 'C3',
+                        title: 'Remarks',
+                        width: "20%",
+                    },
+                    {
+                        field: 'approved_person_name',
+                        title: 'Approved Person',
+                        width: "20%",
+                    },
+                    {
+                        field: 'remarks',
+                        title: 'Approved Person Remarks',
+                        width: "20%",
+                    },
+                    {
+                        field: 'approved',
+                        title: 'Status',
+                        width: "15%",
+                        formatter: function(value, row, index) {
+                            if (value == 'A') {
+                                e = '<span class="text-success">Approved</span>';
+                            } else if (value == 'P') {
+                                e = '<span class="text-warning">Pending</span>';
+                            } else {
+                                e = '<span class="text-danger">Rejected</span>';
+                            }
+                            return e;
+                        }
+                    },
+                    // {
+                    //     field: 'action',
+                    //     title: 'Action',
+                    //     width: "15%",
+                    //     align: 'center',
+                    //     formatter: function(value, row, index) {
+                    //         if (row.isdelete == 'Y' && row.joining_date <= row.att_date) {
+
+                    //             //var e = '<a href="#" onclick="showEditOnPopup(\'' + row.att_date + '\',\'' + row.emp_id + '\',\'' + row.att_in_time + '\',\'' + row.att_out_time + '\');">Edit</a> ';
+                    //             var e = '<a href="#" onclick="showEditOnPopup(\'' + window.btoa(JSON.stringify(row)) + '\');">Edit</a> ';
+                    //             return e;
+                    //         }
+                    //         return "";
+                    //     }
+                    // }
+                ]
+            ],
+            //Ends
+        });
+
+    });
+
+    //New List actions
+    function showEditOnPopup(str_row) {
+        var site_transactions_fkey = '';
+        var row = JSON.parse(window.atob(str_row));
+        extract(row, this);
+        if (att_date && emp_id) {
+            //Add form
+            //        IF(!site_transactions_fkey){
+            //                site_transactions_fkey = 0;
+            //            }
+            showModalForm(livesite + 'Regularisation/editpunch/' + att_date + '/' + emp_id + '/' + site_transactions_fkey + '/' + encodeURI(att_in_time) + '/' + encodeURI(att_out_time));
+        } else {
+            alert("Please select a record!")
+        }
+    }
+
+    function extract(data, where) {
+        for (var key in data) {
+            where[key] = data[key];
+        }
+    }
+    //Ends
+
+
+    // Bulk edit by Arul on 10-9-22
+    function bulkEdit() {
+        var rows = $('input[name="selectDate[]"]:checked').serialize();
+        if(!rows) {
+            alert("Select Any Record To Update");
+            return;
+        }
+        // var rows = [];
+        // $('input[name="selectDate"]:checked').each(function() {
+        //     rows.push(this.value);
+        // });
+        var emp = $('#employeeCombo').val();
+        var params = rows + '&employee=' + emp;
+        console.log(params);
+
+        if (emp && rows) {
+            showModalForm(livesite + 'Regularisation/bulkform?' + params);
+        }
+    }
+
+    // Bulk approve by Arul on 02-10-22
+    function bulkApprove() {
+        var rows = $('input[name="selectRegDate[]"]:checked').serialize();
+        // var rows = [];
+        // $('input[name="selectRegDate"]:checked').each(function() {
+        //     rows.push(this.value);
+        // });
+        var emp = $('#employeeCombo').val();
+        var params = rows + '&employee=' + emp;
+        console.log(params);
+
+        if (emp && rows) {
+            showModalForm(livesite + 'Regularisation/bulkapprove?' + params);
+        }
+    }
+
+</script>

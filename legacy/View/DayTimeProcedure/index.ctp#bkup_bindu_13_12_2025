@@ -1,0 +1,167 @@
+<style>
+	#shiftpolicygrouptable_wrapper .DTTT.btn-group ,#shiftpolicytable_wrapper .DTTT.btn-group{
+		padding-left: 5px;
+	}
+	
+</style>
+<!--<section class="content-header">
+	<h1 style="text-align:left; font-size: 3em;"> Shift Policy </h1>
+</section>-->
+<section class="content-header">
+    <h1 class="text-primary-18">Shift Timings & Rules</h1>
+    <hr style="margin-top: 8px;margin-bottom: -2px;">
+</section>
+<section class="content">
+	<div class="row">
+		<div class="col-md-3">
+                    <ul id="shiftpolicygrouptable" title="Shift Policy Groups" lines="true" style="width:100%; min-height:200px; height:auto">
+                       </ul>
+<!--			<div class="box box-solid">
+				<div class="box-header with-border" style="border-top: 2px solid #0081c2 ">
+					<h3 class="box-title">Shift Policy Group</h3>
+					<div class="box-tools"></div>
+				</div>
+				<div class="box-body no-padding">
+					<table id="shiftpolicygrouptable" class="table table-hover table-striped" cellspacing="0" width="100%">
+						
+					</table>
+				</div> /.box-body 
+			</div>-->
+
+		</div><!-- /.col -->
+		<div class="col-md-9">
+			<div class="box box-primary" style="box-shadow:11px 11px 12px 12px rgba(0,0,0,0.1);">
+				<!-- /.box-header -->
+				<div class="box-body no-padding" id="shiftContainer">
+					
+					<!--
+					<div class="table-responsive mailbox-messages">
+
+					</div>-->
+					<!-- /.mail-box-messages -->
+				</div><!-- /.box-body -->
+
+			</div><!-- /. box -->
+		</div><!-- /.col -->
+	</div><!-- /.row -->
+</section><!-- /.content -->
+
+<script>
+    function loader(loader){
+        $('#'+loader).html('<li class="fa fa-spinner fa-spin" style="margin: 50%;font-size: -webkit-xxx-large;"></li>');           
+    }
+    function stoploader(loader){
+        $('#'+loader).html('');           
+    }
+    function pauseloader(cont){
+        $('#'+cont).find('li').removeClass('fa-spin');
+    }
+	jQuery(document).ready(function() {
+		
+	loader('shiftContainer');	
+     
+		
+     $("#shiftContainer").load(livesite+"DayTimeProcedure/form")
+     
+     
+
+$('#shiftpolicygrouptable').datagrid({
+				url:livesite+"DayTimeProcedure/listpolicies",
+				pagination:true,
+				singleSelect:true,
+                                rownumbers: true,
+                              
+				onSelect:function(index,row){
+								
+				if (row){
+                                    loader('shiftContainer');
+                                $("#shiftContainer").load(livesite+'DayTimeProcedure/lists?id=' + row.day_time_seq)
+
+
+				}
+				},
+				toolbar: [{
+				text:'New',
+				iconCls:'icon-add',
+                                
+				handler: function(){
+                                loader('shiftContainer');
+				$("#shiftContainer").load(livesite+"DayTimeProcedure/form")
+                                reloadTable('shiftpolicygrouptable');
+				}
+				},'-',{
+				iconCls: 'icon-remove',
+				text:'Remove',
+				handler: function(){
+			
+				var row = $('#shiftpolicygrouptable').datagrid('getSelected');
+			
+				if (row){
+			
+				if (confirm("Are you sure want to delete ")) {
+				var str_ids = row.day_time_seq;
+			
+				$.ajax({
+                                url : livesite+"DayTimeProcedure/delete",
+				data : {
+				ids : str_ids
+				},
+				success : function(response) {
+                                var response =  $.parseJSON(response);
+                                    if(response.success == true){
+                                                    $.notify(response.msg,{
+                                                                    type: 'success',
+                                                                    allow_dismiss: true
+
+                                                            });
+                                                          $("#shiftContainer").load(livesite+"DayTimeProcedure/form")  
+                                    }
+                                    else
+                                        {
+                                            $.notify(response.msg,{
+                                                                    type: 'danger',
+                                                                    allow_dismiss: true
+
+                                                            });
+                                        }
+				reloadTable('shiftpolicygrouptable')
+				},
+                                error: function(response)  {
+                                   
+                                        $.notify($.parseJSON(response).msg,{
+                                        type: 'danger',
+                                        allow_dismiss: false
+                                    });
+                                    } 
+				});
+			
+				}
+			
+				}else{
+                                    alert("Please select a row");
+                                }
+			
+				}
+				}],
+				fitColumns:true,
+				pageList:[2,5,10,50,100],
+				columns:[[
+				{field:'day_time_desc',title:'Name',width:"100%",sortable:true},
+				]],
+                             onLoadSuccess: function () {
+                                              $("#shiftContainer").load(livesite+"DayTimeProcedure/form")  
+                                        }
+                            
+				});
+				
+
+
+
+
+
+     
+     
+	
+
+	}); 
+</script>

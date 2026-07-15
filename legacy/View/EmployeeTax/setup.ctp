@@ -1,0 +1,1026 @@
+<style>
+    table.dataTable{width:100%;margin:0 auto;clear:both;border-collapse:separate;border-spacing:0}table.dataTable thead th,table.dataTable tfoot th{font-weight:bold}table.dataTable thead th,table.dataTable thead td{padding:10px 18px;border-bottom:1px solid #111}table.dataTable thead th:active,table.dataTable thead td:active{outline:none}table.dataTable tfoot th,table.dataTable tfoot td{padding:10px 18px 6px 18px;border-top:1px solid #111}table.dataTable thead .sorting,table.dataTable thead .sorting_asc,table.dataTable thead .sorting_desc{cursor:pointer;*cursor:hand}table.dataTable thead .sorting,table.dataTable thead .sorting_asc,table.dataTable thead .sorting_desc,table.dataTable thead .sorting_asc_disabled,table.dataTable thead .sorting_desc_disabled{background-repeat:no-repeat;background-position:center right}table.dataTable thead .sorting{background-image:url("../images/sort_both.png")}table.dataTable thead .sorting_asc{background-image:url("../images/sort_asc.png")}table.dataTable thead .sorting_desc{background-image:url("../images/sort_desc.png")}table.dataTable thead .sorting_asc_disabled{background-image:url("../images/sort_asc_disabled.png")}table.dataTable thead .sorting_desc_disabled{background-image:url("../images/sort_desc_disabled.png")}table.dataTable tbody tr{background-color:#ffffff}table.dataTable tbody tr.selected{background-color:#B0BED9}table.dataTable tbody th,table.dataTable tbody td{padding:8px 10px}table.dataTable.row-border tbody th,table.dataTable.row-border tbody td,table.dataTable.display tbody th,table.dataTable.display tbody td{border-top:1px solid #ddd}table.dataTable.row-border tbody tr:first-child th,table.dataTable.row-border tbody tr:first-child td,table.dataTable.display tbody tr:first-child th,table.dataTable.display tbody tr:first-child td{border-top:none}table.dataTable.cell-border tbody th,table.dataTable.cell-border tbody td{border-top:1px solid #ddd;border-right:1px solid #ddd}table.dataTable.cell-border tbody tr th:first-child,table.dataTable.cell-border tbody tr td:first-child{border-left:1px solid #ddd}table.dataTable.cell-border tbody tr:first-child th,table.dataTable.cell-border tbody tr:first-child td{border-top:none}table.dataTable.stripe tbody tr.odd,table.dataTable.display tbody tr.odd{background-color:#f9f9f9}table.dataTable.stripe tbody tr.odd.selected,table.dataTable.display tbody tr.odd.selected{background-color:#acbad4}table.dataTable.hover tbody tr:hover,table.dataTable.display tbody tr:hover{background-color:#f6f6f6}table.dataTable.hover tbody tr:hover.selected,table.dataTable.display tbody tr:hover.selected{background-color:#aab7d1}table.dataTable.order-column tbody tr>.sorting_1,table.dataTable.order-column tbody tr>.sorting_2,table.dataTable.order-column tbody tr>.sorting_3,table.dataTable.display tbody tr>.sorting_1,table.dataTable.display tbody tr>.sorting_2,table.dataTable.display tbody tr>.sorting_3{background-color:#fafafa}table.dataTable.order-column tbody tr.selected>.sorting_1,table.dataTable.order-column tbody tr.selected>.sorting_2,table.dataTable.order-column tbody tr.selected>.sorting_3,table.dataTable.display tbody tr.selected>.sorting_1,table.dataTable.display tbody tr.selected>.sorting_2,table.dataTable.display tbody tr.selected>.sorting_3{background-color:#acbad5}table.dataTable.display tbody tr.odd>.sorting_1,table.dataTable.order-column.stripe tbody tr.odd>.sorting_1{background-color:#f1f1f1}table.dataTable.display tbody tr.odd>.sorting_2,table.dataTable.order-column.stripe tbody tr.odd>.sorting_2{background-color:#f3f3f3}table.dataTable.display tbody tr.odd>.sorting_3,table.dataTable.order-column.stripe tbody tr.odd>.sorting_3{background-color:whitesmoke}table.dataTable.display tbody tr.odd.selected>.sorting_1,table.dataTable.order-column.stripe tbody tr.odd.selected>.sorting_1{background-color:#a6b4cd}table.dataTable.display tbody tr.odd.selected>.sorting_2,table.dataTable.order-column.stripe tbody tr.odd.selected>.sorting_2{background-color:#a8b5cf}table.dataTable.display tbody tr.odd.selected>.sorting_3,table.dataTable.order-column.stripe tbody tr.odd.selected>.sorting_3{background-color:#a9b7d1}table.dataTable.display tbody tr.even>.sorting_1,table.dataTable.order-column.stripe tbody tr.even>.sorting_1{background-color:#fafafa}table.dataTable.display tbody tr.even>.sorting_2,table.dataTable.order-column.stripe tbody tr.even>.sorting_2{background-color:#fcfcfc}table.dataTable.display tbody tr.even>.sorting_3,table.dataTable.order-column.stripe tbody tr.even>.sorting_3{background-color:#fefefe}table.dataTable.display tbody tr.even.selected>.sorting_1,table.dataTable.order-column.stripe tbody tr.even.selected>.sorting_1{background-color:#acbad5}table.dataTable.display tbody tr.even.selected>.sorting_2,table.dataTable.order-column.stripe tbody tr.even.selected>.sorting_2{background-color:#aebcd6}table.dataTable.display tbody tr.even.selected>.sorting_3,table.dataTable.order-column.stripe tbody tr.even.selected>.sorting_3{background-color:#afbdd8}table.dataTable.display tbody tr:hover>.sorting_1,table.dataTable.order-column.hover tbody tr:hover>.sorting_1{background-color:#eaeaea}table.dataTable.display tbody tr:hover>.sorting_2,table.dataTable.order-column.hover tbody tr:hover>.sorting_2{background-color:#ececec}table.dataTable.display tbody tr:hover>.sorting_3,table.dataTable.order-column.hover tbody tr:hover>.sorting_3{background-color:#efefef}table.dataTable.display tbody tr:hover.selected>.sorting_1,table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_1{background-color:#a2aec7}table.dataTable.display tbody tr:hover.selected>.sorting_2,table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_2{background-color:#a3b0c9}table.dataTable.display tbody tr:hover.selected>.sorting_3,table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_3{background-color:#a5b2cb}table.dataTable.no-footer{border-bottom:1px solid #111}table.dataTable.nowrap th,table.dataTable.nowrap td{white-space:nowrap}table.dataTable.compact thead th,table.dataTable.compact thead td{padding:4px 17px 4px 4px}table.dataTable.compact tfoot th,table.dataTable.compact tfoot td{padding:4px}table.dataTable.compact tbody th,table.dataTable.compact tbody td{padding:4px}table.dataTable th.dt-left,table.dataTable td.dt-left{text-align:left}table.dataTable th.dt-center,table.dataTable td.dt-center,table.dataTable td.dataTables_empty{text-align:center}table.dataTable th.dt-right,table.dataTable td.dt-right{text-align:right}table.dataTable th.dt-justify,table.dataTable td.dt-justify{text-align:justify}table.dataTable th.dt-nowrap,table.dataTable td.dt-nowrap{white-space:nowrap}table.dataTable thead th.dt-head-left,table.dataTable thead td.dt-head-left,table.dataTable tfoot th.dt-head-left,table.dataTable tfoot td.dt-head-left{text-align:left}table.dataTable thead th.dt-head-center,table.dataTable thead td.dt-head-center,table.dataTable tfoot th.dt-head-center,table.dataTable tfoot td.dt-head-center{text-align:center}table.dataTable thead th.dt-head-right,table.dataTable thead td.dt-head-right,table.dataTable tfoot th.dt-head-right,table.dataTable tfoot td.dt-head-right{text-align:right}table.dataTable thead th.dt-head-justify,table.dataTable thead td.dt-head-justify,table.dataTable tfoot th.dt-head-justify,table.dataTable tfoot td.dt-head-justify{text-align:justify}table.dataTable thead th.dt-head-nowrap,table.dataTable thead td.dt-head-nowrap,table.dataTable tfoot th.dt-head-nowrap,table.dataTable tfoot td.dt-head-nowrap{white-space:nowrap}table.dataTable tbody th.dt-body-left,table.dataTable tbody td.dt-body-left{text-align:left}table.dataTable tbody th.dt-body-center,table.dataTable tbody td.dt-body-center{text-align:center}table.dataTable tbody th.dt-body-right,table.dataTable tbody td.dt-body-right{text-align:right}table.dataTable tbody th.dt-body-justify,table.dataTable tbody td.dt-body-justify{text-align:justify}table.dataTable tbody th.dt-body-nowrap,table.dataTable tbody td.dt-body-nowrap{white-space:nowrap}table.dataTable,table.dataTable th,table.dataTable td{-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box}.dataTables_wrapper{position:relative;clear:both;*zoom:1;zoom:1}.dataTables_wrapper .dataTables_length{float:left}.dataTables_wrapper .dataTables_filter{float:right;text-align:right}.dataTables_wrapper .dataTables_filter input{margin-left:0.5em}.dataTables_wrapper .dataTables_info{clear:both;float:left;padding-top:0.755em}.dataTables_wrapper .dataTables_paginate{float:right;text-align:right;padding-top:0.25em}.dataTables_wrapper .dataTables_paginate .paginate_button{box-sizing:border-box;display:inline-block;min-width:1.5em;padding:0.5em 1em;margin-left:2px;text-align:center;text-decoration:none !important;cursor:pointer;*cursor:hand;color:#333 !important;border:1px solid transparent;border-radius:2px}.dataTables_wrapper .dataTables_paginate .paginate_button.current,.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover{color:#333 !important;border:1px solid #979797;background-color:white;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #fff), color-stop(100%, #dcdcdc));background:-webkit-linear-gradient(top, #fff 0%, #dcdcdc 100%);background:-moz-linear-gradient(top, #fff 0%, #dcdcdc 100%);background:-ms-linear-gradient(top, #fff 0%, #dcdcdc 100%);background:-o-linear-gradient(top, #fff 0%, #dcdcdc 100%);background:linear-gradient(to bottom, #fff 0%, #dcdcdc 100%)}.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active{cursor:default;color:#666 !important;border:1px solid transparent;background:transparent;box-shadow:none}.dataTables_wrapper .dataTables_paginate .paginate_button:hover{color:white !important;border:1px solid #111;background-color:#585858;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #585858), color-stop(100%, #111));background:-webkit-linear-gradient(top, #585858 0%, #111 100%);background:-moz-linear-gradient(top, #585858 0%, #111 100%);background:-ms-linear-gradient(top, #585858 0%, #111 100%);background:-o-linear-gradient(top, #585858 0%, #111 100%);background:linear-gradient(to bottom, #585858 0%, #111 100%)}.dataTables_wrapper .dataTables_paginate .paginate_button:active{outline:none;background-color:#2b2b2b;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #2b2b2b), color-stop(100%, #0c0c0c));background:-webkit-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:-moz-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:-ms-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:-o-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:linear-gradient(to bottom, #2b2b2b 0%, #0c0c0c 100%);box-shadow:inset 0 0 3px #111}.dataTables_wrapper .dataTables_paginate .ellipsis{padding:0 1em}.dataTables_wrapper .dataTables_processing{position:absolute;top:50%;left:50%;width:100%;height:40px;margin-left:-50%;margin-top:-25px;padding-top:20px;text-align:center;font-size:1.2em;background-color:white;background:-webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255,255,255,0)), color-stop(25%, rgba(255,255,255,0.9)), color-stop(75%, rgba(255,255,255,0.9)), color-stop(100%, rgba(255,255,255,0)));background:-webkit-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);background:-moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);background:-ms-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);background:-o-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);background:linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%)}.dataTables_wrapper .dataTables_length,.dataTables_wrapper .dataTables_filter,.dataTables_wrapper .dataTables_info,.dataTables_wrapper .dataTables_processing,.dataTables_wrapper .dataTables_paginate{color:#333}.dataTables_wrapper .dataTables_scroll{clear:both}.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody{*margin-top:-1px;-webkit-overflow-scrolling:touch}.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody th,.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody td{vertical-align:middle}.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody th>div.dataTables_sizing,.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody td>div.dataTables_sizing{height:0;overflow:hidden;margin:0 !important;padding:0 !important}.dataTables_wrapper.no-footer .dataTables_scrollBody{border-bottom:1px solid #111}.dataTables_wrapper.no-footer div.dataTables_scrollHead table,.dataTables_wrapper.no-footer div.dataTables_scrollBody table{border-bottom:none}.dataTables_wrapper:after{visibility:hidden;display:block;content:"";clear:both;height:0}@media screen and (max-width: 767px){.dataTables_wrapper .dataTables_info,.dataTables_wrapper .dataTables_paginate{float:none;text-align:center}.dataTables_wrapper .dataTables_paginate{margin-top:0.5em}}@media screen and (max-width: 640px){.dataTables_wrapper .dataTables_length,.dataTables_wrapper .dataTables_filter{float:none;text-align:center}.dataTables_wrapper .dataTables_filter{margin-top:0.5em}}
+   .boxr {
+
+}
+.boxr.horizTranslate {
+  -webkit-transition: 3s;
+  -moz-transition: 3s;
+  -ms-transition: 3s;
+  -o-transition: 3s;
+  transition: 3s;
+  margin-left: 4% !important;
+} 
+</style>
+
+<script type="text/javascript">
+    var boxOne = document.getElementsByClassName('boxr')[0],
+    $boxTwo = $('.boxr:eq(1)');
+ $('#loaders').hide();
+document.getElementsByClassName('toggleButton')[0].onclick = function() {
+    
+  if(this.innerHTML === 'Details') 
+  { 
+    this.innerHTML = 'Hide';
+    boxOne.classList.add('horizTranslate');
+    var empPkey = $('#empsetuptaxation #emp_pkey').val();
+ var url = livesite+'EmployeeTax/setupshow/'+empPkey;
+    $('#load1').load(url);
+        $('#load1').show();
+    
+  } else {
+    this.innerHTML = 'Details';
+    var computedStyle = window.getComputedStyle(boxOne),
+        marginLeft = computedStyle.getPropertyValue('margin-left');
+    boxOne.style.marginLeft = marginLeft;
+    boxOne.classList.remove('horizTranslate');  
+     
+        
+       // var container = $("#modalDetailForm #modaldetails-content")
+//container.load(url, function() {
+       //     $("#modalDetailForm").modal('show');
+      //  });
+        $('#load1').hide();
+        
+        
+  }  
+}
+
+
+    
+function procce()
+{
+    $('#loaders').show();
+   var emp_pkey =  $('#emp_pkey').val();
+    $.ajax({
+                                url:livesite+'EmployeeTax/Proccess/' + emp_pkey,
+                                success: function(resp){
+                                    
+                                  alert("Proccessed Successfully");
+                                   
+                                 $('#load').load(livesite+'EmployeeTax/setup/'+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            emp_pkey);
+                                }
+                            });
+}
+function Show()
+{
+
+}
+function hidew()
+{
+    $('#hide').hide();
+    $('#show').show();
+    $('#load1').hide();
+}
+function showdetails()
+{
+var empPkey = $('#empsetuptaxation #emp_pkey').val();
+ var url = livesite+'Employee/addqualification/'+empPkey;
+        
+        var container = $("#modalDetailForm #modaldetails-content")
+container.load(url, function() {
+            $("#modalDetailForm").modal('show');
+        });
+}
+function showtabhistory()
+{
+    $('#history_details').addClass('active');
+                $('#div-emphistorical').addClass("active");
+                $('#div-emphistorical').addClass("in");
+                $('#history_details').addClass("active");
+                $('#div-empqualification').removeClass("active");
+                $('#div-empqualification').removeClass("in");
+                $('#qualifications').removeClass("active");
+}
+function showtabTax()
+{
+    $('#ss').addClass('active');
+                $('#div-empsetuptaxation').addClass("active");
+                $('#div-emphistorical').addClass("in");
+                $('#ss').addClass("active");
+                $('#div-emphistorical').removeClass("active");
+                $('#div-emphistorical').removeClass("in");
+                $('#history_details').removeClass("active");
+}
+function showhistory()
+{
+var empPkey = $('#empsetuptaxation #emp_pkey').val();
+ var url = livesite+'Employee/history/'+empPkey;
+        
+        var container = $("#modalDetailForm #modaldetails-content")
+container.load(url, function() {
+            $("#modalDetailForm").modal('show');
+        });
+}
+    $(document).ready(function() {
+$('hide').hide();
+
+ var selected = [];
+         
+         $('#example tbody').on('click', 'tr', function () {
+        var id = table.row(this).data().history_pkey;
+        var index = $.inArray(id, selected);
+ 
+        if ( index === -1 ) {
+            selected.push( id );
+        } else {
+            selected.splice( index, 1 );
+        }
+        
+        $(this).toggleClass('selected');
+    } );
+    
+   
+   var emp =   $('#empsetuptaxation #emp_pkey').val();
+ var table = $('#example').DataTable( {
+        "processing": true,
+        "serverSide": true,
+        "paging": false,
+             "deferRender": false,
+            "pageNumber":false,
+            "lengthChange": true,
+            "searching": false,
+            "ordering": false,
+            "info": false,
+            "autoWidth": false,
+        "ajax": {
+            "url": "Employee/listhistory/"+emp,
+            "type": "POST"
+        },
+        "columns": [
+            { "data": "company" },
+            { "data": "department" },
+            { "data": "designation" },
+            { "data": "from_date" },
+            { "data": "to_date" },
+            { "data": "salary" }
+        ]
+    } );
+     
+$('#del1').click( function () {
+    if(selected != '')
+        {
+        if(confirm("are you sure to delete qualification ? "))
+              {
+                  $.ajax({
+                                url:'Employee/deletehist/' + selected,
+                                success: function(resp){
+                                    
+                                  alert("Deleted Successfully");
+                                  $("#example").DataTable().ajax.reload();
+                                }
+                            });
+              }
+              else
+              {
+                
+              }
+        }
+        else
+{
+alert("Please select any row first");
+}
+    } );
+ var selected = [];
+         
+         $('#example1 tbody').on('click', 'tr', function () {
+        var id = table1.row(this).data().qualification_pkey;
+        var index = $.inArray(id, selected);
+ 
+        if ( index === -1 ) {
+            selected.push( id );
+        } else {
+            selected.splice( index, 1 );
+        }
+
+        $(this).toggleClass('selected');
+    } );
+     $('#edit').click( function () {
+        
+                alert( selected);
+    } );
+$('#del').click( function () {
+    
+    if(selected != '')
+        {
+        if(confirm("are you sure to delete qualification ? "))
+              {
+                  $.ajax({
+                                url:'Employee/deletequal/' + selected,
+                                success: function(resp){
+                                    
+                                  alert("Deleted Successfully");
+                                  $("#example1").DataTable().ajax.reload();
+                                }
+                            });
+              }
+              else
+              {
+                
+              }
+}
+else
+{
+alert("Please select any row first");
+}
+    } );
+
+
+   var emp =   $('#empsetuptaxation #emp_pkey').val();
+ var table1 = $('#example1').DataTable( {
+        "processing": true,
+        "serverSide": true,
+        "paging": false,
+             "deferRender": false,
+            "pageNumber":false,
+            "lengthChange": true,
+            "searching": false,
+            "ordering": false,
+            "info": false,
+            "autoWidth": false,
+             "rowCallback": function( row, data ) {
+            if ( $.inArray(data.qualification_pkey, selected) !== -1 ) {
+                $(row).addClass('selected');
+            }}, 
+        "ajax": {
+            "url": "Employee/listqualifications/"+emp,
+            "type": "POST"
+        },
+      
+        "columns": [
+            { "data": "course" },
+            { "data": "university" },
+            { "data": "duration" },
+            { "data": "mark" }
+        ]
+    } );
+    
+    
+var head = $("#head").val();
+if(head == '2')
+{
+$("#joining_date").attr("disabled","disabled") ;
+$("#emp_company_id").attr("disabled","disabled") ;
+$("#emp_type").attr("disabled","disabled") ;
+$("#designation").attr("disabled","disabled") ;
+$("#emp_dept").attr("disabled","disabled") ;
+$("#emp_branch").attr("disabled","disabled") ;
+}
+
+        $('#empsetuppersonal').parsley();
+        var empsetuppersonaloptions = {
+            success : function(responseText, statusText, xhr, $form) {
+                $('#empsetuppersonal').find("button[type='submit']").prop('disabled',false);
+                var response = JSON.parse(responseText);
+                if (response.success) {
+                $('#proffessional').addClass('active');
+                $('#div-empsetupprofessional').addClass("active");
+                $('#div-empsetupprofessional').addClass("in");
+                $('#proffessional').addClass("active");
+                $('#div-empsetuppersonal').removeClass("active");
+                $('#div-empsetuppersonal').removeClass("in");
+                $('#personal').removeClass("active");
+                    //alert(response.message);
+                    $('#empsetup-save-response').removeClass('alert-danger').addClass('alert-success').html('<strong>Success!</strong> '+response.message).fadeIn().fadeOut( 3000 );
+                    $('#empsetuppersonal #emp_pkey').val(response.pkey);
+                    $('#empsetupprofessional #emp_fkey').val(response.pkey);
+                    $('#empsetuptaxation #emp_pkey').val(response.pkey);
+                    reloadTable('emptable');
+                } else {
+                    //alert('Something wrong happened!');
+                    $('#empsetup-save-response').removeClass('alert-success').addClass('alert-danger').html('<strong>Failed!</strong> Something wrong happened.').fadeIn().fadeOut( 3000 );
+                }
+            }
+        };
+
+        // bind to the form's submit event
+        $('#empsetuppersonal').submit(function() {
+            $(this).find("button[type='submit']").prop('disabled',true);
+            $(this).ajaxSubmit(empsetuppersonaloptions);
+            return false;
+        });
+        $('#empsetuptaxform').parsley();
+    var eeoptions = { 
+    success:       function(responseText, statusText, xhr, $form){
+	
+}
+    }; 
+        $('#empsetuptaxform').submit(function() {
+            $(this).ajaxSubmit(eeoptions);
+           
+        });
+        $('#empsetupprofessional').parsley();
+        var empsetupprofessionaloptions = {
+            success : function(responseText, statusText, xhr, $form) {
+                $('#empsetupprofessional').find("button[type='submit']").prop('disabled',false);
+                var response = JSON.parse(responseText);
+                if (response.success) {
+                    //alert(response.message);
+                    $('#qualifications').addClass('active');
+                $('#div-empqualification').addClass("active");
+                $('#div-empqualification').addClass("in");
+                $('#qualifications').addClass("active");
+                $('#div-empsetupprofessional').removeClass("active");
+                $('#div-empsetupprofessional').removeClass("in");
+                $('#proffessional').removeClass("active");
+                    $('#empsetup-save-response').removeClass('alert-danger').addClass('alert-success').html('<strong>Success!</strong> '+response.message).fadeIn().fadeOut( 3000 );
+                    $('#empsetuppersonal #emp_pkey').val(response.pkey);
+                    $('#empsetupprofessional #emp_fkey').val(response.pkey);
+                    $('#empsetuptaxation #emp_pkey').val(response.pkey);
+                    reloadTable('emptable');
+                } else {
+                    //alert('Something wrong happened!');
+                    $('#empsetup-save-response').removeClass('alert-success').addClass('alert-danger').html('<strong>Failed!</strong> Something wrong happened.').fadeIn().fadeOut( 3000 );
+                }
+            }
+        };
+
+        // bind to the form's submit event
+        $('#empsetupprofessional').submit(function() {
+            if($('#empsetupprofessional #emp_pkey').val() == 0){
+                alert('Please fill personal informations first!');
+            }else{
+                $(this).find("button[type='submit']").prop('disabled',true);
+                $(this).ajaxSubmit(empsetupprofessionaloptions);
+            }
+            return false;
+        });
+        
+        /*
+         * Tax Head save
+         */
+        $('#empsetuptaxation').parsley();
+        var empsetuptaxationoptions = {
+            success : function(responseText, statusText, xhr, $form) {
+                $('#empsetupprofessional').find("button[type='submit']").prop('disabled',false);
+                var response = JSON.parse(responseText);
+                if (response.success) {
+                    //alert(response.message);
+                    $('#empsetup-save-response').removeClass('alert-danger').addClass('alert-success').html('<strong>Success!</strong> '+response.message).fadeIn().fadeOut( 3000 );
+                } else {
+                    //alert('Something wrong happened!');
+                    $('#empsetup-save-response').removeClass('alert-success').addClass('alert-danger').html('<strong>Failed!</strong> Something wrong happened.').fadeIn().fadeOut( 3000 );
+                }
+            }
+        };
+
+        // bind to the form's submit event
+        $('#empsetuptaxation').submit(function() {
+            if($('#empsetuptaxation #emp_pkey').val() == 0){
+                alert('Please fill personal informations first!');
+            }else{
+                $(this).find("button[type='submit']").prop('disabled',true);
+                $(this).ajaxSubmit(empsetuptaxationoptions);
+            }
+            return false;
+        });
+               
+    $('#date_of_birth').datepicker({
+     format: 'yyyy-mm-dd',
+    
+    })
+    $('#joining_date').datepicker(
+            {
+                format:'yyyy-mm-dd',
+            })
+        //Ends
+    });
+        
+    function showTaxHeadDetails(obj){
+        var taxHeadPkey = $(obj).data('tax_heads_pkey');
+        var empPkey = $('#empsetuptaxation #emp_pkey').val();
+        var url = livesite+'Employee/showtaxheaddetail/'+empPkey+'/'+taxHeadPkey;
+        
+        var container = $("#modalShowTaxHeadDetailForm #modalForm-content")
+        container.load(url, function() {
+            $("#modalShowTaxHeadDetailForm").modal('show');
+        });
+    }
+</script>
+
+
+
+
+<div class="modal-body">
+
+<div class="box box-body">
+    <!-- Form Name -->
+    <legend><?php echo isset($employee['0']['EmployeeDetails']['first_name']) ? $employee['0']['EmployeeDetails']['first_name'].' ' : ''; echo isset($employee['0']['EmployeeDetails']['last_name'])? $employee['0']['EmployeeDetails']['last_name']:''; ?></legend>
+
+    <div id="empsetup-save-response" class="alert alert-success" style="display: none;">
+        
+    </div>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" id="ss">
+            <a href="#div-empsetuptaxation" aria-controls="div-empsetuptaxation" role="tab" data-toggle="tab">Tax Declarations</a>
+        </li>
+
+        <li role="presentation">
+            <a href="#div-empsetuptax" aria-controls="div-empsetuptax" role="tab" data-toggle="tab">Taxation Details</a>
+        </li>
+    </ul>
+<input type="hidden" id="head" name="head" value="<?php echo $user_group ; ?>">
+    <!-- Tab panes -->
+    <div class="tab-content">
+
+        <div role="tabpanel" class="tab-pane" id="div-empsetuptaxation">
+            <form class="form-horizontal" method="post" action="<?php echo $this->webroot; ?>Taxation/saveemployeetaxheads" id="empsetuptaxation">
+                    <div class="modal-body">
+                        <input id="emp_pkey" name="emp_pkey" type="hidden"  value="<?php echo $emp_pkey; ?>" >
+                        <?php 
+                            $tax_types = array_keys($arr_taxheadfields);
+                            if(!empty($tax_types)){
+                        ?>
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs" role="tablist">
+                                <?php $i = 0; ?>
+                                <?php foreach($tax_types as $key => $value){ ?>
+                                    <li role="presentation" <?php echo($i == 0) ? 'class="active"' : ''; ?>>
+                                        <a href="#div-<?php echo $value; ?>" aria-controls="div-<?php echo $value; ?>" role="tab" data-toggle="tab"><?php echo $value; ?></a>
+                                    </li>
+                                <?php 
+                                    $i++;
+                                }
+                                ?>
+                            </ul>
+                        <?php } ?>
+                        
+                        <?php 
+                            if(!empty($arr_taxheadfields)){
+                                
+                        ?>
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <?php $j = 0; ?>
+                                <?php foreach($arr_taxheadfields as $key => $value){ ?>
+                                    <div role="tabpanel" <?php echo($j == 0) ? 'class="tab-pane active"' : 'class="tab-pane"'; ?> id="div-<?php echo $key; ?>">
+                                        <div class="modal-body">
+                                        <?php if(!empty($value['tax_heads'])){
+                                            $arr_taxheads = $value['tax_heads'];
+                                            $index = 0;
+                                            
+                                            foreach($arr_taxheads as $key => $value){
+                                                $index++;
+                                                $fieldid = 'tax_heads_'.$value['tax_heads_pkey'];
+                                                $fieldname = $value['tax_name'];
+                                                if(isset($value['readonly']) && $value['readonly'] == 'R'){
+                                                    $readonly_attributes = " readonly title='Click the right help button to discover more fields under this section' ";
+                                                }else{
+                                                    $readonly_attributes = "";
+                                                }
+                                                $fieldvalue = isset($arr_emptaxtransactions[$value['tax_heads_pkey']])?$arr_emptaxtransactions[$value['tax_heads_pkey']]:'';
+                                                    
+                                                if($index % 2 != 0){
+                                                    //start new row
+                                                    echo '<div class="form-group">
+                                                            <div class="col-md-6">
+                                                            <label style="text-align:left;" class="col-md-4 control-label" for="'.$fieldid.'">'.$fieldname.'</label>
+                                                            <div class="col-md-6">
+                                                                <input id="'.$fieldid.'" name="'.$fieldid.'" value="'.$fieldvalue.'" type="text" placeholder="'.$fieldname.'" class="form-control input-md" '.$readonly_attributes.' >
+                                                            </div>
+                                                            <a class="col-md-2 btn-show-head-details" onclick="showTaxHeadDetails(this);" data-tax_heads_pkey="'.$value['tax_heads_pkey'].'"><i class="fa fa-info-circle"></i></a>
+                                                            </div>';
+                                                    if($index == count($arr_taxheads)){
+                                                        //End last row
+                                                        echo '</div>'; 
+                                                    }
+                                                }else{
+                                                    //End current row
+                                                    echo '<div class="col-md-6">
+                                                            <label style="text-align:left;" class="col-md-4 control-label" for="'.$fieldid.'">'.$fieldname.'</label>
+                                                            <div class="col-md-6">
+                                                                <input id="'.$fieldid.'" name="'.$fieldid.'" value="'.$fieldvalue.'" type="text" placeholder="'.$fieldname.'" class="form-control input-md" '.$readonly_attributes.'>
+                                                            </div>
+                                                            <a class="col-md-2 btn-show-head-details" onclick="showTaxHeadDetails(this);" data-tax_heads_pkey="'.$value['tax_heads_pkey'].'"><i class="fa fa-info-circle"></i></a>
+                                                            </div>
+                                                        </div>';
+                                                }
+                                            }
+                                        }else{
+                                            echo 'No heads found';
+                                        } ?>
+                                    </div>
+                                    </div>
+                                <?php 
+                                    $j++;
+                                }
+                                ?>
+                            </ul>
+                        <?php } ?>
+                        <!--div class="form-group">
+                            <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="joining_date">Joining Date</label>
+                                <div class="col-md-8">
+                                    <input id="joining_date" name="joining_date" value="<?php echo $arr_professionalinfo["joining_date"]; ?>" type="text" placeholder="Joining Date" class="form-control input-md" required="">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label style="text-align:left;" class="col-md-4 control-label" for="emp_company_id">Company Employee ID</label>
+                                <div class="col-md-8">
+                                    <input id="emp_company_id" name="emp_company_id" value="<?php echo $arr_professionalinfo["emp_company_id"]; ?>" type="text" placeholder="Company Employee ID" class="form-control input-md" >
+                                </div>
+                            </div>
+                        </div-->
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <!--button type="button" class="btn btn-default" onclick="$('#largeModalForm').modal('hide');">Cancel</button-->
+                        <button type="submit" id="btn-submit" class="btn btn-primary" onclick="$('#largeModalForm').modal('hide');">Save </button>
+                    </div>
+            
+        </div>
+                </form>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="div-empsetuptax">
+
+            <!--form class="form-horizontal" method="post" action="<?php echo $this->webroot; ?>Employee/Finyear" id="empsetuptaxform"-->
+                    <div class="modal-body">
+                        <button type="button" class="btn btn-primary" onclick="procce();">Process</button>
+                    <div class="col-md-12"> 
+                        <div class="col-md-6"> 
+                            <?php 
+                            if($taxcomponents)
+                            {
+                            ?>
+                            <div class="box-header">
+                                <table class="table table-bordered" style="border:1px solid #3C8DBC">
+                                    <thead>
+                                    </thead>
+
+
+                                    <tr><th colspan="2" style="background:#3C8DBC;color: antiquewhite;"><h2>Tax FY- <?php echo $taxcomponents['0']['EmployeeTaxsalsum']['fin_year']; ?></h2> <h3>Summary Calculation</h3></th></tr>
+                                    <tbody>
+                                        <!--tr><th>Taxable salary  </th><td><?php echo $taxcomponents['0']['EmployeeTaxsalsum']['taxable_salary']; ?></td></tr-->
+                                        <tr><th>Taxable Income from salary </th><td><?php echo $taxcomponents['0']['EmployeeTaxsalsum']['taxable_salary']; ?></td></tr>
+                                        <tr><th>Taxable Income from Other Sources  </th><td><?php echo $taxcomponents['0']['EmployeeTaxsalsum']['other_income']; ?></td></tr>
+                                        <tr><th>Investments & Other Deductions</th><td><?php echo $taxcomponents['0']['EmployeeTaxsalsum']['tax_heads_limitsum']; ?></td></tr>
+                                    </tbody>
+                                    <tr><th colspan="2">Total Taxable Income   <h5>(Taxable Income from salary + Taxable Income from Other Sources - Deductions)</h5><h2 class="pull-right"><?php echo $taxcomponents['0']['EmployeeTaxsalsum']['taxable_income']; ?></h2></th></tr>
+                                    <tbody>
+
+                                        <tr><th><?php if($classifications == 'male'){ ?>Rs.2,50,000 - Rs.5,00,000 + <?php } else { ?>Rs.2,00,000 - Rs.5,00,000 + <?php } ?></th><td><?php echo isset($taxcomponents['0']['EmployeeTaxsalsum']['first_portion']) ? $taxcomponents['0']['EmployeeTaxsalsum']['first_portion']: '0'; ?></td></tr>
+                                        <tr><th>Rs.5,00,000 - Rs.10,00,000 + </th><td><?php echo isset($taxcomponents['0']['EmployeeTaxsalsum']['second_portion']) ? $taxcomponents['0']['EmployeeTaxsalsum']['second_portion']:'0'; ?></td></tr>
+                                        <tr><th>Rs.10,00,000 and beyond + </th><td><?php echo isset($taxcomponents['0']['EmployeeTaxsalsum']['third_portion']) ? $taxcomponents['0']['EmployeeTaxsalsum']['third_portion']: '0'; ?></td>
+                                        <tr><th>Total  </th><td><?php echo $taxcomponents['0']['EmployeeTaxsalsum']['first_portion'] + $taxcomponents['0']['EmployeeTaxsalsum']['second_portion'] + $taxcomponents['0']['EmployeeTaxsalsum']['third_portion']; ?></td></tr>
+                                        <tr><th>Yearly Tax  </th><td><?php echo $taxcomponents['0']['EmployeeTaxsalsum']['tax_yearly']; ?></td></tr>
+                                        <tr><th>Monthly Tax  </th><td><?php echo $taxcomponents['0']['EmployeeTaxsalsum']['tax_monthly_proj']; ?></td></tr>
+                                        
+
+                                        </tr> </tbody>
+
+
+                                </table>
+                                <input type="hidden" id="TaxableIncome" value="<?php echo $taxcomponents['0']['EmployeeTaxsalsum']['taxable_income']; ?>">
+                                <input type="hidden" id="OtherIncome" value="<?php echo $taxcomponents['0']['EmployeeTaxsalsum']['other_income']; ?>">
+                                <input type="hidden" id="YearlyTax" value="<?php echo $taxcomponents['0']['EmployeeTaxsalsum']['tax_yearly']; ?>">
+                            </div>
+                            <div class="col-md-12">
+
+<button id="show"  onclick="Show();" class='toggleButton btn btn-primary' value='Details'>Details</button>
+
+&nbsp;&nbsp;
+                                <!--button type="button" id="NewAssets"  class="btn btn-primary">Edit</button-->
+                            </div>
+                            <?php
+                            }
+                            ?>
+                        </div>  
+       
+                    <div class="col-md-6"> 
+                    <?php 
+                    if($taxcomponents)
+                    {
+                        ?>
+                        <div class="box-header">
+                            <table class="table table-bordered" style="border:1px solid #3C8DBC">
+                                <thead>
+                                </thead>
+                                <tr><th colspan="2" style="background:#3C8DBC;color: antiquewhite;"><h3>House Rent Allowance</h3></th></tr>
+                                <tbody>
+                                    <tr><th>40/50 % of Basic</th><td><?php echo $taxcomponents['0']['EmployeeTaxsalsum']['hra1']; ?></td></tr>
+                                    <tr><th>Actual HRA Received</th><td><?php echo $taxcomponents['0']['EmployeeTaxsalsum']['hra2']; ?></td></tr>
+
+                                    <tr><th>Rent Paid - (10 % of Basic)</th><td><?php echo $taxcomponents['0']['EmployeeTaxsalsum']['hra3']; ?></td></tr>
+                                </tbody>
+                                <tbody>
+                                    <tr><th>HRA Exemption</th><th><?php echo min($taxcomponents['0']['EmployeeTaxsalsum']['hra1'],$taxcomponents['0']['EmployeeTaxsalsum']['hra2'],$taxcomponents['0']['EmployeeTaxsalsum']['hra3']); ?></th></tr>
+                                </tbody>
+                                <tr><th colspan="2" style="background:#3C8DBC;color: antiquewhite;"><h2>Salary </h2> <h3>Details</h3></th></tr>
+                                <tbody>
+                                    <tr><th>Actual salary Received</th><td><?php echo $taxcomponents['0']['EmployeeTaxsalsum']['actual_salary']; ?></td></tr>
+                                    <tr><th> Projected Salary</th><td><?php echo $taxcomponents['0']['EmployeeTaxsalsum']['availed_salary']; ?></td></tr>
+                                    </tbody>
+
+                            </table>
+                            <input type="hidden" id="TaxableIncome" value="<?php echo $taxcomponents['0']['EmployeeTaxsalsum']['taxable_income']; ?>">
+                            <input type="hidden" id="OtherIncome" value="<?php echo $taxcomponents['0']['EmployeeTaxsalsum']['other_income']; ?>">
+                            <input type="hidden" id="YearlyTax" value="<?php echo $taxcomponents['0']['EmployeeTaxsalsum']['tax_yearly']; ?>">
+                        </div>
+
+                    <?php
+                    }
+                    ?>
+
+                    </div>
+                        
+                    </div>
+                        
+                        <div id="load1" class="boxr col-md-12">
+
+                        </div>
+ 
+
+
+                        <div class="col-md-12"> 
+                            <?php 
+                            if($taxcomponents)
+                            {
+
+                            ?>
+                            <?php $tax1 =  count($taxdates) + 1; ?>
+                            <?php $tax2 =  count($months); ?>
+                            <div class="box-header">
+                                <table class="table table-bordered" style="border:1px solid #3C8DBC">
+                                    <thead>
+                                        <tr><th colspan="<?php echo $tax1; ?>" style="background:#3C8DBC;color: antiquewhite;"><h2></h2> <h3>Salary for the Year</h3></th></tr>
+                                        <tr><th>Months</th> <?php
+                                            if(isset($taxdates))
+                                            {
+                                            $label = array();
+                                            foreach($taxdates as $value1)
+                                            {
+                                            $timestamp1 = strtotime($value1['months']);
+                                            $label[] = date('F',$timestamp1);
+                                            ?>
+                                            <th><?php echo date('F-Y',$timestamp1); ?></th>
+
+                                            <?php
+                                            }
+                                            }
+                                            ?>
+                                    </thead>
+
+                                    <tbody>
+                                    
+                                    
+
+
+                                    <tr>
+                                        <th>Salary</th>
+
+                                        <?php
+                                        if(isset($taxdates))
+                                        {
+                                        $salabel = array();
+                                        foreach($taxdates as $value1)
+                                        {
+
+                                        ?>
+                                        <?php if(isset($value1['salary']['0']['0']['tdsdeducted'])) { ?><td style="font-weight: bold;"><?php echo $value1['salary']['0']['0']['tdsdeducted'];$salabel[] = $value1['salary']['0']['0']['tdsdeducted']; } else { ?><td style='color:red; font-weight:bold;'><?php echo $salary['0']['0']['amount'];$salabel[] = $salary['0']['0']['amount']; } ?></td>
+                                        
+                                        <?php
+                                        
+                                        }
+                                        }
+                                        ?>
+                                    </tr>
+                                    <tr>
+                                        <th>Tax</th>
+                                    <?php
+                                    if(isset($taxdates))
+                                    {
+                                    $taxlabel = array();
+                                    foreach($taxdates as $value1)
+                                    {
+                                    
+                                    ?>
+                                    <?php if(isset($value1['tax']['0']['0']['tdsdeducted'])) { ?><td style="font-weight: bold;"><?php echo $value1['tax']['0']['0']['tdsdeducted'] ;$taxlabel[] = $value1['tax']['0']['0']['tdsdeducted']; } else { ?><td style='color:red; font-weight:bold;'><?php echo isset($taxcomponents['0']['EmployeeTaxsalsum']['tax_monthly_proj'])? $taxcomponents['0']['EmployeeTaxsalsum']['tax_monthly_proj']: '0' ;$taxlabel[] = $taxcomponents['0']['EmployeeTaxsalsum']['tax_monthly_proj']; } ?></td>
+                                    
+                                    <?php
+                                    
+                                    }
+                                    }
+                                    ?>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="<?php echo $tax1; ?>"><div class="pull-right"><span class="label" style='background: black;'>Actual</span>&nbsp;&nbsp;<span class="label label-danger">Projected</span></div></td> 
+                                    </tr>
+
+                                    </tbody>
+
+
+                                </table>
+                                
+                            </div>
+                            <?php
+                            }
+                            ?>
+                        </div>                
+                    </div>
+            <!--/form-->
+            
+       
+        </div>
+    <!-- Tax Head Detail Form -->
+    <div id="modalShowTaxHeadDetailForm" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="modalForm-content">
+                <!-- Content will be loaded here from "remote.php" file -->
+            </div>
+        </div>
+    </div>
+<div id="modalDetailForm" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="modaldetails-content">
+              
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+  
+<div id="modalDetailForm" class="modal fade">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content" id="modaldetails-content">
+              
+            </div>
+        </div>
+    </div>
+    <div class="row"> 
+                     <div class="col-md-4">
+                            <div class="box box-danger">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Statistics</h3>
+
+                                </div>
+                                <div class="box-body chart-responsive">
+                                    <canvas id="punchChart" height="180"></canvas>
+                                </div><!-- /.box-body -->
+                            </div>
+                         
+                        </div>
+        
+        <div class="col-md-4">
+                        <ul class="chart-legend clearfix">
+                    <li><i class="fa fa-circle-o text-red"></i> Yearly Tax</li>
+                    <li><i class="fa fa-circle-o text-green"></i> Taxable Income</li>
+                    <li><i class="fa fa-circle-o text-blue"></i> Other Income</li>
+                    <!--li><i class="fa fa-circle-o text-aqua"></i> Safari</li>
+                    <li><i class="fa fa-circle-o text-light-blue"></i> Opera</li>
+                    <li><i class="fa fa-circle-o text-gray"></i> Navigator</li-->
+                  </ul>
+                 </div> 
+        </div> 
+    <!--div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Salary Chart</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="chart"-->
+                <canvas id="areaChart" ></canvas>
+              <!--/div>
+            </div>
+            <!-- /.box-body -->
+          <!--/div-->
+    <input type="hidden" value=>
+    <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Salary Chart</h3>
+
+              <div class="box-tools pull-right">
+                <button onclick="showing();" type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="chart">
+                <canvas id="lineChart" style="height:250px"></canvas>
+              </div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+    <script type="text/javascript" charset="utf-8">
+      function showing()
+      {
+          var simple = '<?php echo json_encode($label);?>';
+          alert(simple);
+      }
+        var punchChartCanvas = $("#punchChart").get(0).getContext("2d");
+    var punchChart = new Chart(punchChartCanvas);
+    
+    var cntpresent = $('#TaxableIncome').val();
+    var cntabsent = $('#OtherIncome').val();
+    var Tax = $('#YearlyTax').val();
+    
+    var punchData = [
+        {
+            value: cntpresent,
+            color: "#00a65a",
+            highlight: "#00a65a",
+            label: "Taxable Income"
+        },
+        {
+            value: cntabsent,
+            color: "blue",
+            highlight: "blue",
+            label: "Other Income"
+        },
+        {
+            value: Tax,
+            color: "red",
+            highlight: "red",
+            label: "Yearly Tax"
+        }
+
+    ];
+    var pieOptions = {
+//Boolean - Whether we should show a stroke on each segment
+        segmentShowStroke: true,
+//String - The colour of each segment stroke
+        segmentStrokeColor: "#fff",
+//Number - The width of each segment stroke
+        segmentStrokeWidth: 1,
+//Number - The percentage of the chart that we cut out of the middle
+        percentageInnerCutout: 50, // This is 0 for Pie charts
+//Number - Amount of animation steps
+        animationSteps: 100,
+//String - Animation easing effect
+        animationEasing: "easeOutBounce",
+//Boolean - Whether we animate the rotation of the Doughnut
+        animateRotate: true,
+//Boolean - Whether we animate scaling the Doughnut from the centre
+        animateScale: false,
+//Boolean - whether to make the chart responsive to window resizing
+        responsive: true,
+// Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+        maintainAspectRatio: false,
+//String - A legend template
+        legendTemplate: "<ul class=\"<%= name . toLowerCase() %>-legend\"><% for (var i = 0;i < segments . length;i++) { %><li><span style=\"background-color:<%= segments[i] . fillColor %>\"></span><% if (segments[i] . label) { %><%= segments[i] . label %><% } %></li><% } %></ul>",
+//String - A tooltip template
+        tooltipTemplate: "<%= value %> <%= label %>"
+    };
+//Create pie or douhnut chart
+// You can switch between pie and douhnut using the method below.  
+    punchChart.Doughnut(punchData, pieOptions);
+    
+    var areaChartCanvas = $("#lineChart").get(0).getContext("2d");
+    // This will get the first returned node in the jQuery collection.
+    var areaChart = new Chart(areaChartCanvas);
+    var simple = <?php echo json_encode($label);?>;
+    var taxlabe = <?php echo json_encode($taxlabel);?>;
+    var salabe = <?php echo json_encode($salabel);?>;
+    var areaChartData = {
+      labels: simple,
+      datasets: [
+        {
+          label: "Tax",
+          fillColor: "#822502",
+          strokeColor: "#822502",
+          pointColor: "#822502",
+          pointStrokeColor: "#c1c7d1",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: "rgba(220,220,220,1)",
+          data: taxlabe
+        },
+        {
+          label: "Salary",
+          fillColor: "rgba(60,141,188,0.9)",
+          strokeColor: "rgba(60,141,188,0.8)",
+          pointColor: "#3b8bba",
+          pointStrokeColor: "rgba(60,141,188,1)",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: "rgba(60,141,188,1)",
+          data: salabe
+        }
+      ]
+    };
+
+    var areaChartOptions = {
+      //Boolean - If we should show the scale at all
+      showScale: true,
+      //Boolean - Whether grid lines are shown across the chart
+      scaleShowGridLines: false,
+      //String - Colour of the grid lines
+      scaleGridLineColor: "rgba(0,0,0,.05)",
+      //Number - Width of the grid lines
+      scaleGridLineWidth: 1,
+      //Boolean - Whether to show horizontal lines (except X axis)
+      scaleShowHorizontalLines: true,
+      //Boolean - Whether to show vertical lines (except Y axis)
+      scaleShowVerticalLines: true,
+      //Boolean - Whether the line is curved between points
+      bezierCurve: true,
+      //Number - Tension of the bezier curve between points
+      bezierCurveTension: 0.3,
+      //Boolean - Whether to show a dot for each point
+      pointDot: false,
+      //Number - Radius of each point dot in pixels
+      pointDotRadius: 4,
+      //Number - Pixel width of point dot stroke
+      pointDotStrokeWidth: 1,
+      //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
+      pointHitDetectionRadius: 20,
+      //Boolean - Whether to show a stroke for datasets
+      datasetStroke: true,
+      //Number - Pixel width of dataset stroke
+      datasetStrokeWidth: 2,
+      //Boolean - Whether to fill the dataset with a color
+      datasetFill: true,
+      //String - A legend template
+      legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+      //Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+      maintainAspectRatio: true,
+      //Boolean - whether to make the chart responsive to window resizing
+      responsive: true
+    };
+
+    //Create the line chart
+    areaChart.Line(areaChartData, areaChartOptions);
+
+    //-------------
+    //- LINE CHART -
+    //--------------
+    var lineChartCanvas = $("#lineChart").get(0).getContext("2d");
+    var lineChart = new Chart(lineChartCanvas);
+    var lineChartOptions = areaChartOptions;
+    lineChartOptions.datasetFill = false;
+    lineChart.Line(areaChartData, lineChartOptions);
+
+    //-------------
+    //- PIE CHART -
+    //-------------
+    // Get context with jQuery - using jQuery's .get() method.
+    var pieChartCanvas = $("#pieChart").get(0).getContext("2d");
+    var pieChart = new Chart(pieChartCanvas);
+    var PieData = [
+      {
+        value: 700,
+        color: "#f56954",
+        highlight: "#f56954",
+        label: "Chrome"
+      },
+      {
+        value: 500,
+        color: "#00a65a",
+        highlight: "#00a65a",
+        label: "IE"
+      },
+      {
+        value: 400,
+        color: "#f39c12",
+        highlight: "#f39c12",
+        label: "FireFox"
+      },
+      {
+        value: 600,
+        color: "#00c0ef",
+        highlight: "#00c0ef",
+        label: "Safari"
+      },
+      {
+        value: 300,
+        color: "#3c8dbc",
+        highlight: "#3c8dbc",
+        label: "Opera"
+      },
+      {
+        value: 100,
+        color: "#d2d6de",
+        highlight: "#d2d6de",
+        label: "Navigator"
+      }
+    ];
+    var pieOptions = {
+      //Boolean - Whether we should show a stroke on each segment
+      segmentShowStroke: true,
+      //String - The colour of each segment stroke
+      segmentStrokeColor: "#fff",
+      //Number - The width of each segment stroke
+      segmentStrokeWidth: 2,
+      //Number - The percentage of the chart that we cut out of the middle
+      percentageInnerCutout: 50, // This is 0 for Pie charts
+      //Number - Amount of animation steps
+      animationSteps: 100,
+      //String - Animation easing effect
+      animationEasing: "easeOutBounce",
+      //Boolean - Whether we animate the rotation of the Doughnut
+      animateRotate: true,
+      //Boolean - Whether we animate scaling the Doughnut from the centre
+      animateScale: false,
+      //Boolean - whether to make the chart responsive to window resizing
+      responsive: true,
+      // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+      maintainAspectRatio: true,
+      //String - A legend template
+      legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+    };
+
+</script>

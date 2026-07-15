@@ -1,0 +1,3581 @@
+
+
+<!-- <!?php
+if (!isset($GLOBALS['attendance_rendered'])) {
+    $GLOBALS['attendance_rendered'] = true;
+    echo $this->element('attendance-results');
+}
+?> -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
+<style>
+  /* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap'); */
+body {
+ font-famly:'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: #f4f6f9;
+  color: #333;
+}
+
+    table.dataTable tbody th, table.dataTable tbody td {
+    text-align: center;
+    }
+.table>thead>tr>th {
+    padding: 3px !important;
+}
+/* Dashboard header */
+h1 {
+   font-famly:'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    font-size: 32px;
+}
+/* Chart titles */
+.box-title {
+   font-famly:'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+/* Summary tables */
+.emp-summary-table th,
+.emp-summary-table td {
+   font-famly:'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+}
+.dt-buttons{
+    margin-top:10px !important;
+}
+
+.emp-summary-table th {
+    font-weight: 600;
+}
+
+
+
+.emp-summary-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;     
+  margin-top: 0;  
+}
+
+.emp-summary-wrapper,
+.emp-summary-wrapper2 {
+    width: 100%;
+    height: 100%;
+    transition: all 0.3s ease;
+    min-height: 380px;
+    min-width: 600px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    min-width: 300px; 
+    overflow: hidden; 
+}
+.box.box-info:hover,
+.box.box-warning:hover,
+.emp-summary-wrapper:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.emp-summary-table {
+  width: 100%;
+  min-width: 100%;
+  white-space: nowrap;
+ font-famly:'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  border-collapse: collapse;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+.emp-summary-table tr {
+    transition: all 0.3s ease;
+}
+
+.emp-summary-table tr:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+    cursor: pointer;
+}
+
+.emp-summary-table th,
+.emp-summary-table td {
+  padding: 25px 20px;
+  border: 1px solid #e0e0e0;
+  text-align: left;
+  font-size: 16px
+   min-width: 120px;
+}
+
+.emp-summary-table th {
+  background-color: #f1f1f1;
+  width: 60%;
+  font-weight: 600;
+}
+
+.emp-badge-yes {
+  background-color: #2e7d32;
+  color: #fff;
+  padding: 8px 15px;
+  border-radius: 15px;
+  font-size: 14px;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.emp-badge-no {
+  background-color: #c62828;
+  color: #fff;
+  padding: 8px 15px;
+  border-radius: 15px;
+  font-size: 14px;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.emp-leave-count {
+  font-size:16px;
+  font-weight: 600;
+  color: #222;
+  transition: all 0.3s ease;
+}
+.emp-badge-yes:hover {
+    background-color: #1e5c25;
+    transform: scale(1.1);
+}
+
+.emp-badge-no:hover {
+    background-color: #9c1f1f;
+    transform: scale(1.1);
+}
+.box.box-success {
+    transition: all 0.3s ease;
+}
+.box-body {
+    flex: 1;
+    position: relative;
+    padding-bottom: 20px; /* Add padding at bottom */
+}
+
+.box.box-info {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.box.box-info,
+.box.box-warning {
+    height: 400px;
+    transition: all 0.3s ease;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    min-width: 300px; 
+    overflow: hidden; 
+}
+
+.box.box-success:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.box-body {
+    height: calc(100% - 60px); 
+    overflow: hidden;
+    padding: 0;
+    height: auto;
+}
+.zoom_img{
+display:block;
+opacity:2;
+font-size:0px;
+-moz-transition:-moz-transform 0.5s ease-in; 
+-webkit-transition:-webkit-transform 0.5s ease-in; 
+-o-transition:-o-transform 0.5s ease-in;
+}
+
+#present:hover .zoom_img{
+font-size:10px;
+overflow:hidden;
+-moz-transform:scale(1.3); 
+-webkit-transform:scale(1.3);
+-o-transform:scale(1.3);
+}
+#absent:hover .zoom_img{
+font-size:10px;
+overflow:hidden;
+-moz-transform:scale(1.3); 
+-webkit-transform:scale(1.3);
+-o-transform:scale(1.3);
+}
+#presentall:hover .zoom_img{
+font-size:10px;
+overflow:hidden;
+-moz-transform:scale(1.3); 
+-webkit-transform:scale(1.3);
+-o-transform:scale(1.3);
+}
+.coverage-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr); 
+    gap: 25px;
+    padding: 20px;
+    height: 100%;
+    overflow:hidden;
+    min-width: 600px;
+}
+
+.coverage-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    min-width: 250px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    height: auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.coverage-icon {
+    width: 70px;
+    height: 70px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+}
+
+.coverage-icon i {
+    font-size: 32px;
+    color:rgb(12, 12, 76);
+}
+
+.coverage-details h4 {
+    margin: 0 0 8px 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 18px;        /* Increased from 16px */
+    color: #666;
+    font-weight: 600;
+    white-space: normal;    /* Changed from nowrap to allow wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;       /* Add line height for wrapped text */
+    min-height: 44px;       /* Add minimum height for 2 lines */
+}
+
+.coverage-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 500;
+}
+/* 
+.dataTables_wrapper .dataTables_info {
+    color: rgb(79 79 79) !important;
+    font-weight: 600 !important;
+} */
+
+
+.coverage-indicator i {
+    font-size: 24px;  /* Increased from default */
+}
+
+/* Add to your existing CSS */
+.chart-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pagination-controls button {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pagination-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+    background: #f0f0f0;
+}
+
+.page-number {
+    font-size: 14px;
+    color: #666;
+    margin: 0 10px;
+}
+
+.pagination-info {
+    font-size: 14px;
+    color: #666;
+}
+
+
+.leave-counter {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+@media (max-width: 1200px) {
+    .coverage-cards {
+        grid-template-columns: repeat(2, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .coverage-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+.leave-days {
+    font-size: 32px;
+    font-weight: 600;
+    color:rgb(2, 171, 16);
+}
+
+.leave-label {
+    font-size: 18px;
+    color: #666;
+}
+.dashboard{
+    width:25%;
+}
+/*edited by sinsiya on 17-06-2024*/
+.pws_tabs_container ul.pws_tabs_controll li a {
+    width: 180px;
+    height: 56px;
+   text-align:center;
+    
+}
+
+ 
+    #todayattandence .serial-number {
+        padding-left: 20px !important; /* Adjust padding as needed */
+    }
+    
+    #todayattandence th.serial-number {
+        padding-left: 20px !important; /* Adjust padding as needed */
+    }
+    #todayattandence .direction-column {
+        padding-left: 60px !important; /* Adjust padding as needed */
+    }
+
+    
+    #todayattandence th.direction-column {
+        padding-left: 60px !important; /* Adjust padding as needed */
+    }
+
+  .sl-no-forward {
+        padding-left: 20px !important; /* Adjust the value as needed */
+    }
+    .direction-forward {
+        padding-left: 60px !important; /* Adjust the value as needed */
+    }
+
+/*edited  by ASHIN on 28-06-24*/
+    #todayattandence th.date-column {
+    width: 50px; /* Adjust the width as needed */
+    }    
+
+    #todayattandence_filter{
+        margin-top:10px;
+    }
+    #thismonthattandence_filter{
+        margin-top:10px;
+    }
+   #lastmonthattandence_filter{
+        margin-top:10px;
+    }
+
+    #thismonthattandence th.date-column{
+        width: 50px;
+    }
+    #lastmonthattandence th.date-column{
+        width: 50px;
+    }
+    #loadlists th.date-column{
+        width: 50px;
+    }
+    #misspunch th.date-column{
+        width: 50px;
+    }
+    #reportproblem th.date-column{
+        width: 50px;
+    }
+    #EmployeesUpdaets th.date-column{
+        width: 50px;
+    }
+    #EmployeesEvents th.date-column{
+        width: 50px;
+    }
+
+.box {
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  border: none;
+  background: #ffffff;
+  margin-bottom: 25px;
+}
+
+.box-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+    border-bottom: 2px solid #f0f0f0;
+    padding: 15px 20px;
+}
+
+.box-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #34495e;
+}
+/* Style the scrollable content areas */
+
+.approvals-section {
+    margin-bottom: 20px;
+}
+.events-list,
+.approval-list {
+    max-height: 320px; /* Adjust based on your header height */
+    overflow: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    padding: 15px;
+}
+
+/* Webkit scrollbar styles */
+.events-list::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.events-list::-webkit-scrollbar-track {
+    background: #f8fafc;
+    border-radius: 3px;
+}
+
+.events-list::-webkit-scrollbar-thumb {
+    background-color: #cbd5e0;
+    border-radius: 3px;
+}
+.events-list::-webkit-scrollbar-corner,
+.emp-summary-wrapper::-webkit-scrollbar-corner {
+    background: #f8fafc;
+    display: none;
+}
+
+/* Box headers */
+.box-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+
+/* Add this CSS to your existing styles */
+.info-box {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+
+
+/* Hover effect for specific dashboard items */
+#total-employees .info-box:hover,
+#present-today .info-box:hover,
+#active-employees .info-box:hover,
+#absent .info-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+/*lakshmi 05-06-2025*/
+/* New styles for the Donut chart box */
+.box.box-danger {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+    height: auto;
+    min-height: 450px;       
+    margin-top: 10px;
+}
+
+.main-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Add this to prevent content overflow */
+    transition: margin-left 0.3s ease; /* Smooth transition when sidebar toggles */
+}
+.chart-responsive::-webkit-scrollbar,
+.emp-summary-wrapper::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+
+/* Hide scrollbar by default */
+#salaryChartContainer {
+    overflow-x: hidden;
+}
+
+/* Show scrollbar when sidebar is expanded */
+.sidebar-expanded #salaryChartContainer {
+    overflow-x: auto;
+}
+
+.chart-responsive::-webkit-scrollbar-track,
+.emp-summary-wrapper::-webkit-scrollbar-track {
+    background: #E8E8E8;
+    border-radius: 3px;
+}
+.chart-responsive::-webkit-scrollbar-thumb,
+.emp-summary-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(158, 158, 158, 0.7);
+    border-radius: 3px;
+}
+
+.chart-responsive::-webkit-scrollbar-thumb:hover,
+.emp-summary-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(158, 158, 158, 0.9);
+}
+
+/* For Firefox */
+.chart-responsive,
+.emp-summary-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color:scrollbar-color: rgba(158, 158, 158, 0.7) #E8E8E8;
+}
+
+/* Ensure containers have proper overflow settings */
+.chart-responsive,
+.emp-summary-wrapper {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 10px;
+   
+}
+
+
+.box.box-danger:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.box.box-danger .box-header {
+    padding: 20px;
+    border-bottom: 1px solid #f0f0f0;
+    background: #ffffff;
+    border-radius: 12px 12px 0 0;
+}
+
+.box.box-danger .box-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.box.box-danger .chart-responsive {
+    padding: 15px;
+    background: #ffffff;
+    border-radius: 0 0 12px 12px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.box.box-primary .chart-responsive {
+    padding: 20px;
+    height: 350px;
+    display: flex;
+    align-items: center;
+    min-height: 350px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.chart-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.chart-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.chart-responsive::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.chart-responsive::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+#donut-chart {
+    margin: 0 auto;
+    transition: all 0.3s ease;
+}
+/* Style for hover tooltips */
+.morris-hover.morris-default-style {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.95); /* 5. Background with transparency */
+    border: none;
+    border-radius: 8px;
+    padding: 12px 15px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1); /* 6. Subtle shadow effect */
+   font-famly:'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /* z-index: 1000; */
+    min-width: 150px;
+    padding: 6px;
+    color: #666;
+}
+
+.morris-bar-label {
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    fill: #333;
+}
+
+
+.morris-hover-info {
+    padding: 5px;
+}
+
+.morris-hover-info .dept-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+    white-space: nowrap;
+}
+
+.morris-hover-info .emp-count {
+    font-size: 13px;
+    color: #666;
+}
+.dataTables_wrapper .dataTables_filter input {
+    height: 30px !important;
+    line-height: 50px !important;
+    font-size: 1.1rem;
+    padding: 3px;
+}
+
+
+.morris-hover-info .emp-count span {
+    font-weight: 600;
+    color: #32CD32;
+}
+/*update by lakshmi 07-06-2025*/
+.charts-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    padding: 20px;
+    margin-bottom: 30px;
+    align-items: stretch; /* This will align items to the top */
+}
+.charts-left-column {
+    display: flex;
+    grid-template-columns: 1fr;
+    gap: 25px;
+}
+
+.chart-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 0 15px;
+}
+.chart-legend {
+    display: flex;
+    align-items: center;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: #666;
+}
+
+.color-box {
+    width: 12px;
+    height: 12px;
+    background: #32CD32;
+    margin-right: 8px;
+    border-radius: 2px;
+}
+
+.department-filter {
+    width: 200px;
+}
+
+.chart-search {
+    padding: 0 15px;
+    margin-bottom: 15px;
+}
+
+#dept-search {
+    max-width: 300px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+}
+
+
+
+/* body, .options-container, .option-card, .option-label, .attendance-options, .optio-card, .optio-icon, .attendance-results {
+       font-famly:'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+} */
+
+.custom-modal-width {
+    max-width: 95% !important; /* or any value you want */
+    width: 95% !important;
+}
+
+/*.options-container{
+    display: flex;
+    gap: 16px;
+    margin: 20px 0;
+    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #ffffff;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.08); 
+    padding: 16px 10px;
+    flex-wrap: wrap;
+}*/
+.option-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 16px 0;
+}
+
+.option-card {
+    background: #ffffff;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    padding: 16px 22px;
+    min-width: 260px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    flex: 1 1 240px;
+    max-width: 100%;
+    border: none;
+}
+
+.option-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.option-icon-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 18px;
+    background-color: #2563eb; /* example color */
+    flex-shrink: 0;
+}
+
+.option-card.active {
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+    transform: scale(1.02);
+    outline: 2px solid #2563eb;
+    outline-offset: 0px;
+    background-color: #f0f8ff;
+}
+.option-card.active .option-icon {
+    font-size: 2.2rem;
+}
+
+.option-card.attendance .option-icon-circle {
+    background: #2563eb; /* blue */
+}
+.option-card.missed .option-icon-circle {
+    background: #dc2626; /* red */
+}
+.option-card.visits .option-icon-circle {
+    background: #059669; /* green */
+}
+.option-card.support .option-icon-circle {
+    background: #7c3aed; /* purple */
+}
+
+.option-label {
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #1e293b;
+}
+.option-card.active {
+    border: 2px solid #2563eb;
+    background-color: #e8f0ff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    transition: all 0.3s ease;
+}
+
+.option-card.active .option-label {
+    color: #1d4ed8;
+}
+
+div#attendance-results > .attendance-table-wrapper:nth-child(2) {
+    display: none;
+}
+
+
+.option-icon {
+    font-size: 2rem;
+    color: #ffffff; /* white icon */
+    margin-bottom: 0; /* remove previous offset */
+    text-shadow: none; /* remove glow */
+}
+
+@media (max-width: 900px) {
+    .option-row {
+        flex-direction: column;
+        gap: 14px;
+        align-items: stretch;
+    }
+    .option-card {
+        width: 100%;
+        min-width: unset;
+        max-width: unset;
+    }
+}
+
+.attendance-options {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: slideDown 0.3s ease-out;
+}
+.option-card.active .option-label {
+    font-size: 1.15rem; /* slightly larger */
+    font-weight: 600;
+    color: #1d4ed8; /* slightly deeper blue for text */
+}
+.optio-card {
+    background: #ffffff; /* pure white */
+    border-radius: 14px;
+    padding: 16px 22px;
+    min-width: 220px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+}
+
+.optio-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+.optio-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color:rgb(0, 149, 168); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.optio-card h4 {
+    margin: 0;
+       font-famly:'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #1e293b;
+}
+.attendance-results {
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    min-height: 0;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #6B7280;
+}
+
+@media (max-width: 768px) {
+    .option-row {
+        flex-direction: column;
+    }
+    
+    .attendance-options {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+.box.box-success {
+    height: 100%;
+    min-height: 350px
+    margin: 0;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 0;
+    padding: 0;
+    width: 100%;
+    flex: 1;
+    overflow: hidden;
+}
+
+.box.box-success .chart-responsive {
+    padding: 15px 25px 15px 15px;
+    height: calc(100% - 50px);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#salaryChart {
+    height: 300px !important; 
+    width: 100% !important; 
+    min-height: 280px;
+    margin-left: -10px; 
+}
+
+#bar-chart {
+    height: 280px !important;
+}
+.box.box-primary,
+.box.box-danger {
+    margin: 0;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+
+#issue-report-table {
+   font-famly:'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+     border:none;
+}
+
+/* Style table headers */
+#issue-report-table thead th {
+    background-color: #0c5e8e;
+    color: white;
+    text-align: center;
+   
+}
+
+/* Style rows */
+#issue-report-table tbody td {
+    padding: 8px 10px;
+    border:none;
+}
+.box.box-danger {
+    height: auto;
+    margin-top: 10px; /* Adjust this value to move chart higher */
+}
+.box.box-primary {
+    transition: all 0.3s ease;
+}
+
+.box.box-primary:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Adjust chart heights */
+#horizontal-bar-chart {
+    height: 350px !important; 
+    width: 100%;
+    margin-top: 20px;
+    min-width: 300px !important;
+    padding:20px;
+    position: relative;
+
+}
+
+#horizontal-bar-chart {
+    transition: all 0.3s ease;
+    transform-origin: left center;
+}
+
+
+#horizontal-bar-chart rect {
+    transition: all 0.3s ease;
+    cursor: pointer
+}
+
+.salary-chart-scroll{
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 8px;
+}
+
+.salary-chart-inner {
+    min-width: 700px;
+}
+
+.dashboard-container {
+    padding: 0 20px;
+    max-width: 100%;
+    margin: 0 auto 0 auto;
+}
+
+
+
+
+
+
+/* Adjust the text alignment for Y-axis labels */
+#horizontal-bar-chart text[text-anchor="middle"] {
+    font-weight: 600;
+    fill: #191970;
+}
+
+.box.box-primary .box-body {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0;
+}
+
+#horizontal-bar-chart svg {
+    transition: all 0.3s ease;
+    transform-origin: left center;
+}
+
+#horizontal-bar-chart rect:hover {
+    opacity: 0.8;
+    fill:rgba(50, 67, 15, 0.71);
+    cursor: pointer;
+}
+
+#horizontal-bar-chart text[text-anchor="middle"] {
+    font-weight: 600;
+    fill: #444;
+
+}
+
+
+#horizontal-bar-chart text {
+   font-famly:'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    transition: transform 0.3s ease;
+}
+
+#donut-chart {
+    height: 400px !important;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+    width: 100% !important;   /* Add this */
+    max-width: 500px;         /* Add this */
+    display: flex;            /* Add this */
+    justify-content: center;  /* Add this */
+}
+#horizontal-bar-chart {
+    height: 100%;
+    width: 100%;
+}
+
+#donut-chart svg {
+    display: block;           
+    margin: 0 auto;         
+}
+
+
+
+.emp-summary-table th,
+.emp-summary-table td {
+    padding: 12px 15px;  /* Slightly reduced padding */
+}
+/* Update the charts container styles */
+.charts-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    padding: 20px;
+    margin-bottom: 30px;
+    align-items: start;
+    min-height: 400px; /* Set minimum height for container */
+}
+.box.box-primary {
+    height: auto;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Add scroll indicator */
+.scroll-hint {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.scroll-hint:hover {
+    opacity: 1;
+}
+
+
+
+.chart-zoom-controls .btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.chart-zoom-controls .btn i {
+    font-size: 14px;
+}
+
+.chart-zoom-controls .btn + .btn {
+    margin-left: 2px;
+}
+
+/* Update the box styles for both charts */
+.box.box-primary,
+.box.box-danger {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+/* edited by athira on 22-07-2025 */
+#horizontal-bar-chart text {
+    font-family: 'Inter', sans-serif !important;
+    /* font-size: 9px !important; */
+    fill: #333 !important;
+    text-rendering: optimizeLegibility;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    letter-spacing: 0.1px; 
+}
+/* end */
+
+/* Add custom SVG text wrapping */
+#horizontal-bar-chart .morris-hover {
+    white-space: normal;
+    width: 150px;
+}
+.chart-responsive {
+    position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex: 1;
+    padding: 0;
+    padding-left: 0 !important; /* Increased left padding for labels */
+    min-height: 400px;
+    display: flex;          
+    justify-content: center;  
+    align-items: center; 
+}
+
+/* Specific adjustments for donut chart */
+#donut-chart {
+    margin-top: -20px; /* Move content higher */
+    height: 280px !important; /* Slightly reduced height */
+}
+
+/* Specific adjustments for horizontal bar chart */
+#horizontal-bar-chart {
+    height: 300px !important; 
+    padding: 20px;
+    width:100%;
+    margin-top: 20px;
+}
+
+/* Headers styling */
+.box-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.box-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* events */
+
+.upcoming-events-container {
+    height: 400px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 8px;
+}
+
+.upcoming-events {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+    overflow-y: auto;
+    padding: 15px;
+    padding-bottom: 20px;
+    box-sizing: border-box;
+
+    /* Scrollbar styles */
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f4f4f4;
+}
+
+.upcoming-events::-webkit-scrollbar {
+    width: 6px;
+    background-color: #f4f4f4;
+}
+
+.upcoming-events::-webkit-scrollbar-track {
+    background: #f4f4f4;
+    border-radius: 3px;
+}
+
+.upcoming-events::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.upcoming-events::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.event-item {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 12px;
+    border-radius: 4px;
+    border-bottom: 1px solid #f0f0f0;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+
+
+.info-sections-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    padding: 20px;
+    margin-bottom: 30px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+.event-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: #fff;
+}
+
+.event-details {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.event-details > .event-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #333;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.event-details-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.event-description, .event-date {
+    font-size: 15px;
+    color: #666666;
+    font-weight: 600;
+}
+
+.event-actions button {
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 20px;
+}
+
+/* Responsive Fix */
+@media (max-width: 768px) {
+    .event-details-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .event-item {
+        flex-direction: column;
+    }
+
+    .event-icon {
+        margin-bottom: 10px;
+    }
+
+    .event-description,
+    .event-date {
+        font-size: 14px;
+    }
+
+    .event-actions {
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+}
+
+.event-icon.birthday { background: #00a65a; }
+.event-icon.work-anniversary { background: #3c8dbc; }
+.event-icon.hol { background: rgb(243, 22, 18); }
+
+
+
+
+.no-events {
+    text-align: center;
+    color: #999;
+    padding: 20px;
+}
+
+.stats-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+.stat-card {
+    flex: 1;
+    display: flex;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    min-height: 80px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+
+.stat-icon {
+    width: 80px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover .stat-icon {
+    background: rgba(255,255,255,0.2);
+    transform: scale(1.05);
+}
+
+.stat-card:hover .stat-value {
+    transform: scale(1.1);
+}
+
+
+.stat-icon i {
+    font-size: 24px;
+    color: #fff;
+}
+
+.stat-details {
+    flex: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.bg-info {
+    background: linear-gradient(135deg, #00BCD4, #008b9c);
+}
+
+.bg-success {
+    background: linear-gradient(135deg, #4CAF50, #388E3C);
+}
+
+.bg-primary {
+    background: linear-gradient(135deg,rgba(240, 190, 73, 0.97),rgb(210, 114, 25));
+}
+
+.bg-danger {
+    background: linear-gradient(135deg,rgb(159, 57, 50),rgb(155, 28, 28));
+}
+
+@media (max-width: 768px) {
+    .stats-container {
+        flex-direction: column;
+    }
+    
+    .stat-card {
+        width: 100%;
+    }
+}
+
+
+
+/* Approvals Section */
+.approval-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.approval-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+}
+
+.approval-item:hover {
+    background-color:rgba(248, 249, 250, 0.53);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.approval-type {
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.approval-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #f39c12;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.approval-icon i {
+    font-size: 24px;
+}
+.approval-icon.leave { background: #f39c12; }
+.approval-icon.promotion { background: #00a65a; }
+.approval-icon.expense { background: #dd4b39; }
+.approval-icon.regularisation { background: #605ca8; }
+.approval-icon.verification { background: #0073b7; }
+
+.approval-content {
+    flex: 1;
+}
+
+.approval-label {
+    display: block;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.approval-count {
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.approval-subtitle {
+    display: block;
+    font-size: 12px;
+    color: #999;
+    margin-top: 2px;
+}
+
+.total-count {
+    background: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 10px;
+    font-size: 18px;
+    color: #f39c12;
+}
+
+
+
+
+.approval-details {
+    display: flex; 
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.employee-name {
+    font-weight: 500;
+}
+
+.request-date {
+    font-size: 12px;
+    color: #666;
+}
+
+.approval-actions {
+    display: flex;
+    gap: 5px;
+}
+
+
+.approvals-section {
+    overflow: hidden;  /* Removes scrollbar */
+}
+
+.box-body {
+    overflow: visible;  
+    max-height: none;
+}
+
+.approval-list {
+    overflow: visible;  /* Removes scrollbar */
+    height: auto;      /* Allows content to expand naturally */
+    max-height: none;  /* Removes any height restriction */
+}
+
+
+/* Event and approval items hover effects */
+.event-item:hover,
+.approval-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+    transition: all 0.3s ease-in;
+}
+
+/* Update badge hover effects */
+.event-badge,
+.approval-type {
+    transition: all 0.3s ease;
+}
+
+.event-badge:hover,
+.approval-type:hover {
+    transform: scale(1.1);
+}
+
+/* Style the empty state */
+.events-list:empty::after,
+.approval-list:empty::after {
+    content: 'No items to display';
+    display: block;
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-style: italic;
+}
+.emp-summary-wrapper {
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #686868 #f8fafc;
+    -ms-overflow-style: none;  
+    scrollbar-width: none;     
+    overflow-x: auto; 
+}
+
+.emp-summary-wrapper::-webkit-scrollbar {
+    display: none;
+    width: 6px;
+    height: 6px;
+}
+
+.emp-summary-wrapper::-webkit-scrollbar-track {
+    background: #E8E8E8;
+    border-radius: 3px;
+}
+
+.emp-summary-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(158, 158, 158, 0.7);
+    border-radius: 3px;
+}
+
+
+/* Update coverage cards */
+.coverage-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 10px;
+    width: 100%;
+    min-width: 600px;
+}
+
+.coverage-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    min-width: 250px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    height: auto;
+}
+
+
+.coverage-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.coverage-details h4 {
+    margin: 0 0 8px 0;
+    font-size: 17px;
+    color: #666;
+    font-weight: 600;
+    white-space: pre-wrap; /* Changed from normal */
+    overflow-wrap: break-word; /* Add this */
+    word-wrap: break-word; /* Add this */
+    line-height: 1.3;
+    margin-right: 10px; 
+    max-width: 150px; 
+}
+
+.leave-counter {
+    display: flex;
+    flex-direction: column; /* Stack label below number */
+    gap: 8px;
+}
+
+.leave-days {
+    font-size: 30px;
+    font-weight: 600;
+    color: rgb(2, 171, 16);
+    line-height: 1;
+}
+
+.leave-label {
+    font-size: 15px;
+    color: #666;
+    white-space: pre-wrap; /* Changed from normal */
+    line-height: 1.2;
+}
+
+/* Add wrapper scroll styling */
+.emp-summary-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    padding: 15px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+</style>
+<section class="content-header">
+    <h1 style="text-align:center;font-size:32px;">
+        <!--<i class="fa fa-dashboard"></i> Dashboard-->
+<i class=""></i> Dashboard  <!--edited by sinsiya 07-06-2024-->
+        <!--<small>Control panel</small>-->
+    </h1>
+    <ol class="breadcrumb">
+<!--        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>-->
+<!--edited by sinsiya to change the date formate in to 07 june 2024-->
+       <li class="active">
+    <?php  
+    function ordinalSuffix($day) {
+        return $day;
+    }
+ //edited by ASHIN on 28-06-24
+    $date = date("d-m-Y");         
+    list($day, $month, $year) = explode('-', $date);
+
+    $months = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+
+    echo '<sub style="font-size: 18px; vertical-align: -0.07em;font-weight: bold;">' . ordinalSuffix($day) . ' ' . $months[$month - 1] . ' ' . $year . '</sub>';
+    ?>
+</li>
+    </ol>
+</section>
+
+<!--lakshmi>
+<Top contents-->
+<div class="stats-container">
+    <!-- Total Employees -->
+    <div class="stat-card bg-info">
+        <div class="stat-icon">
+            <i class="fa fa-users"></i>
+        </div>
+        <div class="stat-details">
+            <div class="stat-label">TOTAL EMPLOYEES</div>
+            <div class="stat-value"><?php echo h($count); ?></div>
+        </div>
+    </div>
+
+    <!-- Present Today -->
+    <div class="stat-card bg-success" id="present-today">
+        <div class="stat-icon">
+            <i class="fa fa-user"></i>
+        </div>
+        <div class="stat-details">
+            <div class="stat-label">PRESENT TODAY</div>
+            <div class="stat-value"><?php echo h($presentall); ?></div>
+        </div>
+    </div>
+
+    <!-- Active Employees -->
+    <div class="stat-card bg-primary" id="active-today">
+        <div class="stat-icon">
+            <i class="fa fa-users"></i>
+        </div>
+        <div class="stat-details">
+            <div class="stat-label">ACTIVE EMPLOYEES</div>
+            <div class="stat-value"><?php echo h($present); ?></div>
+        </div>
+    </div>
+
+    <!-- Absent This Month -->
+    <div class="stat-card bg-danger" id="absent_this_month">
+        <div class="stat-icon">
+            <i class="fa fa-user-times"></i>
+        </div>
+        <div class="stat-details">
+            <div class="stat-label">ABSENT NOW</div>
+            <!-- <div class="stat-value"><?//php echo $count - $presentall; ?></div> -->
+             <div class="stat-value"><?php  echo h($absentcount); ?></div>
+        </div>
+    </div>
+</div>
+
+<!--end-lakshmi-->
+ 
+
+<!-- gawtham -->
+<!-- Main content -->
+<!-- Info Boxes -->
+<!--div class="row stats-row" style="padding: 35px 20px 5px 20px;"-->
+
+<!-- Total employees -->
+<!-- edited by athira on 01-05-2025 -->
+    <!--div  id="total-employees" class="dashboard col-sm-6 col-xs-12 ">
+        <div class="small-box bg-info">
+            <span class="info-box-icon bg-aqua">
+                <span class="fa-stack fa-md">
+                    <i class="fa fa-users fa-stack-1x" style="color:rgb(33, 19, 112);"></i>
+                </span>
+            </span>
+            <div class="info-box-content"> 
+                <span class="info-box-text" style="text-transform: none;margin-top:25px;">TOTAL EMPLOYEES</span>
+                <span class="info-box-number"><?php echo h($totalEmployeeCount); ?></span>
+                <span class="info-box-text zoom_img pull-right"><i class="fa fa-info-circle"></i></span>
+            </div>
+        </div>
+    </div-->
+<!-- end -->
+
+<!-- employees present -->
+<!-- div id="present-today" class="dashboard col-sm-6 col-xs-12"
+    data-toggle="modal"
+    data-target="#dashboardModal"
+    data-title="Present Today"
+    data-body="Total <?php echo h($pf_count); ?> employees are not covered under PF."
+    data-excel-url="excel/pf_not_covered.xlsx">
+    <div class="small-box bg-success">
+        <span class="info-box-icon bg-green"><i class="fa fa-check-circle" style="color:rgb(239, 238, 182);"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Present Today</span>
+            <span class="info-box-number"><?php echo h($presentTodayCount); ?></span>
+        </div>
+    </div>
+</div -->
+
+<!-- Active -->
+<!--div id="active-employees" class="dashboard col-sm-6 col-xs-12"
+    data-toggle="modal"
+    data-target="#dashboardModal"
+    data-title="Active Employees"
+    data-body="Active Employees: <?php echo h($vleavecountF1); ?>."
+    data-excel-url="excel/leaves_this_month.xlsx">
+    <div class="small-box bg-primary">
+        <span class="info-box-icon bg-green"><i class="fa fa-users"  style="color:rgb(19, 16, 64);"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Active Employees</span>
+            <span class="info-box-number"><?php echo h($activeEmployeeCount); ?></span>
+        </div>
+    </div>
+</div-->
+
+<!-- Absent -->
+<!--div id="absent" class="dashboard col-sm-6 col-xs-12"
+    data-toggle="modal"
+    data-target="#dashboardModal"
+    data-title="Employees Without ESI Number"
+    data-body="Employees without ESI No: <?php echo h($esiEmployeeCount); ?>."
+    data-excel-url="excel/no_esi.xlsx">
+    <div class="info-box zoom">
+       <span class="info-box-icon bg-red"><i class="fa fa-user-times"  style="color:rgb(70, 12, 12);"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Absent This Month</span>
+            <span class="info-box-number"><?php echo h($absentCount); ?></span>
+        </div>
+    </div>
+</div-->
+
+<!-- No Qualification Entered -->
+<!-- <div id="no-qualification" class="dashboard col-sm-6 col-xs-12"
+    data-toggle="modal"
+    data-target="#dashboardModal"
+    data-title="No Qualification Entered"
+    data-body="Employees without qualification: <?php echo h($noQualificationCount); ?>."
+    data-excel-url="excel/no_qualification.xlsx">
+    <div class="info-box zoom">
+        <span class="info-box-icon bg-teal"><i class="fa fa-graduation-cap"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">No Qualification</span>
+            <span class="info-box-number"><?php echo h($noQualificationCount); ?></span>
+        </div>
+    </div>
+</div>
+
+No Nominee Details -->
+<!-- <div id="no-nominee" class="dashboard col-sm-6 col-xs-12"
+    data-toggle="modal"
+    data-target="#dashboardModal"
+    data-title="No Nominee Details"
+    data-body="Employees without nominee details: <?php echo h($noNomineeCount); ?>."
+    data-excel-url="excel/no_nominee.xlsx">
+    <div class="info-box zoom">
+    <span class="info-box-icon bg-yellow"><i class="fa fa-user"></i></span>
+
+        <div class="info-box-content">
+            <span class="info-box-text">No Nominee</span>
+            <span class="info-box-number"><?php echo h($noNomineeCount); ?></span>
+        </div>
+    </div>
+</div> -->
+
+<!-- Pending Leave Approval -->
+<!-- <div id="pending-leaves" class="dashboard col-sm-6 col-xs-12"
+    data-toggle="modal"
+    data-target="#dashboardModal"
+    data-title="Pending Leave Approvals"
+    data-body="Pending leave approvals: <?php echo h($pendingLeaveApprovalCount); ?>."
+    data-excel-url="excel/pending_leaves.xlsx">
+    <div class="info-box zoom">
+        <span class="info-box-icon bg-red"><i class="fa fa-clock-o"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Pending Leaves</span>
+            <span class="info-box-number"><?php echo h($pendingLeaveApprovalCount); ?></span>
+        </div>
+    </div>
+</div> -->
+
+<!-- Late Comers -->
+<!-- <div id="late-comers" class="dashboard col-sm-6 col-xs-12"
+    data-toggle="modal"
+    data-target="#dashboardModal"
+    data-title="Late Comers"
+    data-body="Late arrivals this month: <?php echo h($lateComersCount); ?>."
+    data-excel-url="excel/late_comers.xlsx">
+    <div class="info-box zoom">
+        <span class="info-box-icon bg-navy"><i class="fa fa-hourglass-half"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Late Comers</span>
+            <span class="info-box-number"><?php echo h($lateComersCount); ?></span>
+        </div>
+    </div>
+</div> -->
+
+<!-- Employees in Notice Period -->
+<!-- <div id="notice-period" class="dashboard col-sm-6 col-xs-12"
+    data-toggle="modal"
+    data-target="#dashboardModal"
+    data-title="Employees in Notice Period"
+    data-body="Currently in notice period: <?php echo h($noticePeriodCount); ?>."
+    data-excel-url="excel/notice_period.xlsx">
+    <div class="info-box zoom">
+        <span class="info-box-icon bg-light-blue"><i class="fa fa-bell-o"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Notice Period</span>
+            <span class="info-box-number"><?php echo h($noticePeriodCount); ?></span>
+        </div>
+    </div>
+</div> -->
+
+<!-- Retired Employees -->
+<!-- <div id="retired-employees" class="dashboard col-sm-6 col-xs-12"
+    data-toggle="modal"
+    data-target="#dashboardModal"
+    data-title="Retired Employees"
+    data-body="Total retired employees: <?php echo h($retiredEmployeesCount); ?>."
+    data-excel-url="excel/retired_employees.xlsx">
+    <div class="info-box zoom">
+        <span class="info-box-icon bg-gray"><i class="fa fa-users"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Retired Employees</span>
+            <span class="info-box-number"><?php echo h($retiredEmployeesCount); ?></span>
+        </div>
+    </div>
+</div>  -->
+
+<!--/div-->
+<!-- /.row -->
+
+<!-- gawtham  -->
+<!-- <section class="content"> -->
+
+    
+    <!--div style="height:20px;" class="row"></div>
+
+    <div class="row">
+        <div class="col-md-6"-->
+          <!-- AREA CHART -->
+          <!--div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Area Chart</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div-->
+            <!-- <div class="box-body chart-responsive"> <div id="salaryChart" style="height: 300px;"></div>
+              <div class="chart" id="revenue-chart" style="height: 300px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><svg height="300" version="1.1" width="435" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="overflow: hidden; position: relative; top: -0.1875px;"><desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Created with Raphaël 2.3.0</desc><defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></defs><text x="49.529296875" y="261" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">0</tspan></text><path fill="none" stroke="#aaaaaa" d="M62.029296875,261H410" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="49.529296875" y="202" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">7,500</tspan></text><path fill="none" stroke="#aaaaaa" d="M62.029296875,202H410" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="49.529296875" y="143" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">15,000</tspan></text><path fill="none" stroke="#aaaaaa" d="M62.029296875,143H410" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="49.529296875" y="84.00000000000003" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4.000000000000028" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">22,500</tspan></text><path fill="none" stroke="#aaaaaa" d="M62.029296875,84.00000000000003H410" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="49.529296875" y="25.00000000000003" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4.000000000000028" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">30,000</tspan></text><path fill="none" stroke="#aaaaaa" d="M62.029296875,25.00000000000003H410" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="383.95340401785717" y="273.5" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,7)"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2013</tspan></text><text x="279.7670200892857" y="273.5" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,7)"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2012</tspan></text><path fill="#74a5c2" stroke="none" d="M62.029296875,219.05493333333334C71.7538730255164,219.56626666666668,91.20302532654921,222.62345,100.92760147706561,221.10026666666667C110.652177627582,219.57708333333335,130.1013299286148,209.1355825136612,139.82590607913122,206.86946666666668C149.44478031496809,204.6279825136612,168.68252878664185,204.88215,178.30140302247872,203.06986666666666C187.9202772583156,201.25758333333332,207.15802572998936,194.9129178506375,216.77689996582623,192.3712C226.50147611634264,189.80155118397084,245.95062841737544,182.51721666666668,255.67520456789185,182.6244C265.39978071840824,182.73158333333333,284.84893301944106,204.18057122040074,294.57350916995745,193.22866666666667C304.1923834057943,182.39580455373405,323.4301318774681,101.94395359116025,333.049006113305,95.48533333333336C342.56217843446234,89.09768692449359,361.588523076777,135.1380230769231,371.10169539793435,141.8436C380.8262715484508,148.69818974358975,400.27542384948356,147.7554,410,149.726L410,261L62.029296875,261Z" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></path><path fill="none" stroke="#3c8dbc" d="M62.029296875,219.05493333333334C71.7538730255164,219.56626666666668,91.20302532654921,222.62345,100.92760147706561,221.10026666666667C110.652177627582,219.57708333333335,130.1013299286148,209.1355825136612,139.82590607913122,206.86946666666668C149.44478031496809,204.6279825136612,168.68252878664185,204.88215,178.30140302247872,203.06986666666666C187.9202772583156,201.25758333333332,207.15802572998936,194.9129178506375,216.77689996582623,192.3712C226.50147611634264,189.80155118397084,245.95062841737544,182.51721666666668,255.67520456789185,182.6244C265.39978071840824,182.73158333333333,284.84893301944106,204.18057122040074,294.57350916995745,193.22866666666667C304.1923834057943,182.39580455373405,323.4301318774681,101.94395359116025,333.049006113305,95.48533333333336C342.56217843446234,89.09768692449359,361.588523076777,135.1380230769231,371.10169539793435,141.8436C380.8262715484508,148.69818974358975,400.27542384948356,147.7554,410,149.726" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><circle cx="62.029296875" cy="219.05493333333334" r="4" fill="#3c8dbc" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="100.92760147706561" cy="221.10026666666667" r="4" fill="#3c8dbc" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="139.82590607913122" cy="206.86946666666668" r="4" fill="#3c8dbc" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="178.30140302247872" cy="203.06986666666666" r="4" fill="#3c8dbc" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="216.77689996582623" cy="192.3712" r="4" fill="#3c8dbc" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="255.67520456789185" cy="182.6244" r="4" fill="#3c8dbc" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="294.57350916995745" cy="193.22866666666667" r="4" fill="#3c8dbc" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="333.049006113305" cy="95.48533333333336" r="4" fill="#3c8dbc" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="371.10169539793435" cy="141.8436" r="4" fill="#3c8dbc" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="410" cy="149.726" r="4" fill="#3c8dbc" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><path fill="#eaf3f6" stroke="none" d="M62.029296875,240.02746666666667C71.7538730255164,239.8072,91.20302532654921,241.35496666666666,100.92760147706561,239.1464C110.652177627582,236.93783333333334,130.1013299286148,223.33676429872497,139.82590607913122,222.35893333333334C149.44478031496809,221.39173096539162,168.68252878664185,233.23263333333333,178.30140302247872,231.36626666666666C187.9202772583156,229.4999,207.15802572998936,209.2890577413479,216.77689996582623,207.428C226.50147611634264,205.54649107468123,245.95062841737544,214.43916666666667,255.67520456789185,216.39600000000002C265.39978071840824,218.35283333333334,284.84893301944106,232.37947613843352,294.57350916995745,223.08266666666668C304.1923834057943,213.88690947176687,323.4301318774681,148.22682412523022,333.049006113305,142.42573333333334C342.56217843446234,136.6883907918969,361.588523076777,170.47037838827842,371.10169539793435,176.92893333333336C380.8262715484508,183.53101172161175,400.27542384948356,190.23343333333335,410,194.66826666666668L410,261L62.029296875,261Z" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></path><path fill="none" stroke="#a0d0e0" d="M62.029296875,240.02746666666667C71.7538730255164,239.8072,91.20302532654921,241.35496666666666,100.92760147706561,239.1464C110.652177627582,236.93783333333334,130.1013299286148,223.33676429872497,139.82590607913122,222.35893333333334C149.44478031496809,221.39173096539162,168.68252878664185,233.23263333333333,178.30140302247872,231.36626666666666C187.9202772583156,229.4999,207.15802572998936,209.2890577413479,216.77689996582623,207.428C226.50147611634264,205.54649107468123,245.95062841737544,214.43916666666667,255.67520456789185,216.39600000000002C265.39978071840824,218.35283333333334,284.84893301944106,232.37947613843352,294.57350916995745,223.08266666666668C304.1923834057943,213.88690947176687,323.4301318774681,148.22682412523022,333.049006113305,142.42573333333334C342.56217843446234,136.6883907918969,361.588523076777,170.47037838827842,371.10169539793435,176.92893333333336C380.8262715484508,183.53101172161175,400.27542384948356,190.23343333333335,410,194.66826666666668" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><circle cx="62.029296875" cy="240.02746666666667" r="4" fill="#a0d0e0" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="100.92760147706561" cy="239.1464" r="4" fill="#a0d0e0" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="139.82590607913122" cy="222.35893333333334" r="4" fill="#a0d0e0" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="178.30140302247872" cy="231.36626666666666" r="4" fill="#a0d0e0" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="216.77689996582623" cy="207.428" r="4" fill="#a0d0e0" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="255.67520456789185" cy="216.39600000000002" r="4" fill="#a0d0e0" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="294.57350916995745" cy="223.08266666666668" r="4" fill="#a0d0e0" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="333.049006113305" cy="142.42573333333334" r="4" fill="#a0d0e0" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="371.10169539793435" cy="176.92893333333336" r="4" fill="#a0d0e0" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="410" cy="194.66826666666668" r="4" fill="#a0d0e0" stroke="#ffffff" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle></svg><div class="morris-hover morris-default-style" style="left: 205.551px; top: 121px; display: none;"><div class="morris-hover-row-label">2012 Q1</div><div class="morris-hover-point" style="color: #a0d0e0">
+  Item 1:
+  6,810
+</div><div class="morris-hover-point" style="color: #3c8dbc">
+  Item 2:
+  1,914
+</div></div></div>
+            </div-->
+            <!-- /.box-body -->
+            <!--div id="salaryAreaChart" style="height: 300px;">
+            </div-->
+<!--lakshmi-->
+<script>
+    function toggleAttendanceOptions() {
+        const card = document.getElementById('attendanceCard');
+        var $options = $('#attendance-options');
+        var $results = $('#attendance-results');
+        
+        if ($options.is(':visible')) {
+            $options.slideUp(180);
+            $results.slideUp(180); 
+        } else {
+            $options.slideDown(180);
+        };
+        
+    }
+    function setActiveOption(clickedElement) {
+        const isAlreadyActive = clickedElement.classList.contains('active');
+
+        // Remove active class from all option cards
+        document.querySelectorAll('.option-card').forEach(card => card.classList.remove('active'));
+
+        // If it wasn't already active, make it active
+        if (!isAlreadyActive) {
+            clickedElement.classList.add('active');
+        }
+    }
+    //attendance options click handler
+    function loadAttendanceData(type) {
+    if (type === 'today') {
+        $('#attendance-results').html('<div class="loading">Loading...</div>').show();
+        $.ajax({
+            url: '/DashboardNew/ajax_today_attendance',
+            type: 'GET',
+            success: function (data) {
+                $('#attendance-results').html(data).show();
+                //edited  by athira on 18-08-2025
+                var table=$('#todayattandence').DataTable({
+    paging: true,
+    lengthChange: false,
+    searching: true,
+    ordering: true,
+    info: true,
+    autoWidth: false,
+    dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" + 
+                 "<'row'<'col-sm-12'tr>>" + 
+                 "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+    buttons: [
+        {
+            extend: 'print',
+            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+            title: 'My Payroll Master - Today Attendance Report',
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function (data, row, column, node) {
+                        // SL No column
+                        if (column === 0) return row + 1;
+                        // Strip HTML from other columns if any
+                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                    }
+                }
+            }
+        },
+        {
+            extend: 'pdf',
+            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+            title: 'My Payroll Master - Today Attendance Report',
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function (data, row, column, node) {
+                        if (column === 0) return row + 1;
+                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                    }
+                }
+            }
+        },
+        {
+            extend: 'excel',
+            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+            title: 'My Payroll Master - Today Attendance Report',
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function (data, row, column, node) {
+                        if (column === 0) return row + 1;
+                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                    }
+                }
+            }
+        }
+    ],
+    columnDefs: [{
+        targets: 0, // SL No column
+        orderable: false,
+        searchable: false
+    }],
+    ajax: livesite + "DashboardNew/listtodayattendance"
+});
+
+// 🔥 Update SL No after search, order, or page change
+                table.on('order.dt search.dt draw.dt', function () {
+                    table.column(0, { search: 'applied', order: 'applied', page: 'current' })
+                        .nodes()
+                        .each(function (cell, i) {
+                            cell.innerHTML = i + 1;
+                        });
+                }).draw();
+
+                //end
+
+$('.buttons-print').ready(function () {
+            $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');
+            
+        });
+        $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');
+        ;
+        $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+            },
+            error: function () {
+                $('#attendance-results').html('<div class="loading">Failed to load data.</div>').show();
+            }
+        });
+    } else if (type === 'current_month') {
+        $('#attendance-results').html('<div class="loading">Loading...</div>').show();
+        $.ajax({
+            url: '/DashboardNew/ajax_thismonth_attendance',
+            type: 'GET',
+            success: function (data) {
+                $('#attendance-results').html(data).show();
+                 //edited  by athira on 18-08-2025
+                var table = $('#thismonthattandence').DataTable({
+                    "paging": true,
+                    "lengthChange": false,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                     dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" + 
+                 "<'row'<'col-sm-12'tr>>" + 
+                 "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                   buttons: [
+        {
+            extend: 'print',
+            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+            title: 'My Payroll Master - Today Attendance Report',
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function (data, row, column, node) {
+                        // SL No column
+                        if (column === 0) return row + 1;
+                        // Strip HTML from other columns if any
+                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                    }
+                }
+            }
+        },
+        {
+            extend: 'pdf',
+            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+            title: 'My Payroll Master - Today Attendance Report',
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function (data, row, column, node) {
+                        if (column === 0) return row + 1;
+                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                    }
+                }
+            }
+        },
+        {
+            extend: 'excel',
+            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+            title: 'My Payroll Master - Today Attendance Report',
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function (data, row, column, node) {
+                        if (column === 0) return row + 1;
+                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                    }
+                }
+            }
+        }
+    ],
+    columnDefs: [{
+        targets: 0, // SL No column
+        orderable: false,
+        searchable: false
+    }],
+                    "ajax": livesite + "DashboardNew/listthismonthattendance"
+                });
+
+                // 🔥 Update SL No after search, order, or page change
+                table.on('order.dt search.dt draw.dt', function () {
+                    table.column(0, { search: 'applied', order: 'applied', page: 'current' })
+                        .nodes()
+                        .each(function (cell, i) {
+                            cell.innerHTML = i + 1;
+                        });
+                }).draw();
+                //end
+
+                 $('.buttons-print').ready(function () {
+            $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');
+            
+        });
+        $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');
+        ;
+        $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+                   },
+            error: function () {
+                $('#attendance-results').html('<div class="loading">Failed to load data.</div>').show();
+            }
+        });
+    } 
+    else if (type === 'last_month') {
+    $('#attendance-results').html('<div class="loading">Loading...</div>').show();
+    $.ajax({
+        url: '/DashboardNew/ajax_lastmonth_attendance',
+        type: 'GET',
+        success: function (data) {
+            $('#attendance-results').html(data).show();
+           //edited  by athira on 18-08-2025
+            var table= $('#lastmonthattandence').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                 dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" + 
+                 "<'row'<'col-sm-12'tr>>" + 
+                 "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                buttons: [
+        {
+            extend: 'print',
+            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+            title: 'My Payroll Master - Today Attendance Report',
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function (data, row, column, node) {
+                        // SL No column
+                        if (column === 0) return row + 1;
+                        // Strip HTML from other columns if any
+                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                    }
+                }
+            }
+        },
+        {
+            extend: 'pdf',
+            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+            title: 'My Payroll Master - Today Attendance Report',
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function (data, row, column, node) {
+                        if (column === 0) return row + 1;
+                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                    }
+                }
+            }
+        },
+        {
+            extend: 'excel',
+            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+            title: 'My Payroll Master - Today Attendance Report',
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function (data, row, column, node) {
+                        if (column === 0) return row + 1;
+                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                    }
+                }
+            }
+        }
+    ],
+    columnDefs: [{
+        targets: 0, // SL No column
+        orderable: false,
+        searchable: false
+    }],
+                "ajax": livesite + "DashboardNew/listlastmonthattendance"
+            });
+
+            // 🔥 Update SL No after search, order, or page change
+                table.on('order.dt search.dt draw.dt', function () {
+                    table.column(0, { search: 'applied', order: 'applied', page: 'current' })
+                        .nodes()
+                        .each(function (cell, i) {
+                            cell.innerHTML = i + 1;
+                        });
+                }).draw();
+
+                //end
+            
+             $('.buttons-print').ready(function () {
+            $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');
+            
+        });
+        $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');
+        ;
+        $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+        },
+        error: function () {
+            $('#attendance-results').html('<div class="loading">Failed to load data.</div>').show();
+        }
+    });
+}
+else {
+        $('#attendance-results').hide();
+    }
+}
+
+function loadCustomerVisitsData() {
+    const $btn = $('.option-card.customer-visits');
+    const $resultsDiv = $('#customer-visits-results');
+
+    // Remove 'selected' class from all option cards
+    $('.option-card').removeClass('selected');
+
+    // If already visible, hide it
+    if ($resultsDiv.is(':visible')) {
+        $resultsDiv.slideUp();
+        return;
+    }
+    $btn.addClass('selected');
+
+    $resultsDiv.html('<div class="loading">Loading...</div>').slideDown();
+    $.ajax({
+        url: '/DashboardNew/ajax_locationtracking', 
+        type: 'GET',
+        success: function (data) {
+            $resultsDiv.html(data); 
+        },
+        error: function () {
+            $resultsDiv.html('<div class="loading text-danger">Failed to load data.</div>');
+        }
+    });
+}
+
+function loadIssueReport(issuedate = 0) {
+    const $btn = $('.option-card.issue-report');
+    const $resultsDiv = $('#support-requests-results');
+
+    $('.option-card').removeClass('selected');
+
+    if ($resultsDiv.is(':visible')) {
+        $resultsDiv.slideUp();
+        return;
+    }
+    $btn.addClass('selected');
+
+    $resultsDiv.html('<div class="loading">Loading...</div>').slideDown();
+
+    // Prepare the table structure before DataTable renders
+    const tableHTML = `
+        <table id="issue-report-table" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th style="width: 76px;">Sl. No</th>
+                    <th>Employee Name</th>
+                    <th>Employee ID</th>
+                    <th>Branch</th>
+                    <th>Reported Date</th>
+                    <th>Report Type</th>
+                    <th>Remarks</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>`;
+    $resultsDiv.html(tableHTML);
+
+    $.ajax({
+        url: '/DashboardNew/issuereport/' + issuedate,
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            //edited by athira on 18-08-2025
+            var table = $('#issue-report-table').DataTable({
+                data: response.data,
+                columns: [
+                    { title: "Sl. No" },
+                    { title: "Employee Name" },
+                    { title: "Employee ID" },
+                    { title: "Branch" },
+                    { title: "Reported Date" },
+                    { title: "Report Type" },
+                    { title: "Remarks" },
+                    { title: "Location" }
+                ],
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                autoWidth: false,
+                 dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" + 
+                 "<'row'<'col-sm-12'tr>>" + 
+                 "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                 buttons: [
+        {
+            extend: 'print',
+            //edited by athira on 14-10-2025
+            messageTop: 'My Payroll Master Employees Support Request Report.',
+            title: 'My Payroll Master - Support Request Report',
+            //end
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function (data, row, column, node) {
+                        // SL No column
+                        if (column === 0) return row + 1;
+                        // Strip HTML from other columns if any
+                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                    }
+                }
+            }
+        },
+        {
+            extend: 'pdf',
+            //edited by athira on 14-10-2025
+            messageTop: 'My Payroll Master Employees Support Request Report.',
+            title: 'My Payroll Master - Support Request Report',
+            //end
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function (data, row, column, node) {
+                        if (column === 0) return row + 1;
+                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                    }
+                }
+            }
+        },
+        {
+            extend: 'excel',
+            //edited by athira on 14-10-2025
+            messageTop: 'My Payroll Master Employees Support Request Report.',
+            title: 'My Payroll Master - Support Request Report',
+            //end
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function (data, row, column, node) {
+                        if (column === 0) return row + 1;
+                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                    }
+                }
+            }
+        }
+    ],
+    columnDefs: [{
+        targets: 0, // SL No column
+        orderable: false,
+        searchable: false
+    }],
+           
+            });
+
+             // 🔥 Update SL No after search, order, or page change
+                table.on('order.dt search.dt draw.dt', function () {
+                    table.column(0, { search: 'applied', order: 'applied', page: 'current' })
+                        .nodes()
+                        .each(function (cell, i) {
+                            cell.innerHTML = i + 1;
+                        });
+                }).draw();
+                //end
+
+            $('.buttons-print').ready(function () {
+            $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');
+            
+        });
+        $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');
+        ;
+        $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+        },
+        error: function () {
+            $resultsDiv.html('<div class="loading text-danger">Failed to load issue report.</div>');
+        }
+    });
+}
+
+// function loadIssueReport(issuedate = 0) {
+//     const $btn = $('.option-card.issue-report');
+//     const $resultsDiv = $('#issue-report-results');
+
+//     // Remove 'selected' class from all option cards
+//     $('.option-card').removeClass('selected');
+
+//     // If already visible, hide it
+//     if ($resultsDiv.is(':visible')) {
+//         $resultsDiv.slideUp();
+//         return;
+//     }
+//     $btn.addClass('selected');
+
+//     $resultsDiv.html('<div class="loading">Loading...</div>').slideDown();
+//     $.ajax({
+//         url: '/DashboardNew/issuereport/' + issuedate, // Adjust controller/action as needed
+//         type: 'GET',
+//         success: function (data) {
+//             $resultsDiv.html(data);
+//             // If you want to initialize DataTable:
+//             $('#issue-report-table').DataTable({
+//                 paging: true,
+//                 searching: true,
+//                 ordering: true,
+//                 info: true,
+//                 autoWidth: false
+//             });
+//         },
+//         error: function () {
+//             $resultsDiv.html('<div class="loading text-danger">Failed to load issue report.</div>');
+//         }
+//     });
+// }
+
+function loadMissedAttendance(element) {
+
+    document.querySelectorAll('.option-card').forEach(el => el.classList.remove('active'));
+    element.classList.add('active');
+
+    $('#attendance-results').html('<div class="loading">Loading Missed Attendance...</div>').show();
+
+    $.ajax({
+    url: '/DashboardNew/getMissedAttendance',
+    type: 'GET',
+    success: function (data) {
+        $('#attendance-results').html(data).show();
+
+        // Destroy any existing DataTable to avoid reinitialization error
+        if ($.fn.DataTable.isDataTable('#empmisspunches')) {
+            $('#empmisspunches').DataTable().destroy();
+        }
+
+        //edited by athira on 18-08-2025
+        // Initialize DataTable with buttons
+        var table = $('#empmisspunches').DataTable({
+            paging: true,
+            lengthChange: false,
+            searching: true,
+            ordering: true,
+            info: true,
+            order: [[1, "desc"]],
+            autoWidth: false,
+            dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" + 
+                 "<'row'<'col-sm-12'tr>>" + 
+                 "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+        {
+            extend: 'print',
+            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+            title: 'My Payroll Master - Today Attendance Report',
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function (data, row, column, node) {
+                        // SL No column
+                        if (column === 0) return row + 1;
+                        // Strip HTML from other columns if any
+                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                    }
+                }
+            }
+        },
+        {
+            extend: 'pdf',
+            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+            title: 'My Payroll Master - Today Attendance Report',
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function (data, row, column, node) {
+                        if (column === 0) return row + 1;
+                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                    }
+                }
+            }
+        },
+        {
+            extend: 'excel',
+            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+            title: 'My Payroll Master - Today Attendance Report',
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function (data, row, column, node) {
+                        if (column === 0) return row + 1;
+                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                    }
+                }
+            }
+        }
+    ],
+    columnDefs: [{
+        targets: 0, // SL No column
+        orderable: false,
+        searchable: false
+    }],
+            drawCallback: function (settings) {
+                var api = this.api();
+                var start = api.page.info().start;
+                api.column(0, { page: 'current' }).nodes().each(function (cell, i) {
+                    cell.innerHTML = start + i + 1;
+                });
+            }
+        });
+
+        table.on('order.dt search.dt draw.dt', function () {
+                    table.column(0, { search: 'applied', order: 'applied', page: 'current' })
+                        .nodes()
+                        .each(function (cell, i) {
+                            cell.innerHTML = i + 1;
+                        });
+                }).draw();
+
+        
+        //end
+
+         $('.buttons-print').ready(function () {
+            $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');
+            
+        });
+        $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');
+        ;
+        $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+
+        // Optional: Remove sorting icon on Sl. No. column
+        $('#empmisspunches thead th:eq(0)').removeClass('sorting sorting_asc sorting_desc').off('click');
+    },
+    error: function () {
+        $('#attendance-results').html('<div class="loading text-danger">Failed to load Missed Attendance.</div>').show();
+    }
+});
+
+}
+
+$(document).ready(function () {
+        //edited by athira on 01-05-2025
+        $('#absent_this_month').on('click',function(){
+           var url = '/dashboardNew/absenttoday';
+           showModalForm(url);
+        });
+
+         $('#present-today').on('click',function(){
+           var url = '/dashboardNew/presenttoday';
+           showModalForm(url);
+        }); 
+        $('#active-today').on('click',function(){
+           var url = '/dashboardNew/activetoday';
+           showModalForm(url);
+        });
+
+
+
+
+
+
+        $('#pf-not-covered').on('click',function(){
+           var url = '/dashboardNew/pfnotcovered';
+           showModalForm(url);
+        });
+
+        $('#leaves-this-month').on('click',function(){
+           var url = '/dashboardNew/leavesthismonth';
+           showModalForm(url);
+        });
+
+        $('#no-esi').on('click',function(){
+           var url = '/dashboardNew/noesi';
+           showModalForm(url);
+        });
+
+        $('#no-qualification').on('click',function(){
+           var url = '/dashboardNew/noqualification';
+           showModalForm(url);
+        });
+
+        $('#no-nominee').on('click',function(){
+           var url = '/dashboardNew/nonominee';
+           showModalForm(url);
+        });
+
+        $('#pending-leaves').on('click',function(){
+           var url = '/dashboardNew/pendingleaves';
+           showModalForm(url);
+        });
+
+        
+        $('#late-comers').on('click',function(){
+           var url = '/dashboardNew/latecomers';
+           showModalForm(url);
+        });
+
+        $('#notice-period').on('click',function(){
+           var url = '/dashboardNew/noticeperiod';
+           showModalForm(url);
+        });
+
+        
+        $('#retired-employees').on('click',function(){
+           var url = '/dashboardNew/retiredemployees';
+           showModalForm(url);
+        });
+        //end
+});
+    function viewEmployeeMissPunches(){
+	if(!arguments.length){
+		return false;
+	}
+	var emp_id = arguments[0];
+	if(emp_id){	
+		$("#container").isLoading({
+			text: "Loading",
+			position: "overlay"
+		});
+		var url = "/EditPunches/index/" + emp_id;
+		$("#container").load(url, function () {
+			isDashboardShown = false;
+		});
+	}
+}	
+
+   // $(function() {
+        // Convert PHP JSON output to JavaScript object
+        //var data = <?php echo $chartData; ?>;
+
+        /*if ($('#salaryAreaChart').length) { // Ensure div exists
+            new Morris.Area({
+                element: 'salaryAreaChart',  // ID of div container
+                data: data,                  // Data from controller
+                xkey: 'month',               // X-axis key
+                ykeys: ['value'],            // Y-axis key(s)
+                labels: ['Salary'],          // Label for Y-axis
+                parseTime: false,            // Prevent treating X-axis as date
+                lineColors: ['#3498db'],     // Line color
+                fillOpacity: 0.6,            // Area transparency
+                behaveLikeLine: true,        // Makes it behave like a line chart
+                hideHover: 'auto',           // Show values on hover
+                resize: true                 // Responsive chart
+            });
+        } else {
+            console.error("Chart container not found.");
+        }
+    });*/
+</script>
+
+<!--lakshmi-->
+<!-- Charts Section -->
+<!-- This section contains the charts for department distribution, age groups, and salary -->
+<div class="charts-container">
+    <!-- Department Distribution Chart -->
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">Department Distribution</h3>
+            
+        </div>
+        <div class="box-body chart-responsive">
+            <div id="horizontal-bar-chart"></div>
+        </div>
+    </div>
+
+    <!-- Age Groups Chart -->
+    <div class="box box-danger">
+        <div class="box-header with-border">
+            <h3 class="box-title">Age Groups</h3>
+        </div>
+        <div class="box-body chart-responsive">
+            <div id="donut-chart"></div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Salary Chart -->
+ <!--lakshmi-->
+
+<div class="charts-container">
+    <!-- Salary Chart -->
+    <div id="salaryChartContainer" class="box box-success">
+        <div class="box-header with-border">
+            <h3 class="box-title">Salary chart</h3>
+        </div>
+        <div class="box-body chart-responsive">
+            <div class="salary-chart-scroll">
+                <div class="salary-chart-inner">
+            <div id="salaryChart" style="height: 300px;"></div>
+        </div>
+    </div>
+</div>
+</div>
+
+    <!-- Summary Table -->
+    <div class="emp-summary-wrapper">
+        <div class="coverage-cards">
+            <!-- UAN Coverage Card -->
+            <div class="coverage-card">
+                <div class="coverage-icon">
+                    <i class="fa fa-users"></i>  
+                </div>
+                <div class="coverage-details">
+                    <h4>UAN not provided</h4>
+                    <div class="leave-counter">  <!-- Using leave-counter style -->
+                        <span class="leave-days"><?php echo (int)$coverageStats['uan_not_provided']; ?></span>
+                        <span class="leave-label">Employees</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ESI Coverage Card -->
+            <div class="coverage-card">
+                <div class="coverage-icon">
+                    <i class="fa fa-plus-square"></i>  <!-- Changed icon -->
+                </div>
+                <div class="coverage-details">
+                    <h4>ESI Coverage</h4>
+                    <div class="leave-counter">  <!-- Using leave-counter style -->
+                        <span class="leave-days"><?php echo (int)$coverageStats['esi_not_covered']; ?></span>
+                        <span class="leave-label">Not Covered</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAN Coverage Card -->
+            <div class="coverage-card">
+                <div class="coverage-icon">
+                    <i class="fa fa-file-text"></i>
+                </div>
+                <div class="coverage-details">
+                    <h4>PAN not provided</h4>
+                    <div class="leave-counter">  <!-- Using leave-counter style -->
+                        <span class="leave-days"><?php echo (int)$coverageStats['pan_not_provided']; ?></span>
+                        <span class="leave-label">Employees</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leave Balance Card (unchanged) -->
+            <div class="coverage-card">
+                <div class="coverage-icon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <div class="coverage-details">
+                    <h4>Leave Approvals Pending</h4>
+                    <div class="leave-counter">
+                        <span class="leave-days"><?php echo (int)$coverageStats['total_leaves']; ?></span>
+                        <span class="leave-label">Pending</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--lakshmi  -->
+<!--options-->
+<div class="dashboard-container">
+    <div class="option-row">
+        <!-- Attendance -->
+        <div class="option-card attendance" id="attendanceCard">
+            <div class="option-icon-circle">
+            <i class="fa fa-calendar-check-o option-icon"></i>
+            </div>
+            <div class="option-label">Attendance</div>
+        </div>
+
+        <!-- Missed Attendance -->
+        <div class="option-card missed" id="missedCard">
+            <div class="option-icon-circle">
+                <i class="fa fa-calendar-times-o option-icon"></i>
+            </div>
+            <div class="option-label">Missed Attendance</div>
+        </div>
+
+        <!-- Customer Visits -->
+        <div class="option-card visits" id="visitsCard">
+            <div class="option-icon-circle">
+                <i class="fa fa-handshake-o option-icon"></i>
+            </div>
+            <div class="option-label">Customer Visits</div>
+            
+        </div>
+
+        <!-- Support Requests -->
+        <div class="option-card support" id="supportCard">
+            <div class="option-icon-circle">
+                <i class="fa fa-life-ring option-icon"></i>
+            </div>
+            <div class="option-label">Support Requests</div>
+        </div>
+
+    </div>
+    <!-- Attendance Options -->
+    <div id="attendance-options" class="attendance-options" style="display: none;">
+        <div class="optio-card" onclick="loadAttendanceData('today')">
+            <div class="optio-icon">
+                <i class="fa fa-calendar"></i>
+            </div>
+            <h4>Today</h4>
+        </div>
+        
+        <div class="optio-card" onclick="loadAttendanceData('current_month')">
+            <div class="optio-icon">
+                <i class="fa fa-calendar"></i>
+            </div>
+            <h4>This Month </h4>
+        </div>
+        
+        <div class="optio-card" onclick="loadAttendanceData('last_month')">
+            <div class="optio-icon">
+                <i class="fa fa-calendar"></i>
+            </div>
+            <h4>Last Month</h4>
+        </div>
+    </div>
+    
+    <!-- Results Container -->
+     <div id="missed-attendance-results" style="display: none;"></div>
+    <div id="customer-visits-results" style="display: none;"></div>
+    <div id="support-requests-results" style="display: none;"></div>
+    <div id="attendance-results" class="attendance-results1" style="display:none;">
+        <div class="empty-message" style="display:none; text-align:center; color:#888; padding:0;">
+        No attendance data to display.
+    </div>
+    </div>
+
+
+</div>
+
+
+<!-- edited by athira on 24-07-2025 -->
+ <div class="info-sections-container">
+    <div class="box box-info" style="height:100%;">
+    <div class="box-header with-border">
+        <h3 class="box-title"><i class="fa fa-calendar"></i> Upcoming Events</h3>
+    </div>
+    <div class="box-body">
+        <div class="upcoming-events-container">
+            <div class="upcoming-events">
+                <?php  if (!empty($upcomingEvents)): ?>
+                    <?php foreach ($upcomingEvents as $event): ?>
+                    <?php
+                            $eventData = $event[0];
+                            $empPkey = $eventData['emp_pkey'];
+                            $eventType = $eventData['type']; // 'BIR' or 'JOIN'
+                            $alreadyWished = isset($eventData['wished']) && $eventData['wished'] == 1;
+
+                            $eventDate = isset($eventData['event_date']) ? date('Y-m-d', strtotime($eventData['event_date'])) : null;
+                            $today = date('Y-m-d');
+                            $tomorrow = date('Y-m-d', strtotime('+1 day'));
+                            $isTodayOrTomorrow = $eventDate === $today || $eventDate === $tomorrow;
+                            
+                        ?>
+
+                        <div class="event-item">
+                            <div class="event-icon <?php echo str_replace(' ', '-', strtolower($eventType)); ?>">
+                                <i class="fa <?php  echo  ($eventType == 'Birthday') ? 'fa-birthday-cake' : 'fa-trophy'; ?>"></i>
+                            </div>
+                            <div class="event-details">
+                                <div class="event-name" style="font-size: 18px"><?php echo h($eventData['name']); ?></div>
+                                <!-- <div style="display:flex; align-items:center; justify-content: space-between;"> -->
+                                    <div class="event-details-inner">
+
+                                    <div style="display:flex; align-items:center;">
+                                        <div class="event-desciption" style="font-size:15px;color:#666666;font-weight:600;">
+                                            <?php echo h($eventData['description']); ?>
+                                        </div>
+                                        <span style="margin:0 10px;">|</span>
+                                        <div class="event-date" style="font-size:15px">
+                                            <?php echo date('d M Y', strtotime($eventData['event_date'])); ?>
+                                        </div>
+                                    </div>
+                                    <div class="wish-button">
+                                        <?php if ($alreadyWished): ?>
+                                            <button class="btn btn-success btn-sm" style="border-radius: 20px;padding: 5px 15px;" disabled>Wished</button>
+                                        <?php else: ?>
+                                            <?php if ($isTodayOrTomorrow): ?>
+                                                <button class="btn btn-primary btn-sm" style="border-radius: 20px;padding: 5px 15px;"  onclick="openWishModal('<?php echo $empPkey; ?>', '<?php echo $eventType; ?>')">Wish</button>
+                                            <?php else: ?>
+                                                <button class="btn btn-primary btn-sm" disabled style="border-radius: 20px;padding: 5px 15px;">Wish</button>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                <?php endforeach; ?>
+            <?php else: ?>
+                    <div class="no-events">No upcoming events this month</div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div> 
+
+<!-- end -->
+                
+     
+
+    <!-- Pending Approvals Section -->
+    <div class="approvals-section">
+        <div class="box box-warning">
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                    <i class="fa fa-clock-o"></i> Pending Approvals
+                    <span class="total-count"><?php 
+                        echo array_sum([
+                            $pendingLeaveApprovalCount,
+                            $promotionApprovalCount,
+                            $expenseApprovalCount,
+                            $attendanceRegCount,
+                            $attendanceVerifyCount
+                        ]); 
+                    ?></span>
+                </h3>
+            </div>
+            <div class="box-body">
+              
+            <div class="approval-list">
+                <!-- Leave Requests -->
+                <div class="approval-item" id="leave-requests-approval" style="cursor:pointer;">
+                    <div class="approval-icon leave">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    <div class="approval-content">
+                        <span class="approval-label">Leave Requests</span>
+                        <span class="approval-count"><?php echo $pendingLeaveApprovalCount; ?></span>
+                    </div>
+                </div>
+                   <?php if($plan != 'basic'){?>
+                <!-- Promotion Approvals -->
+                <div class="approval-item" id="promotion-approval">
+                    <div class="approval-icon promotion">
+                        <i class="fa fa-arrow-up"></i>
+                    </div>
+                    <div class="approval-content">
+                        <span class="approval-label">Promotion Approval</span>
+                        <span class="approval-count"><?php echo $promotionApprovalCount; ?></span>
+                    </div>
+                </div>
+
+                <!-- Expense Approvals -->
+                <div class="approval-item" id="expense-approval">
+                    <div class="approval-icon expense">
+                        <i class="fa fa-money"></i>
+                    </div>
+                    <div class="approval-content">
+                        <span class="approval-label">Expense Approval</span>
+                        <span class="approval-count"><?php echo $expenseApprovalCount; ?></span>
+                    </div>
+                </div>
+             <?php } ?>
+                <!-- Attendance Regularisation -->
+                <div class="approval-item" id='regularisation'>
+                    <div class="approval-icon ">
+                        <i class="fa fa-clock-o"></i>
+                    </div>
+                    <div class="approval-content">
+                        <span class="approval-label">Attendance Regularisation</span>
+                        <span class="approval-count"><?php echo $attendanceRegCount; ?></span>
+                    </div>
+                </div>
+
+                    <!-- Attendance Verification -->
+                    <div class="approval-item" id="verification">
+                        <div class="approval-icon verification">
+                            <i class="fa fa-check-square-o"></i>
+                        </div>
+                        <div class="approval-content">
+                            <span class="approval-label">Attendance Verification</span>
+                            <span class="approval-count"><?php echo $attendanceVerifyCount; ?></span>
+                            <span class="approval-subtitle">(Current Month)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="leaveRequestsModal" tabindex="-1" role="dialog" aria-labelledby="leaveRequestsModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="leaveRequestsModalLabel">Leave Requests</h4>
+      </div>
+      <div class="modal-body" id="leaveRequestsModalBody">
+        <div class="loading">Loading...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="promotionModal" tabindex="-1" role="dialog" aria-labelledby="promotionModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="promotionModalLabel">Promotion Requests</h4>
+      </div>
+      <div class="modal-body" id="promotionModalBody">
+        <div class="loading">Loading...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="expenseModal" tabindex="-1" role="dialog" aria-labelledby="expenseModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="expenseModalLabel">Expense Requests</h4>
+      </div>
+      <div class="modal-body" id="expenseModalBody">
+        <div class="loading">Loading...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="regularisationModal" tabindex="-1" role="dialog" aria-labelledby="regularisationLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="regularisationLabel">Attendance Regularisation Requests</h4>
+      </div>
+      <div class="modal-body" id="regularisationModalBody">
+        <div class="loading">Loading...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="verificationModal" tabindex="-1" role="dialog" aria-labelledby="verificationLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="verificationLabel">Attendance verification Requests</h4>
+      </div>
+      <div class="modal-body" id="verificationModalBody">
+        <div class="loading">Loading...</div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--lakshmi-->
+<!-- Leave Requests Modal -->
+
+<script>
+$(document).ready(function() {
+    $('#leave-requests-approval').on('click', function() {
+        $('#leaveRequestsModalBody').html('<div class="loading">Loading...</div>');
+        $('#leaveRequestsModal').modal('show');
+        $.ajax({
+            url: '/DashboardNew/listleaverequests', // Adjust if your route is different
+            type: 'GET',
+            success: function(data) {
+                $('#leaveRequestsModalBody').html(data);
+            },
+            error: function() {
+                $('#leaveRequestsModalBody').html('<div class="loading text-danger">Failed to load leave requests.</div>');
+            }
+        });
+    });
+    $('#promotion-approval').on('click', function() {
+        $('#promotionModalBody').html('<div class="loading">Loading...</div>');
+        $('#promotionModal').modal('show');
+        $.ajax({
+            url: '/DashboardNew/promotion', // Adjust if your route is different
+            type: 'GET',
+            success: function(data) {
+                $('#promotionModalBody').html(data);
+            },
+            error: function() {
+                $('#promotionModalBody').html('<div class="loading text-danger">Failed to load leave requests.</div>');
+            }
+        });
+    });
+    $('#expense-approval').on('click', function() {
+        $('#expenseModalBody').html('<div class="loading">Loading...</div>');
+        $('#expenseModal').modal('show');
+        $.ajax({
+            url: '/DashboardNew/expense', // Adjust if your route is different
+            type: 'GET',
+            success: function(data) {
+                $('#expenseModalBody').html(data);
+            },
+            error: function() {
+                $('#expenseModalBody').html('<div class="loading text-danger">Failed to load leave requests.</div>');
+            }
+        });
+    });
+     $('#regularisation').on('click', function() {
+        $('#regularisationModalBody').html('<div class="loading">Loading...</div>');
+        $('#regularisationModal').modal('show');
+        $.ajax({
+            url: '/DashboardNew/AttendanceRegularisation', // Adjust if your route is different
+            type: 'GET',
+            success: function(data) {
+                $('#regularisationModalBody').html(data);
+            },
+            error: function() {
+                $('#regularisationModalBody').html('<div class="loading text-danger">Failed to load leave requests.</div>');
+            }
+        });
+    });
+
+     $('#verification').on('click', function() {
+        $('#verificationModalBody').html('<div class="loading">Loading...</div>');
+        $('#verificationModal').modal('show');
+        $.ajax({
+            url: '/DashboardNew/Attendanceverification', // Adjust if your route is different
+            type: 'GET',
+            success: function(data) {
+                $('#verificationModalBody').html(data);
+            },
+            error: function() {
+                $('#verificationModalBody').html('<div class="loading text-danger">Failed to load leave requests.</div>');
+            }
+        });
+    });
+    
+});
+</script>
+
+
+<!-- Morris.js Donut Chart -->
+<script>
+    $(document).ready(function() {
+        $('#sidebarToggle').on('click', function() {
+        $('body').toggleClass('sidebar-expanded');
+    });
+         // Global variables
+        let allDepartmentData = <?php echo $departmentStats; ?>;
+        let currentPage = 1;
+        //edited by athira on 22-07-2025
+        const itemsPerPage = 5;
+        //end
+        let barChart = null;
+
+        // Function to paginate data
+        function paginateData(data, page) {
+            const start = (page - 1) * itemsPerPage;
+            return data.slice(start, start + itemsPerPage);
+        }
+ //edited by athira on 22-07-2025
+  function updateBarChart(page) {
+    let paginatedData = paginateData(allDepartmentData, page);
+
+    $('#horizontal-bar-chart').empty();
+
+    // ✅ Inject dummy bars to ensure 7 total bars per page
+    const dummyCount = itemsPerPage - paginatedData.length;
+    for (let i = 0; i < dummyCount; i++) {
+        paginatedData.push({
+            department: '\u200B', // Zero-width space keeps layout but hides label
+            value: 0              // Invisible bar
+        });
+    }
+
+    // ✅ Adjust chart height
+    $('#horizontal-bar-chart').css('height', `${itemsPerPage * 30 + 40}px`);
+
+   
+    // ✅ Render chart with Morris.js
+    barChart = new Morris.Bar({
+        element: 'horizontal-bar-chart',
+        data: paginatedData.map(item => ({
+            department: item.department.toString().split(' ').join('\n'),
+            value: parseInt(item.value)
+        })),
+        xkey: 'department',
+        ykeys: ['value'],
+        labels: ['Employees'],
+        horizontal: true,
+        barColors: ['#11e707', '#00008B'],
+        gridTextSize: 7,
+        hideHover: false,
+        barSizeRatio: 0.5,
+        barGap: 4,
+        resize: true,
+        parseTime: false,
+        xLabelMargin: 25,
+        padding: 15,
+        barOpacity: 0.8,
+        labelTop: true,
+        grid: false,
+        ymin: 0,
+        ymax: 200,
+
+hoverCallback: function (index, options, content, row) {
+        if (row.department.trim() === '\u200B') return '';
+        return row.department.replace(/\n/g, ' ') + ': ' + row.value + ' Employees';
+    }
+    });
+
+    updatePaginationControls();
+}
+
+document
+    .getElementById('horizontal-bar-chart')
+    .addEventListener('mouseleave', function () {
+        document.querySelectorAll('.morris-hover').forEach(el => el.style.display = 'none');
+    });
+ //end
+
+
+    // Function to update pagination controls
+    function updatePaginationControls() {
+        const totalPages = Math.ceil(allDepartmentData.length / itemsPerPage);
+        const paginationHTML = `
+            <div class="pagination-info">
+                Showing ${((currentPage - 1) * itemsPerPage) + 1} - 
+                ${Math.min(currentPage * itemsPerPage, allDepartmentData.length)} 
+                of ${allDepartmentData.length} departments
+            </div>
+            <div class="pagination-controls">
+                <button ${currentPage === 1 ? 'disabled' : ''} 
+                        onclick="changePage('prev')" 
+                        class="btn btn-default">
+                    <i class="fa fa-chevron-left"></i> Previous
+                </button>
+                <span class="page-number">Page ${currentPage} of ${totalPages}</span>
+                <button ${currentPage === totalPages ? 'disabled' : ''} 
+                        onclick="changePage('next')" 
+                        class="btn btn-default">
+                    Next <i class="fa fa-chevron-right"></i>
+                </button>
+            </div>
+        `;
+
+        $('#pagination-controls').html(paginationHTML);
+    }
+
+    // Define changePage function in window scope
+    window.changePage = function(direction) {
+        const totalPages = Math.ceil(allDepartmentData.length / itemsPerPage);
+        
+        if (direction === 'prev' && currentPage > 1) {
+            currentPage--;
+            updateBarChart(currentPage);
+        } else if (direction === 'next' && currentPage < totalPages) {
+            currentPage++;
+            updateBarChart(currentPage);
+        }
+
+        // Force redraw of chart
+        setTimeout(() => {
+            if (barChart) {
+                barChart.redraw();
+            }
+        }, 50);
+    };
+
+    // Add pagination controls container to DOM
+    $('.box-primary .box-header').append(`
+        <div id="pagination-controls" class="chart-pagination"></div>
+    `);
+
+    // Initial chart render
+    updateBarChart(currentPage);
+    
+    // Initialize Donut Chart
+    // if (document.getElementById('donut-chart')) {
+    //     new Morris.Donut({
+    //         element: 'donut-chart',
+    //         data: <?php echo $donutData; ?>,
+    //         colors: ['#00008B','#32CD32'],
+    //         resize: true,
+    //         size: 200,
+    //         formatter: function (value, data) {
+    //             return value + ' Employees';
+    //         }
+    //     });
+    // }
+//edited by athira on 05-07-2025
+      if (document.getElementById('donut-chart')) {
+    new Morris.Donut({
+        element: 'donut-chart',
+        data: <?php echo $donutData; ?>,
+        colors: <?php echo $donutColors; ?>,
+        resize: true,
+        formatter: function (value, data) {
+            return value + ' Employees';
+        }
+    });
+}
+//end
+    
+
+    // edited by bindu 06-12-2025
+    var chartData = <?php echo json_encode($salarychartData, JSON_PRETTY_PRINT); ?>;
+
+    // Initialize Line Chart
+    if (document.getElementById('salaryChart')) {
+        new Morris.Line({
+            element: 'salaryChart',
+            data: chartData,
+            xkey: 'month',
+            ykeys: ['value'],
+            labels: ['Salary'],
+            parseTime: false,
+            lineColors: ['#0000CD'],
+            pointFillColors: ['#32CD32'],
+            pointStrokeColors: ['#32CD32'],
+            padding: 35,
+            grid: true,
+            gridTextFamily: 'Inter',
+            gridTextSize: 11,
+            gridTextColor: '#888',
+            axes: true,
+            hideHover: 'auto',
+            resize: true,
+            pointSize: 3,
+            lineWidth: 2,
+            yLabelFormat: function(y) {
+                return Math.round(y).toLocaleString();
+            },
+            ymax: 'auto',
+            ymin: 'auto',
+            postUnits: '',
+            preUnits: '',
+            yLabelPadding: 20,
+            gridTextWeight: '500'
+        });
+    }
+});
+
+    $(function() {
+    $('.option-card').on('click', function() {
+        var $this = $(this);
+        var isAttendance = $this.hasClass('attendance');
+        var isMissed = $this.hasClass('missed');
+        var isVisits = $this.hasClass('visits');
+        var isSupport = $this.hasClass('support');
+
+        var wasActive = $this.hasClass('active');
+
+        // Always hide all dropdowns/results
+        $('#attendance-options').slideUp(180);
+        $('#attendance-results').slideUp(180);
+        $('#missed-attendance-results').slideUp(180);
+        $('#customer-visits-results').slideUp(180);
+          $('#support-requests-results').slideUp(180);
+        
+
+        // Remove all active
+        $('.option-card').removeClass('active');
+
+        // If already active, just close all and return
+        if (wasActive) return;
+
+        // Otherwise, open the clicked one
+        $this.addClass('active');
+
+        if (isAttendance) {
+            $('#attendance-options').slideDown(180);
+        } else if (isMissed) {
+            $('#attendance-results').html('<div class="loading">Loading Missed Attendance...</div>').show();
+            loadMissedAttendance(this);
+        } else if (isVisits) {
+            loadCustomerVisitsData();
+            $('#customer-visits-results').slideDown(180);
+        }
+        else if (isSupport) {
+            loadIssueReport(issuedate = 0);
+            $('#support-requests-results').slideDown(180);
+        }
+        // else if (isSupport) { ... }
+    });
+});
+function openWishModal(empPkey, event) {
+        // Assuming 'event' is a string
+        var eventText = event;
+
+        var url = "DashboardNew/wish_modal/" + empPkey + "/" + encodeURIComponent(eventText);
+        showModalForm(livesite + url);
+    }
+
+        $(".dateget").change(function(){
+          var issuedate = $('#reportdate').val();
+         tablereport.ajax.url( livesite + "Dashboard/issuereport/"+issuedate ).load();
+        });
+     $('.dateget').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+	});
+</script>
+
+        </div>
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>-->
+
+
+
+
+
+
+
+

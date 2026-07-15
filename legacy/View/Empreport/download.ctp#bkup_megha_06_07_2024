@@ -1,0 +1,123 @@
+
+<style type="text/css">
+    body {
+        line-height: 2em;
+    }
+    .block-container {
+        width: 95%;
+        padding: 20px;
+        border: #000000 solid thin;
+    }
+    .sub-head {
+        border-bottom: #000000 solid thin;
+    }
+    .row {
+        height: 32px;
+    }
+    .col-md-4 {
+        width: 33.33%;
+        float: left;
+    }
+    table {
+        border: 2px solid #f4f4f4;
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+        background-color: transparent;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+    td, th {
+        text-align: left;
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border: 1px solid #B2B2B2;
+    }
+</style>
+
+<?php
+//echo $this->element('reportadminheader',array(
+//'title'=>'Cost To Company(CTC) Report'));
+?>
+                   <?php $i=0; foreach ($arr_salary_for_template as $value) {
+                      if(count($value['summary']) !== 0){
+                   $i += 1; 
+                  ?>
+
+                    
+                                <h3 style="text-align: left;padding-bottom: 0px;padding-top: 10px;">Name : <?php  echo isset($value['summary']['0']['ed']['first_name'])?$value['summary']['0']['ed']['first_name'] : '' ; echo ' ' ; echo  isset($value['summary']['0']['ed']['last_name'])?$value['summary']['0']['ed']['last_name'] : '' ;?>  
+                                               </h3>
+
+                        <hr>
+                                <table style=" border: 0px">
+                        <tr style=" border: 0px">
+                                <td style=" border: 0px"><b>EMP ID : </b><?php echo  isset($value['summary']['0']['ep']['emp_company_id'])?$value['summary']['0']['ep']['emp_company_id'] : '' ; ?>  </td>
+                                <td style=" border: 0px"><b>Branch : </b><?php echo  isset($value['summary']['0']['br']['branch_name'])?$value['summary']['0']['br']['branch_name'] : '' ; ?>  </td>
+						</tr>
+						<tr style=" border: 0px">	
+                                 <td style=" border: 0px"><b>Designation :  </b><?php echo  isset($value['summary']['0']['desg']['desig_name'])?$value['summary']['0']['desg']['desig_name'] : '' ; ?>  </td>
+                                <td style=" border: 0px"><b>Department   : </b><?php echo  isset($value['summary']['0']['dpt']['dept_name'])?$value['summary']['0']['dpt']['dept_name'] : '' ; ?>  </td>
+
+                        </tr>
+        
+            
+                        </table>
+                        <hr>
+                    <br>
+           
+		
+
+			    <table class="table" align="center">
+                            <thead>
+                              <tr>
+                                
+                              <!--    <th>LEAVEPOLICY_GROUP_NAME</th> -->
+                                 
+                                 
+                              <th style="width:50%">Salary</th>
+                                  <th style="width:25%">Amount</th>
+                                  <!--th style="width:20%">Head Operator</th>
+                                 <th style="width:20%">Head Type</th>
+                                   <th style="width:15%">Item Part</th>
+<!--                                  <th>Leave days</th>
+                                  <th>Holidays</th>-->
+                                
+                              </tr>
+                            </thead>
+                           
+                            <tbody>
+                                 <?php $arr_data  = $value['summary'];  ?>
+                                <?php if(count($arr_data)>=0){ $sum = 0; ?>
+                                    <?php foreach($arr_data as $val){ 
+                                    if($val['ectc']['structure_det_value'] != '0')
+                                    {
+                                        ?>
+                                            <tr> <?php $sum = $sum + $val['ectc']['structure_det_value']; ?>
+                                             <td><?php echo $val['ectc']['salary_head_item_desc']; ?></td>
+                                            <td><?php echo $val['ectc']['structure_det_value']; ?></td>
+<!--                                            <td><?php echo $val['ectc']['head_operator']; ?></td>-->
+                                            
+<!--                                            <td><?php echo $val['ectc']['item_part']; ?></td>-->
+                                            </tr>
+                                      
+                                    <?php
+                                    }} ?>
+                                          <tr>
+                                              <th style="text-align: right;">Grand Total</th><th><?php echo $sum ; ?></th>
+                                                                               </tr>
+                                <?php }else{ ?>
+                                        <tr>
+                                            <td colspan="4">No employees found under this data</td>
+                                        </tr>  
+                                <?php } ?>
+                                     
+                              
+                            </tbody>
+                        </table>
+		
+              
+                    <br>
+                              
+                
+                   <?php }  } ?> <!-- /.box-body -->

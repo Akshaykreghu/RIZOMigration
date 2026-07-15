@@ -1,0 +1,191 @@
+<?php if (isset($arr_increment)) { ?>
+    <form class="form-horizontal" method="post" action="" id="form-showreport">
+        <input type="hidden" id="hidden-report-type" name="hidden-report-type" value="<?php echo $type; ?>" />
+        <input type="hidden" id="hidden-criterias-count" name="hidden-criterias-count" value="1" />
+        <input type="hidden" id="hidden-reportfields" name="hidden-reportfields" value="" />
+
+        <div class="form-group" id="div-criteria1">
+
+            <div class="col-md-1"><b> Month&nbsp;:</b></div>
+            <div class="col-md-2">
+                <select id="reportfrom" name="reportfrom" class="form-control">
+
+
+                    <?php
+                    $start_month = strtotime(date('Y-m', strtotime("+24 month")));
+                    for ($i = 0; $i < 58; $i++) {
+                        $month = date('Y-m', strtotime("-$i month", $start_month));
+                        if ($month == date('Y-m')) {
+                            echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                        } else {
+                            echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                        }
+                    }
+                    ?>
+                </select>
+            </div>
+
+
+
+
+            <input type="hidden" class="hidden-criterias" id="hidden-criteria1" name="hidden-criteria1" value="" />
+            <div class="col-md-1"><b>Criteria&nbsp;:</b></div>
+            <div class="col-md-3">
+                <select id="select-criteria1" name="select-criteria1" style="width: 240px;" class="form-control" onchange="loadCriteriaItems(1);">
+                    <option value="">--Choose criteria--</option>
+                    <?php
+                    foreach ($arr_increment as $key => $value) {
+                        echo '<option value="' . $value['reportcriteria'] . '">' . $value['reportcriteria_desc'] . '</option>';
+                    }
+                    ?>
+                </select>
+            </div>
+            <div class="col-md-4" id="div-items-criteria1">
+
+            </div>
+        </div>
+        <div class="col-md-4">
+
+        </div>
+        <div class="col-md-4">
+
+        </div>
+
+
+        <div class="form-group" id="div-criteria1">
+
+        </div>
+
+        <?php if ($type == 'employee') { ?>
+            <div class="row">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-4">
+                    <div id="allempfields" style="width:100%; height:270px; background-color:white;"></div>
+                </div>
+                <div class="col-sm-4">
+                    <div id="reportfields" style="width:100%; height:270px; background-color:white;"></div>
+                </div>
+                <div class="col-sm-2">
+                </div>
+            </div>
+        <?php } ?>
+
+        <div class="form-group">
+            <div class="col-md-12" align="right">
+                <button type="button" onclick="viewReport();" id="btn-submit" class="btn btn-primary">
+                    <li class="fa fa-eye"></li>
+                </button>
+                <!-- <button type="button" onclick="downloadReport('pdf');" id="btn-submit1" class="btn btn-danger"><li class="fa fa-file-pdf-o"></li></button> -->
+                <button type="button" onclick="downloadReport('excel');" id="btn-submit2" class="btn btn-success">
+                    <li class="fa fa-file-excel-o"></li>
+                </button>
+            </div>
+        </div>
+        <div id="reportCon" class="box box-body">
+
+        </div>
+    </form>
+    <script>
+        function loadCriteriaItems(index) {
+            var criteria = $('#select-criteria' + index).val();
+            $('#hidden-criteria' + index).val(criteria);
+            $('#div-items-criteria' + index).load(livesite + 'Employee/loadcriteriaitems/' + index + '/' + criteria);
+        }
+
+        function viewReport() {
+            var selectany = false;
+            $('.checkw').each(function() {
+                if ($(this).prop('checked') == true) {
+                    selectany = true;
+                }
+            });
+
+
+            // Edited by Akshay on 13-8-2025
+            var criteria = $('#select-criteria1').val();
+            if (selectany) {
+                if (!criteria) {
+                    alert("Please select a criteria first");
+                    return false;
+                }
+            } else {
+                alert("Please Choose Criteria items First");
+                return false;
+            }
+            // End
+
+            $('#loaders').show();
+            var type = $('#hidden-report-type').val();
+            var container = $("#reportCon");
+            var url = livesite + 'Employee/generatereport/' + type;
+
+            var arrReportFieldsChosen = [];
+            var reportfields;
+            //        reportfields.forEachRow(function(id){
+            //            arrReportFieldsChosen.push(id);
+            //        });
+            $('#hidden-reportfields').val(arrReportFieldsChosen.join(','));
+            toggleItemsDisplay(1);
+            $('body').addClass('sidebar-collapse');
+
+
+            // Define the data to be sent (e.g., form data). 
+            var formData = $('#form-showreport').serialize();
+
+            // Make the POST request using $.ajax().
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: formData,
+                success: function(data) {
+                    // This function will be called when the server responds.
+                    // 'data' contains the response from the server.
+                    $('#reportCon').html(data);
+                    $('#loaders').hide();
+                },
+                error: function() {
+                    // This function will be called if the request encounters an error.
+                    console.error("POST request failed");
+                },
+                complete: function() {
+                    // This function will be called when the request is complete, regardless of success or failure.
+                    console.log("POST request complete");
+                }
+            });
+        }
+
+
+        // function loadCriteriaItems(index) {
+        //             var criteria = $('#select-criteria' + index).val();
+        //             $('#hidden-criteria' + index).val(criteria);
+        //             $('#div-items-criteria' + index).load(livesite + 'Employee/loadcriteriaitems/' + index + '/' + criteria);
+        //         }
+        function downloadReport(mode) {
+            var type = $('#hidden-report-type').val();
+            var criteria = $('#select-criteria1').val();
+            var selectany = false;
+            $('.checkw').each(function() {
+                if ($(this).prop('checked') == true) {
+                    selectany = true;
+                }
+            });
+
+            //        return false;
+            if (selectany) {
+
+            } else {
+                alert("Please Choose Criteria items First");
+                return false;
+            }
+            if (criteria) {
+                $('#form-showreport').attr('action', livesite + 'Employee/generatereport/' + type + '/' + mode);
+                $('#form-showreport').submit();
+                loadCriteriaItems(1);
+            } else {
+                alert("Please select a criteria first");
+            }
+
+        }
+    </script>
+<?php } ?>

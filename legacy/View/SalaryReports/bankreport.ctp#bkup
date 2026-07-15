@@ -1,0 +1,970 @@
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
+<style>
+    #report_table1 td,
+    th {
+        border-style: solid;
+        border-color: #d4d4de;
+        overflow-x: auto;
+    }
+
+    #report_table2 td,
+    th {
+        border-style: solid;
+        border-color: #d4d4de;
+        overflow-x: auto;
+    }
+
+
+    .modal-content {
+        width: 125% !important;
+    }
+</style>
+<?php if ($mode == '') {
+    // debug($criteria);
+    // debug($arr_salary_for_template);
+?>
+    <div class="modal-body" style="overflow-y:auto; padding-left:3%; padding-right:3%; padding-bottom:3%;">
+        <?php if ($criteria != 'Banks') { ?>
+            <h2 style="font-weight: bold;text-align: center;"> <?php echo "Salary Bank Transfer - " . $mname . ' ' . $year; ?> </h2>
+        <?php } else { ?>
+            <h2 style="font-weight: bold;text-align: center;"> <?php echo "Bank Statement - " . $mname . ' ' . $year ?> </h2>
+        <?php } ?>
+        <h2 style="font-size:16px;text-align: center;font-weight: bold;font-size: 19px;"><?php echo "(Report Run by " . $user_id . " at "  . $date_time . ")" ?> </h2>
+        <?php $i = 0;
+        //  debug($arr_salary_for_template);exit;
+        foreach ($arr_salary_for_template as $value) {
+            foreach ($value as $valuees) {
+                if (!empty($valuees)) {
+                    $i++;
+                }
+            }
+        }
+        if ($i == '0') { ?>
+            <div style="font-size: 16px;text-align:left; background-color:;">
+                <!-- <h2 style="font-weight: bold;text-align: center;"> Salary Bank Transfer - <?php echo "$mname"; ?></h2> -->
+                No data available under the selected criteria
+            </div>
+        <?php } else { ?>
+            <div class="row">
+                <?php if ($criteria != 'Banks') {
+                    foreach ($arr_salary_for_template as $value) { ?>
+                        <div class="col-md-12">
+                            <?php if (count($value['leavepolicyname']) <= 0) { ?>
+                                <?php } else {
+                                $bk = isset($value['leavepolicyname']['0']['0']['BANK_NAME']) ? $value['leavepolicyname']['0']['0']['BANK_NAME'] : '';
+                                // if($criteria != 'LeavePolicyGroup' || $bk != '' ){
+                                if (true) {
+                                ?>
+                                    <legend style="border: 0;">
+                                        <?php if ($cr == 'EmployeeDetails') {
+                                            echo $value['leavepolicyname']['0']['info']['EmpName'];
+                                            echo (isset($value['leavepolicyname']['0']['EmployeeDetails']['status'])) && $value['leavepolicyname']['0']['EmployeeDetails']['status'] == "2" ? '  (Resigned)' : '';
+                                        } elseif ($cr == 'Units') {
+                                            echo isset($value['leavepolicyname'][0]['payroll_master']['branch_name']) ? $value['leavepolicyname'][0]['payroll_master']['branch_name'] : ''; //Edited by Akshay on 6-6-2024
+                                        } else {
+                                            $bk = isset($value['leavepolicyname']['0']['0']['BANK_NAME']) ? $value['leavepolicyname']['0']['0']['BANK_NAME'] : '';
+
+
+                                            echo ($bk != '') ? $bk : 'N/A';
+                                        } ?></legend>
+                                    <div style="overflow-x: auto;">
+                                        <table class="table table-bordered" id="report_table1" style="overflow-x: auto;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sl No</th>
+                                                    <th>Employee ID</th>
+                                                    <th>User ID</th>
+                                                    <th>Employee Name</th>
+                                                    <th>Joining Date</th>
+                                                    <th>Branch</th>
+                                                    <th>Department</th>
+                                                    <th>Designation</th>
+
+                                                    <th>Termination Date</th>
+                                                    <th>Bank Name</th>
+                                                    <th>Branch Name</th>
+                                                    <th>IFSC Code</th>
+                                                    <th>Account Number</th>
+                                                    <th>Net Salary</th>
+                                                </tr>
+                                            </thead>
+                                            <?php
+                                            $i = 1;
+                                            $total_net_amt = 0; //Edited by Akshay on 4-6-2024
+                                            foreach ($value['leavepolicyname'] as $val) {
+                                                // debug($val['payroll_master']);
+                                                $bank_name = '';
+                                                $branch_name = '';
+                                                $ifsc_code = '';
+                                                $acc_number = '';
+                                                $bank = isset($val['payroll_master']['bank_details']) ? $val['payroll_master']['bank_details'] : '';
+                                                if ($bank != '') {
+                                                    list($bank_name, $branch_name, $ifsc_code, $acc_number) = explode(',', $bank);
+                                                }
+                                                // if($bank_name == ''){
+                                                // $bank_name = $val['0']['BANK_NAME'];
+                                                // }
+                                                // if($branch_name == ''){
+                                                // $branch_name = $val['EmployeeDetails']['branch_name'];
+                                                // }
+                                                // if($ifsc_code == ''){
+                                                // $ifsc_code = $val['EmployeeDetails']['ifsc_code'];
+                                                // }
+                                                // if($acc_number == ''){
+                                                // $acc_number = $val['EmployeeDetails']['account_no'];
+                                                // }
+                                                $settle = 0;
+                                                foreach ($arr_settle as $values) {
+                                                    $pkey = isset($values['0']['info']['emp_pkey']) ? $values['0']['info']['emp_pkey'] : 0;
+
+                                                    if ($val['EmployeeDetails']['emp_pkey'] == $pkey) {
+                                                        $settle = $values[0][0]['sum(salary_amount)'];
+                                                    }
+                                                }
+                                                // debug($val);
+                                                // exit();
+                                                //end
+                                            ?>
+                                                <tbody>
+                                                    <!--                      // edited by megha on 25_06_19 zero valued net salary removed-->
+
+                                                    <?php if (true) { ?>
+                                                        <?php $table_count = 0; ?>
+                                                        <tr>
+                                                            <td><?php echo $i; ?></td>
+                                                            <!-- Edited by Akshay on 1-6-2024 -->
+                                                            <td><?php echo $val['info']['employee_id']; ?></td>
+                                                            <td><?php echo $val['user_credentials']['user_id']; ?></td>
+                                                            <!-- End -->
+                                                            <td><?php echo $val['info']['EmpName'];
+                                                                echo (isset($val['EmployeeDetails']['status'])) && $val['EmployeeDetails']['status'] == "2" ? '  (Resigned)' : ''; ?></td>
+                                                            <td><?php
+                                                                $join = $val['info']['joining_date'];
+                                                                $join_date = date('d-m-Y', strtotime($join));
+                                                                echo $join_date;
+                                                                ?></td>
+                                                            <td><?php echo $val['payroll_master']['branch_name']; ?></td>
+                                                            <td><?php echo $val['payroll_master']['departments']; ?></td>
+                                                            <td><?php echo $val['payroll_master']['desig']; ?></td>
+
+                                                            <td><?php
+                                                                $termination = $val['tr']['last_approved_working_date'];
+                                                                $termin_date = !empty($termination) ? date('d-m-Y', strtotime($termination)) : '';
+                                                                echo $termin_date; ?></td>
+
+                                                            <td><?php echo $bank_name; ?></td>
+                                                            <td><?php echo $branch_name; ?></td>
+                                                            <td><?php echo $ifsc_code; ?></td>
+                                                            <td><?php echo $acc_number; ?></td>
+                                                            <!--<td><?php // echo isset($val['ot']) ? round(($val['ot'] / 60), 2) :0; 
+                                                                    ?></td>-->
+                                                            <?php //$count_addition= count($val['Addition']['keys']); 
+                                                            //                        $grss_amt=round($val['0']['payroll_master']['gross_salary']);
+                                                            //for($m=0;$m<$count_addition;$m++)
+                                                            //{
+                                                            //$number=round($val['Addition']['value'][$m]);
+                                                            //$grss_amt=$number+$grss_amt;
+
+
+                                                            ?>
+
+                                                            <?php //} 
+                                                            ?>
+                                                            <!--<td><?php // echo $grss_amt; 
+                                                                    ?></td>-->
+                                                            <?php //$count_addition= count($val['Deduction']['keys']); 
+                                                            // edited by megha on 14_11_19 settlement amount 2
+                                                            //if($indirect == 0){
+                                                            $dd_amt = round($val['payroll_master']['net_salary'] + $settle);
+                                                            //                       }else{
+                                                            //                        $dd_amt=round($val['payroll_master']['net_salary'] + $val['0']['salary'] + $settle);
+                                                            //                       }
+                                                            //end
+                                                            //for($m=0;$m<$count_addition;$m++)
+                                                            //{
+                                                            //$number=round($val['Deduction']['value'][$m]);
+                                                            //$dd_amt=$number+$dd_amt;
+
+
+                                                            ?>
+
+
+                                                            <?php //} 
+
+
+                                                            $netamt = $dd_amt;
+                                                            ?>
+
+
+                                                            <!--<td><?php // echo $dd_amt; 
+                                                                    ?></td>-->
+                                                            <td><?php echo $netamt;
+                                                                $total_net_amt += $netamt;
+                                                                ?></td>
+                                                        </tr>
+                                                    <?php $i++;
+                                                    } else { ?>
+                                                        <!-- <tr><td colspan="11" style="text-align:center;">
+                    No data available under the selected criteria
+</td></tr> -->
+                                                <?php }
+                                                } ?>
+                                                <?php
+                                                if ($criteria != 'EmployeeDetails') { ?>
+                                                    <tr>
+                                                        <td colspan="13" style="text-align:center;font-weight:bold;"><b>TOTAL</b></td>
+                                                        <td style="font-weight:bold;"><?php echo $total_net_amt; ?></td>
+                                                    </tr>
+                                                <?php }
+                                                ?>
+                                                </tbody>
+                                                <?php $table_count++;
+                                                ?>
+                                        </table>
+                                    </div>
+                                <?php  } ?>
+                            <?php  } ?>
+                        </div>
+                    <?php } ?>
+                    <?php if ($table_count == 0) { ?>
+                        <div style="font-size: 16px;text-align:left; background-color:;">
+                            No data available under the selected criteria</div>
+                    <?php } ?>
+                    <?php } else {
+                    $i = 0;
+                    foreach ($arr_salary_for_template as $value) {
+
+                    ?>
+                        <?php if (count($value['leavepolicyname']) > 0) { ?>
+                            <div class="col-md-12">
+                                <?php //} else { 
+                                ?>
+                                <!-- <h3 align="center"  >Salary Statement of 
+                <?php $bk = isset($value['leavepolicyname']['0']['0']['BANK_NAME']) ? $value['leavepolicyname']['0']['0']['BANK_NAME'] : '';
+                            // $i = 0;
+                            if (true) { //Edited by Akshay on 4-6-2024
+                                echo ($bk != '') ? $bk : 'N/A';  ?></h3> -->
+                                <!-- <h3>Month : <?php echo $month; ?></h3> -->
+                                <legend style="border: 0;">Bank Statement of
+                                    <?php $bk = isset($value['leavepolicyname']['0']['0']['BANK_NAME']) ? $value['leavepolicyname']['0']['0']['BANK_NAME'] : '';
+
+                                    echo ($bk != '') ? $bk : 'N/A';  ?><?php echo " - " . $mname . "  "  . $year ?></legend>
+                                <div style="overflow-x: auto;">
+                                    <table class="table table-bordered" id="report_table2" style="overflow-x: auto;">
+                                        <thead>
+                                            <!-- <tr style="background-color:#f0f0ff;"> -->
+                                            <tr>
+                                                <th>Sl No</th>
+                                                <th>Beneficiary Identification</th>
+                                                <th>Transaction Amount</th>
+                                                <th>Beneficiary Bank IFSC</th>
+                                                <th>Beneficiary Bank A/C Number</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $i = 1;
+                                            foreach ($value['leavepolicyname'] as $val) {
+                                                // debug($val);
+                                                $bank_name = '';
+                                                $ifsc_code = '';
+                                                $acc_number = '';
+                                                $branch_name = '';
+                                                $bank = isset($val['payroll_master']['bank_details']) ? $val['payroll_master']['bank_details'] : '';
+                                                if ($bank != '') {
+                                                    list($bank_name, $branch_name, $ifsc_code, $acc_number) = explode(',', $bank);
+                                                }
+                                                // if($bank_name == ''){
+                                                // $bank_name = $val['0']['BANK_NAME'];
+                                                // }
+                                                // if($branch_name == ''){
+                                                // $branch_name = $val['EmployeeDetails']['branch_name'];
+                                                // }
+                                                // if($ifsc_code == ''){
+                                                // $ifsc_code = $val['EmployeeDetails']['ifsc_code'];
+                                                // }
+                                                // if($acc_number == ''){
+                                                // $acc_number = $val['EmployeeDetails']['account_no'];
+                                                // }
+                                                $settle = 0;
+                                                foreach ($arr_settle as $values) {
+                                                    $pkey = isset($values['0']['info']['emp_pkey']) ? $values['0']['info']['emp_pkey'] : 0;
+
+                                                    if ($val['EmployeeDetails']['emp_pkey'] == $pkey) {
+                                                        $settle = $values[0][0]['sum(salary_amount)'];
+                                                    }
+                                                } ?>
+                                                <?php if (true) { ?>
+                                                    <tr>
+                                                        <td><?php echo $i; ?></td>
+                                                        <td><?php echo $val['info']['EmpName'];
+                                                            echo (isset($val['EmployeeDetails']['status'])) && $val['EmployeeDetails']['status'] == "2" ? '  (Resigned)' : ''; ?></td>
+
+                                                        <?php
+                                                        $dd_amt = round($val['payroll_master']['net_salary'] + $settle); ?>
+                                                        <?php $netamt = $dd_amt;  ?>
+
+                                                        <td><?php echo $netamt; ?></td>
+                                                        <td><?php echo $ifsc_code; ?></td>
+                                                        <td><?php echo $acc_number; ?></td>
+                                                    </tr>
+                                            <?php $i++;
+                                                }
+                                            } ?>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php } ?>
+                            </div>
+                        <?php } ?>
+                    <?php  }  ?>
+                    <?php if ($i == 0) { ?>
+                        <div style="font-size: 16px;text-align:left; background-color:;">
+                            No data available under the selected criteria</div>
+                    <?php } ?>
+            </div> <?php }  ?>
+        <!--div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel </button>  
+    </div-->
+        <!-- <div class="row">
+         <div class="form-group">
+             <div class="col-md-12" align="right">
+                 <a href="#" class="btn btn-default" onclick="downloadReport('Grosssalary', 'pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                 <a href="#" class="btn btn-default" onclick="downloadReport('Grosssalary', 'excel');"><i class="icon-file"></i>Download As Excel</a>
+             </div>
+         </div>
+     </div> -->
+    <?php } ?>
+    </div>
+<?php  } else { ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>'; 
+    ?>
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+
+        .block-container {
+            width: 100%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+
+        .row {
+            height: 32px;
+        }
+
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+
+        table {
+            border: 1px solid #f4f4f4;
+            width: 80%;
+            max-width: 80%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+
+
+        }
+
+        td,
+        th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border: 1px solid #B2B2B2;
+        }
+
+        .break-ifsc {
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .acc-no {
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+    </style>
+
+    <?php
+    //Edited by Akshay on 4-6-2024
+    // if ($criteria == 'Banks') {
+    //     echo $this->element('reportadminheader', array(
+    //         'title' => "Salary Bank Transfer - " . $mname . ' ' . $year
+    //     ));
+    // }
+    function insertLineBreaks($text)
+    {
+        // Define the maximum character limit before inserting a line break
+        $maxChars = 9;
+
+        // Insert a line break after every $maxChars characters
+        $text = wordwrap($text, $maxChars, "<br>", true);
+
+        return $text;
+    }
+    //End
+    ?>
+    <!--<div class="modal-body" style="overflow-y:auto; padding-left:3%; padding-right:3%; padding-bottom:3%;">-->
+    <?php $i = 0;
+    foreach ($arr_salary_for_template as $value) {
+        foreach ($value as $valuees) {
+            if (!empty($valuees)) {
+                $i++;
+            }
+        }
+    }
+    if ($i == '0') { ?>
+        <!-- Edited by Akshay on 4-6-2024 -->
+        <page backtop="60mm" backbottom="2mm" backleft=20mm" backright="20mm" style="font-size: 12pt">
+            <page_header>
+                <div style="text-align:left; width:100%; ">
+                    <?php if (isset($arr_comp_contact_info['CompanyContactInfo']['logo']) && !empty($arr_comp_contact_info['CompanyContactInfo']['logo'])) { ?>
+                        <div style="width: 20%; margin-left: 20px; font-size: 18px; ">
+                            <img style=" margin-left: 20px; margin-top: 40px; " src="http://<?php echo $_SERVER['HTTP_HOST'] . $this->webroot . $arr_comp_contact_info['CompanyContactInfo']['logo']; ?>" height="100" width="100" class="img-circle" alt="Company Logo" />
+                        </div>
+                        <!--<img style=" margin-left: 70px; " src="http://<?php echo $_SERVER['HTTP_HOST'] . $this->webroot . $arr_comp_contact_info['CompanyContactInfo']['logo']; ?>" height="50" width="70" class="img-circle" alt="Company Logo" />-->
+                    <?php } ?>
+                    <div style="width: 80%; margin-left: 100px; margin-top: 40px; position : absolute ; float: left; font-size: 14px; ">
+                        <div style="text-align: center;font-weight: bold;font-size: 14px; ; padding-top: 4px; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?>
+
+                        </div>
+                        <div style="text-align: center ;  margin-left: 20px;padding-top: 4px; word-break: break-all;font-size: 11px; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['address']; ?>
+
+                        </div>
+                        <div style="text-align: center ; padding-top: 4px;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['city']; ?>
+                            ,PIN - <?php echo $arr_comp_contact_info['CompanyContactInfo']['pincode']; ?>
+                            ,<?php echo $arr_comp_contact_info['CompanyContactInfo']['state']; ?>
+                        </div>
+                        <div style="text-align: center ; padding-top: 4px;"> <?php echo "Phone : " . $arr_comp_contact_info['CompanyContactInfo']['phone']; ?>
+                            <?php // echo ' Fax : ' . $arr_comp_contact_info['CompanyContactInfo']['fax']; 
+                            ?>
+                            <?php echo ' Email : ' . $arr_comp_contact_info['CompanyContactInfo']['email']; ?>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <hr>
+                <?php if ($criteria != 'Banks') { ?>
+                    <h3 style="text-align: center;padding-bottom: 20px;padding-top: 10px;"><?php echo 'Salary Bank Transfer - ' . "$mname " . $year; ?></h3>
+                <?php } else { ?>
+                    <h3 style="text-align: center;padding-bottom: 20px;padding-top: 10px;"><?php echo 'Bank Statement - ' . "$mname " . $year; ?></h3>
+                <?php } ?>
+                <br>
+            </page_header>
+            <page_footer>
+
+                <div style="width: 100%; text-align: right">
+                    page [[page_cu]]/[[page_nb]]
+                </div>
+                <div style="width: 100%; text-align: left">
+                    Downloaded By <?php echo $user_name; ?> <?php echo date("l,F j, Y"); ?>
+                </div>
+            </page_footer>
+        </page>
+        <!-- End -->
+        <div style="font-size: 25px;text-align:center; ">
+            No data available under the selected criteria</div>
+    <?php } else { ?>
+
+        <?php if ($criteria != 'Banks') {
+            if ($criteria == 'EmployeeDetails') { ?>
+                <!-- Edited by Akshay on 4-6-2024 -->
+                <page backtop="60mm" backbottom="10mm" backleft=2mm" backright="20mm" style="font-size: 12pt">
+                    <page_header>
+                        <div style="text-align:left; width:100%; ">
+                            <?php if (isset($arr_comp_contact_info['CompanyContactInfo']['logo']) && !empty($arr_comp_contact_info['CompanyContactInfo']['logo'])) { ?>
+                                <div style="width: 20%; margin-left: 20px; font-size: 18px; ">
+                                    <img style=" margin-left: 20px; margin-top: 40px; " src="http://<?php echo $_SERVER['HTTP_HOST'] . $this->webroot . $arr_comp_contact_info['CompanyContactInfo']['logo']; ?>" height="100" width="100" class="img-circle" alt="Company Logo" />
+                                </div>
+                                <!--<img style=" margin-left: 70px; " src="http://<?php echo $_SERVER['HTTP_HOST'] . $this->webroot . $arr_comp_contact_info['CompanyContactInfo']['logo']; ?>" height="50" width="70" class="img-circle" alt="Company Logo" />-->
+                            <?php } ?>
+                            <div style="width: 80%; margin-left: 100px; margin-top: 40px; position : absolute ; float: left; font-size: 14px; ">
+                                <div style="text-align: center;font-weight: bold;font-size: 14px; ; padding-top: 4px; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?>
+
+                                </div>
+                                <div style="text-align: center ;  margin-left: 20px;padding-top: 4px; word-break: break-all;font-size: 11px; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['address']; ?>
+
+                                </div>
+                                <div style="text-align: center ; padding-top: 4px;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['city']; ?>
+                                    ,PIN - <?php echo $arr_comp_contact_info['CompanyContactInfo']['pincode']; ?>
+                                    ,<?php echo $arr_comp_contact_info['CompanyContactInfo']['state']; ?>
+                                </div>
+                                <div style="text-align: center ; padding-top: 4px;"> <?php echo "Phone : " . $arr_comp_contact_info['CompanyContactInfo']['phone']; ?>
+                                    <?php // echo ' Fax : ' . $arr_comp_contact_info['CompanyContactInfo']['fax']; 
+                                    ?>
+                                    <?php echo ' Email : ' . $arr_comp_contact_info['CompanyContactInfo']['email']; ?>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <hr>
+                        <h3 style="text-align: center;padding-bottom: 20px;padding-top: 10px;"><?php echo 'Salary Bank Transfer - ' . "$mname " . $year; ?></h3>
+                        <br>
+                    </page_header>
+                    <page_footer>
+
+                        <div style="width: 100%; text-align: right">
+                            page [[page_cu]]/[[page_nb]]
+                        </div>
+                        <div style="width: 100%; text-align: left">
+                            Downloaded By <?php echo $user_name; ?> <?php echo date("l,F j, Y"); ?>
+                        </div>
+                    </page_footer>
+                </page>
+                <!-- End -->
+                <table class="table ">
+                    <thead>
+                        <tr style="background-color:#f0f0ff;">
+                            <th style="width:1%;">Sl<br>No</th>
+                            <th style="width:15%;">Employee ID</th>
+                            <th style="width:12%;">Employee Name</th>
+                            <th style="width:14%;">Designation</th>
+                            <th style="width:12%;">Department</th>
+                            <th style="width:14%;">Branch</th>
+                            <th style="width:14%;">Bank Name</th>
+                            <th style="width:12%;">Branch Name</th>
+                            <th style="width:11%;">IFSC Code</th>
+                            <th style="width:16%;">Account Number</th>
+                            <th style="width:7%;">Net Salary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $i = 1;
+                        $total_net_amt = 0;
+                        foreach ($arr_salary_for_template as $value) { ?>
+                            <?php if (count($value['leavepolicyname']) <= 0) { ?>
+                                <?php } else {
+                                foreach ($value['leavepolicyname'] as $val) {
+                                    $bank_name = '';
+                                    $branch_name = '';
+                                    $ifsc_code = '';
+                                    $acc_number = '';
+                                    $bank = isset($val['payroll_master']['bank_details']) ? $val['payroll_master']['bank_details'] : '';
+                                    if ($bank != '') {
+                                        list($bank_name, $branch_name, $ifsc_code, $acc_number) = explode(',', $bank);
+                                    }
+                                    if ($bank_name == '') {
+                                        $bank_name = $val['0']['BANK_NAME'];
+                                    }
+                                    if ($branch_name == '') {
+                                        $branch_name = $val['EmployeeDetails']['branch_name'];
+                                    }
+                                    if ($ifsc_code == '') {
+                                        $ifsc_code = $val['EmployeeDetails']['ifsc_code'];
+                                    }
+
+                                    if ($acc_number == '') {
+                                        $acc_number = $val['EmployeeDetails']['account_no'];
+                                    }
+                                    $settle = 0;
+                                    foreach ($arr_settle as $values) {
+                                        $pkey = isset($values['0']['info']['emp_pkey']) ? $values['0']['info']['emp_pkey'] : 0;
+                                        if ($val['EmployeeDetails']['emp_pkey'] == $pkey) {
+                                            $settle = $values[0][0]['sum(salary_amount)'];
+                                        }
+                                    } ?>
+                                    <?php 
+                                    // if ($val['payroll_master']['net_salary'] > 0) { 
+                                        if (true) { 
+                                        ?>
+                                        <tr>
+                                            <td style="width:1%;"><?php echo $i; ?></td>
+                                            <td style="width:15%;"><?php echo $val['info']['employee_id']; ?></td>
+                                            <td style="width:12%;"><?php echo $val['info']['EmpName'];
+                                                                    echo (isset($val['EmployeeDetails']['status'])) && $val['EmployeeDetails']['status'] == "2" ? '  (Resigned)' : ''; ?></td>
+                                            <td style="width:14%;"><?php echo $val['payroll_master']['desig']; ?></td>
+                                            <td style="width:11%;"><?php echo insertLineBreaks($val['payroll_master']['departments']); ?></td>
+                                            <td style="width:11%;"><?php echo insertLineBreaks($val['payroll_master']['branch_name']); ?></td>
+
+
+                                            <td style="width:14%; word-wrap: break-word;"><?php echo insertLineBreaks($bank_name); ?></td>
+
+                                            <td style="width:12%; word-wrap: break-word;"><?php echo insertLineBreaks($branch_name); ?></td>
+                                            <?php
+                                            //Edited by Akshay on 24-6-2024
+                                            $ifsc_code_with_breaks = '';
+                                            for ($ifsc_i = 0; $ifsc_i < strlen($ifsc_code); $ifsc_i += 11) {
+                                                if ($ifsc_i > 0) {
+                                                    $ifsc_code_with_breaks .= "<br>";
+                                                }
+                                                $ifsc_code_with_breaks .= substr($ifsc_code, $ifsc_i, 11);
+                                            }
+
+                                            $acc_number_with_breaks = '';
+                                            for ($acc_i = 0; $acc_i < strlen($acc_number); $acc_i += 14) {
+                                                if ($acc_i > 0) {
+                                                    $acc_number_with_breaks .= "<br>";
+                                                }
+                                                $acc_number_with_breaks .= substr($acc_number, $acc_i, 14);
+                                            }
+                                            //End
+                                            ?>
+                                            <td style="width:13%;" class="break-ifsc"><?php echo $ifsc_code_with_breaks; ?></td>
+                                            <td style="width:16%;" class="acc-no"><?php echo $acc_number_with_breaks; ?></td>
+                                            <?php $dd_amt = round($val['payroll_master']['net_salary'] + $settle); ?>
+                                            <?php $netamt = $dd_amt; ?>
+                                            <td style="width:7%;"><?php echo $netamt;
+                                                                    $total_net_amt += $netamt; ?></td>
+                                        </tr>
+                                    <?php $i++;
+                                    } else { ?>
+                                        <tr>
+                                            <td colspan="11" style="text-align:center;">
+                                                No data available under the selected criteria2
+                                            </td>
+                                        </tr>
+                                <?php }
+                                } ?>
+                                <?php
+                                if ($criteria != 'EmployeeDetails') {
+                                ?>
+                                    <tr>
+                                        <td colspan="10" style="text-align:center; font-weight:bold;">TOTAL</td>
+                                        <td style="font-weight:bold;"><?php echo $total_net_amt; ?></td>
+                                    </tr>
+                                <?php
+                                }
+                                ?>
+                            <?php  } ?>
+
+                        <?php } ?>
+                        <tr>
+                            <td colspan="10" style="text-align:center; font-weight:bold;">TOTAL</td>
+                            <td style="font-weight:bold;"><?php echo $total_net_amt; ?></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <?php } else {
+                foreach ($arr_salary_for_template as $value) { ?>
+
+                    <?php if (count($value['leavepolicyname']) <= 0) { ?>
+                    <?php } else { ?>
+                        <!-- Edited by Akshay on 4-6-2024 -->
+                        <page backtop="55mm" backbottom="10mm" backleft=2mm" backright="20mm" style="font-size: 12pt">
+                            <page_header>
+                                <div style="text-align:left; width:100%; ">
+                                    <?php if (isset($arr_comp_contact_info['CompanyContactInfo']['logo']) && !empty($arr_comp_contact_info['CompanyContactInfo']['logo'])) { ?>
+                                        <div style="width: 20%; margin-left: 20px; font-size: 18px; ">
+                                            <img style=" margin-left: 20px; margin-top: 40px; " src="http://<?php echo $_SERVER['HTTP_HOST'] . $this->webroot . $arr_comp_contact_info['CompanyContactInfo']['logo']; ?>" height="100" width="100" class="img-circle" alt="Company Logo" />
+                                        </div>
+                                        <!--<img style=" margin-left: 70px; " src="http://<?php echo $_SERVER['HTTP_HOST'] . $this->webroot . $arr_comp_contact_info['CompanyContactInfo']['logo']; ?>" height="50" width="70" class="img-circle" alt="Company Logo" />-->
+                                    <?php } ?>
+                                    <div style="width: 80%; margin-left: 100px; margin-top: 40px; position : absolute ; float: left; font-size: 14px; ">
+                                        <div style="text-align: center;font-weight: bold;font-size: 14px; ; padding-top: 4px; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?>
+
+                                        </div>
+                                        <div style="text-align: center ;  margin-left: 20px;padding-top: 4px; word-break: break-all;font-size: 11px; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['address']; ?>
+
+                                        </div>
+                                        <div style="text-align: center ; padding-top: 4px;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['city']; ?>
+                                            ,PIN - <?php echo $arr_comp_contact_info['CompanyContactInfo']['pincode']; ?>
+                                            ,<?php echo $arr_comp_contact_info['CompanyContactInfo']['state']; ?>
+                                        </div>
+                                        <div style="text-align: center ; padding-top: 4px;"> <?php echo "Phone : " . $arr_comp_contact_info['CompanyContactInfo']['phone']; ?>
+                                            <?php // echo ' Fax : ' . $arr_comp_contact_info['CompanyContactInfo']['fax']; 
+                                            ?>
+                                            <?php echo ' Email : ' . $arr_comp_contact_info['CompanyContactInfo']['email']; ?>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                <hr>
+                                <h3 style="text-align: center;padding-bottom: 20px;padding-top: 10px;"><?php echo 'Salary Bank Transfer - ' . "$mname " . $year; ?></h3>
+                                <br>
+                            </page_header>
+                            <page_footer>
+
+                                <div style="width: 100%; text-align: right">
+                                    page [[page_cu]]/[[page_nb]]
+                                </div>
+                                <div style="width: 100%; text-align: left">
+                                    Downloaded By <?php echo $user_name; ?> <?php echo date("l,F j, Y"); ?>
+                                </div>
+                            </page_footer>
+                        </page>
+                        <!-- End -->
+                        <h3 align="center">Salary Bank Transfer of <?php if ($cr == 'EmployeeDetails') {
+                                                                        echo $value['leavepolicyname']['0']['info']['EmpName'];
+                                                                        echo (isset($value['leavepolicyname']['0']['EmployeeDetails']['status'])) && $value['leavepolicyname']['0']['EmployeeDetails']['status'] == "2" ? '  (Resigned)' : '';
+                                                                    } elseif ($cr == 'Units') {
+                                                                        echo isset($value['leavepolicyname'][0]['payroll_master']['branch_name']) ? $value['leavepolicyname'][0]['payroll_master']['branch_name'] : '';
+                                                                    } else {
+                                                                        $bk = isset($value['leavepolicyname']['0']['0']['BANK_NAME']) ? $value['leavepolicyname']['0']['0']['BANK_NAME'] : '';
+
+                                                                        echo ($bk != '') ? $bk : 'N/A';
+                                                                    } ?></h3>
+                        <h3>Month : <?php echo $month; ?></h3>
+                        <table class="table ">
+                            <thead>
+                                <tr style="background-color:#f0f0ff;">
+                                    <th style="width:1%;">Sl<br>No</th>
+                                    <th style="width:15%;">Employee ID</th>
+                                    <th style="width:12%;">Employee Name</th>
+                                    <th style="width:14%;">Designation</th>
+                                    <th style="width:12%;">Department</th>
+                                    <th style="width:14%;">Branch</th>
+                                    <th style="width:14%;">Bank Name</th>
+                                    <th style="width:12%;">Branch Name</th>
+                                    <th style="width:11%;">IFSC Code</th>
+                                    <th style="width:16%;">Account Number</th>
+                                    <th style="width:7%;">Net Salary</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $i = 1;
+                                $total_net_amt = 0;
+                                foreach ($value['leavepolicyname'] as $val) {
+                                    $bank_name = '';
+                                    $branch_name = '';
+                                    $ifsc_code = '';
+                                    $acc_number = '';
+                                    $bank = isset($val['payroll_master']['bank_details']) ? $val['payroll_master']['bank_details'] : '';
+                                    if ($bank != '') {
+                                        list($bank_name, $branch_name, $ifsc_code, $acc_number) = explode(',', $bank);
+                                    }
+                                    if ($bank_name == '') {
+                                        $bank_name = $val['0']['BANK_NAME'];
+                                    }
+                                    if ($branch_name == '') {
+                                        $branch_name = $val['EmployeeDetails']['branch_name'];
+                                    }
+                                    if ($ifsc_code == '') {
+                                        $ifsc_code = $val['EmployeeDetails']['ifsc_code'];
+                                    }
+                                    // debug($ifsc_code); exit;
+                                    if ($acc_number == '') {
+                                        $acc_number = $val['EmployeeDetails']['account_no'];
+                                    }
+                                    $settle = 0;
+                                    foreach ($arr_settle as $values) {
+                                        $pkey = isset($values['0']['info']['emp_pkey']) ? $values['0']['info']['emp_pkey'] : 0;
+                                        if ($val['EmployeeDetails']['emp_pkey'] == $pkey) {
+                                            $settle = $values[0][0]['sum(salary_amount)'];
+                                        }
+                                    } ?>
+                                    <?php 
+                                    // if ($val['payroll_master']['net_salary'] > 0) { 
+                                        if (true) { 
+                                        ?>
+                                        <tr>
+                                            <td style="width:1%;"><?php echo $i; ?></td>
+                                            <td style="width:15%;"><?php echo $val['info']['employee_id']; ?></td>
+                                            <td style="width:12%;"><?php echo $val['info']['EmpName'];
+                                                                    echo (isset($val['EmployeeDetails']['status'])) && $val['EmployeeDetails']['status'] == "2" ? '  (Resigned)' : ''; ?></td>
+                                            <td style="width:14%;"><?php echo $val['payroll_master']['desig']; ?></td>
+                                            <td style="width:11%;"><?php echo insertLineBreaks($val['payroll_master']['departments']); ?></td>
+                                            <td style="width:11%;"><?php echo insertLineBreaks($val['payroll_master']['branch_name']); ?></td>
+
+
+                                            <td style="width:14%; word-wrap: break-word;"><?php echo insertLineBreaks($bank_name); ?></td>
+
+                                            <td style="width:12%; word-wrap: break-word;"><?php echo insertLineBreaks($branch_name); ?></td>
+                                            <?php
+                                            //Edited by Akshay on 24-6-2024
+                                            $ifsc_code_with_breaks = '';
+                                            for ($ifsc_i = 0; $ifsc_i < strlen($ifsc_code); $ifsc_i += 11) {
+                                                if ($ifsc_i > 0) {
+                                                    $ifsc_code_with_breaks .= "<br>";
+                                                }
+                                                $ifsc_code_with_breaks .= substr($ifsc_code, $ifsc_i, 11);
+                                            }
+                                            $acc_number_with_breaks = '';
+                                            for ($acc_i = 0; $acc_i < strlen($acc_number); $acc_i += 14) {
+                                                if ($acc_i > 0) {
+                                                    $acc_number_with_breaks .= "<br>";
+                                                }
+                                                $acc_number_with_breaks .= substr($acc_number, $acc_i, 14);
+                                            }
+                                            //End
+                                            ?>
+                                            <td style="width:13%;" class="break-ifsc"><?php echo $ifsc_code_with_breaks; ?></td>
+                                            <td style="width:16%;" class="acc-no"><?php echo $acc_number_with_breaks; ?></td>
+                                            <?php $dd_amt = round($val['payroll_master']['net_salary'] + $settle); ?>
+                                            <?php $netamt = $dd_amt; ?>
+                                            <td style="width:7%;"><?php echo $netamt;
+                                                                    $total_net_amt += $netamt; ?></td>
+                                        </tr>
+                                    <?php $i++;
+                                    } else { ?>
+                                        <tr>
+                                            <td colspan="11" style="text-align:center;">
+                                                No data available under the selected criteria
+                                            </td>
+                                        </tr>
+                                <?php }
+                                } ?>
+                                <?php
+                                if ($criteria != 'EmployeeDetails') {
+                                ?>
+                                    <tr>
+                                        <td colspan="10" style="text-align:center; font-weight:bold;">TOTAL</td>
+                                        <td style="font-weight:bold;"><?php echo $total_net_amt; ?></td>
+                                    </tr>
+                                <?php
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+
+                    <?php  } ?>
+
+            <?php }
+            }
+        } else { ?>
+
+            <?php
+            foreach ($arr_salary_for_template as $value) { ?>
+
+                <?php if (count($value['leavepolicyname']) > 0) { ?>
+                    <?php //} else { 
+                    ?>
+                    <!-- Edited by Akshay on 4-6-2024 -->
+                    <page backtop="60mm" backbottom="10mm" backleft=20mm" backright="20mm" style="font-size: 12pt">
+                        <page_header>
+                            <div style="text-align:left; width:100%; ">
+                                <?php if (isset($arr_comp_contact_info['CompanyContactInfo']['logo']) && !empty($arr_comp_contact_info['CompanyContactInfo']['logo'])) { ?>
+                                    <div style="width: 20%; margin-left: 20px; font-size: 18px; ">
+                                        <img style=" margin-left: 20px; margin-top: 40px; " src="http://<?php echo $_SERVER['HTTP_HOST'] . $this->webroot . $arr_comp_contact_info['CompanyContactInfo']['logo']; ?>" height="100" width="100" class="img-circle" alt="Company Logo" />
+                                    </div>
+                                    <!--<img style=" margin-left: 70px; " src="http://<?php echo $_SERVER['HTTP_HOST'] . $this->webroot . $arr_comp_contact_info['CompanyContactInfo']['logo']; ?>" height="50" width="70" class="img-circle" alt="Company Logo" />-->
+                                <?php } ?>
+                                <div style="width: 80%; margin-left: 100px; margin-top: 40px; position : absolute ; float: left; font-size: 14px; ">
+                                    <div style="text-align: center;font-weight: bold;font-size: 14px; ; padding-top: 4px; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name']; ?>
+
+                                    </div>
+                                    <div style="text-align: center ;  margin-left: 20px;padding-top: 4px; word-break: break-all;font-size: 11px; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['address']; ?>
+
+                                    </div>
+                                    <div style="text-align: center ; padding-top: 4px;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['city']; ?>
+                                        ,PIN - <?php echo $arr_comp_contact_info['CompanyContactInfo']['pincode']; ?>
+                                        ,<?php echo $arr_comp_contact_info['CompanyContactInfo']['state']; ?>
+                                    </div>
+                                    <div style="text-align: center ; padding-top: 4px;"> <?php echo "Phone : " . $arr_comp_contact_info['CompanyContactInfo']['phone']; ?>
+                                        <?php // echo ' Fax : ' . $arr_comp_contact_info['CompanyContactInfo']['fax']; 
+                                        ?>
+                                        <?php echo ' Email : ' . $arr_comp_contact_info['CompanyContactInfo']['email']; ?>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <hr>
+                            <h3 style="text-align: center;padding-bottom: 20px;padding-top: 10px;"><?php echo 'Bank Statement - ' . "$mname " . $year; ?></h3>
+                            <br>
+                        </page_header>
+                        <page_footer>
+
+                            <div style="width: 100%; text-align: right">
+                                page [[page_cu]]/[[page_nb]]
+                            </div>
+                            <div style="width: 100%; text-align: left">
+                                Downloaded By <?php echo $user_name; ?> <?php echo date("l,F j, Y"); ?>
+                            </div>
+                        </page_footer>
+                    </page>
+                    <!-- End -->
+                    <h3 align="center">Salary Statement of
+                        <?php $bk = isset($value['leavepolicyname']['0']['0']['BANK_NAME']) ? $value['leavepolicyname']['0']['0']['BANK_NAME'] : '';
+
+                        echo ($bk != '') ? $bk : 'N/A';  ?></h3>
+                    <h3>Month-<?php echo $month; ?></h3>
+                    <table class="table ">
+                        <thead>
+                            <tr style="background-color:#f0f0ff;">
+                                <th>Sl No</th>
+                                <th>Beneficiary Identification</th>
+                                <th>Transaction Amount</th>
+                                <th>Beneficiary Bank IFSC</th>
+                                <th>Beneficiary Bank A/C Number</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $i = 1;
+                            foreach ($value['leavepolicyname'] as $val) {
+                                $bank_name = '';
+                                $ifsc_code = '';
+                                $acc_number = '';
+                                $branch_name = '';
+                                $bank = isset($val['payroll_master']['bank_details']) ? $val['payroll_master']['bank_details'] : '';
+                                if ($bank != '') {
+                                    list($bank_name, $branch_name, $ifsc_code, $acc_number) = explode(',', $bank);
+                                }
+                                if ($bank_name == '') {
+                                    $bank_name = $val['0']['BANK_NAME'];
+                                }
+                                if ($branch_name == '') {
+                                    $branch_name = $val['EmployeeDetails']['branch_name'];
+                                }
+                                if ($ifsc_code == '') {
+                                    $ifsc_code = $val['EmployeeDetails']['ifsc_code'];
+                                }
+                                if ($acc_number == '') {
+                                    $acc_number = $val['EmployeeDetails']['account_no'];
+                                }
+                                $settle = 0;
+                                foreach ($arr_settle as $values) {
+                                    $pkey = isset($values['0']['info']['emp_pkey']) ? $values['0']['info']['emp_pkey'] : 0;
+
+                                    if ($val['EmployeeDetails']['emp_pkey'] == $pkey) {
+                                        $settle = $values[0][0]['sum(salary_amount)'];
+                                    }
+                                } ?>
+                                <?php 
+                               // if ($val['payroll_master']['net_salary'] > 0) { 
+                                if (true) { 
+                               ?>
+                                    <tr>
+                                        <td><?php echo $i; ?></td>
+                                        <td><?php echo $val['info']['EmpName'];
+                                            echo (isset($val['EmployeeDetails']['status'])) && $val['EmployeeDetails']['status'] == "2" ? '  (Resigned)' : ''; ?></td>
+
+                                        <?php
+                                        $dd_amt = round($val['payroll_master']['net_salary'] + $settle); ?>
+                                        <?php $netamt = $dd_amt;  ?>
+
+                                        <td><?php echo $netamt; ?></td>
+                                        <td><?php echo $ifsc_code; ?></td>
+                                        <td><?php echo $acc_number; ?></td>
+                                    </tr>
+                                <?php $i++;
+                                } else { ?>
+                                    <tr>
+                                        <td colspan="5" style="text-align:center;">
+                                            No data available under the selected criteria
+                                        </td>
+                                    </tr>
+                            <?php }
+                            } ?>
+
+                        </tbody>
+                    </table>
+                <?php } ?>
+
+            <?php  }  ?>
+
+        <?php }  ?>
+
+    <?php } ?>
+    <!--</div>-->
+<?php } ?>

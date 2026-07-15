@@ -1,0 +1,408 @@
+<style>
+    table.dataTable{width:100%;margin:0 auto;clear:both;border:solid;border-spacing:0}table.dataTable thead th,table.dataTable tfoot th{font-weight:bold}table.dataTable thead th,table.dataTable thead td{padding:10px 18px;border-bottom:1px solid #111}table.dataTable thead th:active,table.dataTable thead td:active{outline:none}table.dataTable tfoot th,table.dataTable tfoot td{padding:10px 18px 6px 18px;border-top:1px solid #111}table.dataTable thead .sorting,table.dataTable thead .sorting_asc,table.dataTable thead .sorting_desc{cursor:pointer;*cursor:hand}table.dataTable thead .sorting,table.dataTable thead .sorting_asc,table.dataTable thead .sorting_desc,table.dataTable thead .sorting_asc_disabled,table.dataTable thead .sorting_desc_disabled{background-repeat:no-repeat;background-position:center right}table.dataTable thead .sorting{background-image:url("../images/sort_both.png")}table.dataTable thead .sorting_asc{background-image:url("../images/sort_asc.png")}table.dataTable thead .sorting_desc{background-image:url("../images/sort_desc.png")}table.dataTable thead .sorting_asc_disabled{background-image:url("../images/sort_asc_disabled.png")}table.dataTable thead .sorting_desc_disabled{background-image:url("../images/sort_desc_disabled.png")}table.dataTable tbody tr{background-color:#ffffff}table.dataTable tbody tr.selected{background-color:#B0BED9}table.dataTable tbody th,table.dataTable tbody td{padding:8px 10px}table.dataTable.row-border tbody th,table.dataTable.row-border tbody td,table.dataTable.display tbody th,table.dataTable.display tbody td{border-top:1px solid #ddd}table.dataTable.row-border tbody tr:first-child th,table.dataTable.row-border tbody tr:first-child td,table.dataTable.display tbody tr:first-child th,table.dataTable.display tbody tr:first-child td{border-top:none}table.dataTable.cell-border tbody th,table.dataTable.cell-border tbody td{border-top:1px solid #ddd;border-right:1px solid #ddd}table.dataTable.cell-border tbody tr th:first-child,table.dataTable.cell-border tbody tr td:first-child{border-left:1px solid #ddd}table.dataTable.cell-border tbody tr:first-child th,table.dataTable.cell-border tbody tr:first-child td{border-top:none}table.dataTable.stripe tbody tr.odd,table.dataTable.display tbody tr.odd{background-color:#f9f9f9}table.dataTable.stripe tbody tr.odd.selected,table.dataTable.display tbody tr.odd.selected{background-color:#acbad4}table.dataTable.hover tbody tr:hover,table.dataTable.display tbody tr:hover{background-color:#f6f6f6}table.dataTable.hover tbody tr:hover.selected,table.dataTable.display tbody tr:hover.selected{background-color:#aab7d1}table.dataTable.order-column tbody tr>.sorting_1,table.dataTable.order-column tbody tr>.sorting_2,table.dataTable.order-column tbody tr>.sorting_3,table.dataTable.display tbody tr>.sorting_1,table.dataTable.display tbody tr>.sorting_2,table.dataTable.display tbody tr>.sorting_3{background-color:#fafafa}table.dataTable.order-column tbody tr.selected>.sorting_1,table.dataTable.order-column tbody tr.selected>.sorting_2,table.dataTable.order-column tbody tr.selected>.sorting_3,table.dataTable.display tbody tr.selected>.sorting_1,table.dataTable.display tbody tr.selected>.sorting_2,table.dataTable.display tbody tr.selected>.sorting_3{background-color:#acbad5}table.dataTable.display tbody tr.odd>.sorting_1,table.dataTable.order-column.stripe tbody tr.odd>.sorting_1{background-color:#f1f1f1}table.dataTable.display tbody tr.odd>.sorting_2,table.dataTable.order-column.stripe tbody tr.odd>.sorting_2{background-color:#f3f3f3}table.dataTable.display tbody tr.odd>.sorting_3,table.dataTable.order-column.stripe tbody tr.odd>.sorting_3{background-color:whitesmoke}table.dataTable.display tbody tr.odd.selected>.sorting_1,table.dataTable.order-column.stripe tbody tr.odd.selected>.sorting_1{background-color:#a6b4cd}table.dataTable.display tbody tr.odd.selected>.sorting_2,table.dataTable.order-column.stripe tbody tr.odd.selected>.sorting_2{background-color:#a8b5cf}table.dataTable.display tbody tr.odd.selected>.sorting_3,table.dataTable.order-column.stripe tbody tr.odd.selected>.sorting_3{background-color:#a9b7d1}table.dataTable.display tbody tr.even>.sorting_1,table.dataTable.order-column.stripe tbody tr.even>.sorting_1{background-color:#fafafa}table.dataTable.display tbody tr.even>.sorting_2,table.dataTable.order-column.stripe tbody tr.even>.sorting_2{background-color:#fcfcfc}table.dataTable.display tbody tr.even>.sorting_3,table.dataTable.order-column.stripe tbody tr.even>.sorting_3{background-color:#fefefe}table.dataTable.display tbody tr.even.selected>.sorting_1,table.dataTable.order-column.stripe tbody tr.even.selected>.sorting_1{background-color:#acbad5}table.dataTable.display tbody tr.even.selected>.sorting_2,table.dataTable.order-column.stripe tbody tr.even.selected>.sorting_2{background-color:#aebcd6}table.dataTable.display tbody tr.even.selected>.sorting_3,table.dataTable.order-column.stripe tbody tr.even.selected>.sorting_3{background-color:#afbdd8}table.dataTable.display tbody tr:hover>.sorting_1,table.dataTable.order-column.hover tbody tr:hover>.sorting_1{background-color:#eaeaea}table.dataTable.display tbody tr:hover>.sorting_2,table.dataTable.order-column.hover tbody tr:hover>.sorting_2{background-color:#ececec}table.dataTable.display tbody tr:hover>.sorting_3,table.dataTable.order-column.hover tbody tr:hover>.sorting_3{background-color:#efefef}table.dataTable.display tbody tr:hover.selected>.sorting_1,table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_1{background-color:#a2aec7}table.dataTable.display tbody tr:hover.selected>.sorting_2,table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_2{background-color:#a3b0c9}table.dataTable.display tbody tr:hover.selected>.sorting_3,table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_3{background-color:#a5b2cb}table.dataTable.no-footer{border-bottom:1px solid #111}table.dataTable.nowrap th,table.dataTable.nowrap td{white-space:nowrap}table.dataTable.compact thead th,table.dataTable.compact thead td{padding:4px 17px 4px 4px}table.dataTable.compact tfoot th,table.dataTable.compact tfoot td{padding:4px}table.dataTable.compact tbody th,table.dataTable.compact tbody td{padding:4px}table.dataTable th.dt-left,table.dataTable td.dt-left{text-align:left}table.dataTable th.dt-center,table.dataTable td.dt-center,table.dataTable td.dataTables_empty{text-align:center}table.dataTable th.dt-right,table.dataTable td.dt-right{text-align:right}table.dataTable th.dt-justify,table.dataTable td.dt-justify{text-align:justify}table.dataTable th.dt-nowrap,table.dataTable td.dt-nowrap{white-space:nowrap}table.dataTable thead th.dt-head-left,table.dataTable thead td.dt-head-left,table.dataTable tfoot th.dt-head-left,table.dataTable tfoot td.dt-head-left{text-align:left}table.dataTable thead th.dt-head-center,table.dataTable thead td.dt-head-center,table.dataTable tfoot th.dt-head-center,table.dataTable tfoot td.dt-head-center{text-align:center}table.dataTable thead th.dt-head-right,table.dataTable thead td.dt-head-right,table.dataTable tfoot th.dt-head-right,table.dataTable tfoot td.dt-head-right{text-align:right}table.dataTable thead th.dt-head-justify,table.dataTable thead td.dt-head-justify,table.dataTable tfoot th.dt-head-justify,table.dataTable tfoot td.dt-head-justify{text-align:justify}table.dataTable thead th.dt-head-nowrap,table.dataTable thead td.dt-head-nowrap,table.dataTable tfoot th.dt-head-nowrap,table.dataTable tfoot td.dt-head-nowrap{white-space:nowrap}table.dataTable tbody th.dt-body-left,table.dataTable tbody td.dt-body-left{text-align:left}table.dataTable tbody th.dt-body-center,table.dataTable tbody td.dt-body-center{text-align:center}table.dataTable tbody th.dt-body-right,table.dataTable tbody td.dt-body-right{text-align:right}table.dataTable tbody th.dt-body-justify,table.dataTable tbody td.dt-body-justify{text-align:justify}table.dataTable tbody th.dt-body-nowrap,table.dataTable tbody td.dt-body-nowrap{white-space:nowrap}table.dataTable,table.dataTable th,table.dataTable td{-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box}.dataTables_wrapper{position:relative;clear:both;*zoom:1;zoom:1}.dataTables_wrapper .dataTables_length{float:left}.dataTables_wrapper .dataTables_filter{float:right;text-align:right}.dataTables_wrapper .dataTables_filter input{margin-left:0.5em}.dataTables_wrapper .dataTables_info{clear:both;float:left;padding-top:0.755em}.dataTables_wrapper .dataTables_paginate{float:right;text-align:right;padding-top:0.25em}.dataTables_wrapper .dataTables_paginate .paginate_button{box-sizing:border-box;display:inline-block;min-width:1.5em;padding:0.5em 1em;margin-left:2px;text-align:center;text-decoration:none !important;cursor:pointer;*cursor:hand;color:#333 !important;border:1px solid transparent;border-radius:2px}.dataTables_wrapper .dataTables_paginate .paginate_button.current,.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover{color:#333 !important;border:1px solid #979797;background-color:white;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #fff), color-stop(100%, #dcdcdc));background:-webkit-linear-gradient(top, #fff 0%, #dcdcdc 100%);background:-moz-linear-gradient(top, #fff 0%, #dcdcdc 100%);background:-ms-linear-gradient(top, #fff 0%, #dcdcdc 100%);background:-o-linear-gradient(top, #fff 0%, #dcdcdc 100%);background:linear-gradient(to bottom, #fff 0%, #dcdcdc 100%)}.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active{cursor:default;color:#666 !important;border:1px solid transparent;background:transparent;box-shadow:none}.dataTables_wrapper .dataTables_paginate .paginate_button:hover{color:white !important;border:1px solid #111;background-color:#585858;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #585858), color-stop(100%, #111));background:-webkit-linear-gradient(top, #585858 0%, #111 100%);background:-moz-linear-gradient(top, #585858 0%, #111 100%);background:-ms-linear-gradient(top, #585858 0%, #111 100%);background:-o-linear-gradient(top, #585858 0%, #111 100%);background:linear-gradient(to bottom, #585858 0%, #111 100%)}.dataTables_wrapper .dataTables_paginate .paginate_button:active{outline:none;background-color:#2b2b2b;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #2b2b2b), color-stop(100%, #0c0c0c));background:-webkit-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:-moz-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:-ms-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:-o-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:linear-gradient(to bottom, #2b2b2b 0%, #0c0c0c 100%);box-shadow:inset 0 0 3px #111}.dataTables_wrapper .dataTables_paginate .ellipsis{padding:0 1em}.dataTables_wrapper .dataTables_processing{position:absolute;top:50%;left:50%;width:100%;height:40px;margin-left:-50%;margin-top:-25px;padding-top:20px;text-align:center;font-size:1.2em;background-color:white;background:-webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255,255,255,0)), color-stop(25%, rgba(255,255,255,0.9)), color-stop(75%, rgba(255,255,255,0.9)), color-stop(100%, rgba(255,255,255,0)));background:-webkit-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);background:-moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);background:-ms-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);background:-o-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);background:linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%)}.dataTables_wrapper .dataTables_length,.dataTables_wrapper .dataTables_filter,.dataTables_wrapper .dataTables_info,.dataTables_wrapper .dataTables_processing,.dataTables_wrapper .dataTables_paginate{color:#333}.dataTables_wrapper .dataTables_scroll{clear:both}.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody{*margin-top:-1px;-webkit-overflow-scrolling:touch}.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody th,.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody td{vertical-align:middle}.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody th>div.dataTables_sizing,.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody td>div.dataTables_sizing{height:0;overflow:hidden;margin:0 !important;padding:0 !important}.dataTables_wrapper.no-footer .dataTables_scrollBody{border-bottom:1px solid #111}.dataTables_wrapper.no-footer div.dataTables_scrollHead table,.dataTables_wrapper.no-footer div.dataTables_scrollBody table{border-bottom:none}.dataTables_wrapper:after{visibility:hidden;display:block;content:"";clear:both;height:0}@media screen and (max-width: 767px){.dataTables_wrapper .dataTables_info,.dataTables_wrapper .dataTables_paginate{float:none;text-align:center}.dataTables_wrapper .dataTables_paginate{margin-top:0.5em}}@media screen and (max-width: 640px){.dataTables_wrapper .dataTables_length,.dataTables_wrapper .dataTables_filter{float:none;text-align:center}.dataTables_wrapper .dataTables_filter{margin-top:0.5em}}
+</style>
+
+<script type="text/javascript">
+     function filterAttendanceupload(obj) {
+        var asset = $('#importform #asset_pkey').val();
+        
+
+
+        $('#AssetsTable').datagrid('load', {
+            asset: asset,
+           
+        });
+
+    }
+    // function disableButton(btn){
+    //             document.getElementById(btnExport).disabled = true;
+    //             alert("Button has been disabled.");
+    //         }
+           
+    function reloadDatagrid(asset_pkey)
+    {
+       $("AssetsTable").datagrid('load',{
+           asset: asset_pkey
+      
+  });
+  
+   }
+    function AddnewAssets()
+    {
+        var url = livesite + 'Asset/addnew';
+        var container = $("#modalDetailForm #modaldetails-content")
+        container.load(url, function () {
+            $("#modalDetailForm").modal('show');
+        });
+    }
+    $(document).ready(function () {
+ $('#loaders').show();
+        var usersoptions = {
+            url: function (phrase) {
+                return livesite+"UserCredentials/getusers?username=" + phrase;
+            },
+            getValue: "full_name",
+            list: {
+                onClickEvent: function () {
+                    var selectedItem = $("#user").getSelectedItemData();
+                    var site_fkey = selectedItem.emp_pkey;
+                    $('#LoadAssets').load(livesite+'Asset/Emp/' + site_fkey);
+                    var asset_pkey = selectedItem.asset_pkey
+                reloadDatagrid(asset_pkey);
+                }
+            }
+        };
+
+        $('#user').easyAutocomplete(usersoptions);
+
+
+        var selected = [];
+
+        $('#Emp tbody').on('click', 'tr', function () {
+
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+                var id = null;
+            } else {
+                //$('.selected').removeClass('selected');
+                $(this).siblings().removeClass('selected');
+                $(this).addClass('selected');
+                var id = table.row(this).data().emp_pkey;
+                var index = $.inArray(id, selected);
+            }
+            selected = id;
+//        if ( index === -1 ) {
+//            selected.push( id );
+//        } else {
+//            selected.splice( index, 1 );
+//        }
+
+            //$(this).toggleClass('selected');
+        });
+
+        $('#addd').click(function () {
+           
+            if (selected != null)
+            {
+                var url = livesite + 'Asset/Emp/' + selected;
+                var container = $("#modalDetailForm #modaldetails-content")
+                container.load(url, function () {
+                    $("#modalDetailForm").modal('show');
+                });
+            } else
+            {
+                alert("please select a row first");
+            }
+        });
+
+        var table = $('#Emp').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "paging": true,
+            "deferRender": false,
+            "pageNumber": true,
+            "lengthChange": true,
+            "searching": false,
+            "ordering": false,
+
+            "info": false,
+            "autoWidth": false,
+            "rowCallback": function (row, data) {
+                if ($.inArray(data.emp_pkey, selected) !== -1) {
+                    $(row).addClass('selected');
+                }
+            },
+            "ajax": {
+                "url": livesite+"Asset/listAllocates",
+                "type": "POST"
+            },
+            "columns": [
+                {"data": "name"},
+                {"data": "asset_name"},
+                {"data": "status"}
+            ]
+        });
+//         $(window).resize(function () {
+//     if ($(this).height() >= 1080){
+//         // change the dataTable pageLength in here
+//         $('#Emp').DataTable().page.len(50).draw();
+//     } else {
+//         // default pageLength
+//         $('#Emp').DataTable().page.len(35).draw();
+//     }
+// });
+        var selected;
+
+        $('#AssetsTable tbody').on('click', 'tr', function () {
+            var id = tableAssets.row(this).data().asset_pkey;
+            var index = $.inArray(id, selected);
+
+//            if (index === -1) {
+                selected = id;
+//            } else {
+//                selected.splice(index, 1);
+//            }
+            $(this).siblings().removeClass('selected');
+            $(this).toggleClass('selected');
+        });
+
+        $('#NewAssets').click(function () {
+            if (selected != '')
+            {
+                var url = livesite + 'Asset/addnew/' + selected;
+
+                var container = $("#modalDetailForm #modaldetails-content")
+                container.load(url, function () {
+                    $("#modalDetailForm").modal('show');
+                });
+//                $(this).removeClass('selected');
+//              selected = '';
+            } else
+            {
+                alert("please select a row first");
+            }
+        });
+        
+        $('#Detailed').click(function () {
+            if (selected != '')
+            {
+                var url = livesite + 'Asset/details/' + selected;
+
+                var container = $("#modalDetailForm #modaldetails-content")
+                container.load(url, function () {
+                    $("#modalDetailForm").modal('show');
+                });
+            } else
+            {
+                alert("please select a row first");
+            }
+        });
+
+        var tableAssets = $('#AssetsTable').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "paging": true,
+            "deferRender": false,
+            "pageNumber": true,
+            "lengthChange": false,
+            "ordering": false,
+            "info": false,
+            "autoWidth": false,
+            "searching":true,
+            "searchPlaceholder":"search name",
+            //"columnDefs": [{ "searchable": false, "targets": 2 }],
+            "rowCallback": function (row, data) {
+                if ($.inArray(data.asset_pkey, selected) !== -1) {
+                    $(row).addClass('selected');
+                }
+            },
+
+            "createdRow": function( row, data){
+            if (data.asset_state == "Not Working")
+            {
+                $(row).css('background-color', '#DF9292!important');
+            }
+
+  
+        },
+
+            "render": function ( row, data, type ) {
+            if (data.status == "Returned") {
+                        color = 'green';
+                      } 
+                     
+                      $(row).css( '<span style="color:' + color + '">' + data + '</span>');
+                    },
+               
+
+
+
+            "ajax": {
+                "url": livesite+"Asset/listAllAssets",
+                "type": "POST"
+               
+            },
+    
+            "sPaginationType":"simple_numbers",
+            "columns": [
+                {"data": "si"},
+                {"data": "name"},
+                {"data": "serial_no"},
+                {"data": "specifications"},
+                {"data": "Type"},
+                {"data": "warranty"},
+                {"data": "model"},
+                {"data": "brand"},
+                {"data": "status"},
+                {"data": "asset_state"}
+
+
+                
+            ]
+
+
+        });
+
+   
+
+// $('#AssetsTable').DataTable().ajax.reload();
+//         $(window).resize(function () {
+//     if ($(this).height() >= 1080){
+//         // change the dataTable pageLength in here
+//         $('#AssetsTable').DataTable().page.len(50).draw();
+//     } else {
+//         // default pageLength
+//         $('#AssetsTable').DataTable().page.len(35).draw();
+//     }
+// });
+ 
+$( "#btnExport" ).click(function() {
+   $(this).attr("disabled", "disabled");
+   });
+
+ $('#loaders').hide();
+    });
+ $('#importform').submit(function() {
+      $('#loaders').show();
+            $(this).ajaxSubmit(options);
+       
+         
+        return false;
+        
+    });
+
+</script>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-header">
+                <legend style="text-align:left; font-size: 3em;">Assets Managements</legend>
+                <form class="form-horizontal" method="post" action="<?php echo $this->webroot; ?>Asset/listAllAssets" id="Assetsform1">
+                <div class="row">
+ 
+                    <div class="box-header" id="div-reportcriterias">
+                        <div class="col-md-12">
+   <!--                         <label for="in_date" class="col-sm-4 control-label">Allocate Assets for Employee<span class="star"></span></label>-->
+                            <input type="hidden" id="emp_pkey">
+                            <input type="text" id="user" class="form-control" name="user" placeholder="Search Your Employee Name to allocate an asset" />
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="col-md-12" id="LoadAssets">
+
+                </div>
+
+                <div class="col-md-12">
+                    <div class= "box">
+                        <div class="col-md-12 col-xs-12">
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                        <h2>All Assets</h2>
+                                    </div>
+                                </div>
+
+                            <div class=" box-body">
+                   <!--                   <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="col-sm-5" for="employee">Choose Asset</label>                        
+                                    <div class="col-md-7">
+                                        <select id="asset_pkey" class="form-control js-example-basic-single" name="asset_pkey" onchange="filterAttendanceupload(this);" >
+                                            <option value="">All</option>
+                                            <?php foreach ($arr_assets as $value) { ?>
+                                                <option value="<?php echo $value['Assets']['asset_pkey']; ?>"><?php echo $value['Assets']['name']; ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>    
+                                </div>    
+                            </div> -->
+<!-- <input type="text" id="myInputTextField"> -->
+                                <div class="form-group">
+
+                                    <div class="col-md-4">
+                                        <button type="button" onclick="AddnewAssets();" class="btn btn-primary">Create</button>
+                                        <button type="button" id="NewAssets"  class="btn btn-primary">Edit</button>
+                                        <button type="button" id="Detailed" class="btn btn-primary">View Details</button>
+                                       <!--  <input type="text" name="search" id="searchon" onchange="ok();"/> -->
+                                    </div>
+                                    
+                                </div>
+
+
+                                <table id="AssetsTable" class="table table-bordered display ">
+                                    <thead>
+                                        <tr>
+                                            <th>Sl No.</th>
+                                            <th>Asset Name</th>
+                                            <th>Serial No.</th>
+                                            <th>Specifications</th>
+                                            <th>Type</th>
+                                            <th>Warranty</th>
+                                            <th>Model</th>
+                                            <th>Brand</th>
+                                            <th>Asset Status</th>
+                                            <th>Asset Condition</th>
+
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>  
+</form>
+            <div class="row">
+                <div class="form-group">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<div id="modalDetailForm" class="modal fade">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content" id="modaldetails-content">
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+//      function ok() {
+//   // alert('poda ');
+//  // $('#AssetsTable').dataTable().fnDestroy();
+//    //   $("#AssetsTable").append(
+//     // $(this).html( '<input type="text" placeholder="Search" />' );
+ //   // $('<tfoot/>').append( $("#AssetsTable thead tr").clone() );
+//    //  var table = $('#AssetsTable').DataTable();
+//   
+//    // $('#AssetsTable tfoot th').each( function () {
+//    //     var title = $(this).text();
+//    //     $(this).html( '<input type="text" style="width:100px;" placeholder="Search '+title+'" s/>' );
+//    // } );
+//  var table = $('#AssetsTable').DataTable();
+//  alert(table);
+//     table.columns().every( function () {
+//        var that = this;
+//  
+//        $( 'input', this.footer() ).on( 'keyup change', function () {
+//            if ( that.search() !== this.value ) {
+//                that
+//                    .search( this.value )
+//                    .draw();
+//              console.log(this.value);
+//            }
+//        } );
+//    } );
+// }   
+
+</script>

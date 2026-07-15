@@ -1,0 +1,122 @@
+  <form class="form-horizontal" method="post" action="<?php echo $this->webroot; ?>Expense/saveexpensetype" id="expenseform">
+      <div class="modal-body">
+
+<fieldset>
+
+<!-- Form Name -->
+<legend>Expense</legend>
+<input id="id" name="id" type="hidden"  value="<?php echo $data["id"]; ?>" >
+<!-- Text input-->
+
+
+<!-- Text input-->
+<div class="form-group">
+<div class="col-md-12">
+  <label class="col-md-4 control-label" for="expense_type_code">Expense Code<span class="star">*</span></label>  
+  <div class="col-md-5">
+  <input id="expense_type_code" name="expense_code"  value="<?php echo $data["expense_code"]; ?>" type="text" placeholder="Expense Code" class="form-control input-md" required="">
+   </div> 
+  </div>
+</div>
+<div class="form-group">
+<div class="col-md-12">
+  <label class="col-md-4 control-label" for="expense_type_name">Expense Name<span class="star">*</span></label>  
+  <div class="col-md-5">
+  <input id="expense_type_name" name="expense_name"  value="<?php echo $data["expense_name"]; ?>" type="text" placeholder="Expense Name" class="form-control input-md" required="">
+   </div>
+  </div>
+</div>
+</fieldset>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>   
+<script type="text/javascript">
+    
+    
+    $('#expense_type_code').on('change',function(){
+        checkIfExpensecodeExists();
+    })
+    
+    function checkIfExpensecodeExists(callback){        
+        var expense_type_code = $('#expense_type_code').val();
+        var id = $('#id').val();
+        $.ajax({
+            url: 'ExpenseType/checkexpensetypecodeexists/'+id,
+            type: 'POST',
+            data: {
+                expense_type_code: expense_type_code
+            },
+            success: function (resp)
+            {
+                if(resp > 0){      
+                    alert("Expense Code Already Exists!!");
+                    $('#expense_type_code').val('');
+                }else{
+                    if(typeof callback === 'function'){
+                        callback.call();
+                    }
+                }
+            }
+        });
+    }
+    
+    
+    $('#expense_type_name').on('change',function(){
+        checkIfExpensenameExists();
+    })
+    
+    function checkIfExpensenameExists(callback){        
+        var expense_type_name = $('#expense_type_name').val();
+        var id = $('#id').val();
+        $.ajax({
+            url: 'ExpenseType/checkexpensetypecodeexists'+id,
+            type: 'POST',
+            data: {
+                expense_type_name: expense_type_name
+            },
+            success: function (resp)
+            {
+                if(resp > 0){      
+                   alert("Expense Name Already Exists!!");
+                    $('#expense_type_name').val('');
+                }else{
+                    if(typeof callback === 'function'){
+                        callback.call();
+                    }
+                }
+            }
+        });
+    }
+    
+    
+    
+    
+    
+$(document).ready(function() { 
+  $('#deptForm').parsley();
+    var options = { 
+    success:       function(responseText, statusText, xhr, $form){
+        
+        var response = JSON.parse(responseText);
+       // alert(response.success);
+            if (response.success) {
+            closeModal('dpttable');}
+}
+    }; 
+ 
+    // bind to the form's submit event 
+    $('#deptForm').submit(function() { 
+        // inside event callbacks 'this' is the DOM element so we first 
+        // wrap it in a jQuery object and then invoke ajaxSubmit 
+        $(this).ajaxSubmit(options); 
+ 
+        // !!! Important !!! 
+        // always return false to prevent standard browser submit and page navigation 
+        return false; 
+    });
+    }); 
+</script>

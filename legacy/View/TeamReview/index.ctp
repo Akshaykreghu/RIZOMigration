@@ -1,0 +1,298 @@
+<style>
+    .datagrid-wrap.panel-body.panel-body-noheader {
+        width: 100% !important;
+        /* max-width: 1400px !important; */
+    }
+
+    .datagrid-view {
+        width: 100% !important;
+        /* max-width: 1400px !important; */
+    }
+
+    .datagrid-view1 {
+        width: 2% !important;
+        /* max-width: 1400px !important; */
+    }
+
+    .datagrid-view2 {
+        width: 98% !important;
+        /* max-width: 1400px !important; */
+    }
+
+    .datagrid-header {
+        width: 100% !important;
+        /* max-width: 1400px !important; */
+    }
+
+    .datagrid-body {
+        width: 100% !important;
+        /* max-width: 1400px !important; */
+    }
+
+    .panel {
+        margin: 20px 20px 0 20px !important;
+        border-right: 1px solid #dddddd;
+    }
+
+    .tabs {
+        margin: 38px 15px;
+        border-style: none;
+    }
+
+    .tab {
+        padding: 15px 47px;
+        border: 1px solid #1d615f;
+        border-bottom: none;
+        background-color: white;
+        color: #1d615f;
+        text-decoration: none;
+        margin-right: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .tab:hover {
+        background-color: rgb(15, 180, 175);
+        color: white;
+    }
+
+    .tab.active {
+        background-color: rgb(15, 116, 113);
+        color: white;
+    }
+</style>
+
+<section class="content-header">
+    <h1 class="text-primary-18">Assessment Test Requests</h1>
+    <hr style="margin-top: 6px;margin-bottom: -2px;">
+</section>
+<!-- Main content -->
+<div class="tabs">
+    <a href="#" class="tab-link active tab" data-status="Self Review Completed">Not Approved</a>
+    <a href="#" class="tab-link tab" data-status="Reviewing Person submitted the Appraisal">Approved</a>
+</div>
+<table id="assessment" class="table table-bordered table-hover"></table>
+
+<script>
+    var officerRole = "<?php echo $role; ?>";
+    jQuery(document).ready(function() {
+        const tabContainer = $('.tabs');
+        tabContainer.empty(); // clear existing
+
+        let tabs = [];
+
+        if (officerRole === 'reporting_officer') {
+            tabs = [{
+                    label: 'Applied',
+                    status: 'Self Review Completed',
+                    position:'left'
+                },
+                {
+                    label: 'Authorized',
+                    status: 'Reporting Person submitted the Appraisal',
+                     position:'right'
+                }
+            ];
+        } else if (officerRole === 'reviewing_officer') {
+            tabs = [{
+                    label: 'Authorized',
+                    status: 'Reporting Person submitted the Appraisal',
+                     position:'left'
+                },
+                {
+                    label: 'Approved',
+                    status: 'Reviewing Person submitted the Appraisal',
+                     position:'right'
+                }
+            ];
+        }
+
+        // Render tabs dynamically
+        tabs.forEach((tab, i) => {
+            const tabClass = i === 0 ? 'tab-link tab active' : 'tab-link tab';
+            tabContainer.append(`<a href="#" class="${tabClass}" data-status="${tab.status}" data-position="${tab.position}" >${tab.label}</a>`);
+        });
+
+        function loadData(status,position) {
+            let toolbar = [];
+            //edited by athira on 29-05-2025
+            if (officerRole === 'reporting_officer' && status === 'Self Review Completed') {
+                toolbar.push({
+                    iconCls: 'icon-edit',
+                    text: 'Authorize',
+                    handler: function() {
+                        var row = $('#assessment').datagrid('getSelected');
+                        if (row) {
+                            // showLargeModalForm(livesite + 'TeamReview/approverequest?emp_fkey='  + row.emp_fkey);
+                            showLargeModalForm(
+                                livesite + 'TeamReview/approverequest?' +
+                                'emp_fkey=' + row.emp_fkey +
+                                '&reporting_officer=' + row.reporting_officer +
+                                '&reviewing_officer=' + row.reviewing_officer +
+                                '&pkey=' + row.pkey
+                            );
+
+
+                        } else {
+                            $.notify("Please Select a Row", {
+                                type: 'danger'
+                            });
+                        }
+                    }
+                });
+            }
+
+            if (officerRole === 'reviewing_officer' && status === 'Reporting Person submitted the Appraisal') {
+                toolbar.push({
+                    iconCls: 'icon-edit',
+                    text: 'Approve',
+                    handler: function() {
+                        var row = $('#assessment').datagrid('getSelected');
+                        if (row) {
+                            // showLargeModalForm(livesite + 'TeamReview/approverequest?emp_fkey='  + row.emp_fkey);
+                            showLargeModalForm(
+                                livesite + 'TeamReview/approverequest?' +
+                                'emp_fkey=' + row.emp_fkey +
+                                '&reporting_officer=' + row.reporting_officer +
+                                '&reviewing_officer=' + row.reviewing_officer +
+                                '&pkey=' + row.pkey
+                            );
+
+
+                        } else {
+                            $.notify("Please Select a Row", {
+                                type: 'danger'
+                            });
+                        }
+                    }
+                });
+            }
+            //end
+
+            if (status === 'Reviewing Person submitted the Appraisal' || (status === 'Reporting Person submitted the Appraisal' && officerRole === 'reporting_officer')) {
+                toolbar.push({
+                        iconCls: 'icon-edit',
+                        text: 'View',
+                        handler: function() {
+                            var row = $('#assessment').datagrid('getSelected');
+                            if (row) {
+                                // showLargeModalForm(livesite + 'TeamReview/viewForm?emp_fkey=' + row.emp_fkey);
+                                showLargeModalForm(
+                                    livesite + 'TeamReview/viewForm?emp_fkey=' + row.emp_fkey + '&pkey=' + row.pkey
+                                );
+
+
+                            } else {
+                                $.notify("Please Select a Row", {
+                                    type: 'danger'
+                                });
+                            }
+                        },
+
+                    },
+                    //edited  by Akshay on 9-6-2025
+                    {
+                        text: 'Document View',
+                        handler: function() {
+                            var row = $('#assessment').datagrid('getSelected');
+                            console.log(row);
+                            if (row) {
+                                //edited by athira on 22-05-2025
+                                var url = livesite + 'TeamReview/previewDocumentReview/' + row.emp_fkey + '/' + row.pkey;
+                                //end
+                                // window.open(url, '_blank');
+                                showLargeModalForm(url);
+                            } else {
+                                $.notify('Please select a valid row.', {
+                                    type: 'danger'
+                                });
+                            }
+                        }
+                    }
+                    //end
+
+                );
+            }
+
+
+            $('#assessment').datagrid({
+                // url: livesite + "TeamReview/listrequest?status=" + status,
+                url: livesite + "TeamReview/listrequest?status=" + encodeURIComponent(status) + "&role=" + officerRole + "&position=" + encodeURIComponent(position) ,
+
+
+                method: 'GET',
+                pagination: true,
+                singleSelect: true,
+                rownumbers: true,
+                fitColumns: true,
+                pageList: [2, 5, 10, 50, 100],
+                toolbar: toolbar,
+                columns: [
+                    [{
+                            field: 'employee_name',
+                            title: 'Employee Name',
+                            width: "16%"
+                        },
+                        {
+                            field: 'reporting_officer_name',
+                            title: 'Reporting Officer',
+                            width: "15%"
+                        },
+                        {
+                            field: 'reviewing_officer_name',
+                            title: 'Reviewing Officer',
+                            width: "15%"
+                        },
+                        {
+                            field: 'created_date',
+                            title: 'Created Date & Time',
+                            width: "15%"
+                        },
+                        {
+                            field: 'created_by',
+                            title: 'Created By',
+                            width: "15%"
+                        },
+                        {
+                            field: 'modified_date',
+                            title: 'Modified Date & Time',
+                            width: "15%"
+                        },
+                        {
+                            field: 'modified_by',
+                            title: 'Modified By',
+                            width: "15%"
+                        },
+                        {
+                            field: 'status',
+                            title: 'Status',
+                            width: "25%",
+                            formatter: function(value, row, index) {
+                                return '<div style="white-space: normal; word-break: break-word;">' + value + '</div>';
+                            }
+                        },
+                        {
+                            field: 'emp_fkey',
+                            title: 'Emp ID',
+                            hidden: true
+                        }
+                    ]
+                ]
+            });
+
+        }
+
+        // Load first tab by default
+        loadData($('.tab-link.active').data('status'),$('.tab-link.active').data('position'));
+        //   loadData($('.tab-link.active').data('position'));
+
+        // Tab switch
+        $('.tabs').on('click', '.tab-link', function(e) {
+            e.preventDefault();
+            $('.tab-link').removeClass('active');
+            $(this).addClass('active');
+            const status = $(this).data('status');
+            const position = $(this).data('position');
+            loadData(status,position);
+        });
+    });
+</script>

@@ -1,0 +1,84 @@
+<!-- <section class="content"> -->
+<div class="row" id="div-ctcupload">
+    <div class="col-md-12">
+        <!-- Employee List -->
+        <!-- DIRECT CHAT DANGER -->
+        <div class="box ">
+            <div class="box-header with-border">
+                <div class="col-md-12 col-sm-12 col-xs-12 col-lg-6">
+                    <!-- <h3 class="box-title">  id="current_register_month"></h3> -->
+                </div>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <div class="tabset-salaryrevisions">
+                    <div id="tab1" data-pws-tab="tab1" data-pws-tab-name="Annual Salary" data-pws-tab-icon="fa-money" style="height: 800px;">
+
+                    </div>
+                    <div id="tab2" data-pws-tab="tab2" data-pws-tab-name="Monthly Component Upload" data-pws-tab-icon="fa-cloud-upload" style="height: 800px;">
+
+                    </div>
+                    <?php if($companycode == 'KWMT' || $companycode == 'GLET' || $companycode == 'GTRA'){ ?>
+                    <!-- Edited by Megha  E S-->
+                    <div id="tab3" data-pws-tab="tab3" data-pws-tab-name="Salary Component Increment" data-pws-tab-icon="fa-money" style="height: 800px;">
+
+                    </div>
+                    <?php } ?>
+                    <!-- End -->
+                </div>
+            </div><!-- /.box-body -->
+
+        </div><!--/.direct-chat -->
+    </div><!-- /.col -->
+</div>
+<!-- </section> -->
+<script>
+    jQuery(document).ready(function() {
+        $('.tabset-salaryrevisions').pwstabs({
+            effect: 'scale', // You can change effects of your tabs container: scale / slideleft / slideright / slidetop / slidedown / none
+            defaultTab: 2, // The tab we want to be opened by default
+            containerWidth: '100%', // Set custom container width if not set then 100% is used
+            tabsPosition: 'horizontal', // Tabs position: horizontal / vertical
+            horizontalPosition: 'top', // Tabs horizontal position: top / bottom
+            verticalPosition: 'left', // Tabs vertical position: left / right
+            responsive: true, // Make tabs container responsive: true / false - boolean
+            theme: '',
+            rtl: false // Right to left support: true/ false
+        });
+        // $('.tabset-salaryrevisions #tab1').load(livesite + "Employee/ctcupload");
+        // Edited by Akshay on 27-8-2025
+       $('.tabset-salaryrevisions #tab2').load(livesite + "SalaryComponentUpload/index");
+       // $('.tabset-salaryrevisions #tab3').load(livesite + "SalaryComponentUpload/component"); // Edited by Megha E S
+        //end
+    });
+
+    jQuery('#div-ctcupload .pws_tabs_controll a').on('click', function() {
+        var tabIndex = $(this).data('tabId');
+        if (tabIndex == "tab1") {
+            $('.tabset-salaryrevisions #tab1').load(livesite + "Employee/ctcupload");
+        }
+        if (tabIndex == "tab2") {// Edited by Megha E S
+            $('.tabset-salaryrevisions #tab2').load(livesite + "SalaryComponentUpload/index");
+        }
+        // Edited by Megha E S
+        if (tabIndex == "tab3") {
+            $('.tabset-salaryrevisions #tab3').load(livesite + "SalaryComponentUpload/component");
+        }
+        // End
+    });
+
+
+    // jQuery('#div-index .pws_tabs_controll a').on('click', function(){
+    // var tabIndex = $(this).data('tabId');
+    // // if(tabIndex == "tab1"){
+    // $('.tabset-salaryrevisions #tab2').load(livesite + "SalaryComponentUpload/index");
+    // // }else{
+    // // $('.tabset-processpayroll #tab2').load(livesite + "payroll/showprocesspayrolltab/1");
+    // // }
+    // });
+    function resizePWSTabContentDiv(tabIndex) {
+        if ($("div#tab" + tabIndex).hasClass("pws_tabs_scale_show")) {
+            var divHeight = $("div#tab" + tabIndex).height();
+            $("div.tabset-salaryrevisions").height(divHeight);
+        }
+    }
+</script>

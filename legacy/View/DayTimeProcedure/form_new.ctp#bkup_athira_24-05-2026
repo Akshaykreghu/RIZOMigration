@@ -1,0 +1,2514 @@
+<style>
+    .lud-ohdo {
+        clear: both;
+        display: flex;
+        margin-bottom: 8px;
+        max-width: 500px;
+        width: 100%;
+    }
+    #spForm .form-control{
+        border-radius:5px !important;
+        padding-left:4px !important;
+    }
+    
+
+
+    .lud-ohday {
+        background-color: #f5f5f5;
+        display: inline-block;
+        flex-grow: 1;
+        flex-grow: 1;
+        height: 45px;
+        margin: 1px 6px 1px 0px;
+        min-width: 38px;
+        position: relative;
+    }
+
+    label {
+        cursor: default;
+        font-weight:normal;
+    }
+
+    .lud-ohdt {
+        display: none;
+    }
+
+    .g,
+    body,
+    html,
+    input,
+    .std,
+    h1 {
+        font-size: small;
+        font-family: arial, sans-serif;
+    }
+
+    /*    input[type="radio" i], input[type="checkbox" i] {
+            background-color: initial;
+            margin: 3px 0.5ex;
+            padding: initial;
+            border: initial;
+        }*/
+    input,
+    textarea,
+    keygen,
+    select,
+    button {
+        text-rendering: auto;
+        color: initial;
+        letter-spacing: normal;
+        word-spacing: normal;
+        text-transform: none;
+        text-indent: 0px;
+        text-shadow: none;
+        display: inline-block;
+        text-align: start;
+        margin: 0em 0em 0em 0em;
+        font: 13.3333px Arial;
+    }
+
+    .fAwjXaCTMo5__content {
+        border-radius: 2px;
+        border-radius: 2px;
+        position: relative;
+        display: inline-block;
+        z-index: 1060;
+        background-color: #fff;
+        opacity: 0;
+        text-align: left;
+        vertical-align: middle;
+        white-space: normal;
+        overflow: hidden;
+        transform: translateZ(0);
+        -webkit-box-shadow: 0px 5px 26px 0px rgba(0, 0, 0, 0.22), 0px 20px 28px 0px rgba(0, 0, 0, 0.30);
+        box-shadow: 0px 5px 26px 0px rgba(0, 0, 0, 0.22), 0px 20px 28px 0px rgba(0, 0, 0, 0.30);
+    }
+
+    .lud-ohdt:checked~.lud-ohdf {
+        color: #fff;
+        background-color: #4285f4;
+    }
+
+    .lud-ohdf {
+        color: black;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 45px;
+        pointer-events: none;
+        position: absolute;
+        text-align: center;
+        text-transform: uppercase;
+        -webkit-user-select: none;
+        user-select: none;
+        width: 100%;
+    }
+
+    label {
+        cursor: default;
+    }
+
+
+    .lud-ohdo2 {
+        clear: both;
+        display: flex;
+        margin-bottom: 8px;
+        max-width: 500px;
+        width: 100%;
+    }
+
+    .lud-ohday2 {
+        background-color: #f5f5f5;
+        display: inline-block;
+        flex-grow: 1;
+        flex-grow: 1;
+        height: 30px;
+        margin: 1px 6px 1px 0px;
+        min-width: 38px;
+        position: relative;
+    }
+
+    label {
+        cursor: default;
+    }
+
+    .lud-ohdt2 {
+        display: none;
+    }
+
+    .g,
+    body,
+    html,
+    input,
+    .std,
+    h1 {
+        font-size: small;
+        font-family: arial, sans-serif;
+    }
+
+    input[type="radio" i],
+    input[type="checkbox" i] {
+        background-color: initial;
+        margin: 3px 0.5ex;
+        padding: initial;
+        border: initial;
+    }
+
+    input,
+    textarea,
+    keygen,
+    select,
+    button {
+        text-rendering: auto;
+        color: initial;
+        letter-spacing: normal;
+        word-spacing: normal;
+        text-transform: none;
+        text-indent: 0px;
+        text-shadow: none;
+        display: inline-block;
+        text-align: start;
+        margin: 0em 0em 0em 0em;
+        font: 13.3333px Arial;
+    }
+
+    .fAwjXaCTMo5__content {
+        border-radius: 2px;
+        border-radius: 2px;
+        position: relative;
+        display: inline-block;
+        z-index: 1060;
+        background-color: #fff;
+        opacity: 0;
+        text-align: left;
+        vertical-align: middle;
+        white-space: normal;
+        overflow: hidden;
+        transform: translateZ(0);
+        -webkit-box-shadow: 0px 5px 26px 0px rgba(0, 0, 0, 0.22), 0px 20px 28px 0px rgba(0, 0, 0, 0.30);
+        box-shadow: 0px 5px 26px 0px rgba(0, 0, 0, 0.22), 0px 20px 28px 0px rgba(0, 0, 0, 0.30);
+    }
+
+    .lud-ohdt2:checked~.lud-ohdf2 {
+        color: #fff;
+        background-color: red;
+    }
+
+    .lud-ohdf2 {
+        color: black;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 25px;
+        pointer-events: none;
+        position: absolute;
+        text-align: center;
+        text-transform: uppercase;
+        -webkit-user-select: none;
+        user-select: none;
+        width: 100%;
+    }
+
+    .material-switch>input[type="checkbox"] {
+        display: none;
+    }
+
+    .material-switch>label {
+        cursor: pointer;
+        height: 0px;
+        position: relative;
+        width: 40px;
+    }
+
+    input[type="text"] {
+        padding: 0px !important;
+    }
+
+    .material-switch>label::before {
+        background: rgb(0, 0, 0);
+        box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        content: '';
+        height: 16px;
+        margin-top: -8px;
+        position: absolute;
+        opacity: 0.3;
+        transition: all 0.4s ease-in-out;
+        width: 40px;
+    }
+
+    .material-switch>label::after {
+        background: rgb(255, 255, 255);
+        border-radius: 16px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        content: '';
+        height: 24px;
+        left: -4px;
+        margin-top: -8px;
+        position: absolute;
+        top: -4px;
+        transition: all 0.3s ease-in-out;
+        width: 24px;
+    }
+
+    .material-switch>input[type="checkbox"]:checked+label::before {
+        background: inherit;
+        opacity: 0.5;
+    }
+
+    .material-switch>input[type="checkbox"]:checked+label::after {
+        background: inherit;
+        left: 20px;
+    }
+
+    .form-control {
+        height: 24px;
+    }
+
+    .margin-top {
+        margin-top: 12px;
+    }
+
+    .multitimes {
+        transition: 1s;
+    }
+
+    .Exceptionshow {
+        display: none;
+    }
+    #addExceptionBtnDiv .btns{
+        background-color: #1e516e !important;
+		color: #fff !important;
+		border-radius: 8px !important;
+        font-weight:normal !important;
+		padding: 8px 16px;
+		cursor: pointer;
+    }
+	/* Fix for timepicker z-index in modal */
+    .bootstrap-timepicker-widget {
+        z-index: 2000 !important;
+    }										 
+								  
+								 
+	 
+    
+</style>
+
+<form id="spForm" action="<?php echo $this->webroot; ?>DayTimeProcedure/saveDayTimeProcedure" method="post">
+    <input type="hidden" id="day_time_seq" name="day_time_seq" value="<?php echo isset($data['day_time_seq']) ? $data['day_time_seq'] : 0 ?>" />	
+    <input type="hidden" id="is_exception_hidden" name="is_exception" value="<?php echo isset($data['is_exception']) ? $data['is_exception'] : 0 ?>" />																																   
+    <div class="modal-body" style="padding:15px 0px 15px -1px;">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <input type="text" value="<?php echo isset($data['day_time_desc']) ? $data['day_time_desc'] : '' ?>" name="day_time_desc" placeholder="Policy Title" id="day_time_desc" class="form-control" title="Shift Policy Name." style="height:32px;" required="" />
+
+            </div>
+        </div>
+
+        <div class="row " style="margin-top: 12px; padding-top : 10px ;">
+            <div class="col-md-6 col-sm-12 col-xs-12" style="padding-left:20px;">
+                <fieldset data-parsley-multiple="workdays">
+                    <legend>
+                        <h4 style="font-size:16px;"> <b data-toggle="tooltip" data-placement="top" title="You can select the working days below. Leave the weekly off days on selected">Working Days</b></h4>
+                    </legend>
+
+                    <div class="lud-ohdo" style="  padding-top : 10px ;">
+                        <label class="lud-ohday" data-toggle="tooltip" data-placement="auto" title="Full Day"><input onclick="weekShow(this)" class="lud-ohdt" data-parsley-multiple="workdays" id="Sunday" data-parsley-ui-enabled="false" name="Sunday" <?php echo isset($data['Sunday']) && $data['Sunday'] == "Y" ? 'checked="checked"' : '' ?> type="checkbox" value="Y"><span class="lud-ohdf" data-toggle="tooltip" data-placement="auto" title="Set the Minimum Required Working Time to Complete this Shift(in Minutes)">Sun</span></label>
+                        <label class="lud-ohday" data-toggle="tooltip" data-placement="auto" title="Full Day"><input onclick="weekShow(this)" class="lud-ohdt" data-parsley-multiple="workdays" id="Monday" name="Monday" <?php echo isset($data['Monday']) && $data['Monday'] == "Y" ? 'checked="checked"' : '' ?> type="checkbox" value="Y"><span class="lud-ohdf">Mon</span></label>
+                        <label class="lud-ohday" data-toggle="tooltip" data-placement="auto" title="Full Day"><input onclick="weekShow(this)" class="lud-ohdt" data-parsley-multiple="workdays" id="Tuesday" name="Tuesday" <?php echo isset($data['Tuesday']) && $data['Tuesday'] == "Y" ? 'checked="checked"' : '' ?> type="checkbox" value="Y"><span class="lud-ohdf">Tue</span></label>
+                        <label class="lud-ohday" data-toggle="tooltip" data-placement="auto" title="Full Day"><input onclick="weekShow(this)" class="lud-ohdt" data-parsley-multiple="workdays" id="Wednesday" name="Wednesday" <?php echo isset($data['Wednesday']) && $data['Wednesday'] == "Y" ? 'checked="checked"' : '' ?> type="checkbox" value="Y"><span class="lud-ohdf">Wed</span></label>
+                        <label class="lud-ohday" data-toggle="tooltip" data-placement="auto" title="Full Day"><input onclick="weekShow(this)" class="lud-ohdt" data-parsley-multiple="workdays" id="Thursday" name="Thursday" <?php echo isset($data['Thursday']) && $data['Thursday'] == "Y" ? 'checked="checked"' : '' ?> type="checkbox" value="Y"><span class="lud-ohdf">Thu</span></label>
+                        <label class="lud-ohday" data-toggle="tooltip" data-placement="auto" title="Full Day"><input onclick="weekShow(this)" class="lud-ohdt" data-parsley-multiple="workdays" id="Friday" name="Friday" <?php echo isset($data['Friday']) && $data['Friday'] == "Y" ? 'checked="checked"' : '' ?> type="checkbox" value="Y"><span class="lud-ohdf">Fri</span></label>
+                        <label class="lud-ohday" data-toggle="tooltip" data-placement="auto" title="Full Day"><input onclick="weekShow(this)" class="lud-ohdt" data-parsley-multiple="workdays" id="Saturday" name="Saturday" <?php echo isset($data['Saturday']) && $data['Saturday'] == "Y" ? 'checked="checked"' : '' ?> type="checkbox" value="Y"><span class="lud-ohdf">Sat</span></label>
+                    </div>
+                    <div class="lud-ohdo2">
+                        <label class="lud-ohday2" data-toggle="tooltip" data-placement="auto" title=" Sunday Half Day"><input onclick="" onchange="checkexce()" class="lud-ohdt2" data-parsley-multiple="workdays" data-parsley-ui-enabled="false" id="Sunday_F" name="Sunday_F" <?php echo isset($data['Sunday_F']) && $data['Sunday_F'] == "Y" ? 'checked="checked"' : '' ?> type="checkbox" value="Y" disabled="disabled"><span class="lud-ohdf2">H</span></label>
+                        <label class="lud-ohday2" data-toggle="tooltip" data-placement="auto" title=" Monday Half Day"><input onclick="" onchange="checkexce()" class="lud-ohdt2" data-parsley-multiple="workdays" id="Monday_F" name="Monday_F" <?php echo isset($data['Monday_F']) && $data['Monday_F'] == "Y" ? 'checked="checked"' : '' ?> type="checkbox" value="Y" disabled="disabled"><span class="lud-ohdf2">H</span></label>
+                        <label class="lud-ohday2" data-toggle="tooltip" data-placement="auto" title=" Tuesday Half Day"><input onclick="" onchange="checkexce()" class="lud-ohdt2" data-parsley-multiple="workdays" id="Tuesday_F" name="Tuesday_F" <?php echo isset($data['Tuesday_F']) && $data['Tuesday_F'] == "Y" ? 'checked="checked"' : '' ?> type="checkbox" value="Y" disabled="disabled"><span class="lud-ohdf2">H</span></label>
+                        <label class="lud-ohday2" data-toggle="tooltip" data-placement="auto" title=" Wedneday Half Day"><input onclick="" onchange="checkexce()" class="lud-ohdt2" data-parsley-multiple="workdays" id="Wednesday_F" name="Wednesday_F" <?php echo isset($data['Wednesday_F']) && $data['Wednesday_F'] == "Y" ? 'checked="checked"' : '' ?> type="checkbox" value="Y" disabled="disabled"><span class="lud-ohdf2">H</span></label>
+                        <label class="lud-ohday2" data-toggle="tooltip" data-placement="auto" title=" Thursday Half Day"><input onclick="" onchange="checkexce()" class="lud-ohdt2" data-parsley-multiple="workdays" id="Thursday_F" name="Thursday_F" <?php echo isset($data['Thursday_F']) && $data['Thursday_F'] == "Y" ? 'checked="checked"' : '' ?> type="checkbox" value="Y" disabled="disabled"><span class="lud-ohdf2">H</span></label>
+                        <label class="lud-ohday2" data-toggle="tooltip" data-placement="auto" title=" Friday Half Day"><input onclick="" onchange="checkexce()" class="lud-ohdt2" data-parsley-multiple="workdays" id="Friday_F" name="Friday_F" <?php echo isset($data['Friday_F']) && $data['Friday_F'] == "Y" ? 'checked="checked"' : '' ?> type="checkbox" value="Y" disabled="disabled"><span class="lud-ohdf2">H</span></label>
+                        <label class="lud-ohday2" data-toggle="tooltip" data-placement="auto" title=" Saturday Half Day"><input onclick="" onchange="checkexce()" class="lud-ohdt2" data-parsley-multiple="workdays" id="Saturday_F" name="Saturday_F" <?php echo isset($data['Saturday_F']) && $data['Saturday_F'] == "Y" ? 'checked="checked"' : '' ?> type="checkbox" value="Y" disabled="disabled"><span class="lud-ohdf2">H</span></label>
+                    </div>
+                    <div class="pull-left"><span class="label" style="background: red;">&nbsp;Half Day&nbsp;</span>&nbsp;&nbsp;<span class="label" style="background: #4285f4;color: white;">&nbsp;Full Day&nbsp;</span></div>
+                    <br><br>
+                </fieldset>
+
+            </div>
+
+            <div class="col-md-6 col-sm-12 col-xs-12" >
+                <fieldset>
+                    <legend>
+                        <h4 style="font-size:16px;"><b data-toggle="tooltip" data-placement="auto" title=" Please update the daily In/Out timing below"> Shift Times</b></h4>
+                    </legend>
+
+                    <!-- ================= SHIFT 1 ================= -->
+<div class="row" id="dutystart" style="display:flex;align-items:center;">
+    <!-- In Time -->
+    <div class="col-md-4">
+        <label for="on_dutty1" data-toggle="tooltip" title="Shift starting Time / Check-in Time">
+            In Time <span class="text-danger">*</span>
+        </label>
+        <input type="text" class="form-control timepicker-input"
+               id="on_dutty1" name="on_dutty1"
+               value="<?php echo isset($data['on_dutty1']) ? $data['on_dutty1'] : '9:30'; ?>"
+               placeholder="HH:MM:SS"
+               onblur="calculateWorkTimeOne('on_dutty1','off_dutty1','working_time1')"
+               onchange="calculateWorkTimeOne('on_dutty1','off_dutty1','working_time1'); checkExceptionEligibility();"
+               readonly
+               >
+    </div>
+
+    <!-- Out Time -->
+    <div class="col-md-4">
+        <label for="off_dutty1" data-toggle="tooltip" title="Shift enclosing Time / Check-Out Time">
+            Out Time <span class="text-danger">*</span>
+        </label>
+        <input type="text" class="form-control timepicker-input"
+               id="off_dutty1" name="off_dutty1"
+               value="<?php echo isset($data['off_dutty1']) ? $data['off_dutty1'] : '15:30'; ?>"
+               placeholder="HH:MM:SS"
+               onblur="calculateWorkTimeOne('on_dutty1','off_dutty1','working_time1')"
+               onchange="calculateWorkTimeOne('on_dutty1','off_dutty1','working_time1'); checkExceptionEligibility();"
+               readonly
+               >
+    </div>
+
+    <!-- Duration -->
+    <div class="col-md-4">
+        <label for="working_time1" data-toggle="tooltip" title="Total Duration Of Shift in Minutes">
+            Duration <span class="text-danger">*</span>
+        </label>
+        <input type="number" class="form-control"
+               id="working_time1" name="working_time1"
+               value="<?php echo round(isset($data['working_time1']) ? $data['working_time1'] : ''); ?>"
+               min="0" readonly>
+    </div>
+
+</div>
+
+
+<!-- ================= SHIFT 2 + RULES ================= -->
+<?php
+$wd2 = isset($data['working_time2']) ? $data['working_time2'] : 0;
+$off2 = ($wd2 > 0) ? $data['off_dutty2'] : '0:00';
+$on2  = ($wd2 > 0) ? $data['on_dutty2'] : '0:00';
+$out  = isset($data['off_dutty1']) ? $data['off_dutty1'] : 0;
+$outtimemax = isset($data['max_out_time']) ? $data['max_out_time'] : $out;
+?>
+
+<div class="row" id="dutystart2" style="align-items:center;display:flex;">
+    <!-- Hidden 2nd Shift Inputs -->
+    <div class="col-md-4" style="display:none;">
+        <label data-toggle="tooltip" title="2nd Shift starting Time / Check-in Time">
+            2<sup>nd</sup> In Time <span class="text-danger">*</span>
+        </label>
+        <input type="text" class="form-control time1 start"
+               id="on_dutty2" name="on_dutty2"
+               value="<?php echo $on2; ?>"
+               onblur="calculateWorkTimeTo('on_dutty2','off_dutty2','working_time2')"
+               onchange="calculateWorkTimeTo('on_dutty2','off_dutty2','working_time2')"
+               readonly>
+    </div>
+
+    <div class="col-md-4" style="display:none;">
+        <label data-toggle="tooltip" title="2nd Shift enclosing Time / Check-Out Time">
+            2<sup>nd</sup> Out Time <span class="text-danger">*</span>
+        </label>
+        <input type="text" class="form-control time1 end"
+               id="off_dutty2" name="off_dutty2"
+               value="<?php echo $off2; ?>"
+               onblur="calculateWorkTimeTo('on_dutty2','off_dutty2','working_time2')"
+               onchange="calculateWorkTimeTo('on_dutty2','off_dutty2','working_time2')"
+               readonly>
+    </div>
+
+    <div class="col-md-4" style="display:none;">
+        <label data-toggle="tooltip" title="Total Duration Of 2nd Shift in Minutes">
+            Duration <span class="text-danger">*</span>
+        </label>
+        <input type="number" class="form-control"
+               id="working_time2" name="working_time2"
+               value="<?php echo round(isset($data['working_time2']) ? $data['working_time2'] : 0); ?>"
+               min="0" readonly>
+    </div>
+
+
+     <!-- Include Break -->
+    <div class="col-md-4" style="margin-top:20px;">
+        <label class="form-check-label" for="include_break" data-toggle="tooltip" title="Enable this for getting full day duration from first in to last out.">
+            <input type="checkbox" class="form-check-input" id="include_break" name="include_break"
+                value="<?php echo (isset($data['include_break']) && $data['include_break'] == 'Y') ? 'Y' : 'N'; ?>"
+                <?php echo (isset($data['include_break']) && $data['include_break'] == 'Y') ? 'checked' : ''; ?>>
+            Include break
+        </label>
+    </div>
+
+    <!-- Extra Minutes (always visible) -->
+<div class="col-md-4" id="extraminutes1" style="margin-top:15px;">
+    <label for="maxinmin" data-toggle="tooltip" title="Enter additional minutes to add to Out Time for Max Out Time">
+        Max In (Min)
+    </label>
+    <input type="number" class="form-control" id="maxinmin" name="max_in_time"
+           placeholder="Enter minutes"
+           max="1440" min="0"
+           value="<?php echo isset($data['max_in_time']) ? $data['max_in_time'] : "" ?>"
+           oninput="calculateMaxInTime();">
+</div>
+
+<!-- Max In Time (always visible) -->
+<div class="col-md-4" id="maxintime" style="margin-top:15px;">
+    <label for="maxintime_input" data-toggle="tooltip" title="Shift Maximum Check-In Time">
+        Max In Time
+    </label>
+    <input type="text" class="form-control time1 start" id="maxintime_input" name="max_in_minutes"
+           value="" readonly>
+</div>
+
+
+</div>
+ <!-- <div class="col-md-4" id="maxouttime" style="display:none;margin-top:15px;">
+        <label for="maxtime" data-toggle="tooltip" title="Shift Maximum Check-Out Time">
+            Max Out Time
+        </label>
+        <input type="text" class="form-control time1 start"
+               id="maxtime" name="max_out_time"
+               value="<?php echo $outtimemax; ?>"
+               onclick="setRule('off_dutty1',this.value);"
+               readonly>
+    </div>
+</div> -->
+
+
+                    <div class="row" style="margin-top: 15px;">
+
+
+                    <!-- Next Day -->
+    <div class="col-md-4">
+        <label class="form-check-label" for="next_day" data-toggle="tooltip" title="Enable this for closing the shift on the next day.">
+            <input type="checkbox" class="form-check-input" id="next_day" name="nextday" value="Y"
+                onclick="calculateWorkTimeOne('on_dutty1','off_dutty1','working_time1')"
+                <?php echo isset($data['isnextday']) && $data['isnextday'] != '0' ? 'checked="checked"' : ''; ?>>
+            Next day 
+        </label>
+    </div>
+
+<!-- Extra Minutes (hidden by default) -->
+<div class="col-md-4" id="extraminutes" style="display:none;">
+    <label for="extra_minutes" data-toggle="tooltip" title="Enter additional minutes to add to Out Time for Max Out Time">
+        Max Out (Min)
+    </label>
+    <input type="number" class="form-control" id="extra_minutes" name="max_out_time"
+       placeholder="Enter minutes"
+       max="1440"  
+       min="0"    
+        value="<?php echo isset($data['max_out_time']) ? $data['max_out_time']: ""  ?>"
+       oninput="calculateWorkTimeOne('on_dutty1','off_dutty1','working_time1')">
+</div>
+
+    <!-- Max Out Time -->
+    <div class="col-md-4" id="maxouttime" style="display:none;">
+        <label for="maxtime" data-toggle="tooltip" title="Shift Maximum Check-Out Time">
+            Max Out Time
+        </label>
+        <input type="text" class="form-control time1 start"
+               id="maxtime" name="max_time"
+               value=""
+               readonly>
+    </div>
+    
+</div>
+
+<div class="row" style="margin-top: 15px;">
+
+ <!-- Late In Limit -->
+    <div class="col-md-4">
+        <label for="minuts_aftr_on_dutty_cal_late" data-toggle="tooltip" 
+               title="Allowed minutes after shift start before counting as Late In">
+            Late In Limit <span class="text-danger">*</span>
+        </label>
+        <input type="number" 
+               id="minuts_aftr_on_dutty_cal_late" 
+               name="minuts_aftr_on_dutty_cal_late"
+               class="form-control numeric"
+               min="0"
+               value="<?php echo isset($data['minuts_aftr_on_dutty_cal_late']) ? $data['minuts_aftr_on_dutty_cal_late'] : '' ?>"
+               placeholder="Minutes" required>
+    </div>
+    <!-- Early Out Limit -->
+    <div class="col-md-4">
+        <label for="minuts_bfr_off_dutty_cal_early" data-toggle="tooltip"
+               title="Allowed minutes before shift end before counting as Early Out">
+            Early Out Limit <span class="text-danger">*</span>
+        </label>
+        <input type="number"
+               id="minuts_bfr_off_dutty_cal_early"
+               name="minuts_bfr_off_dutty_cal_early"
+               class="form-control numeric"
+               min="0"
+               value="<?php echo isset($data['minuts_bfr_off_dutty_cal_early']) ? $data['minuts_bfr_off_dutty_cal_early'] : '' ?>"
+               placeholder="Minutes" required>
+    </div>
+
+    <!-- Full Day (Minutes) -->
+    <div class="col-md-4">
+        <label for="minuts_calc_perday" data-toggle="tooltip"
+               title="Minimum required working time (in minutes) for Full Day">
+            Full Day (Min) <span class="text-danger">*</span>
+        </label>
+        <input type="number"
+               id="minuts_calc_perday"
+               name="minuts_calc_perday"
+               min="0"
+               class="form-control numeric"
+               value="<?php echo isset($data['minuts_calc_perday']) ? $data['minuts_calc_perday'] : '' ?>"
+               placeholder="Minutes" required
+               onchange="<?php if ($company_code == 'GEDE' || $company_code == 'DEMO' || $company_code == 'MBCT' || $company_code == 'GLET') { ?>checktimings1();<?php } else { ?>checktimings();<?php } ?>">
+    </div>
+</div>
+    <div class="row" style="margin-top:15px;">
+    <!-- Half Day (Minutes) -->
+    <div class="col-md-4">
+        <label for="minutes_per_half" data-toggle="tooltip"
+               title="Minimum required working time (in minutes) for Half Day">
+            Half Day (Min) <span class="text-danger">*</span>
+        </label>
+        <input type="number"
+               id="minutes_per_half"
+               name="minutes_per_half"
+               min="0"
+               class="form-control numeric"
+               value="<?php echo isset($data['minutes_per_half']) ? $data['minutes_per_half'] : '' ?>"
+               placeholder="Minutes" required
+               onchange="<?php if ($company_code == 'GEDE' || $company_code == 'DEMO' || $company_code == 'MBCT' || $company_code == 'GLET') { ?>checktimings1();<?php } else { ?>checktimings();<?php } ?>">
+    </div>
+</div>
+
+            </div>
+            </fieldset>
+        </div>
+
+        <fieldset>
+            <legend style="margin-bottom:20px;">
+                <h4 style="font-size:16px;"> <b data-toggle="tooltip" data-placement="auto" title=" Please select the appropriate options below">Shift Rules</b></h4>
+            </legend>
+            <div class="row">
+
+                <div class="col-xs-3" style="padding-left:10px;">
+                    <input id="someSwitchOptionSuccess" type="hidden" value="<?php echo isset($data['strict_monitorings']) && $data['strict_monitorings'] == "Y" ? 'Y' : 'N' ?>" name="someSwitchOption001" onchange="toggleStrict();" />
+                    <!--<label for="someSwitchOptionSuccess" class="label-success"></label>-->
+
+                    <input id="strict" value="N" onchange="toggleStrict();" name="enablestrict" data-toggle="tooltip" data-placement="auto" title=" Attendance will be marked if the employees present during the given In/Out hours" <?php echo isset($data['strict_monitorings']) && $data['strict_monitorings'] == "Y" ? 'checked="checked"' : '' ?> type="radio" />
+
+                    <span data-toggle="tooltip" data-placement="auto" title=" Attendance will be marked if the employees present during the given In/Out hours"> Strict Monitoring</span>
+                </div>
+                <div class="col-xs-3">
+
+                    <input id="flexible" value="Y" onchange="toggleStrict();" name="enablestrict" data-toggle="tooltip" data-placement="auto" title=" Only total minutes spent would be considerd for marking attendance" <?php echo isset($data['strict_monitorings']) && $data['strict_monitorings'] == "N" ? 'checked="checked"' : '' ?> type="radio" />
+                    <span data-toggle="tooltip" data-placement="auto" title=" Only total minutes spent would be considerd for marking attendance"> Flexible Timing</span>
+                </div>
+            </div>
+                <!-- edited by athira on 05-02-2024 -->
+                <!-- <?php if ($plan != 'basic') { ?>
+                    <div class="col-xs-6">
+
+                        <div class="row">
+                            <div class="col-xs-4">
+
+                                <div class="input group">
+
+                                    <input id="someSwitchOptionSuccess1" value="Y" onchange="togglemultishift();" name="enablemutishift" data-toggle="tooltip" data-placement="auto" title=" Select this for employees working for more than a shift at a strech. Normal overtime rules will be disabled with this option" <?php echo isset($data['is_multiple_days']) && $data['is_multiple_days'] == "Y" ? 'checked="checked"' : '' ?> type="checkbox" />
+                                  <label for="someSwitchOptionSuccess1" class="label-success"></label> 
+                                    <span data-toggle="tooltip" data-placement="auto" title=" Select this for employees working for more than a shift at a strech. Normal overtime rules will be disabled with this option"> Multi Shift
+                                </div></span>
+                            </div>
+
+
+                            <div class="col-xs-8">
+
+                                <div id="divmulti" style="display:none;  " data-toggle="tooltip" data-placement="auto" title=" Saturday Half Day">
+
+                                    No.of Shifts <div class="material-switch pull-right" style="padding-right: 1px; "><input type="number" style="width: 130px;display: inline-block; " value="<?php echo isset($data['no_of_shift_days']) ? $data['no_of_shift_days'] : '1' ?>" id="multitimes" name="multishift" class="form-control pull-right multitimes">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                <?php } ?> -->
+                <!-- end -->
+                <div class="col-sm-12">
+                    <div class="row" id='basic-row1'>
+                        <div class="col-xs-6" style="padding-left:5px;">
+                            <br>
+                            <input data-toggle="tooltip" data-placement="auto" title=" Please specify minimum time to be worked after normal timing to considerd as overtime" <?php echo isset($data['min_aftr_off_dutty_cal_ot']) && $data['min_aftr_off_dutty_cal_ot'] != "0" ? 'checked="checked"' : ''; ?> type="checkbox" value="" onchange="toggleDisable(this, 'min_aftr_off_dutty_cal_ot')" id="chk_min_aftr_off_dutty_cal_ot" name="chk_min_aftr_off_dutty_cal_ot">
+                            <span data-toggle="tooltip" data-placement="auto" title=" Please specify minimum time to be worked after normal timing to considerd as overtime"> Overtime - Minimum time after Shift </span>
+
+                            <div class="material-switch pull-right">
+                                <input onchange="otchange();" name="min_aftr_off_dutty_cal_ot" min="0" value="<?php echo isset($data['min_aftr_off_dutty_cal_ot']) ? $data['min_aftr_off_dutty_cal_ot'] : '' ?>" id="min_aftr_off_dutty_cal_ot" type="number" style="width: 130px;display: inline-block" class="form-control numeric" placeholder="" <?php echo isset($data['min_aftr_off_dutty_cal_ot']) && $data['min_aftr_off_dutty_cal_ot'] == "0" ? 'disabled="disabled"' : ''; ?> <?php echo isset($data['min_cal_late_ifnoclockin']) && $data['min_cal_late_ifnoclockin'] != "" ? '' : 'disabled="disabled"' ?>>
+                                <br>
+                            </div>
+
+                        </div>
+
+                        <div class="col-xs-6">
+                            <br>
+                            <div class="col-md-6">
+                                <input <?php echo isset($data['work_time_day_off_cal_ot']) && $data['work_time_day_off_cal_ot'] != "0" ? 'checked="checked"' : ''; ?> type="checkbox" value="" onchange="toggleDisable(this, 'work_time_day_off_cal_ot')" id="chk_work_time_day_off_cal_ot" name="chk_work_time_day_off_cal_ot">
+                                <span id="dayoffchange" data-toggle="tooltip" data-placement="auto" title=" Please select on how the attendance on a holiday/week off to be considerd">Working On Off-Day</span>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="material-switch pull-right" style="padding-right: 1px; ">
+                                    <select onchange="otchange();" name="work_time_day_off_cal_ot" class="form-control" id="work_time_day_off_cal_ot" style="display: inline-block" <?php echo isset($data['min_cal_late_ifnoclockin']) && $data['min_cal_late_ifnoclockin'] != "" ? '' : 'disabled="disabled"' ?> <?php echo isset($data['work_time_day_off_cal_ot']) && $data['work_time_day_off_cal_ot'] == "0" ? 'disabled="disabled"' : ''; ?>>
+                                    <option value="">--Select--</option>
+                                    <option <?php echo (isset($data['work_time_day_off_cal_ot']) && $data['work_time_day_off_cal_ot'] == 1) ? 'selected="selected"' : '' ?> value="1" data-toggle="tooltip" data-placement="auto" title="Set the Minimum Required Working Time to Complete this Shift(in Minutes)">OT</option>
+                                    <option <?php echo (isset($data['work_time_day_off_cal_ot']) && $data['work_time_day_off_cal_ot'] == 2) ? 'selected="selected"' : '' ?> value="2">Compoff</option>
+                                    <option <?php echo (isset($data['work_time_day_off_cal_ot']) && $data['work_time_day_off_cal_ot'] == 4) ? 'selected="selected"' : '' ?> value="4" data-toggle="tooltip" data-placement="auto" title="Holiday - Compoff and Week Off - Allowance">HO-Coff & WO-Allowance</option>
+                                    <option <?php echo (isset($data['work_time_day_off_cal_ot']) && $data['work_time_day_off_cal_ot'] == 5) ? 'selected="selected"' : '' ?> value="5" data-toggle="tooltip" data-placement="auto" title="Holiday and Week Off - Allowance">HO & WO-Allowance</option>
+                                    <option <?php echo (isset($data['work_time_day_off_cal_ot']) && $data['work_time_day_off_cal_ot'] == 3) ? 'selected="selected"' : '' ?> value="0">None of the Above</option>
+
+                                    </select>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="row" id='basic-row2'>
+
+                        <div class="col-xs-6" style="padding-left:19px;">
+                            <input data-toggle="tooltip" data-placement="auto" title=" Please specify minimum time to be worked before normal timing to considerd as overtime" <?php echo isset($data['min_bfr_on_dutty_cal_ot']) && $data['min_bfr_on_dutty_cal_ot'] != "0" ? 'checked="checked"' : ''; ?> type="checkbox" value="" onchange="toggleDisable(this, 'min_bfr_on_dutty_cal_ot')" id="chk_min_bfr_on_dutty_cal_ot" name="chk_min_bfr_on_dutty_cal_ot">
+                            <span data-toggle="tooltip" data-placement="auto" title=" Please specify minimum time to be worked before normal timing to considerd as overtime"> Overtime - Minimum time before Shift </span>
+
+                            <div class="material-switch pull-right">
+                                <div class="b"> <input onchange="otchange();" name="min_bfr_on_dutty_cal_ot" min="0" value="<?php echo isset($data['min_bfr_on_dutty_cal_ot']) ? $data['min_bfr_on_dutty_cal_ot'] : '' ?>" id="min_bfr_on_dutty_cal_ot" type="number" style="width: 130px; padding-right:5px" class="form-control numeric" placeholder="" <?php echo isset($data['min_bfr_on_dutty_cal_ot']) && $data['min_bfr_on_dutty_cal_ot'] == "0" ? 'disabled="disabled"' : ''; ?> <?php echo isset($data['min_cal_late_ifnoclockin']) && $data['min_cal_late_ifnoclockin'] != "" ? '' : 'disabled="disabled"' ?>></div>
+                                <br>
+                            </div>
+
+                        </div>
+                        <div class="col-xs-6" style="padding-right:31px;">
+                            <div class="col-md-6" >
+                                <input <?php echo isset($data['shift_allowance']) && $data['shift_allowance'] != "" ? 'checked="checked"' : ''; ?> type="checkbox" value="" onchange="toggleShift(this, 'shift_allowance')" id="chk_shift_allowance" name="shift_allowance">
+                                Shift Allowance
+                                </div>
+                            <div class="col-md-6">
+                                <div class="material-switch pull-right">
+                                <!-- <div class="col-sm-6" style="padding-right: 1px;"> -->
+                                    <select name="shift_allowance" class="form-control" id="shift_allowance" style="display: inline-block " <?php echo isset($data['min_cal_late_ifnoclockin']) && $data['min_cal_late_ifnoclockin'] != "" ? '' : 'disabled="disabled"' ?> <?php echo isset($data['shift_allowance']) && $data['shift_allowance'] == "" ? 'disabled="disabled"' : ''; ?>>
+                                        <option value="">--Select--</option>
+                                        <?php
+                                        foreach ($components as $key => $value) {
+                                            $selected = ($data['shift_allowance'] == $value['salary_head_items']['salary_head_item_pkey']) ? 'selected="selected"' : '';
+                                            echo '<option value="' . $value['salary_head_items']['salary_head_item_pkey'] . '" ' . $selected . '>' . $value['salary_head_items']['item'] . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+
+                                    <br>
+                                <!-- </div> -->
+                                </div>
+                                <br><br>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" id='basic-row3'>
+
+                    <?php
+                        //debug($data);
+                        $display = '';
+                        if ((isset($data['min_aftr_off_dutty_cal_ot']) && $data['min_aftr_off_dutty_cal_ot'] > 0) || (isset($data['work_time_day_off_cal_ot']) && $data['work_time_day_off_cal_ot'] > 0) || (isset($data['min_bfr_on_dutty_cal_ot']) && $data['min_bfr_on_dutty_cal_ot'] > 0)) {
+                            $display = 'display:block;';
+                        }
+                        ?>
+                        <div class="col-xs-6 " id="ot" style="display:block;padding-left:22px;">
+                            Salary Component for OT
+
+                            <div class="material-switch pull-right">
+                                <div class="b"> <select name="Otc" class="form-control" id="Otc" style="width: 130px;display: block ; ">
+                                        <option value="">--Select--</option>
+                                        <?php
+                                        foreach ($components as $key => $value) {
+                                            $selected = ($data['otcomponents'] == $value['salary_head_items']['salary_head_item_pkey']) ? 'selected="selected"' : '';
+                                            echo '<option value="' . $value['salary_head_items']['salary_head_item_pkey'] . '" ' . $selected . '>' . $value['salary_head_items']['item'] . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    
+
+                    <div class="col-xs-6" style="padding-left:30px;">
+                           <input 
+                            type="checkbox" 
+                            id="overtime_eligibility" 
+                            name="overtime_eligibility" 
+                            value="Y"
+                            <?php echo isset($data['overtime_eligibility']) && $data['overtime_eligibility'] == 'Y' ? 'checked' : ''; ?>
+                        >
+
+
+                            <span data-toggle="tooltip" data-placement="auto" title=" Overtime eligiblity - Full Day"> Overtime Eligibility (Full Day) </span>
+
+                        </div>
+                        </div>
+                        
+
+        </fieldset>
+        <!-- edited by athira on 05-02-2024 -->
+        <?php if ($plan != 'basic') { ?>
+
+            <div class="row" style="margin-top:15px;">
+                <div class="col-xs-12" style="padding-left:10px;">
+                    <fieldset>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom: 10px;border-bottom: 1px solid #e5e5e5;">
+                            <div style="display:flex;justify-content:left;align-items:center;">
+                                <input data-toggle="tooltip" data-placement="auto" title=" Please select the day and timing if you would like to give any exception on any particular day" id="someSwitchOptionSuccess2" value="1" onchange="toggleExceptions(this);" <?php echo isset($data['is_exception']) && $data['is_exception'] == "1" ? 'checked="checked"' : '' ?>  type="checkbox" />
+                                <h4 style="font-size:16px;"> <b data-toggle="tooltip" data-placement="auto" title="Please select the day and timing if you would like to give any exception on any particular day">&nbsp;Exceptions</b></h4>
+                            </div>
+                            <div id="addExceptionBtnDiv" style="display:none;">
+                                <button type="button" id="openExceptionModal" class="btns"><i class="fa fa-plus"></i>Add Exception</button>
+                            </div>
+                        </div>
+                    <div id="exceptionList" style="margin-top:10px;"></div>
+
+
+<!-- Modal -->
+<div id="exceptionModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:999;">
+    <div style="background:#fff;width:400px;margin:5% auto;padding:20px;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,0.3);">
+        <h4 style="margin-top:0;">7-Day Exception</h4>
+
+        
+
+        <form id="exceptionForm">
+             
+    <input type="hidden" id="day_time_seq2" name="day_time_seq" value="<?= isset($data['day_time_seq']) ? $data['day_time_seq'] : 0 ?>" />
+      <?//php debug($data); ?>
+    <!-- Row: Day + Week Count -->
+    <div style="display:flex; align-items:flex-end; gap:20px; margin-top:10px;">
+        <!-- Day -->
+        <div style="display:flex; flex-direction:column; flex:1;">
+            <label for="day" style="margin-bottom:5px;">Day<span style="color:red;">*</span></label>
+            <select id="filterby_branch" class="form-control" name="day" onchange="checkhalfday();">
+                <option value="">--Select Weekday--</option>
+                <?php if ($data['Sunday']=='Y' && $data['Sunday_F']=='N'){ ?>
+                    <option value="Sunday">Sunday</option>
+                 <?php   }?>
+                <?php if ($data['Monday']=='Y' && $data['Monday_F']=='N'){ ?>
+                <option value="Monday">Monday</option>
+                <?php }?>
+                <?php if ($data['Tuesday']=='Y' && $data['Tuesday_F']=='N'){ ?>
+                <option value="Tuesday">Tuesday</option>
+                <?php } ?>
+                 <?php if ($data['Wednesday']=='Y' && $data['Wednesday_F']=='N'){ ?>
+                <option value="Wednesday">Wednesday</option>
+                <?php }?>
+                 <?php if ($data['Thursday']=='Y' && $data['Thursday_F']=='N'){ ?>
+                <option value="Thursday">Thursday</option>
+                <?php } ?>
+                 <?php if ($data['Friday']=='Y' && $data['Friday_F']=='N'){ ?>
+                <option value="Friday">Friday</option>
+                <?php } ?>
+                 <?php if ($data['Saturday']=='Y' && $data['Saturday_F']=='N'){ ?>
+                <option value="Saturday">Saturday</option>
+                <?php } ?>
+            </select>
+        </div>
+
+        <!-- Week Count -->
+        <div id="weekCountDiv" style="display:flex; flex-direction:column; min-width:150px;">
+            <label>Week Count<span style="color:red;">*</span></label>
+            <select id="modalWeekOff" class="form-control">
+                <option value="select">--Select--</option>
+                <option value="1">1st</option>
+                <option value="2">2nd</option>
+                <option value="3">3rd</option>
+                <option value="4">4th</option>
+                <option value="5">5th</option>
+                <option value="A">All</option>
+                
+            </select>
+        </div>
+
+    </div>
+
+    <!-- Radio Buttons -->
+<div style="margin-top:10px;">
+    <label style="font-weight:bold;">Exception Type: <span style="color:red;">*</span></label>
+    <div style="display:flex; gap:20px; margin-top:5px;">
+        <label><input type="radio" name="week_off" value="Y" onclick="toggleExceptionType(this)"> Week Off</label>
+        <label><input type="radio" name="week_off" value="N" onclick="toggleExceptionType(this)"> Different Timings</label>
+    </div>
+</div>
+
+
+    <!-- Day Status Label -->
+    <div id="dayResult" style="font-weight:bold; min-width:150px; margin-top:5px;"></div>
+
+    <!-- Working Day Fields -->
+    <div id="workingFields" style="display:none; margin-top:10px; gap:10px;">
+        <!-- <div style="font-weight:bold; color:green;">Working Day</div> -->
+
+        <div style="display:flex; gap:20px; margin-top:5px;">
+            <div style="display:flex; flex-direction:column; flex:1;">
+                <label for="in_duty4" style="margin-bottom:5px;">In Time<span style="color:red;">*</span></label>
+                <input type="text" id="in_duty4" class="form-control timepicker-input" value="00:00:00" readonly>
+            </div>
+            <div style="display:flex; flex-direction:column; flex:1;">
+                <label for="out_duty4" style="margin-bottom:5px;">Out Time<span style="color:red;">*</span></label>
+                <input type="text" id="out_duty4" class="form-control timepicker-input" value="00:00:00" readonly>
+            </div>
+            <div style="display:flex; flex-direction:column; flex:1;">
+                <label for="modalDuration" style="margin-bottom:5px;">Duration (Min)<span style="color:red;">*</span></label>
+                <input type="number" id="modalDuration" readonly class="form-control">
+            </div>
+        </div>
+        <div style="display:flex;gap:20px;margin-top:5px;">
+            <div style="display:flex; flex-direction:column; flex:1;">
+                <label for="full_day" style="margin-bottom:5px;">Full Day (Min)<span style="color:red;">*</span></label>
+                <input type="number" id="full_day" class="form-control" min="0">
+            </div>
+            <div style="display:flex; flex-direction:column; flex:1;">
+                <label for="half_day" style="margin-bottom:5px;">Half Day (Min)<span style="color:red;">*</span></label>
+                <input type="number" id="half_day" min="0" class="form-control">
+            </div>
+        </div>
+    </div>
+
+    <!-- Week Off Fields -->
+    <!-- <div id="weekOffFields" style="display:none; margin-top:10px; gap:10px;">
+        <div>Day: <span id="selectedDayOff"></span></div>
+        <div style="font-weight:bold; color:red;">Week Off</div>
+    </div> -->
+
+    <!-- Buttons -->
+    <div style="text-align:right; margin-top:10px;">
+        <button type="button" onclick="saveExceptionDay()" style="background:#1e516e;color:#fff;border:none;padding:8px 20px;border-radius:5px;">Save</button>
+        <button type="button" onclick="closeExceptionModal()" style="background:#b8b8b8;color:#000;border:none;padding:8px 20px;border-radius:5px;">Cancel</button>
+    </div>
+</form>
+
+    </div>
+</div>
+
+                    </fieldset>
+
+                </div>
+            </div>
+            <?php } ?>
+            <div class="modal-footer" style="padding:0;">
+                <div class="col-xs-12" style="padding:0;">
+                    <div class="pull-right">
+                        <div id="success"></div>
+                        <?php if (isset($data['day_time_seq'])) { ?>
+                            <a type="buttton" onclick="editcancel();" style="background:#b8b8b8;color:#000;border:none;padding:8px 20px;border-radius:5px;margin-right:5px;cursor:pointer;">
+                                Cancel
+                            </a>
+                        <?php } ?>
+                        <button type="submit" id="saveshift" style="background:#1e516e;color:#fff;border:none;padding:8px 20px;border-radius:5px;cursor:pointer;">
+                            Save
+                        </button>
+                        <br><br>
+
+                    </div>
+                </div>
+            </div>
+    </div>
+</form>
+
+
+
+<script type="text/javascript">
+	// Disable Bootstrap's modal focus enforcement to allow timepicker in modals
+    if ($.fn.modal && $.fn.modal.Constructor) {
+        $.fn.modal.Constructor.prototype.enforceFocus = function() {};
+    }																  
+
+    $('#full_day, #half_day, #minuts_calc_perday, #minutes_per_half').on('input', function() {																					  
+    // Allow only digits
+    this.value = this.value.replace(/\D/g, '');
+    // Limit to 4 digits
+    if (this.value.length > 4) {
+        this.value = this.value.slice(0, 4);
+    }
+});
+
+    
+function closeExceptionModal() {
+    $('#exceptionModal').hide();
+}
+
+$('#spForm').submit(function(e) {
+    e.preventDefault();
+
+    // ✅ Simple HTML5 validation check
+    if (!this.checkValidity()) {
+        // Trigger built-in browser validation message
+        this.reportValidity();
+        return false;
+    }
+
+    $.ajax({
+        url: $(this).attr('action'),
+        type: 'POST',
+        data: $(this).serialize(),
+        dataType: 'json',
+        success: function(response) {
+            if (response.status === 'success') {
+                $('#shiftModal').modal('hide');
+                alert(response.msg);
+                refreshShiftGrid();
+            } else {
+                alert(response.msg || 'Failed to save shift.');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+            alert('Error saving shift. Please try again.');
+        }
+    });
+});
+
+function refreshShiftGrid() {
+    $('#shiftpolicygrouptable').datagrid('reload'); // For EasyUI
+}
+
+
+
+
+//    $(document).ready(function() {
+//     $('#filterby_branch').on('change', function() {
+//         var selectedDay = $(this).val();
+//         var shift = $('#day_time_seq2').val();
+
+//         // Reset
+//         $('#dayResult').text('');
+//         $('#workingFields').hide();
+//         $('#selectedDayWorking').text(''); // clear previous
+
+//         if (selectedDay !== '') {
+//             $.ajax({
+//                 url: '<?= $this->webroot ?>DayTimeProcedure/getDayStatus', 
+//                 type: 'GET',
+//                 data: { day: selectedDay, shift: shift },
+//                 dataType: 'json',
+//                 success: function(response) {
+//                     if (response.status === 'Y') {
+//                         // Show working day info inside workingFields only
+//                         $('#workingFields').show();
+//                         $('#selectedDayWorking').text(selectedDay);
+//                         $('#dayResult').text(''); // optionally clear this
+//                     } else if (response.status === 'N') {
+//                         // Week off
+//                         $('#dayResult').text('Week Off: ' + selectedDay).css('color', 'red');
+//                     } 
+//                 },
+//                 error: function() {
+//                     $('#dayResult').text('Error fetching day status.').css('color', 'red');
+//                 }
+//             });
+//         } else {
+//             // No day selected → only show Week Count
+//             $('#weekCountDiv').show();
+//         }
+//     });
+// });
+
+
+    function calculateMaxInTime() {
+    // Get DOM elements
+    var offDutyEl = document.getElementById('off_dutty1'); 
+    var maxMinutesEl = document.getElementById('maxinmin');
+    var maxInEl = document.getElementById('maxintime_input');
+
+    if (!offDutyEl || !maxMinutesEl || !maxInEl) return;
+
+    var offDuty = offDutyEl.value; // e.g., "18:30" or "18:30:00"
+    var extraMin = parseInt(maxMinutesEl.value) || 0;
+
+    if (offDuty) {
+        // Split into parts
+        var parts = offDuty.split(':');
+        var hours = parseInt(parts[0]) || 0;
+        var minutes = parseInt(parts[1]) || 0;
+        var seconds = parts.length > 2 ? parseInt(parts[2]) : 0;
+
+        // Create base date
+        var date = new Date();
+        date.setHours(hours);
+        date.setMinutes(minutes);
+        date.setSeconds(seconds);
+
+        // Subtract max in minutes
+        date.setMinutes(date.getMinutes() - extraMin);
+
+        // Format output as HH:MM:SS
+        var hh = String(date.getHours()).padStart(2, '0');
+        var mm = String(date.getMinutes()).padStart(2, '0');
+        var ss = String(date.getSeconds()).padStart(2, '0');
+
+        // Show result
+        maxInEl.value = `${hh}:${mm}:${ss}`;
+    }
+}
+
+// Initial calculation if values exist
+calculateMaxInTime();
+
+// Auto recalc on input change
+document.getElementById('off_dutty1').addEventListener('input', calculateMaxInTime);
+document.getElementById('maxinmin').addEventListener('input', calculateMaxInTime);
+
+    //edited by athira on 08-02-2025
+    var plan = <?php echo json_encode($plan); ?>;
+    if (plan == 'basic') {
+        document.getElementById("basic-row1").style.display = "none";
+        document.getElementById("basic-row2").style.display = "none";
+        document.getElementById("basic-row3").style.display = "none";
+    }
+    //end
+    // the selector will match all input controls of type :checkbox
+    // and attach a click event handler 
+    $("input:checkbox").on('click', function() {
+        // in the handler, 'this' refers to the box clicked on
+        var $box = $(this);
+        if ($box.is(":checked")) {
+            // the name of the box is retrieved using the .attr() method
+            // as it is assumed and expected to be immutable
+            var group = "input:checkbox[name='" + $box.attr("name") + "']";
+            // the checked state of the group/box on the other hand will change
+            // and the current value is retrieved using .prop() method
+            $(group).prop("checked", false);
+            $box.prop("checked", true);
+        } else {
+            $box.prop("checked", false);
+        }
+    });
+
+
+    $('#day_time_desc').on('change', function() {
+        checkshiftpolicyexists();
+    })
+
+    function checkshiftpolicyexists(callback) {
+        var day_time_desc = $('#day_time_desc').val();
+        var day_time_seq = $('#day_time_seq').val();
+        $.ajax({
+            url: livesite + 'DayTimeProcedure/checkshiftpolicyexists/' + day_time_seq,
+            type: 'POST',
+            data: {
+                day_time_desc: day_time_desc
+            },
+            success: function(resp) {
+                if (resp > 0) {
+                    alert("Shift Policy Name Already Exists!!");
+                    $('#day_time_desc').val('');
+                } else {
+                    if (typeof callback === 'function') {
+                        callback.call();
+                    }
+                }
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+    $.fn.extend({
+        animateCss: function(animationName) {
+            var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+            this.addClass('animated ' + animationName).one(animationEnd, function() {
+                $(this).removeClass('animated ' + animationName);
+            });
+        }
+    });
+    //var Week = [];
+    // var Week = <?//php echo json_encode($wee); ?>
+    // //Week.push(wee);
+    function weekShow(s) {
+        var elem = $(s).attr('id');
+        if ($(s).is(":checked")) {
+            $('#' + elem + '_F').attr("disabled", false);
+            showweekdays(elem);
+        } else {
+			// Check if this day has an exception entry in the table
+            var hasException = false;
+            $('#exceptionList table tbody tr').each(function() {
+                var dayInTable = $(this).find('td:first').text().trim();
+                if (dayInTable === elem) {
+                    hasException = true;
+                    return false; // break loop
+                }
+            });
+
+            if (hasException) {
+                alert("Please Remove the exception on " + elem);
+                $(s).prop('checked', true); // Keep it checked
+                return false;
+            }														
+
+            pullweek(elem);
+            $('#' + elem + '_F').attr("disabled", true);
+        }
+        if ($(s).is(":checked") === false) {
+            $('#' + elem + '_F').prop('checked', false);
+        }
+	 
+    }
+	
+	function half_weekShow(s) {
+        var el = $(s).attr('id').toString();
+        var elem = $('#' + el + 'day').attr('id');
+        //alert(elem);
+        if ($(s).is(":checked")) {
+            pullweek(elem);
+        } else {
+            showweekdays(elem);
+        }
+    }
+	
+
+    function toggleExceptions(s) {
+        $('#exceptionss').toggleClass('Exceptionshow');
+        if ($(s).is(":checked")) {
+            $('.disabled').attr("disabled", false);
+        } else {
+            $('.disabled').attr("disabled", true);
+        }
+        if ($('#someSwitchOptionSuccess2').is(":checked")) {
+            document.getElementById("filterby_branch").value = "select";
+            // document.getElementById("filterby_branch1").value = "select";
+            loadExceptions();
+        }
+
+    }
+
+    function half_weekShow(s) {
+        var el = $(s).attr('id').toString();
+        var elem = $('#' + el + 'day').attr('id');
+        //alert(elem);
+        if ($(s).is(":checked")) {
+            pullweek(elem);
+        } else {
+            showweekdays(elem);
+        }
+    }
+
+    function showweekdays(s) {
+        //alert(Week);
+        Week.push(s);
+        addweeks();
+    }
+
+    function pullweek(s) {
+        const index = Week.indexOf(s);
+        Week.splice(index, 1);
+        addweeks();
+    }
+
+    function addweeks() {
+        //alert(Week);
+        $('#filterby_branch').html('');
+        $.each(Week, function(i, value) {
+            $('#filterby_branch').append($('<option>').text(value).attr('value', value));
+        });
+    }
+
+//     function addweeks() {
+//     $('#filterby_branch').html('<option value="">--Select Weekday--</option>');
+//     $.each(Week, function(i, value) {
+//         $('#filterby_branch').append($('<option>').text(value).attr('value', value));
+//     });
+// }
+
+
+    function toggleDisable(me, togggleId) {
+        if ($(me).is(":checked")) {
+            $("#" + togggleId).show().attr("disabled", false);
+        } else {
+            $("#" + togggleId).show().attr("disabled", true);
+            $("#" + togggleId).val('');
+        }
+        if ($('#chk_min_aftr_off_dutty_cal_ot').is(":checked") || ($('#work_time_day_off_cal_ot').val() == '1') || $('#chk_min_bfr_on_dutty_cal_ot').is(":checked")) {
+            // $("#" + togggleId).show().attr("disabled",false);
+            //  alert("disable");
+            $('#ot').show();
+        } else {
+            //   $("#" + togggleId).show().attr("disabled",true);
+
+            $('#ot').hide();
+            $('#Otc').val('');
+        }
+
+
+    }
+
+    function toggleShift(me, shiftId) {
+        if ($(chk_shift_allowance).is(":checked")) {
+            $("#" + shiftId).show().attr("disabled", false);
+
+        } else {
+            $("#" + shiftId).hide();
+            $("#" + shiftId).show().attr("disabled", true);
+            $("#" + shiftId).val('');
+        }
+    }
+
+    function toggleStrict() {
+        if ($("#strict").is(":checked")) {
+            //  alert("strict");
+            $('#someSwitchOptionSuccess').val('Y');
+
+        } else {
+            // alert("flexible");
+            $('#someSwitchOptionSuccess').val('N');
+
+        }
+
+
+    }
+
+    function togglemultishift() {
+
+        if ($('#someSwitchOptionSuccess1').is(":checked")) {
+            $('#divmulti').css('display', 'block').animateCss('fadeInRight');
+            //            $('.hideOnMultishift').animateCss('fadeOutLeft');
+            $('.hideOnMultishift').css('display', 'none');
+            document.getElementById("chk_min_aftr_off_dutty_cal_ot").disabled = true;
+            document.getElementById("chk_min_aftr_off_dutty_cal_ot").checked = false;
+            $('#min_aftr_off_dutty_cal_ot').val('0');
+            document.getElementById("min_aftr_off_dutty_cal_ot").disabled = true;
+            document.getElementById("chk_min_bfr_on_dutty_cal_ot").disabled = true;
+            document.getElementById("chk_min_bfr_on_dutty_cal_ot").checked = false;
+            $('#min_bfr_on_dutty_cal_ot').val('0');
+            document.getElementById("min_bfr_on_dutty_cal_ot").disabled = true;
+            $('#dayoffchange').html('Balance Consider as Monthly working balance').attr("title", "");
+
+            if ($('#chk_min_aftr_off_dutty_cal_ot').is(":checked") || ($('#work_time_day_off_cal_ot').val() == '1') || $('#chk_min_bfr_on_dutty_cal_ot').is(":checked")) {
+                // $("#" + togggleId).show().attr("disabled",false);
+                // alert('ot');
+                $('#ot').show();
+            } else {
+                //   $("#" + togggleId).show().attr("disabled",true);
+
+                $('#ot').hide();
+                $('#Otc').val('');
+            }
+        } else {
+            $('#divmulti').css('display', 'none');
+            $('.hideOnMultishift').css('display', 'block');
+            document.getElementById("chk_min_aftr_off_dutty_cal_ot").disabled = false;
+            document.getElementById("chk_min_bfr_on_dutty_cal_ot").disabled = false;
+            $('#dayoffchange').html('Working On Off-Day');
+        }
+    }
+
+    function toggleOptionDisable() {
+
+        if ($('#shift').val() == '1') {
+            $('#components').show();
+        } else {
+            $('#components').hide();
+            $('#shift_allowance').val('');
+        }
+
+    }
+
+    function otchange() {
+
+        if (($('#work_time_day_off_cal_ot').val() == '1') || ($('#min_aftr_off_dutty_cal_ot').val() > '0') || ($('#min_bfr_on_dutty_cal_ot').val() > '0')) {
+
+            $('#ot').show();
+        } else {
+            $('#ot').hide();
+            $('#Otc').val('');
+        }
+    }
+
+    function editcancel() {
+        var edit_pkey = $('#day_time_seq').val();
+        $("#shiftContainer").load(livesite + 'DayTimeProcedure/lists?id=' + edit_pkey);
+    }
+
+    // function calculateWorkTimeOne(start, end, result) {
+    //     console.log('start', start);
+    //     console.log('end', end);
+    //     console.log('result', result);
+    //     var start = $('#' + start).val();
+    //     var end = $('#' + end).val();
+    //     if (end && start) {
+    //         var date = new Date();
+    //         var hr_mm_ampm_start = start.split(":");
+    //         var hr_mm_ampm_end = end.split(":");
+    //         var Start_min = date.setMinutes(hr_mm_ampm_start[1].substr(0, 2));
+    //         var Start_hr = date.setHours(hr_mm_ampm_start[0]);
+    //         var end_time = new Date();
+    //         if ($('#next_day').prop("checked") == true) {
+    //             //dt += 14400;
+    //             // Edited by Akshay on 11-8-2025
+    //             end_time.setDate(end_time.getDate() + 1);
+    //             $('#maxouttime').show();
+    //         } else {
+    //             $('#maxouttime').hide();
+    //         }
+    //         // End
+
+    //         end_time.setMinutes(hr_mm_ampm_end[1].substr(0, 2));
+    //         end_time.setHours(hr_mm_ampm_end[0]);
+    //         //alert(date);
+
+    //         //alert(end_time);
+    //         var dt = end_time.getTime() - date.getTime();
+
+    //         var durations = Math.round(dt / 60000);
+    //         $('#' + result).val(durations);
+    //         console.log(durations);
+
+    //     }
+    //     if ($('#off_dutty2').val() != '0:00:00') {
+    //         checktimings1();
+    //     } else {
+    //         checktimings();
+    //     }
+    // }
+
+   function calculateWorkTimeOne(start, end, result) {
+    var startVal = $('#' + start).val();
+    var endVal = $('#' + end).val();
+
+    if (startVal && endVal) {
+        // --- Parse Start Time ---
+        var startParts = startVal.split(":");
+        var dateStart = new Date();
+        dateStart.setHours(parseInt(startParts[0], 10));
+        dateStart.setMinutes(parseInt(startParts[1] || 0));
+        dateStart.setSeconds(0);
+
+        // --- Parse End Time ---
+        var endParts = endVal.split(":");
+        var dateEnd = new Date();
+        dateEnd.setHours(parseInt(endParts[0], 10));
+        dateEnd.setMinutes(parseInt(endParts[1] || 0));
+        dateEnd.setSeconds(0);
+
+       
+       // --- Duration Calculation ---
+var dt = dateEnd.getTime() - dateStart.getTime();
+
+// ✅ If next day checkbox is checked, always add 1 day
+if ($('#next_day').prop('checked')) {
+    dateEnd.setDate(dateEnd.getDate() + 1);
+    dt = dateEnd.getTime() - dateStart.getTime();
+}
+// ❗ Else only add next day if out < in naturally (cross midnight)
+else if (dt < 0) {
+    dateEnd.setDate(dateEnd.getDate() + 1);
+    dt = dateEnd.getTime() - dateStart.getTime();
+}
+
+var duration = Math.round(dt / 60000);
+$('#' + result).val(duration);
+
+
+        // --- Handle Max Out Time (only when next_day checked) ---
+        if ($('#next_day').prop('checked')) {
+            $('#extraminutes').show();
+            $('#maxouttime').show();
+
+            var extraMin = parseInt($('#extra_minutes').val() || 0, 10);
+            if (extraMin > 1440) extraMin = 1440;
+
+            // Add extra minutes to end time
+            var dateMax = new Date(dateEnd.getTime() + extraMin * 60000);
+
+            var hh = String(dateMax.getHours()).padStart(2, '0');
+            var mm = String(dateMax.getMinutes()).padStart(2, '0');
+            var ss = String(dateMax.getSeconds()).padStart(2, '0');
+
+            $('#maxtime').val(`${hh}:${mm}:${ss}`);
+        } else {
+            $('#extraminutes').hide();
+            $('#maxouttime').hide();
+            $('#extra_minutes').val('');
+            $('#maxtime').val('');
+        }
+    } else {
+        $('#extraminutes').hide();
+        $('#maxouttime').hide();
+    }
+
+    // --- Trigger dependent checks ---
+    if ($('#off_dutty2').val() != '0:00:00') {
+        checktimings1();
+    } else {
+        checktimings();
+    }
+}
+
+$('#spForm').submit(function(e) {
+    e.preventDefault();
+
+            $('#shiftpolicygrouptable').datagrid('reload'); // EasyUI reload
+});
+
+
+
+$(document).ready(function() {
+    // Initialize Week array based on PHP data
+    <?php
+    $weekArray = [];
+    foreach (['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'] as $day) {
+        if (isset($data[$day]) && isset($data[$day . '_F']) && $data[$day] == 'Y' && $data[$day . '_F'] == 'N') {
+    $weekArray[] = $day;
+}
+
+    }
+    ?>
+    Week = <?= json_encode($weekArray) ?>;
+    addweeks();
+});
+
+
+
+
+
+    function calculateWorkTimeTo(start, end, result) {
+        console.log('start', start);
+        console.log('end', end);
+        console.log('result', result);
+
+        var start = $('#' + start).val();
+        var end = $('#' + end).val();
+        if (end && start) {
+            var date = new Date();
+            var hr_mm_ampm_start = start.split(":");
+            var hr_mm_ampm_end = end.split(":");
+            var Start_min = date.setMinutes(hr_mm_ampm_start[1].substr(0, 2));
+            var Start_hr = date.setHours(hr_mm_ampm_start[0]);
+            var end_time = new Date();
+            if ($('#next_day').prop("checked") == true) {
+                //dt += 14400;
+                end_time.setDate(end_time.getDate() + 1);
+                // Edited by Akshay on 11-8-2025
+            } else {
+                $('#maxouttime').hide();
+                $('#extraminutes').hide();
+            }
+            // End
+            end_time.setMinutes(hr_mm_ampm_end[1].substr(0, 2));
+            end_time.setHours(hr_mm_ampm_end[0]);
+            //alert(date);
+
+            //alert(end_time);
+            var dt = end_time.getTime() - date.getTime();
+
+            var durations = Math.round(dt / 60000);
+            $('#' + result).val(durations);
+
+
+        }
+        if (durations > 0) {
+            checktimings1();
+        }
+    }
+
+    function checkhalfday() {
+        var weekoff = $('#filterby_branch').val();
+        if ($('#' + weekoff + '_F').is(":checked")) {
+            alert("Cannot Use " + weekoff + " as both Exception And Halfday ");
+            $('#filterby_branch').val('');
+            //              $('#'+weekoff+'_F').prop('checked',false);
+        }
+    }
+
+    function checkexce() {
+        if ($('#someSwitchOptionSuccess2').is(":checked") === true) {
+            var weekoff = $('#filterby_branch').val();
+            if ($('#' + weekoff + '_F').is(":checked")) {
+                alert("Cannot Use " + weekoff + " as both Exception And Halfday ");
+
+                $('#' + weekoff + '_F').prop('checked', false);
+            }
+        }
+    }
+
+    function toggleExceptionType(radio) {
+    const value = radio.value;
+    if (value === "Y") {
+        // Week Off selected → hide timing fields
+        $("#workingFields").hide();
+        $("#weekOffFields").show();
+    } else {
+        // Different timings → show timing fields
+        $("#weekOffFields").hide();
+        $("#workingFields").show();
+    }
+}
+
+
+    function calculateWorkTimeTwo() {
+        var start = $('#' + start).val();
+        var end = $('#' + end).val();
+        var hr_mm_ampm_start = start.split(":");
+        var hr_start = hr_mm_ampm_start[0];
+        var mm_start = hr_mm_ampm_start[1].substr(0, 2);
+        var ampm_start = hr_mm_ampm_start[1].substr(2);
+
+        if ((ampm_start == "AM" || ampm_start == "am") && hr_start == 12) {
+            hr_start = 0;
+        }
+        if ((ampm_start == "PM" || ampm_start == "pm") && hr_start != 12) {
+            hr_start = parseInt(hr_start) + 12;
+        }
+        //	console.log(hr_start);
+        ///	console.log(mm_start)
+        //	console.log(ampm_start)
+        var totalTime1 = hr_start * 60 + parseInt(mm_start);
+        totalTime1 = totalTime1 + parseInt(mm_start);
+        //console.log(totalTime1)
+        var hr_mm_ampm_end = end.split(":");
+        var hr_end = hr_mm_ampm_end[0];
+        var mm_end = hr_mm_ampm_end[1].substr(0, 2);
+        var ampm_end = hr_mm_ampm_end[1].substr(2);
+        if ((ampm_end == "AM" || ampm_end == "am") && hr_start == 12) {
+            hr_end = 0;
+        }
+        if ((ampm_end == "PM" || ampm_end == "pm") && hr_start != 12) {
+            hr_end = parseInt(hr_end) + 12;
+        }
+        //console.log(hr_end);
+        //console.log(mm_end)
+        //console.log(ampm_end)
+        //var hr_diff = hr_end-hr_start;
+        //var hr_diff = hr_end-hr_start;
+        var totalTime2 = hr_end * 60 + parseInt(mm_end);
+        if ($('#next_day').prop("checked") == true) {
+            var totalTime2 = 1440 + totalTime2;
+            // Edited by Akshay on 11-8-2025
+        } else {
+            $('#maxouttime').hide();
+            $('#extraminutes').hide();
+        }
+        // End
+        $('#' + result).val(totalTime2 - totalTime1);
+        console.log(totalTime2)
+    }
+
+    function checktimings() {
+        //  alert("dadassd");
+        var a = parseInt($("#minutes_per_half").val());
+        var b = parseInt($("#minuts_calc_perday").val());
+        var c = parseInt($("#working_time1").val());
+        var d = c + parseInt($("#working_time2").val());
+        if (a > b || a > d) {
+            alert("Half Day Cannot Be Greater Than Fullday And Total Working Time");
+            $('#minutes_per_half').val('');
+        }
+        if (b > d) {
+            alert("Full Day Cannot Be Greater Than Total Working Time");
+            $('#minuts_calc_perday').val('');
+        }
+        //            if( b < c ){
+        //                alert(" Full Day Cannot Be Smaller Half Day");
+        //                $('#minuts_calc_perday').val('');
+        //            }
+    }
+
+    function checktimings1() {
+
+        if ($('#include_break').prop("checked") == true) {
+            var brk = 1;
+        }
+        var a = parseInt($("#minutes_per_half").val());
+        var b = parseInt($("#minuts_calc_perday").val());
+        //var c = parseInt($("#working_time1").val());
+        //var d = c + parseInt($("#working_time2").val());
+        //if (a > b || a > d) {
+        //    alert("Half Day Cannot Be Greater Than Fullday And Total Working Time");
+        //    $('#minutes_per_half').val('');
+        //}
+        //if (b > d) {
+        //    alert("Full Day Cannot Be Greater Than Total Working Time");
+        //    $('#minuts_calc_perday').val('');
+        //}
+        var start = $('#on_dutty1').val();
+        console.log($('#off_dutty2').val());
+        if (($('#off_dutty2').val() == '0:00' && $('#on_dutty2').val() == '0:00') || ($('#off_dutty2').val() == '0:00:00' && $('#on_dutty2').val() == '0:00:00')) {
+
+            var end = $('#off_dutty1').val();
+            var end1 = $('#off_dutty1').val();
+            var start1 = $('#on_dutty1').val();
+            var start2 = 0;
+            var end2 = 0;
+        } else {
+            var end1 = $('#off_dutty1').val();
+            var end2 = $('#off_dutty2').val();
+            var start1 = $('#on_dutty1').val();
+            var start2 = $('#on_dutty2').val();
+            var end = $('#off_dutty2').val();
+
+        }
+				  
+					
+        if (end2 != 0 && start2 != 0) {
+            if (brk == 1) {
+                var date = new Date();
+                var hr_mm_ampm_start = start.split(":");
+                var hr_mm_ampm_end = end.split(":");
+                var Start_min = date.setMinutes(hr_mm_ampm_start[1].substr(0, 2));
+                var Start_hr = date.setHours(hr_mm_ampm_start[0]);
+                var end_time = new Date();
+                if ($('#next_day').prop("checked") == true) {
+                    //dt += 14400;
+                    end_time.setDate(end_time.getDate() + 1);
+                    // Edited by Akshay on 11-8-2025
+                } else {
+                    $('#maxouttime').hide();
+                    $('#extraminutes').hide();
+                }
+                // End
+
+                end_time.setMinutes(hr_mm_ampm_end[1].substr(0, 2));
+                end_time.setHours(hr_mm_ampm_end[0]);
+                var dt = end_time.getTime() - date.getTime();
+                var durations = Math.round(dt / 60000);
+            } else {
+                var date = new Date();
+                var hr_mm_ampm_start = start1.split(":");
+                var hr_mm_ampm_end = end1.split(":");
+                var Start_min = date.setMinutes(hr_mm_ampm_start[1].substr(0, 2));
+                var Start_hr = date.setHours(hr_mm_ampm_start[0]);
+                var end_time = new Date();
+                if ($('#next_day').prop("checked") == true) {
+                    //dt += 14400;
+                    end_time.setDate(end_time.getDate() + 1);
+
+                    // Edited by Akshay on 11-8-2025
+                } else {
+                    $('#maxouttime').hide();
+                    $('#extraminutes').hide();
+                }
+                // End
+
+                end_time.setMinutes(hr_mm_ampm_end[1].substr(0, 2));
+                end_time.setHours(hr_mm_ampm_end[0]);
+                var dt = end_time.getTime() - date.getTime();
+
+                var durations1 = Math.round(dt / 60000);
+                var hr_mm_ampm_start = start2.split(":");
+                var hr_mm_ampm_end = end2.split(":");
+                var Start_min = date.setMinutes(hr_mm_ampm_start[1].substr(0, 2));
+                var Start_hr = date.setHours(hr_mm_ampm_start[0]);
+                var end_time = new Date();
+                if ($('#next_day').prop("checked") == true) {
+                    //dt += 14400;
+                    end_time.setDate(end_time.getDate() + 1);
+                    // Edited by Akshay on 11-8-2025
+                } else {
+                    $('#maxouttime').hide();
+                    $('#extraminutes').hide();
+                }
+                // End
+
+                end_time.setMinutes(hr_mm_ampm_end[1].substr(0, 2));
+                end_time.setHours(hr_mm_ampm_end[0]);
+                var dt = end_time.getTime() - date.getTime();
+                var durations = durations1 + Math.round(dt / 60000);
+            }
+        } else {
+            var date = new Date();
+            var hr_mm_ampm_start = start1.split(":");
+            var hr_mm_ampm_end = end1.split(":");
+            var Start_min = date.setMinutes(hr_mm_ampm_start[1].substr(0, 2));
+            var Start_hr = date.setHours(hr_mm_ampm_start[0]);
+            var end_time = new Date();
+            if ($('#next_day').prop("checked") == true) {
+                //dt += 14400;
+                end_time.setDate(end_time.getDate() + 1);
+            }
+            end_time.setMinutes(hr_mm_ampm_end[1].substr(0, 2));
+            end_time.setHours(hr_mm_ampm_end[0]);
+            var dt = end_time.getTime() - date.getTime();
+            var durations = Math.round(dt / 60000);
+        }
+        console.log(durations);
+        var c = durations;
+        if (a > b || a > c) {
+            alert("Half Day Cannot Be Greater Than Fullday And Total Working Time");
+            $('#minutes_per_half').val('');
+        }
+        if (b > c) {
+            alert("Full Day Cannot Be Greater Than Total Working Time");
+            $('#minuts_calc_perday').val('');
+        }
+    }
+
+    function checkexceptionvalues() {
+        if ($('#someSwitchOptionSuccess2').is(":checked") === true) {
+            var day = $('#filterby_branch').val();
+            var weekoff = $('#filterby_branch1').val();
+            if (day === "select" || weekoff === "select") {
+                alert("Select the Exceptions Value Correctly ");
+                //                         $("spForm").die();
+                //                        return false;
+            }
+        }
+    }
+    $(document).ready(function() {
+        // Edited by Akshay on 11-8-2025
+        if ($('#next_day').is(":checked")) {
+            $('#maxouttime').show();
+            $('#extraminutes').show();
+
+        } else {
+            $('#maxouttime').hide();
+            $('#extraminutes').hide();
+            
+        }
+        $('#include_break').on('change', function() {
+            $(this).val(this.checked ? 'Y' : 'N');
+            calculateWorkTimeTo('on_dutty2', 'off_dutty2', 'working_time2');
+        }).trigger('change'); // Initialize value
+
+        // End
+        if ($('#Sunday').is(":checked") === true) {
+            $('#Sunday_F').attr("disabled", false);
+        }
+        if ($('#Monday').is(":checked") === true) {
+            $('#Monday_F').attr("disabled", false);
+        }
+        if ($('#Tuesday').is(":checked") === true) {
+            $('#Tuesday_F').attr("disabled", false);
+        }
+        if ($('#Wednesday').is(":checked") === true) {
+            $('#Wednesday_F').attr("disabled", false);
+        }
+        if ($('#Thursday').is(":checked") === true) {
+            $('#Thursday_F').attr("disabled", false);
+        }
+        if ($('#Friday').is(":checked") === true) {
+            $('#Friday_F').attr("disabled", false);
+        }
+        if ($('#Saturday').is(":checked") === true) {
+            $('#Saturday_F').attr("disabled", false);
+        }
+
+        togglemultishift();
+        if ($('#shift').is(":checked")) {
+            $('#components').show();
+        } else {
+            $('#components').hide();
+            //$('#shift_allowance').val('');
+        }
+        if ($('#someSwitchOptionSuccess1').is(":checked")) {
+            //alert("checked");
+            $('#divmulti').css('display', 'block').animateCss('fadeInRight');
+            //            $('.hideOnMultishift').animateCss('fadeOutLeft');
+            $('.hideOnMultishift').css('display', 'none');
+
+            $('#dayoffchange').html('Balance Consider as Monthly working balance');
+        } else {
+            //alert("hi");
+
+        }
+        otchange();
+
+        //        var a = $("#minutes_per_half").val();
+        //        var b = $("#minuts_calc_perday").val();
+        //        if (a > b)
+        //        {
+        //            $.notify("Full day Cannot Smaller Than Half Day", {
+        //                type: 'danger',
+        //                allow_dismiss: false
+        //            });
+        //        }
+
+        $('.select').select2();
+
+
+        //        $('#minuts_calc_perday').on('change', function () {
+        //
+        //            var b = parseInt($("#minuts_calc_perday").val());
+        //            var c = parseInt($("#working_time1").val());
+        //            if (b > c)
+        //            {
+        //                alert("Full day minutes Cannot greater Than Total Working Time");
+        //                    $('#minuts_calc_perday').val('');
+        //                
+        //               
+        //            }
+        //
+        //        });
+        //        
+        //         $('#minuts_calc_perday').on('change', function () {
+        // 
+        //            var b = parseInt($("#minuts_calc_perday").val());
+        //            var c = parseInt($("#minutes_per_half").val());
+        //            if (b < c)
+        //            {
+        //                alert("Full day Cannot Smaller Than Half Day");
+        //                    $('#minuts_calc_perday').val('');
+        //                
+        //               
+        //            }
+        //
+        //        });
+        //        
+        //         $('#minutes_per_half').on('change', function () {
+        //
+        //            var b = parseInt($("#minuts_calc_perday").val());
+        //            var c = parseInt($("#minutes_per_half").val());
+        //            if (c > b)
+        //            {
+        //                alert("Full day Cannot Smaller Than Half Day !!");
+        //                    $('#minutes_per_half').val('');
+        //                
+        //               
+        //            }
+        //
+        //        });
+
+        //$(".numeric").inputmask("999");
+
+        /*$('#on_dutty1').timepicker();
+         $('#off_dutty1').timepicker();
+         $('#dutystart').datepair();
+         
+         $('#on_duty2').timepicker();
+         $('#off_dutty2').timepicker();
+         $('#dutyend').datepair();*/
+
+        // initialize datepair
+        //$('#jqueryExample').datepair();
+
+        $('#spForm').parsley();
+        var options = {
+            clearForm: true, // clear all form fields after successful submit 
+            resetForm: true,
+            beforeSubmit: function() {
+                //console.log()
+                // alert($('#on_dutty1').val())
+            },
+            success: function(responseText, statusText, xhr, $form) {
+                $('#saveshift').html('Save').prop("disabled", false);
+                var response = JSON.parse(responseText);
+                if (response.success == 1) {
+                    //reloadTable('shiftpolicygrouptable');
+
+
+                    $("#shiftContainer").load(livesite + 'DayTimeProcedure/lists?id=' + response.day_time_seq)
+                    // $.notify("Policy Saved Successfully", {
+                    //     type: 'success',
+                    //     allow_dismiss: false,
+                    // });
+
+                } else {
+                    // alert("Failed");
+                    $('#saveshift').html('Save').prop("disabled", false);
+                }
+
+            }
+        };
+
+        function workingtimechecking() {
+            var status = false;
+            if ($('#Sunday').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Monday').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Tuesday').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Wednesday').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Thursday').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Friday').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Saturday').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Sunday_F').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Monday_F').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Tuesday_F').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Wednesday_F').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Thursday_F').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Friday_F').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Saturday_F').is(":checked") === true) {
+                status = true;
+            }
+            if (status == false) {
+                alert("Please Select Working Days");
+                return status;
+            }
+            return status;
+        }
+        // bind to the form's submit event
+        $('#spForm').submit(function() {
+            if ($('#off_dutty2').val() != '0:00:00') {
+                checktimings1();
+            } else {
+                checktimings();
+            }
+
+            var status = false;
+            if ($('#Sunday').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Monday').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Tuesday').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Wednesday').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Thursday').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Friday').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Saturday').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Sunday_F').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Monday_F').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Tuesday_F').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Wednesday_F').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Thursday_F').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Friday_F').is(":checked") === true) {
+                status = true;
+            }
+            if ($('#Saturday_F').is(":checked") === true) {
+                status = true;
+            }
+            if (status == false) {
+                alert("Please Select Working Days");
+                return false;
+            } else {
+                if ($('#someSwitchOptionSuccess2').is(":checked") === true) {
+                    var day = $('#filterby_branch').val();
+                    var weekoff = $('#filterby_branch1').val();
+                    if (day === "select" || weekoff === "select") {
+                        alert("Select the Exceptions Value Correctly ");
+                        //                         $("spForm").die();
+                        return false;
+                    }
+                }
+                // inside event callbacks 'this' is the DOM element so we first
+                // wrap it in a jQuery object and then invoke ajaxSubmit
+                $(this).ajaxSubmit(options);
+                //added by megha close modal form automatically
+                $('#largeModalForm').modal('hide');
+                $('#saveshift').html('<li class="fa fa-spinner fa-spin"></li>Saving').prop("disabled", true);
+                // !!! Important !!!
+                // always return false to prevent standard browser submit and page navigation
+                return false;
+            }
+        });
+    });
+    $('#on_dutty1').timepicker({
+        format: 'hh:mm:ss',
+        showMeridian: false,
+        showSeconds: true,
+        autoclose: true,
+        showInputs: true,
+        minuteStep: 1,
+        secondStep: 1,
+        change: function(time) {
+            var element = $(this),
+                text;
+            // get access to this Timepicker instance
+            var timepicker = element.timepicker();
+            text = 'Selected time is: ' + timepicker.format(time);
+            alert(text);
+        }
+    });
+    $('#off_dutty1').timepicker({
+        format: 'hh:mm:ss',
+        showMeridian: false,
+        showSeconds: true,
+        autoclose: true,
+        showInputs: true,
+        minuteStep: 1,
+        secondStep: 1
+    });
+    $('#in_duty4').timepicker({
+        format: 'hh:mm:ss',
+        showMeridian: false,
+        showSeconds: true,
+        autoclose: true,
+        showInputs: true,
+        minuteStep: 1,
+        secondStep: 1
+    });
+    $('#out_duty4').timepicker({
+        format: 'hh:mm:ss',
+        showMeridian: false,
+        showSeconds: true,
+        autoclose: true,
+        showInputs: true,
+        minuteStep: 1,
+        secondStep: 1
+    });
+    $('#on_dutty2').timepicker({
+        format: 'hh:mm:ss',
+        showMeridian: false,
+        showSeconds: true,
+        autoclose: true,
+        showInputs: true,
+        minuteStep: 1,
+        secondStep: 1,
+        change: function(time) {
+            var element = $(this),
+                text;
+            // get access to this Timepicker instance
+            var timepicker = element.timepicker();
+            text = 'Selected time is: ' + timepicker.format(time);
+            alert(text);
+        }
+    });
+    $('#off_dutty2').timepicker({
+        format: 'hh:mm:ss',
+        showMeridian: false,
+        showSeconds: true,
+        autoclose: true,
+        showInputs: true,
+        minuteStep: 1,
+        secondStep: 1
+    });
+
+    // Edited by Akshay on 11-8-2025
+    // $('#maxtime').timepicker({
+    //     format: 'hh:mm:ss',
+    //     showMeridian: false,
+    //     showSeconds: true,
+    //     autoclose: true
+    // });
+    // End
+
+    function showshift() {
+        $('#dutystart2').show();
+        $('#minus').show();
+        $('#plus').hide();
+    }
+
+    function hideshift() {
+        $('#dutystart2').hide();
+        $('#plus').show();
+        $('#minus').hide();
+        //$('#off_dutty2').val('');
+        //$('#on_dutty2').val('');
+        //$('#working_time2').val('');
+    }
+
+    // Edited by Akshay on 11-8-2025
+    function setRule(start, maxout) {
+        console.log(1);
+        var out = $('#' + start).val();
+
+        if (out && maxout) {
+            if (out.length === 7) out = `0${out}`; // e.g., convert "17:30:00" to "17:30:00"
+            if (maxout.length === 7) maxout = `0${maxout}`; // e.g., convert "0:30:00" to "00:30:00"
+            if (maxout.length === 6) maxout = `00:${maxout}`; // in case it's missing leading zeroes like "0:30:00"
+            let date1 = new Date(`1970-01-01T${out}Z`);
+            let date2 = new Date(`1970-01-01T${maxout}Z`);
+
+            // If time2 is earlier than time1, assume it refers to the next day
+            if (date2 < date1) {
+                date2.setDate(date2.getDate() + 1);
+            }
+            console.log(date2);
+            console.log(date1);
+            // Calculate the difference in milliseconds
+            let diffMs = date2 - date1; // Use Math.abs() to get the positive difference
+
+            // Convert the difference to hours, minutes, and seconds
+            let hours = Math.floor(diffMs / (1000 * 60 * 60));
+            let minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+            console.log(hours);
+            if (hours >= 8 && minutes >= 0 && seconds >= 0) {
+                alert("You can't set more than 8 hours from Out Time");
+                $('#maxtime').timepicker('setTime', '00:00:00');
+            }
+        }
+    }
+    // End
+const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+let currentExceptionIndex = 0;
+
+$(document).ready(function() {
+
+    // Toggle exceptions checkbox
+    $('#someSwitchOptionSuccess2').on('change', function() {
+        $('#exceptionss').toggleClass('Exceptionshow');
+        const btnDiv = $('#addExceptionBtnDiv');
+        
+        if ($(this).is(":checked")) {
+            $('.disabled').prop("disabled", false);
+            btnDiv.show();
+            loadExceptions();
+        } else {
+            $('.disabled').prop("disabled", true);
+            btnDiv.hide();
+            currentExceptionIndex = 0; // reset index
+            $('#exceptionList').html('');
+			$('#is_exception_hidden').val('0'); // edited by athira
+																   
+        }
+
+        if ($('#someSwitchOptionSuccess2').is(":checked")) {
+            $("#filterby_branch, #filterby_branch1").val("select");
+            
+        }
+    });
+
+     // 🔹 Handle initial checked state on page load
+    if ($('#someSwitchOptionSuccess2').is(":checked")) {
+        $('.disabled').prop("disabled", false);
+        $('#addExceptionBtnDiv').show();
+        $('#exceptionss').addClass('Exceptionshow');
+        loadExceptions();
+    } else {
+        $('.disabled').prop("disabled", true);
+        $('#addExceptionBtnDiv').hide();
+        $('#exceptionss').removeClass('Exceptionshow');
+        $('#exceptionList').html('');
+    }
+
+    // Open modal
+    $('#openExceptionModal').on('click', function() {
+        if (currentExceptionIndex >= weekdays.length) {
+            alert("All 7 days exceptions already added.");
+            return;
+        }
+
+        const day = weekdays[currentExceptionIndex];
+        $('#modalDay').val(day);
+        $('#in_duty4, #out_duty4, #modalDuration').val('');
+        $('#modalWeekOff').val('select');
+
+        $('#exceptionModal').fadeIn();
+		
+		// Re-initialize timepicker for modal fields after fade-in
+        setTimeout(function() {
+            initTimepickers();
+        }, 300);			
+    });
+
+	function initTimepickers() {
+        $('.timepicker-input').timepicker({
+            format: 'hh:mm:ss',
+            showMeridian: false,
+            showSeconds: true,
+            autoclose: true,
+            showInputs: true,
+            minuteStep: 1,
+            secondStep: 1,
+            template: 'dropdown' // Ensure it uses dropdown template for better modal compatibility
+        });
+    }	
+
+// Initial call for existing fields
+    initTimepickers();
+
+    // Explicitly show timepicker on click
+    $(document).on('click', '.timepicker-input', function() {
+        $(this).timepicker('showWidget');
+    });	
+    /*    $('#out_duty4, #in_duty4').on('focus', function () {
+    let val = $(this).val();
+
+    // Extract only hours
+    let parts = val.split(':');
+    let hours = parts[0] || '00';
+
+    // Always reset minutes & seconds to 00
+    $(this).val(hours + ':00:00');
+}); */
+
+
+    // Calculate duration when in/out time changes
+    $('#in_duty4, #out_duty4').on('change', function() {
+        const inTime = $('#in_duty4').val();
+        const outTime = $('#out_duty4').val();
+
+        if (inTime && outTime) {
+            const [inH, inM] = inTime.split(':').map(Number);
+            const [outH, outM] = outTime.split(':').map(Number);
+            let durationMinutes = (outH * 60 + outM) - (inH * 60 + inM);
+if (durationMinutes < 0) durationMinutes += 24*60;
+$('#modalDuration').val(durationMinutes); // shows 180 for 10:00 - 13:00
+
+        }
+    });
+
+    // Close modal if clicked outside
+    $(window).on('click', function(e) {
+        if (e.target.id === 'exceptionModal') $('#exceptionModal').fadeOut();
+    });
+});
+
+
+function saveExceptionDay() {
+    // Collect form values
+    const day = $('#filterby_branch').val();
+    const weekOffType = $('#modalWeekOff').val();
+    const weekOff = $('input[name="week_off"]:checked').val();
+    const inTime = $('#in_duty4').val();
+    const outTime = $('#out_duty4').val();
+    const duration = $('#modalDuration').val();
+    const fullDay = $('#full_day').val();
+    const halfDay = $('#half_day').val();
+
+    // 🔍 Basic required checks
+    if (!day) {
+        alert('Please select a Day.');
+        return;
+    }
+
+    if (!weekOffType || weekOffType === 'select') {
+        alert('Please select Week Count.');
+        return;
+    }
+
+    if (!weekOff) {
+        alert('Please select Exception Type (Week Off or Different Timings).');
+        return;
+    }
+
+    // 🔍 If "Different Timings" is selected (week_off = N)
+    if (weekOff === 'N') {
+        if (!inTime || inTime === '00:00:00') {
+            alert('Please enter In Time.');
+            return;
+        }
+        if (!outTime || outTime === '00:00:00') {
+            alert('Please enter Out Time.');
+            return;
+        }
+        if (!duration) {
+            alert('Please enter Duration (Min).');
+            return;
+        }
+        if (!fullDay) {
+            alert('Please enter Full Day (Min).');
+            return;
+        }
+        if (!halfDay) {
+            alert('Please enter Half Day (Min).');
+            return;
+        }
+    }
+
+    // 🟢 Prepare data only after all validation passes
+    const data = {
+        day,
+        day_time_seq: $('#day_time_seq2').val(),
+        in_time: inTime,
+        out_time: outTime,
+        duration: duration,
+        week_off_type: weekOffType,
+        full_day: fullDay,
+        half_day: halfDay,
+        week_off: weekOff,
+        is_exception: $('#is_exception_hidden').val()
+    };
+
+    // 🚀 Send AJAX request
+    $.ajax({
+        url: '/DayTimeProcedure/saveException',
+        type: 'POST',
+        data: data,
+        dataType: 'json',
+        success: function(res) {
+            alert(res.message);
+            if (res.status === 'success') {
+                $('#exceptionModal').fadeOut();
+                loadExceptions(); // reload list
+
+                // $('#is_exception_hidden').val('1'); // hidden input
+                $('#someSwitchOptionSuccess2').prop('checked', true); 
+            }
+        },
+        error: function() {
+            alert('Error saving exception. Please try again.');
+        }
+    });
+}
+
+
+
+function loadExceptions(shift_id = null) {
+    var day_time_seq = $('#day_time_seq2').val();
+    $.ajax({
+        url: '<?= $this->webroot ?>DayTimeProcedure/getExceptions',
+        type: 'GET',
+        data: { shift_id: day_time_seq },
+        dataType: 'json',
+        success: function(response) {
+            let html = '';
+
+            // Week off mapping
+            const weekOffLabels = {
+                '1': '1st Week',
+                '2': '2nd Week',
+                '3': '3rd Week',
+                '4': '4th Week',
+                '5': '5th Week',
+                'A': 'All Weeks',
+            };
+
+            if (response.length > 0) {
+				$('#is_exception_hidden').val('1'); // edited by athira													   
+                html += `<table class="table table-bordered" style="margin-top:10px;">
+                            <thead>
+                                <tr>
+                                    <th>Day</th>
+                                    <th>In Time</th>
+                                    <th>Out Time</th>
+                                    <th>Duration (Min)</th>
+                                    <th>Week Count</th>
+                                    <th style="text-align:center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+
+                response.forEach(function(row) {
+                    let data = row.ShiftException;
+                    html += `<tr data-id="${data.shift_exceptions_pkey}">
+                                <td>${data.ex_week_day || ''}</td>
+                                <td>${data.in_time || ''}</td>
+                                <td>${data.out_time || ''}</td>
+                                <td>${data.duration || ''}</td>
+                                <td>${weekOffLabels[data.ex_week] || ''}</td>
+                                <td style="text-align:center;">
+                                    <i class="fa fa-trash text-danger" style="cursor:pointer;" 
+                                       title="Delete" 
+                                       onclick="deleteException(${data.shift_exceptions_pkey}, this)"></i>
+                                </td>
+                             </tr>`;
+                });
+
+                html += `</tbody></table>`;
+            } else {
+				  $('#is_exception_hidden').val('0'); // edited by athira										   
+                html = '<p>No exceptions found.</p>';
+            }
+
+            $('#exceptionList').html(html);
+        },
+        error: function() {
+            $('#exceptionList').html('<p style="color:red;">Failed to load exceptions.</p>');
+        }
+    });
+}
+
+// 🗑 Delete function
+function deleteException(id, elem) {
+    if (!confirm('Are you sure you want to delete this exception?')) return;
+
+    $.ajax({
+        url: '<?= $this->webroot ?>DayTimeProcedure/deleteException',
+        type: 'POST',
+        data: { id: id },
+        success: function(response) {
+            try {
+                let res = JSON.parse(response);
+                if (res.success) {
+                    // Remove row from table
+                    $(elem).closest('tr').remove();
+					// Refresh count and flag
+                    loadExceptions(); // edited by athira
+											 
+														 
+                } else {
+                    alert('Failed to delete record.');
+                }
+            } catch (e) {
+                alert('Unexpected response from server.');
+            }
+        },
+        error: function() {
+            alert('Error while deleting record.');
+        }
+    });
+}
+
+//edited by athira on 24-02-2026
+function checkExceptionEligibility() {
+
+    var inTime  = document.getElementById("on_dutty1").value;
+    var outTime = document.getElementById("off_dutty1").value;
+    var exceptionSwitch = document.getElementById("someSwitchOptionSuccess2");
+
+    if (!inTime || !outTime) {
+        exceptionSwitch.checked = false;
+        exceptionSwitch.disabled = true;
+        return;
+    }
+
+    // Convert HH:MM:SS to seconds
+    function timeToSeconds(time) {
+        var parts = time.split(":");
+        var hours = parseInt(parts[0]) || 0;
+        var mins  = parseInt(parts[1]) || 0;
+        var secs  = parseInt(parts[2]) || 0;
+        return (hours * 3600) + (mins * 60) + secs;
+    }
+
+    var inSeconds  = timeToSeconds(inTime);
+    var outSeconds = timeToSeconds(outTime);
+
+    var diff = outSeconds - inSeconds;
+
+    // Enable only if strictly greater than 1 hour
+    if (diff > 3600) {
+        exceptionSwitch.disabled = false;
+    } else {
+        exceptionSwitch.checked = false;
+        exceptionSwitch.disabled = true;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    checkExceptionEligibility();
+});
+//end								
+</script>

@@ -1,0 +1,126 @@
+
+<div class="col-md-6" style="" id="criteriasite">
+    <ul title="Select Project Name" lines="true" style="width:100%;min-height:200px;height:auto;max-height:500px;"><li></li></ul>
+</div>
+                     <div class="col-md-3" style="padding-left: 4px; padding-right: 4px; ">
+<!--                            <input type="text" id="reporstfrom" name="reportfrom" class="form-control pickerDate" value="<?php //if($arr_dates['0']['site']['expected_starting_date'] =='0000-00-00'){echo date("Y-m-d");}else{ echo $arr_dates['0']['site']['expected_starting_date'];} ?>" />-->
+                         <b> From : </b><input type="text" id="reporstfrom" name="reportfrom" class="form-control pickerDate" value="<?php echo date("Y-m-d");?>" />
+                        </div>
+                        <div class="col-md-3" style="padding-left: 4px; padding-right: 4px; ">
+<!--                            <input type="text" id="reporstto" name="reportto" class="form-control pickerDate" value="<?php //if($arr_dates['0']['site']['actual_completion_date'] ==''){ echo $arr_dates['0']['site']['expected_starting_date'];}else{echo $arr_dates['0']['site']['actual_completion_date'];} ?>" />-->
+                            <b> To : </b><input type="text" id="reporstto" name="reportto" class="form-control pickerDate" value="<?php echo date("Y-m-d"); ?>" />
+                        </div>
+   
+
+<script>
+    function siteCriteria() {
+        var criteria ="Project";
+        $('#criteriasite ul').datalist({
+            toolbar: [{
+                    text: 'Select all',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        $('#criteriasite ul').datalist('checkAll');
+                        $('#criteriasite .datagrid-view input:checkbox').each(function () {
+                            this.checked = true;
+                        });
+                    }
+                }, {
+                    text: 'Deselect all',
+                    iconCls: 'icon-delete',
+                    handler: function () {
+                        $('#criteriasite ul').datalist('clearChecked');
+                        $('#criteriasite .datagrid-view input:checkbox').each(function () {
+                            this.checked = false;
+                        });
+                    }
+                }],
+            //frozenColumns:[[
+            columns: [[
+                    {
+                        field: criteria + '[]',
+                        formatter: function (value, row, index) {
+                            return '<input type="checkbox" class="checks checkw" name="' + criteria + '[]" value="' + row.key + '" />';
+                        }
+                    },
+                    {
+                        field: 'Name',
+                        formatter: function (value, row, index) {
+                            return row.text;
+                        }
+                    }
+                ]],
+            url: livesite + 'ProjectExpenseReport/itemcriterialist/<?php echo $ben;?>/<?php echo $criteria;?>',
+            //checkbox: true,
+            checkOnSelect: true,
+            searchFilter: false,
+            singleSelect: false,
+            lines: true,
+            valueField: "key",
+            onCheck: function (i, rows) {
+
+            },
+            onUncheck: function (i, rows) {
+
+            },
+            onLoadSuccess: function () {
+                setwidth();
+            }
+        });
+        $('#div-items-criteria2 div.datagrid-toolbar').after('<input type="text" id="search2" class="form-control" autocomplete="off" placeholder="Search">');
+    }
+    siteCriteria();
+    $(document).ready(function () {
+        $('#search2').keyup(function () {
+            var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+
+            $('#div-items-criteria2 .datagrid-btable tr').show().filter(function () {
+                var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                return !~text.indexOf(val);
+            }).hide();
+        });
+    });
+</script>
+
+<script>
+  var start = $("#start").val();  
+ $('#reporstfrom').datepicker({
+     
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                startDate: '<?php if($arr_dates['0']['site']['expected_starting_date'] =='0000-00-00'){echo date("Y-m-d");}else{ echo $arr_dates['0']['site']['expected_starting_date'];} ?>'
+            }).on('changeDate', function (e) {
+                var selected = $("#reporstfrom").val();
+                var sdt = new Date(selected);
+                var selectenddate = $("#reporstto").val();
+                var edt = new Date(selectenddate);
+                if (edt < sdt)
+                {
+                    alert("From date should be less than or equal to To date");
+                    $("#reporstfrom").val('');
+                }
+            });
+             $('#reporstto').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                startDate: '<?php echo $arr_dates['0']['site']['expected_starting_date']; ?>',
+                endDate:'<?php if($arr_dates['0']['site']['actual_completion_date'] =='0000-00-00'){ echo $arr_dates['0']['site']['expected_starting_date'];}else{echo $arr_dates['0']['site']['actual_completion_date'];}?>'
+            }).on('changeDate', function (e) {
+                var selected = $("#reporstto").val();
+                var edt = new Date(selected);
+                var selectsdate = $("#reporstfrom").val();
+                var sdt = new Date(selectsdate);
+                if (edt < sdt)
+                {
+                    alert("To date should be greater than or equal to From date");
+                    $("#reporstto").val('');
+                    return false;
+                }
+            });
+    </script>
+    <style type="text/css">
+    div .datagrid-body{/*This is to solve the issue when adding three criterias(jQuery issue).*/
+        width: auto !important;
+    }
+    
+</style>

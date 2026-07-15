@@ -1,0 +1,239 @@
+<?php if ($mode == '') { ?>
+
+    <div class="modal-body" style="overflow-y: auto;width:100%;overflow-x:auto;">
+        <h2 align="center"><b><?php echo "Employee Information" ?></b> </h2>
+        <h2 style="font-weight: bold;text-align: center;font-size: 19px;"><?php echo  "(Report Run by " . $user_id . " at " . $date_time . ")" ?> </h2>
+        <?php if (empty($arr_employee_report_details_merged)) { ?>
+            <h3>No data available under the selected criteria </h3>
+        <?php } else {
+        ?>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th style="min-width:70px">Sl No</th>
+                        <?php
+                        // debug($arr_employee_report_details_merged); exit;
+                        //debug($arr_emp_field_headings);
+                        $heading_arr = isset($arr_employee_report_details_merged) ? $arr_employee_report_details_merged['0'] : array();
+
+                        foreach ($heading_arr as $key => $val) {
+                            if (trim($key) != 'locomotive' && trim($key) != 'hearing' && trim($key) != 'visual' && trim($key) != 'category_name' && trim($key) != 'category_code' && trim($key) != 'grade_name' && trim($key) != 'grade_code' && trim($key) != 'contract_start_date' && trim($key) != 'contract_end_date') {
+                                echo '<th style="min-width:200px;">' . $arr_emp_field_headings[$key] . '</th>';
+                            }
+                        }
+
+                        ?>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <?php $i = 1; ?>
+                    <?php
+                    // debug($arr_employee_report_details_merged); exit;
+                    ?>
+                    <?php foreach ($arr_employee_report_details_merged as $value) {
+                        $physical_handicap = '';
+                        $category_name = null;
+                        $category_code = null;
+                        $grade_name = null;
+                        $grade_code = null;
+                        $contract_startdate = null;
+                        $contract_enddate = null;
+
+                    ?>
+                        <tr>
+                            <td><?php echo $i++; ?></td>
+                            <?php foreach ($value as $key => $val) { ?>
+
+                                <?php if ($key == 'date_of_birth') { ?>
+                                    <td><?php echo date("d-m-Y", strtotime($val)); ?></td>
+                                <?php } else if ($key == 'joining_date') { ?>
+                                    <td><?php echo date("d-m-Y", strtotime($val)); ?></td>
+                                <?php } else if (trim($key) == 'locomotive' || trim($key) == 'hearing' || trim($key) == 'visual') {
+                                    if (trim($val) == 'Y') {
+                                        if (trim($physical_handicap) == '') {
+                                            $physical_handicap .= ucfirst($key);
+                                        } else {
+                                            $physical_handicap .= ', ' . ucfirst($key);
+                                        }
+                                    }
+                                ?>
+
+                                    <?php } else if (trim($key) == 'physical_handicap') {
+                                    if (trim($val) == 'Y') { ?>
+                                        <td><?php echo $physical_handicap; ?></td>
+                                    <?php } else { ?>
+                                        <td></td>
+                                    <?php }
+                                    ?>
+                                    <?php } else if ((trim($key) == 'category_name' || trim($key) == 'category_code')) {
+                                    if (trim($key) == 'category_name') {
+                                        $category_name = $val;
+                                    } elseif (trim($key) == 'category_code') {
+                                        $category_code = $val;
+                                    }
+                                    // debug($category_name);
+                                    // debug($category_code);
+                                    if ($category_name != null && $category_code != null) {
+                                        $category = $category_name . ' (' . $category_code . ')';
+                                    }
+                                } elseif (trim($key) == 'category_pkey') {
+                                    if (trim($val) != null) { ?>
+                                        <td><?php echo $category; ?></td>
+                                    <?php } else { ?>
+                                        <td></td>
+                                    <?php }
+                                } else if ((trim($key) == 'grade_name' || trim($key) == 'grade_code')) {
+                                    if (trim($key) == 'grade_name') {
+                                        $grade_name = $val;
+                                    } elseif (trim($key) == 'grade_code') {
+                                        $grade_code = $val;
+                                    }
+                                    if ($grade_name != null && $grade_code != null) {
+                                        $grade = $grade_name . ' (' . $grade_code . ')';
+                                    }
+                                } elseif (trim($key) == 'grade_pkey') {
+                                    if (trim($val) != null) { ?>
+                                        <td><?php echo $grade; ?></td>
+                                    <?php } else { ?>
+                                        <td></td>
+                                    <?php }
+                                } else if ((trim($key) == 'contract_start_date' || trim($key) == 'contract_end_date')) {
+                                    if (trim($key) == 'contract_start_date') {
+                                        $contract_startdate = isset($val)?  date("d-m-Y", strtotime($val)):'';
+                                    } elseif (trim($key) == 'contract_end_date') {
+                                        $contract_enddate = isset($val)?  date("d-m-Y", strtotime($val)):'';
+                                    }
+                                    if ($contract_startdate != null && $contract_enddate != null) {
+                                        $contract = $contract_startdate . ' to ' . $contract_enddate;
+                                    }
+                                } elseif (trim($key) == 'contracted_days_pkey') {
+                                    if (trim($val) != null) { ?>
+                                        <td><?php echo $contract; ?></td>
+                                    <?php } else { ?>
+                                        <td></td>
+                                    <?php }
+                                }  else {
+                                    if (trim($val) == 'N' && (trim($key) == 'eps' || trim($key) == 'international_worker')) { ?>
+                                        <td><?php echo 'No'; ?></td>
+                                    <?php } else if (trim($val) == 'Y' && (trim($key) == 'eps' || trim($key) == 'international_worker')) { ?>
+                                        <td><?php echo 'Yes'; ?></td>
+                                    <?php } else {
+                                        if ($key == 'classification') {
+                                            $val = ucfirst($val);
+                                            if ($val == 'Other') {
+                                                $val = 'Transgender';
+                                            }
+                                        } else if ($key == 'maritual_status') {
+                                            $val = ucfirst($val);
+                                        }
+                                    ?>
+                                        <td><?php echo $val; ?></td>
+                            <?php }
+                                }
+                            } ?>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+            <!--    <div class="form-group">
+    <div class="col-md-12" align="right">
+        <a href="#" onclick="downloadReport('employee','pdf');" ><i class="icon-file"></i>Download As PDF</a>
+        <a href="#" onclick="downloadReport('employee','excel');"><i class="icon-file"></i>Download As Excel</a>
+    </div>
+</div>-->
+    </div>
+<?php }
+    } else { ?>
+<style>
+    body {
+        line-height: 2em;
+    }
+
+    .block-container {
+        width: 95%;
+        padding: 20px;
+        border: #000000 solid thin;
+    }
+
+    .sub-head {
+        border-bottom: #000000 solid thin;
+    }
+
+    .row {
+        height: 32px;
+    }
+
+    .col-md-4 {
+        width: 33.33%;
+        float: left;
+    }
+
+    table {
+        border: 1px solid #f4f4f4;
+        width: 80%;
+        max-width: 80%;
+        margin-bottom: 20px;
+        background-color: transparent;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+
+    td,
+    th {
+        width: auto;
+        text-align: left;
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border: 1px solid #B2B2B2;
+    }
+</style>
+
+<?php
+        echo $this->element('reportadminheader', array(
+            'title' => 'Employee Information Report'
+        ));
+?>
+<table>
+    <thead>
+        <tr><!--
+      <th>Si. no</th>
+  <?php
+        //      foreach($arr_emp_field_headings as $key => $value){
+        //          if(in_array($key,$arr_report_field_headings)){
+        //              echo '<th>'.$value.'</th>';
+        //          }
+        //        } 
+    ?>
+  <tr>-->
+            <th>Sl. No</th>
+            <?php
+            foreach ($arr_report_field_headings as $val) {
+                echo '<th>' . isset($arr_emp_field_headings[$val]) ? $arr_emp_field_headings[$val] : "" . '</th>';
+            }
+
+            ?>
+        </tr>
+    </thead>
+    <tbody>
+        <?php $i = 1; ?>
+        <?php foreach ($arr_employee_report_details_merged as $value) { ?>
+            <tr>
+                <td><?php echo $i++; ?></td>
+                <?php foreach ($value as $key => $val) { ?>
+
+                    <?php if ($key == 'date_of_birth') { ?>
+                        <td><?php echo date("d-m-Y", strtotime($val)); ?></td>
+                    <?php } else if ($key == 'joining_date') { ?>
+                        <td><?php echo date("d-m-Y", strtotime($val)); ?></td>
+                    <?php } else { ?>
+                        <td><?php echo $val; ?></td>
+                <?php }
+                } ?>
+            </tr>
+        <?php } ?>
+    </tbody>
+</table>
+<?php } ?>

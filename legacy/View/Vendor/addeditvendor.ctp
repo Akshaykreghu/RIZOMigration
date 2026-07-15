@@ -1,0 +1,133 @@
+<script>
+     $.validate({
+  form : '#form-contacts-master'
+   });
+    var options = { 
+        success: function(resp){
+            $('#modalDiv').modal('hide');
+            $('#contacttable').datagrid('reload');
+            $.notify($.parseJSON(resp).msg,{
+                type: 'success',
+                allow_dismiss: false
+            });
+        }  // post-submit callback
+    }; 
+    $('#form-contacts-master').on('submit',function(event){
+         event.preventDefault();
+         //alert("haiii");
+         $('#form-contacts-master').ajaxSubmit(options);
+    });
+    //function submitForm(){
+    //    $('#form-contacts-master').ajaxSubmit(options);
+    //}
+</script>
+<div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+<h4 class="modal-header"><?php echo $title; ?></h4>
+      </div>
+             <div class="modal-body">
+<form role="form" id="form-contacts-master" action="<?php echo $this->webroot;?>contacts/save" method="POST">
+    <div class="row">
+        <div class="col-md-6">
+            <Label for="first_name">First name</label>
+            <input autocomplete="off" id="first_name" type="text" class="form-control" name="first_name"  value="<?php  echo (isset($arr_contacts[0]['Contacts']) ? $arr_contacts[0]['Contacts']["first_name"] : ""); ?>"  placeholder="First Name" required="required">
+        </div>
+        <div class="col-md-6">
+            <label for="last_name" >Last Name</label>
+            <input autocomplete="off" type="text" name="last_name" id="last_name" class="form-control" value="<?php  echo (isset($arr_contacts[0]['Contacts']) ? $arr_contacts[0]['Contacts']["last_name"] : ""); ?>"  placeholder="Last Name" required="required">
+        </div>
+    </div>
+  
+	<div class="row">
+        <div class="col-md-6">
+            <Label for="middle_name">Middle name</label>
+            <input autocomplete="off" id="middle_name" type="text" class="form-control" name="middle_name" value="<?php  echo (isset($arr_contacts[0]['Contacts']) ? $arr_contacts[0]['Contacts']["middle_name"] : ""); ?>"   placeholder="Middle Name">
+        </div>
+        <div class="col-md-6">
+            <label for="company_name" >Company Name</label>
+            <input autocomplete="off" type="text" name="company_name" id="company_name" class="form-control" value="<?php  echo (isset($arr_contacts[0]['Contacts']) ? $arr_contacts[0]['Contacts']["company_name"] : ""); ?>"  placeholder="Company Name" required="required">
+        </div>
+    </div>
+	<div class="row">
+        <div class="col-md-6">
+            <Label for="Email" >Email Id</label>
+            <input autocomplete="off" id="email" type="email" data-validation="email" class="form-control" name="email" value="<?php  echo (isset($arr_contacts[0]['Contacts']) ? $arr_contacts[0]['Contacts']["email"] : ""); ?>"  placeholder="Enter email" required="required">
+        </div>
+        <div class="col-md-6">
+            <Label for="Phone" >Phone</label>
+            <input autocomplete="off" id="phone" type="text" data-validation="number" class="form-control" name="phone" value="<?php  echo (isset($arr_contacts[0]['Contacts']) ? $arr_contacts[0]['Contacts']["phone"] : ""); ?>"  placeholder="Enter phone" required="required">
+        </div>
+    </div>
+	<div class="row">
+        <div class="col-md-6">
+            <Label for="Address" >Address</label>
+            <input autocomplete="off" id="address" type="text" class="form-control" name="address" value="<?php  echo (isset($arr_contacts[0]['Contacts']) ? $arr_contacts[0]['Contacts']["address"] : ""); ?>"  placeholder="Enter Address" required="required">
+        </div>
+        <div class="col-md-6">
+            <Label for="City" >City</label>
+            <input autocomplete="off" id="city" type="text" class="form-control" name="city" value="<?php  echo (isset($arr_contacts[0]['Contacts']) ? $arr_contacts[0]['Contacts']["city"] : ""); ?>"  placeholder="Enter city" required="required">
+        </div>
+    </div>
+	<div class="row">
+        <div class="col-md-6">
+            <Label for="state" >State</label>
+            <input autocomplete="off" id="state" type="text" class="form-control" name="state" value="<?php  echo (isset($arr_contacts[0]['Contacts']) ? $arr_contacts[0]['Contacts']["city"] : ""); ?>"  placeholder="Enter State" required="required">
+        </div>
+        <div class="col-md-6">
+            <label for="pincode">Pin code</label>
+            <input autocomplete="off" id="pincode" type="text" data-validation="number" class="form-control" name="pincode" value="<?php  echo (isset($arr_contacts[0]['Contacts']) ? $arr_contacts[0]['Contacts']["pincode"] : ""); ?>"  placeholder="Enter pincode" required="required">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+             <label for="relationship">Relationship<span style="color: red"> * </span></label>
+             <select id="relationship"  class="form-control" name="relationship" required="required">
+                 <option value="">--select--</option>
+                 <?php $relationship = isset($arr_contacts[0]['Contacts']['relationship']) ? $arr_contacts[0]['Contacts']['relationship'] : ''; ?>
+                 <?php $arr_relationship = array('Vendor','Customer','Others'); foreach ($arr_relationship as $value) { ?>
+                     <?php
+                        if ($value == $relationship) {
+                            $selected = 'selected="selected"';
+                        } else {
+                            $selected = '';
+                        }
+                     ?>
+                     <option <?php echo $selected; ?> value="<?php echo $value; ?>"><?php echo $value; ?>  </option>
+                <?php } ?>
+             </select>
+            </div>
+          <div class="col-md-6">
+            <Label for="bank_name" >Bank Name</label>
+            <input id="bank_name" autocomplete="off" type="text" class="form-control" name="bank_name" value="<?php  echo (isset($arr_contacts[0]['Contacts']) ? $arr_contacts[0]['Contacts']["bank_name"] : ""); ?>"  placeholder="Enter bank_name" required="required">
+        </div>
+    </div>
+		<div class="row">
+        <div class="col-md-6">
+            <Label for="bank_branch" >Bank Branch</label>
+            <input id="bank_branch" autocomplete="off" type="text" class="form-control" name="bank_branch" value="<?php  echo (isset($arr_contacts[0]['Contacts']) ? $arr_contacts[0]['Contacts']["bank_branch"] : ""); ?>"  placeholder="Enter bank_branch" required="required">
+        </div>
+        <div class="col-md-6">
+            <Label for="ifsc_code" >IFSC Code</label>
+            <input id="ifsc_code" type="text" autocomplete="off" class="form-control" name="ifsc_code" value="<?php  echo (isset($arr_contacts[0]['Contacts']) ? $arr_contacts[0]['Contacts']["ifsc_code"] : ""); ?>"  placeholder="Enter ifsc_code" required="required">
+        </div>
+    </div>
+    	<div class="row">
+        <div class="col-md-6">
+            <Label for="account_no" >Account No.</label>
+            <input autocomplete="off" id="account_no" type="text" class="form-control" name="account_no" value="<?php  echo (isset($arr_contacts[0]['Contacts']) ? $arr_contacts[0]['Contacts']["account_no"] : ""); ?>"  placeholder="Enter Address" required="required">
+        </div>
+     
+    </div>
+	
+<div class="modal-footer">
+     <input type="hidden" name="contact_id" value="<?php  echo (isset($arr_contacts[0]['Contacts']['contact_id']) ? $arr_contacts[0]['Contacts']['contact_id'] : ''); ?>" />
+    <button type="submit" class="btn btn-default"  >Submit</button>
+    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+</div>
+        
+</form>
+    </div>
+</div>
+</div>

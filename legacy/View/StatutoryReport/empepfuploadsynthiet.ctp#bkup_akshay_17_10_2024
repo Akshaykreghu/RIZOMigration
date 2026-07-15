@@ -1,0 +1,614 @@
+<?php if ($mode == '') { ?>
+    <div class="modal-body" style="overflow-y:fixed; padding-left:3%; padding-right:3%; padding-bottom:3%;" id="printableContent" >             <!--edited by ASHIN on 03-08-24-->
+        <!--<h3 align="center" >PF STATEMENT FOR THE MONTH OF </h3>-->
+        <div class="row">
+            <div class="col-md-12">
+                 <div style="width: 100%; height: 10px; border: 0px solid black;"></div>    <!--edited by ASHIN on 03-08-24-->
+
+                                <div style="width: 100%; text-align:center; border: 0px solid black; justify-content: center;">              <!--edited by ASHIN on 03-08-24-->
+                                    <table >
+
+                                       
+                                                <tr class="no-border-print">
+
+                                                <th  class="no-border-print" style="text-align:right;padding-left:1px;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];?></th>
+                                                <!--<th style="color: white;"><//?php //echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];?></th>-->
+                                                <!--<th style="color: white;"><//?php //echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];?></th>-->
+                                                <!--<th style="color: white;"><//?php //echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];?></th>-->
+                                                <!--<th style="color: white;"><//?php //echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];?></th>-->
+                                                <th class="no-border-print" style="text-align:right;padding-left:780px;">Report Date:<?php echo $date_time;?></th>
+
+                                            </tr>
+
+                                            
+                                <tr class="no-border-print"><th class="no-border-print" colspan="12" style="text-align:center;font-size: 15px;font-weight: bold;padding-top: 10px;padding-left:100px;">PF UPLOAD SUMMARY <?php echo $from; ?></th></tr> 
+                
+                                      
+                             <!--<tr><td colspan="7" style="font-size:15px;text-align: left;font-weight: bold;">No data available under the selected criteria.</td></tr>-->
+                                  
+                                    </table></div>
+
+ <?php $allEmpty = true;
+//debug($arr_salary_for_template);
+foreach ($arr_salary_for_template as $subArray) {
+    if (!empty($subArray)) {
+        $allEmpty = false;
+        break;
+    }
+} if ($allEmpty) { ?>
+                <div style="font-size: 16px;text-align:left; background-color:">
+                     No data available under the selected criteria.</div>
+                <?php } else { 
+                
+                
+                $i = 0;
+                foreach ($arr_salary_for_template as $value) {
+                    if (count($value) !== 0) {
+                       // if(!empty($value['0']['0']['SALARY'])){
+                        $i += 1;
+                        ?>
+
+                        <fieldset> 
+
+
+                            <legend> <?php
+                        echo isset($value['0']['employee_info']['branch']) ?  $value['0']['employee_info']['branch'] : '';
+                        echo ' ';
+                        ?> 
+                            </legend>
+
+                        </fieldset>
+
+                        <br>
+                        <fieldset >
+
+
+                            <table class="table table-bordered " style="overflow-y:initial" >
+                                <thead>
+                                    <!--<tr>-->
+<!--edited by sinsiya on 12-06-2024changed the colspan-->
+                                   <!-- <th colspan="7">Employee Details</th>
+                                    <th colspan="4">EPF Details</th>
+                                    <th colspan="1">EPF - Employee</th>
+                                    <th colspan="5">EPF - Employer</th>
+
+                                    </tr> -->
+        <!--edited by ASHIN on 31-07-24--->
+                                    <tr>
+                                    <th>UAN</th>
+                                    <th>MEMBER NAME</th>
+                                    <th>GROSS WAGES</th>
+                                    <th>EPF WAGES</th>
+                                    <th>EPS WAGES</th>
+                                    <th>EDLI WAGES</th>
+                                    <th>EPF CONTRI REMITTED</th>
+                                    <th>EPS CONTRI REMITTED</th>
+                                    <th>EPF EPS DIFF REMITTED</th>                
+                                    <th>NCP Days</th>
+                                    <th>REFUND OF ADVANCES</th>
+                                   
+                                    <!--<th>NCP Days</th>--> 
+                                    <!--<th>Gross Salary</th>-->
+                                    <!--<th>UAN Number</th>-->
+                                    <!--<th>EPF</th>-->
+                                    <!--<th>EPF Salary</th>-->
+                                    <!--<th>Excluded Salary</th>-->
+                                  
+                                    <!--<th>0.5%</th>-->
+                                    <!--<th>0.5%</th>-->
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                        <?php $dataFound = false; $arr_data = $value; ?>
+                                        <?php if (count($arr_data) >= 0) {
+                                            $i = 0;
+                                            $sum = 0;
+                                            $grandtot = 0;
+                                            $pf_salary = 0;
+                                            $split1= 0;
+                                            $split2 = 0;
+                                            $split3 = 0;
+                                            $split4 = 0;
+                                            $split5=0;
+                                            $total1 = 0;
+                                            $total2 = 0;
+                                            $total3 = 0;
+                                            $total4 = 0;
+                                            $total5 = 0;
+                                            $total6 = 0;
+                                            $total7 = 0;
+                                            $total8 = 0;
+
+                                            ?>  
+                                                <?php foreach ($arr_data as $val) { 
+                                               
+                                                $dayscount=$val['attendance_register']['leave_total']+$val['attendance_register']['weekoff_total']+$val['attendance_register']['holiday_total']+$val['attendance_register']['presant_total'];
+                                            //    $dayscount=''; 
+                                               $ncp=$val['payroll_master']['calander_days']-$dayscount;
+                                                 $dayspresent=$val['payroll_master']['calander_days']-$ncp ;
+                                                ?>
+                                            <?php if($val['0']['EPF'] != 0){
+                                                 $dataFound = true; 
+                                            ?>
+                                            <tr>
+                                                <!-- <//?php $i = $i + 1; -->
+                                                <!-- //$sum += $val['0']['balance_qty']; ?> -->
+                                                <!-- <td><//?php echo $i; -->
+<!-- //                                                    $PO_Status = $val['po']['grn_status'];
+//                                                    $string_po = '';
+//                                                    switch ($PO_Status){
+//                                                        case "0": $string_po = "GRN Received";
+//                                                            break;
+//                                                        case "1": $string_po = "PO Ordered";
+//                                                            break;
+//                                                        case "2": $string_po = "Finalised";
+//                                                            break;
+//                                                        default : $string_po = "PO";
+//                                                            break;
+//                                                    } -->
+                                                <!-- ?></td> -->
+                                            <!-- <td><//?php echo htmlspecialchars($val['emp_details']['company_pf']); ?></td> -->
+                                            <td><?php echo isset($val['emp_details']['pf']) ? htmlspecialchars($val['emp_details']['pf']) : ''; ?></td>                    <!--EDITED BY ASHIN ON 02-08-24 -->
+                                            <!-- <td><//?php echo $val['employee_info']['employee_id']; ?></td> -->
+                                            <td><?php echo $val['employee_info']['EmpName']; ?><?php echo isset($val['emp_details']['status']) && $val['emp_details']['status']=="2" ? '(Resigned)' : ''; ?></td>
+                                            
+                                  <!--edited by ashin on 02-08-24-->            
+                                            <td><?php echo round($val[0]['SALARY']);?></td>     
+                                            <?php $total1 +=round($val[0]['SALARY']);?>
+                                           
+                                            <?php if($month >= '2020-05' && $month <= '2020-07'){ ?>
+                                            <?php $sal = round($val['0']['EPF'] * 100 / 10, 0); ?>
+                                            <?php } else { ?>
+                                            <?php $sal = round($val['0']['EPF'] * 100 / 12, 0); ?>
+                                            <?php } 
+                                                $pf_salary += $sal;
+                                                ?>
+                                                <!-- <//?php if($month >= '2020-05' && $month <= '2020-07'){ 
+                                                 $epf = round($sal * 10 / 100, 0);
+                                                 } else { 
+                                                 $epf = round($sal * 12 / 100, 0);
+                                                } ?> -->
+                                               <?php if ($month >= '2020-05' && $month <= '2020-07') {
+                                    $split2 += round($sal * 1.67 / 100, 0);
+                                    $epf = round($sal * 10 / 100, 0);
+                                    if (false) {
+                                        $split5 += round($sal * 10 / 100, 0);
+                                    } else {
+                                        $split3 += round($sal * 10 / 100, 0);
+                                    }
+                                } else {
+                                    $split2 += round($sal * 3.67 / 100, 0);
+                                    $epf = round($sal * 12 / 100, 0);
+                                    if (false) {
+                                        $split5 += round($sal * 12 / 100, 0);
+                                    } else {
+                                        $split3 += round($sal * 12 / 100, 0);
+                                    }
+                                }?>
+                                                <?php $pf = ($month >= '2020-05' && $month <= '2020-07') ? round($sal * 10 / 100, 0) : round($sal * 12 / 100, 0);
+                                                $epf = $pf;?>
+                                                <!-- if -->
+                                                 <!-- <//?php $total2 +=$sal;?>    edited by ashin on 02-08-24  -->
+
+                                                 <?php $sal1 = isset($val['0']['EPF_earning']) ? $val['0']['EPF_earning'] : '';
+                                                    if ($sal1 != '') {
+                                                        $expressionWithoutPortion = str_replace('* .12', '', $sal1);
+                                                        eval('$epf_earnings = ' . $expressionWithoutPortion . ';');
+                                                        $sal1 = floor($epf_earnings);
+                                                    }
+                                                    if ($epf == 1800) {
+                                                        $sal1 = 15000;
+                                                    }
+                                                  ?> 
+                                                <td><?php echo $sal1;?></td>
+                                                <?php 
+                                                $total2 +=$sal1;?>
+
+                                                <?php $sal2 = isset($val['0']['EPF_earning']) ? $val['0']['EPF_earning'] : '';
+                                                if ($sal2 != '') {
+                                                    $expressionWithoutPortion = str_replace('* .12', '', $sal1);
+                                                    eval('$epf_earnings = ' . $expressionWithoutPortion . ';');
+                                                    $sal2 = floor($epf_earnings);
+                                                }
+                                                if ($sal2 > 15000) {
+                                                    $sal2 = 15000;
+                                                }
+                                                
+$eps_status = isset($val['emp_details']['eps'])? $val['emp_details']['eps']:'Y';
+if($eps_status != 'N'){
+    ?>
+                                                <td><?php echo $sal2;?></td> 
+                                                   <?php $total3 +=$sal2;?>
+                                                  <?php }else{?>
+                                                     <td><?php echo 0;?></td>
+                                                     <?php $total3 +=0;?>
+                                                     <?php }?>
+                                                     <!-- End -->
+                                                   <td><?php echo $sal2;?></td>
+                                                   <?php $total4 +=$sal2;?>
+                            <!-- edited by ASHIN on 03-08-24-->
+<!-- if($eps_status!= 'N'){
+   ?>
+    <td><//?php echo $sal1;?></td>
+    <//?php $total3 +=$sal1;?>
+    <td><//?php echo $sal1;?></td>
+    <//?php $total4 +=$sal1;?>
+    <//?php }else{?>
+    <td><//?php echo 0;?></td>
+    <//?php $total3 +=0;?>
+    <td><//?php echo 0;?></td>
+    <//?php $total4 +=0;?>
+    <//?php }?> -->
+                                                 <!-- ?> EDITED BY ASHIN ON 02-08-24 --->
+                                                  <!-- <//?php
+                                                $split1 += round($sal * 8.33 / 100, 0);
+                   // EDITED BY ASHIN ON 02-08-24 -->                            
+                                               <!-- if($month >= '2020-05' && $month <= '2020-07'){ 
+                                               
+                                                    $split2 += round($sal * 1.67 / 100, 0);
+                                                    $epf=round($sal * 10 / 100, 0); 
+                                                    if(false){
+                                                      $split5+=round($sal * 10 / 100, 0);
+                                                     }else{
+                                                      $split3 += round($sal * 10 / 100, 0);
+                                                     }
+                                              } else { 
+                                               
+                                                  $split2 += round($sal * 3.67 / 100, 0);
+                                                  $epf=round($sal * 12 / 100, 0); 
+                                                  if(false){
+                                                      $split5+=round($sal * 12 / 100, 0);
+                                                  }else{
+                                                      $split3 += round($sal * 12 / 100, 0);
+                                                  }
+                                              }
+                                               $split4 += round($sal * .5 / 100, 2);
+                                              $pf=round($sal * 10 / 100, 2);
+                                                   $epf=round($sal * 1.67 / 100, 2);
+                                                   // $tot=$pf+$epf+round($sal * 8.33 / 100, 2); -->
+                                            <!-- ?> --> 
+ <!-- edited by ASHIN on 06-08-24-->
+                                            <!-- <//?php if($month >= '2020-05' && $month <= '2020-07'){ ?>
+                                            <td><//?php $epf=round($sal * 10 / 100, 2); if($epf<=1800){echo round($sal * 10 / 100, 0);}else{echo '0';} ?></td>
+                                            <//?php } else { ?>
+                                            <td><//?php $epf=round($sal * 12 / 100, 2); if($epf<=1800){echo round($sal * 12 / 100, 0);}else{echo '0';} ?></td>
+                                            <//?php } ?> -->
+
+                                            <td><?php echo round($epf); ?></td>
+
+                                            <?php $total5 += $epf;?>
+                                            <?php $total5 = round($total5);?>
+
+                                           <!-- <//?php if($month >= '2020-05' && $month <= '2020-07'){ ?>
+                                            <td><//?php $epf=round($sal * 10 / 100, 2); if($epf>1800){echo round($sal * 10 / 100, 0);}else{echo '0';} ?></td>
+                                            <//?php } else { ?>
+                                            <td><//?php $epf=round($sal * 12 / 100, 2); if($epf>1800){echo round($sal * 12 / 100, 0);}else{echo '0';} ?></td>
+                                            <//?php } ?> -->
+                                            <!-- <//?php if($month >= '2020-05' && $month <= '2020-07'){ ?>
+                                            <td><//?php echo round($sal * 1.67 / 100, 0); ?></td>
+                                            <//?php } else { ?>
+                                            <td><//?php echo round($sal * 3.67 / 100, 0); ?></td>
+                                            <//?php } ?> -->
+                                            <!-- Edited by Akshay on 1-8-2024            -->
+                                               <!--edited by ASHIN on 21-08-24--->         
+                                              <?php // $eps_contr_rtd = 0; // Initialize the variable
+                                            // if($eps_status != 'N'){
+                                              //  $eps_contr_rtd = round($sal * 8.33 / 100, 0);
+                                                //$total6 += $eps_contr_rtd;
+                                                //} else {
+                                                //$total6 += 0;
+                                                //}
+                                                ?> 
+                                               <?php
+                                            $eps_contr_rtd = 0;
+                                            if($sal1>15000) {
+                                                if($eps_status != 'N'){ 
+                                                $eps_contr_rtd= round(15000 * 8.33 / 100, 0);
+                                                
+                                                }else{$eps_contr_rtd=0;}
+                                            }else{
+                                                if($eps_status != 'N'){ $eps_contr_rtd=round($sal1 * 8.33 / 100, 0);}else{$eps_contr_rtd=0;} 
+                                              }
+                                               $total6 += $eps_contr_rtd;
+                                               ?>
+                                                <td><?php echo $eps_contr_rtd; ?></td>
+
+
+                                          
+                                             <!-- End -->
+                                            
+                              <!--edited by ASHIN on 21-08-24--->
+                            <!-- Edited by Akshay on 1-8-2024-->
+                              <td><?php echo round($diff = abs($eps_contr_rtd - round($epf)));?></td>
+                              <?php $total7 += $diff;?>
+                              <?php $total7 = round($total7);?>
+                              <!-- End -->
+                                <td><?php echo $ncp; ?></td>
+                                <?php $total8 += $ncp;?>
+                                <td></td>
+                                             
+                                            <!--edited by sinsiya on 12-06-2024-->
+                                           
+                                            </tr>
+
+
+
+
+
+                                            <?php }
+                                                                                            
+                                                 } if (!$dataFound) { // Check the flag at the end
+        echo '<tr><th colspan="11">No Data available under the selected criteria</th></tr>';           //edited by ASHIN on 03-08-24
+    }
+if($pf_salary!=0){ ?>
+                                            <tr>
+                                                <th colspan="2">Total</th>      
+                                                
+                                                <th><?php echo $total1;?></th>
+                                                <th><?php echo $total2;?></th>
+                                                <th><?php echo $total3; ?></th>
+                                                <th><?php echo $total4; ?></th>
+                                                <th><?php echo $total5; ?></th>
+                                                <th><?php echo $total6; ?></th>
+                                                <th><?php echo $total7; ?></th>
+                                                <th><?php echo $total8; ?></th>
+                                                <th></th>
+                                                <!-- <th><//?php echo round($grandtot); ?></th> -->
+                                                
+                                            </tr>
+                                                <?php } }// }?>
+
+
+                                </tbody>
+                            </table>
+
+                        </fieldset>
+                        <br>
+
+
+        <?php }
+                } ?> <!-- /.box-body -->
+            </div>
+        </div>  
+        <!--div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel </button>  
+        </div-->
+        <!---<div class="row">
+              <div class="form-group">
+                  <div class="col-md-12" align="right">
+                      <a href="#" class="btn btn-default" onclick="downloadReport('salarystructure','pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                      <a href="#" class="btn btn-default" onclick="downloadReport('salarystructure','excel');"><i class="icon-file"></i>Download As Excel</a>
+                  </div>
+              </div>
+          </div> -->
+    </div>
+
+<?php }} else { ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';  ?>
+  <style type="text/css">
+    body {
+        line-height: 2em;
+    }
+    .page-container {
+        width: 80%;
+        height:90%;
+        padding: 8px;
+        margin: auto;
+        border: #000000 solid thin;
+    }
+    .block-container {
+        width: 100%;
+    }
+    .sub-head {
+        border-bottom: #000000 solid thin;
+    }
+    .row {
+        height: 20px;
+    }
+    .col-md-4 {
+        width: 33.33%;
+        float: left;
+    }
+    table {
+       
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+        background-color: transparent;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+    td, th {
+        border: #000000 solid thin;
+        text-align: left;
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        font-size: 9px;
+      
+    }
+</style>
+<?php
+echo $this->element('reportadminheader', array(
+    'title' => 'PF UPLOAD SUMMARY ' .$from
+));
+?>
+<div style='font-size: 13px;margin-top: -20px;text-align:right;'>Report Date: <?php echo $date_time; ?></div>
+
+
+
+    <?php 
+    $allEmpty = true;
+    foreach ($arr_salary_for_template as $subArray) {
+        if (!empty($subArray)) {
+            $allEmpty = false;
+            break;
+        }
+    }
+
+    if ($allEmpty) { ?>
+        <div style="font-size: 16px;text-align:left;">No data available under the selected criteria.</div>
+    <?php } else { 
+        $i = 0;
+        foreach ($arr_salary_for_template as $value) {
+            if (count($value) !== 0 && !empty($value[0][0]['SALARY'])) {
+                $i += 1;
+                ?>
+        
+                <fieldset style="border: none;">
+                    <legend style="border: none;">
+                        <?php $date_time = htmlspecialchars($date_time);
+
+
+ echo htmlspecialchars(isset($value[0]['employee_info']['branch']) ? $value[0]['employee_info']['branch'] : ''); ?>
+                    </legend>
+                </fieldset>
+
+        <!--<br>-->
+                <fieldset style="border:none;">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <!-- <th>Sl No</th>
+                                <th>PF NO</th>
+                                <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Days Present</th>
+                                <th>NCP Days</th>
+                                <th>PF Salary</th>
+                                <th>Employee PF</th>
+                                <th>Employee VPF</th>
+                                <th>Employer PF</th>
+                                <th>Employer Pension</th>
+                                <th>Total PF</th> -->
+                                <th>UAN</th>
+                                    <th>MEMBER NAME</th>
+                                    <th>GROSS WAGES</th>
+                                    <th>EPF WAGES</th>
+                                    <th>EPS WAGES</th>
+                                    <th>EDLI WAGES</th>
+                                    <th>EPF CONTRI REMITTED</th>
+                                    <th>EPS CONTRI REMITTED</th>
+                                    <th>EPF EPS DIFF REMITTED</th>                
+                                    <th>NCP Days</th>
+                                    <th>REFUND OF ADVANCES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
+                            $arr_data = $value;
+                             $dataFound = false;
+                            if (count($arr_data) >= 0) {
+                                $i = 0;
+                                $sum = 0;
+                                $grandtot = 0;
+                                $pf_salary = 0;
+                                $split1= 0;
+                                $split2 = 0;
+                                $split3 = 0;
+                                $split5 = 0;
+                                ?>
+                                    <?php foreach ($arr_data as $val) { 
+                                   // $dayspresent = $val['payroll_master']['calander_days'] - $val['payroll_master']['loss_of_pay'];
+                                    $dayscount=$val['attendance_register']['leave_total']+$val['attendance_register']['weekoff_total']+$val['attendance_register']['holiday_total']+$val['attendance_register']['presant_total'];
+                                   // $dayscount='';
+                                    $ncp=$val['payroll_master']['calander_days']-$dayscount;
+                                    $dayspresent=$val['payroll_master']['calander_days']-$ncp ;
+                                    if ($val[0]['EPF'] != 0){
+                                      $dataFound = true;
+                                    // $i = $i + 1;
+                                    ?>
+                                    <tr>
+                                        <!-- <td><//?php echo $i; ?></td> -->
+                                        <td><?php echo htmlspecialchars($val['emp_details']['company_pf']); ?></td>
+                                        <!-- <td><//?php echo htmlspecialchars($val['employee_info']['employee_id']); ?></td> -->
+                                        <td><?php echo htmlspecialchars($val['employee_info']['EmpName']); ?><?php echo isset($val['emp_details']['status']) && $val['emp_details']['status'] == "2" ? '(Resigned)' : ''; ?></td>
+                                        <td><?php echo $val[0]['SALARY'];?></td>
+
+                                        <?php if($month >= '2020-05' && $month <= '2020-07'){ ?>
+                                            <td><?php echo round($val['0']['EPF'] * 100 / 10, 0); $sal = round($val['0']['EPF'] * 100 / 10, 0); ?></td>
+                                            <?php } else { ?>
+                                            <td><?php echo round($val['0']['EPF'] * 100 / 12, 0); $sal = round($val['0']['EPF'] * 100 / 12, 0); ?></td>
+                                            <?php } 
+                                                $pf_salary += $sal;
+                                                ?>
+                                                  <td></td>
+                                                  <td></td>
+
+                                                  
+                                        <?php 
+                                            $split1 += round($sal * 8.33 / 100, 0);
+                                            if ($month >= '2020-05' && $month <= '2020-07') { 
+                                                $split2 += round($sal * 1.67 / 100, 0);
+                                                $epf = round($sal * 10 / 100, 0); 
+                                                if ($epf > 1800) {
+                                                    $split5 += round($sal * 10 / 100, 0);
+                                                } else {
+                                                    $split3 += round($sal * 10 / 100, 0);
+                                                }
+                                            } else { 
+                                                $split2 += round($sal * 3.67 / 100, 0);
+                                                $epf = round($sal * 12 / 100, 0); 
+                                                if ($epf > 1800) {
+                                                    $split5 += round($sal * 12 / 100, 0);
+                                                } else {
+                                                    $split3 += round($sal * 12 / 100, 0);
+                                                }
+                                            }
+                                        ?>
+                                         <?php if($month >= '2020-05' && $month <= '2020-07'){ ?>
+                                            <td><?php $epf=round($sal * 10 / 100, 2); if($epf<=1800){echo round($sal * 10 / 100, 0);}else{echo '0';} ?></td>
+                                            <?php } else { ?>
+                                            <td><?php $epf=round($sal * 12 / 100, 2); if($epf<=1800){echo round($sal * 12 / 100, 0);}else{echo '0';} ?></td>
+                                            <?php } ?>
+
+                                        <!-- <td><//?php $epf = ($month >= '2020-05' && $month <= '2020-07') ? round($sal * 10 / 100, 0) : round($sal * 12 / 100, 0); echo $epf <=1800 ? $epf : '0'; ?></td>
+                                        <td><//?php $epf = ($month >= '2020-05' && $month <= '2020-07') ? round($sal * 10 / 100, 0) : round($sal * 12 / 100, 0); echo $epf > 1800 ? $epf : '0'; ?></td>
+                                        <td><//?php echo ($month >= '2020-05' && $month <= '2020-07') ? round($sal * 1.67 / 100, 0) : round($sal * 3.67 / 100, 0); ?></td>
+                                        <td><//?php echo round($sal * 8.33 / 100, 0); ?></td>
+                                        <td><//?php  if ($month >= '2020-05' && $month <= '2020-07') { 
+                                    $pfnew = round($sal * 10 / 100, 0);
+                                    $epfnew = round($sal * 1.67 / 100, 0);
+                                    $employer_pension=round($sal * 8.33 / 100, 0);
+                                    $tot = $pfnew + $epfnew + $employer_pension;
+                                      echo round($tot);
+                                   //debug($tot);exit;
+                                } else {
+                                    $pfnew = round($sal * 12 / 100, 0);
+                                    $epfnew = round($sal * 3.67 / 100, 0);
+                                     $employer_pension=round($sal * 8.33 / 100, 0);
+                                    $tot = $pfnew + $epfnew + $employer_pension;
+                                      echo round($tot);
+                                 
+                                    
+                                }
+                                $grandtot += $tot;
+                              
+                                             ?></td> -->
+                                    </tr>
+                                    <?php } }if (!$dataFound) { // Check the flag at the end
+        echo '<tr><th colspan="11">No data available under the selected criteria</th></tr>';                        //edited by ASHIN on 03-08-24
+    } if($pf_salary!=0){?>
+                                <tr>
+                                    <th colspan="6">Total</th>
+                                    <th><?php echo $pf_salary; ?></th>
+                                    <th><?php echo $split3; ?></th>
+                                    <th><?php echo $split5;?></th>
+                                    <th><?php echo $split2; ?></th>
+                                    <th><?php echo $split1; ?></th>
+                                    <th><?php echo round($grandtot); ?></th>
+                                </tr>
+    <?php } } ?>
+                        </tbody>
+                    </table>
+                </fieldset>
+                <?php 
+            }
+        }  
+    } ?> <!-- /.box-body -->
+<!--</div>-->
+
+
+<?php } ?>

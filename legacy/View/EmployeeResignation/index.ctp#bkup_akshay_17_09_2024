@@ -1,0 +1,227 @@
+
+<section class="content-header">
+    <h1 style="font-size: 30px;">Remove Employee</h1>
+    <hr style="margin-top: 8px;margin-bottom: -2px;">
+</section>
+<!--<section class="content" id="container_scroll">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-header">
+                <hr>
+                <div class="box-body" id="div-reportcriterias">
+                    <div class="col-md-12">
+                        <input onclick="Terminatre();" type="button" class="btn btn-danger" value="Separate An Employee">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>-->
+<br>
+<section class="content">
+    <div class="col-md-12">
+        <br>
+        <div class="box box-primary " style="margin-top: -21px;">
+            <div class="box-body" style="    margin-top: -11px;">
+                <br>
+                <table id="emptable" class="table table-bordered table-hover">
+
+                </table>
+                <div class="box box-body">
+                    <div id="loadFullandfinal"></div>
+                </div>
+            </div><!-- /.box-body -->
+            <!--/.direct-chat -->
+        </div><!-- /.col -->
+    </div>
+</section>
+<div id="empSetupModalForm" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Content will be loaded here from "remote.php" file -->
+        </div>
+    </div>
+</div>
+<script>
+//    function Terminatre()
+//    {
+//        showModalForm(livesite + 'EmployeeResignation/form/0');
+//    }
+    function filterEmployees(obj) {
+        var branch = $('#filterby_branch').val();
+        var employee = $('#filterby_employees').val();
+
+        var designation = $('#filterby_Designation').val()
+
+        $('#emptable').datagrid('load', {
+            branch: branch,
+            employee: employee,
+            designation: designation,
+        });
+
+    }
+    //edited by amal on 2/7/19 start
+    function reloadDatagrid(emp)
+    {
+        $("#emptable").datagrid('load', {
+            emp: emp
+        });
+    }
+    $('#emptable').datagrid();
+    var emp_pkey = $('#name').val();
+    reloadDatagrid(emp_pkey);
+    $('#name').on('change', function () {
+        var emp_pkey = $(this).val();
+        reloadDatagrid(emp_pkey);
+    });
+    //edited by amal on 2/7/19 end
+
+
+    jQuery(document).ready(function () {
+
+
+
+
+
+        //  $('#filterby_employees').easyAutocomplete(getstages);
+        $('#emptable').datagrid({
+            url: livesite + "EmployeeResignation/listemployees",
+            pagination: true,
+            singleSelect: true,
+            //edited by amal
+            PostsearchFilter: true, //end
+            width: '100%',
+            rownumbers: true,
+            rowStyler: function (index, row) {
+                var style = "";
+                if (row.statuses == '2') {
+                    style += 'color:red;';
+                }
+                return style;
+            },
+            toolbar: [{
+                    text: 'Separate An Employee',
+                    iconCls: 'icon-remove',
+                    handler: function () {
+                        showModalForm(livesite + 'EmployeeResignation/form/0');
+                    }
+                }, '-', {
+                    text: 'Process Full & Final',
+                    iconCls: 'icon-add',
+                    handler: function () {
+
+                        var row = $('#emptable').datagrid('getSelected');
+                        if (row) {
+                            $('#loadFullandfinal').html('<li class="fa fa-spin fa-spinner"></li>');
+                            var emp = row.terminate_pkey;
+                            $('#loadFullandfinal').load(livesite + "EmployeeResignation/setup/" + emp);
+                            $("html, body").animate({scrollTop: $(document).height()}, 1000);
+                        } else {
+                            alert("Please select a record to edit")
+                        }
+                    }
+                }, '-',
+                {
+                    text: 'Edit',
+                    iconCls: 'icon-edit',
+                    id: "btn",
+                    handler: function () {
+
+                        var row = $('#emptable').datagrid('getSelected');
+                        if (row) {
+                            showModalForm(livesite + 'EmployeeResignation/form/' + row.emp_pkey);
+                        } else {
+                            alert("Please select a record to edit")
+                        }
+                    }
+                }, '-',
+                {
+                    text: 'Delete',
+                    id: "del",
+                    iconCls: 'icon-remove',
+                    handler: function () {
+                        var row = $('#emptable').datagrid('getSelected');
+                        if (row) {
+                            if (confirm("Are you sure want to delete ")) {
+                                $.ajax({
+                                    //edited by megha delete resignation request from employee login
+                                    url: livesite + 'EmployeeResignation/DeleteEmployeeResignation/' + row.terminate_pkey + '/' + row.emp_pkey,
+                                    data: {
+                                        terminate_pkey: row.terminate_pkey,
+                                        emp_pkey: row.emp_pkey
+                                    },
+                                    success: function (response) {
+                                        $.notify($.parseJSON(response).msg, {
+                                            type: 'success',
+                                            allow_dismiss: true,
+                                        });
+                                        $('#emptable').datagrid('load');
+                                    }
+                                });
+                            }
+                        } else {
+                            alert("please select any row");
+                        }
+
+                    }
+                }, '-',
+                {
+                    text: 'View Slip',
+//                    iconCls: 'icon-add',
+                    handler: function () {
+
+                        var row = $('#emptable').datagrid('getSelected');
+                        if (row) {
+//                            $('#loadFullandfinal').html('<li class="fa fa-spin fa-spinner"></li>');
+                            if (row.statuses == '2') {
+                                var emp = row.emp_fkey;
+                                showLargeModalForm(livesite + 'EmployeeResignation/Viewslip/' + emp);
+                            }
+                            else {
+                                alert("Please process Full and Final To generate slip !!!");
+                            }
+//                          
+
+                        } else {
+                            alert("Please select a record");
+                        }
+//                            alert(emp);
+                    }
+                }
+
+            ],
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            columns: [
+                [
+                    {field: 'name', title: 'Full Name', width: "15%", sortable: true},
+                    {field: 'branch', title: 'Branch', width: "10%", sortable: true},
+                    {field: 'Reason', title: 'Reason', width: "15%", sortable: true},
+                    {field: 'submitted_date', title: 'Resignation Submitted', width: "15%", sortable: true},
+                    {field: 'last_applied_date', title: 'Last Applied Date', width: "15%", sortable: true},
+                    {field: 'last_approved_working_date', title: 'Last Approved', width: "15%", sortable: true},
+                    {field: 'remarks', title: 'Remarks', width: "20%", sortable: true}
+                ]
+            ],
+            onSelect: function (s) {
+                var row = $('#emptable').datagrid('getSelected');
+                if (row.statuses == '2') {
+                    $('#btn').linkbutton('disable');
+                    $('#del').linkbutton('disable');
+                } else {
+                    $('#btn').linkbutton('enable');
+                    $('#del').linkbutton('enable');
+                }
+            },
+            //edited by amal on 2/7/19 start 
+            onSearch: function (s) {
+                $('#emptable').datagrid('load', {
+                    emp: $('#searchqupo').val()
+                });
+            }
+            //edited by amal on 2//7/19 end
+        });
+
+
+    });
+
+</script>

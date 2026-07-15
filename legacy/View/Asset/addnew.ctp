@@ -1,0 +1,152 @@
+<script type="text/javascript">
+$(document).ready(function(){
+    /*
+     * Tax Head save
+     */ 
+    
+//            var usersoptions = {
+//            url: function (phrase) {
+//                return livesite+"Asset/getTypes?name=" + phrase;
+//            },
+//            getValue: "Type",
+//            list: {
+//                onClickEvent: function () {
+//                     var selectedItem = $("#Type").getSelectedItemData();
+//                    var site_fkey = selectedItem.Type;
+//                    $('#Type').val(selectedItem.Type);
+//                 
+//
+//                }
+//            }
+//        };
+//
+//        $('#Type').easyAutocomplete(usersoptions);
+    $('#Allocateform').parsley();
+    var options = {
+        success : function(responseText, statusText, xhr, $form) {
+            $('#loaders').hide(); 
+            //alert("success");
+            $('#modalDetailForm').modal('hide');
+            $("#AssetsTable").DataTable().ajax.reload();
+             $.notify("Asset Created And Saved Successfully",{
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+        }
+    };
+
+    // bind to the form's submit event
+    $('#Allocateform').submit(function() {
+      $('#loaders').show();
+            $(this).ajaxSubmit(options);
+       
+         
+        return false;
+        
+    });
+    //Ends  
+});
+</script>
+<div class="btn">
+<legend>Create Asset</legend>
+</div>
+<div class="modal-body">
+<!-- Form Name -->
+
+<form class="form-horizontal" method="post" action="<?php echo $this->webroot; ?>Asset/AddnewAsset" id="Allocateform">
+    <div class="modal-body">
+
+       <div class="form-group">
+           <input type="hidden" name="asset_pkey" value="<?php echo isset($arr_emp['0']['Assets']['asset_pkey']) ? $arr_emp['0']['Assets']['asset_pkey'] : ''; ?>">
+                         <label for="in_date" class="col-sm-4 control-label">Asset Type<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                             
+<!--                          <input type="text" class="form-control" required="required" style="width:350px;" value="<?php //echo isset($arr_emp['0']['Assets']['Type']) ? $arr_emp['0']['Assets']['Type']: ''; ?>" name="Type" id="Type">-->
+                         
+<!--                             <select class="form-control" name="Type">
+                                 <?php //if(isset($arr_emp['0']['Assets']['Type']))
+                              //   {
+                                 ?>
+                                <option value="<?php //echo $arr_emp['0']['Assets']['Type']; ?>"><?php //echo $arr_emp['0']['Assets']['Type']; ?></option>
+                                 <?php
+                                 //}
+                                 ?>
+                                 <option value="Laptop">Laptop</option>
+                                 <option value="Tablet">Tab</option>
+                                 <option value="Mouse">Mouse</option>
+                                 <option value="Keyboard">Keyboard</option>
+                                 <option value="Laptop Bag">Laptop Bag</option>
+                                 <option value="Calculator">Calculator</option>
+                                 <option value="Mobile Phone">Mobile Phone</option>
+                                 <option value="Sim Card">Sim Card</option>
+                                 <option value="Pen Drive">Pen Drive</option>
+                                 <option value="Other">Other</option>
+                             </select>-->
+                          
+                         <select class="form-control" name="Type" required="required">
+                             <option value="">Select Type</option>
+                              <?php if(isset($arr_emp['0']['Assets']['Type']))
+                                 {
+                                 ?>
+                              <option value="<?php echo $arr_emp['0']['Assets']['Type']; ?>" selected><?php echo $arr_emp['0']['AssetType']['asset_type_name']; ?></option>
+                                 <?php } foreach ($arr_types as $types) {
+                                 ?>
+                                 <option value="<?php echo $types['asset_types']['asset_type_pkey']; ?>"><?php echo $types['asset_types']['asset_type_name']; ?></option>
+                                 <?php
+                                 }
+                                 ?>
+                         </select>
+                        </div>
+                      </div>
+        <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Specification<span class="star"></span></label>
+                         <div class="col-sm-8">
+                          <input type="text" class="form-control" value="<?php echo isset($arr_emp['0']['Assets']['specifications']) ? $arr_emp['0']['Assets']['specifications']: ''; ?>" name="specifications" id="university" >
+                         </div>
+                      </div>
+        <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Model<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                          <input type="text" class="form-control" required="required"  value="<?php echo isset($arr_emp['0']['Assets']['model']) ? $arr_emp['0']['Assets']['model']: ''; ?>" name="model" id="duration" >
+                         </div>
+                      </div>
+        <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Asset Name<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                          <input type="text" required="required" class="form-control" value="<?php echo isset($arr_emp['0']['Assets']['name']) ? $arr_emp['0']['Assets']['name']: ''; ?>" name="name" id="mark" >
+                         </div>
+                      </div>
+    <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Brand<span class="star"></span></label>
+                         <div class="col-sm-8">
+                          <input type="text" class="form-control" value="<?php echo isset($arr_emp['0']['Assets']['brand']) ? $arr_emp['0']['Assets']['brand']:''; ?>" name="brand" id="mark" >
+                         </div>
+                      </div>
+        <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Serial No.<span class="star"></span></label>
+                         <div class="col-sm-8">
+                          <input type="text" class="form-control" value="<?php echo isset($arr_emp['0']['Assets']['serial_no']) ? $arr_emp['0']['Assets']['serial_no'] :''; ?>" name="serial_no" id="mark" >
+                         </div>
+                      </div>
+        <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Warranty<span class="star"></span></label>
+                         <div class="col-sm-8">
+                          <input type="text" class="form-control" value="<?php echo isset($arr_emp['0']['Assets']['warranty']) ? $arr_emp['0']['Assets']['warranty'] :''; ?>" name="warranty" id="warranty" >
+                         </div>
+                      </div>
+        <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Value<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                          <input type="text" required="required" class="form-control" value="<?php echo isset($arr_emp['0']['Assets']['value']) ? $arr_emp['0']['Assets']['value']: ''; ?>" name="value" id="warranty" >
+                         </div>
+                      </div>
+        
+        
+    </div>           
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" onclick="$('#modalDetailForm').modal('hide');">Cancel</button>
+        <button type="submit" id="btn-submit" class="btn btn-primary">Save</button>
+    </div>
+
+</form>
+</div>

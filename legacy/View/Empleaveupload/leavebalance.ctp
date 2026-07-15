@@ -1,0 +1,384 @@
+<style>
+    .form-horizontal .control-label {
+
+        text-align: left;
+        padding-left: 2px;
+    }
+
+    .custom-file-upload {
+        border: 1px solid #0d0c0c52;
+        border-radius: 4px;
+        display: inline-block;
+        padding: 4px 12px;
+        cursor: pointer;
+        width: 98%;
+        height: 30px;
+        text-align: center;
+    }
+  /* <!-- edited by bindu 02-12-2025 --> */
+     .heading {
+        display: flex;
+        flex-direction: row;
+        align-items: end;
+        justify-content: space-between;
+        margin-left: 25px;
+        padding: 15px 0 !important;
+    }
+
+    .home {
+        background-color: #ffffffff;
+        border-radius: 50px;
+        padding: 2px 15px;
+        color: #1e516e !important;
+        margin-right: 25px;
+        color: white;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: #1e516e 1px solid;
+    }
+     /* <!-- edited by bindu 02-12-2025 --> */
+</style>
+<!-- edited by bindu 02-12-2025 --> 
+<section class="content-header heading">
+      <!-- edited by athira on 03-07-2025 -->
+    <h1 class="text-primary-18">Leave Balance Upload</h1>
+    <!-- end -->
+    <div class="text-primary-16 home" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+        <i class="fa" style="font-size:16px;">&#xf104;</i>
+        Back
+    </div>
+    <!-- /* edited by bindu 02-12-2025 */ -->
+</section>
+<section class="content">
+    <div class="col-md-12">
+        <br />
+        <!-- DIRECT CHAT DANGER -->
+        <form class="form-horizontal" method="post" action="" id="leaveuploadfilter">
+            <div class="form-group">
+
+                <div class="col-md-5">
+                    <label for="filterby_branch" class="col-sm-3 control-label">Choose Branch </label>
+                    <div class="col-md-1 control-label">:</div>
+                    <div class="col-md-8">
+                        <select id="filterby_branch" name="filterby_branch" class="form-control" onchange="filterleaveupload(this);">
+                            <option value="">All</option>
+                            <?php foreach ($arr_branches as $key => $value) { ?>
+                                <option value="<?php echo $value['Units']['branch_code']; ?>"><?php echo $value['Units']['branch_name']; ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <label class="col-sm-3 control-label" for="employee">Choose Employee </label>
+                    <div class="col-md-1 control-label">:</div>
+                    <div class="col-md-8">
+                        <select id="emp_fkey" class="form-control js-example-basic-single" name="emp_fkey" onchange="filterleaveupload(this);">
+                            <option value="">All</option>
+                            <!-- <?php foreach ($arr_employees as $value) { ?>
+                                <option value="<?php echo $value['EmployeeDetails']['emp_pkey']; ?>"><?php echo $value['EmployeeDetails']['first_name']; ?><?php echo $value['EmployeeDetails']['last_name'] . ' --' . $value['emp_proff']['emp_company_id']; ?></option>
+                            <?php } ?> -->
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2" style="padding-left: 76px;margin-top: -3px;">
+                    <span class=" " style="margin-top: -10px;margin-left: -18px;">
+                        <span data-toggle="tooltip" data-placement="auto" title="Download the excel format with selected criterias. add the data then upload it.">
+                            <button type="button" id="btn-uploadattdata" class="btn btn-danger btn-sm " onclick="downloadEmployeeCTCForm();"><i class="fa fa-download" aria-hidden="true"></i></button>
+                        </span>
+                    </span>
+                </div>
+
+                <div class="col-md-5">
+
+                </div>
+                <div class="col-md-5" style="padding-top: 15px;padding-left: 1px;">
+                    <div class="col-md-3">
+                        <b>Upload File</b>
+                    </div>
+                    <div class="col-md-1">:</div>
+                    <div class="col-md-8">
+                        <label style="margin-left: 10px;font-weight: normal;" for="lesa" class="custom-file-upload">
+                            Click Here to Browse File
+                        </label>
+                        <input id="lesa" type="file" style="display:none;">
+                    </div>
+                </div>
+                <div class="col-md-2" style="padding-top: 15px;padding-left: 59px;">
+                    <span>
+                        <span data-toggle="tooltip" data-placement="auto" title="Upload the downloaded excel file">
+                            <button type="button" onclick="uploadEmployeeCTC();" id="btn-uploadleavedata" class="btn btn-success btn-sm "><i class="fa fa-upload" aria-hidden="true"></i></button>
+                        </span>
+                    </span>
+                </div>
+
+            </div>
+        </form>
+        <br />
+        <div class="box box-primary" style="margin-top: -21px;">
+            <div class="box-body" style="margin-top: -11px;">
+                <br>
+                <table id="leave_table" class="table table-bordered table-hover">
+                    <tbody>
+                    </tbody>
+                </table>
+            </div><!-- /.box-body -->
+        </div>
+        <!--/.direct-chat -->
+    </div><!-- /.col -->
+    </div>
+</section>
+<script>
+    $(document).ready(function() {
+        $('#filterby_branch').select2();
+        // $('#emp_fkey').select2();
+
+        filterEmployees();
+
+        var employee = $('#leaveuploadfilter #emp_fkey').val();
+        $('#leave_table').datagrid({
+            url: livesite + "Empleaveupload/listleavebalance",
+            pagination: true,
+            singleSelect: true,
+            rownumbers: true,
+            queryParams: {
+                employee: employee
+            },
+            toolbar: [{
+                    text: 'New',
+                    iconCls: 'icon-add',
+                    handler: function() {
+
+                        showModalForm(livesite + 'Empleaveupload/form')
+                    }
+                }
+                //                , '-', {
+                //                    iconCls: 'icon-remove',
+                //                    text: 'Remove',
+                //                    handler: function () {
+                //                        var rows = $('#leave_table').datagrid('getSelections');
+                //                        if (rows) {
+                //                            var str_ids = "";
+                //                            for (var i = 0; i < rows.length; i++) {
+                //                                var data = rows[i];
+                //                                if (str_ids == "") {
+                //                                    str_ids += data.emp_leave_upload_pkey;
+                //                                } else
+                //                                {
+                //                                    str_ids += "," + data.emp_leave_upload_pkey;
+                //                                }
+                //                            }
+                //                            if (confirm("Are you sure want to delete ")) {
+                //
+                //                                $.ajax({
+                //                                    url: livesite + "EmployeeLeaveUpload/deleteleave",
+                //                                    data: {
+                //                                        emp_leave_upload_pkeys: str_ids
+                //                                    },
+                //                                    success: function (response) {
+                //
+                //                                        var response = $.parseJSON(response);
+                //                                        if (response.msg) {
+                //                                            $.notify(response.msg, {
+                //                                                type: 'success',
+                //                                                allow_dismiss: true
+                //
+                //                                            });
+                //                                        }
+                //
+                //
+                //                                        reloadTable('leave_table');
+                //                                    }
+                //                                });
+                //
+                //                            }
+                //
+                //                        }
+                //
+                //                    }
+                //             
+                //                }
+            ],
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            columns: [
+                [{
+                        field: 'emp_id',
+                        title: 'Employee ID',
+                        width: "10%"
+                    },
+                    {
+                        field: 'empname',
+                        title: 'Employee Name',
+                        width: "20%"
+                    },
+                    {
+                        field: 'leave_balance',
+                        title: 'Uploaded Balance',
+                        width: "15%"
+                    },
+                    {
+                        field: 'item',
+                        title: 'Leave Type',
+                        width: "15%"
+                    },
+                    {
+                        field: 'created_by',
+                        title: 'Created By',
+                        width: "20%"
+                    },
+                    {
+                        field: 'uploaded_time',
+                        title: 'Uploaded Time',
+                        width: "20%"
+                    },
+
+                ]
+            ]
+        });
+    });
+
+    $('#lesa').change(function() {
+        var i = $(this).prev('label').clone();
+        var file = $('#lesa')[0].files[0].name;
+        $(this).prev('label').text(file);
+    });
+
+
+    function downloadEmployeeCTCForm() {
+        var ctcuploadtype = 3;
+        if (ctcuploadtype == 3) {
+            let branch = ($("#filterby_branch").val()) ? $("#filterby_branch").val() : 0;
+            let emp = ($("#emp_fkey").val()) ? $("#emp_fkey").val() : 0;
+            window.open('<?php echo $this->webroot; ?>Empleaveupload/downloadLeaveBalanceUploadctc/' + ctcuploadtype + '/' + branch + '/' + emp, '_blank');
+        } else {
+            return false;
+        }
+    }
+
+    function filterleaveupload(obj) {
+        
+        filterEmployees(obj);
+        
+        var branch = $('#leaveuploadfilter #filterby_branch').val();
+        var employee = $('#leaveuploadfilter #emp_fkey').val();
+        var month = ''; //$('#leaveuploadfilter #filterby_month').val();       
+        $('#leave_table').datagrid('load', {
+            branch: branch,
+            employee: employee,
+            month: month
+        });
+
+    }
+
+
+    function uploadEmployeeCTC() {
+        var form = $('#leaveuploadfilter');
+        var fileSelect = document.getElementById('lesa');
+        var ctcuploadtype = 3;
+
+        // The rest of the code will go here...
+        var files = fileSelect.files;
+        // Create a new FormData object.
+        var formData = new FormData();
+        // Loop through each of the selected files.
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            // Add the file to the request.
+            formData.append('empctc[]', file, file.name);
+        }
+
+        // Set up the request.
+        var xhr = new XMLHttpRequest();
+
+        // Open the connection.
+        xhr.open('POST', livesite + 'Empleaveupload/uploadandsaveempctcleavebalance/' + ctcuploadtype, true);
+
+        // Set up a handler for when the request finishes.
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // File(s) uploaded.
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    $.notify(response.msg, {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                    closeModal('leave_table'); // This is to reload the table
+                } else {
+                    $.notify(response.msg, {
+                        type: 'error',
+                        allow_dismiss: false
+                    });
+                }
+            } else {
+                alert("Employee Leave Balance Upload failed, please check informations given or try again.");
+            }
+        };
+
+        // Send the Data.
+        xhr.send(formData);
+    }
+
+    function filterEmployees(branch) {
+        var branch = $('#filterby_branch').val();
+        //alert(branch);
+        $(".js-example-basic-single").select2({
+            //closeOnSelect:false,
+            placeholder: "All",
+            allowClear: true,
+            ajax: {
+                url: livesite + "Attendanceregister/jsons/" + branch,
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term, // search term
+                        page: params.page
+                    };
+                },
+                processResults: function(data, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    params.page = params.page || 1;
+
+                    return {
+                        results: data.items,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                }
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            }
+        });
+    }
+     $(".home").on("click", function () {
+
+    $("#container").isLoading({
+        text: "Loading",
+        position: "overlay",
+    });
+
+    let url = "";
+    var userGroup = <?php echo json_encode($this->Session->read('user_group')); ?>;
+
+    if (userGroup == "1") {
+        url = livesite + "AttendanceSetup/index";
+    } 
+    else if (userGroup == "2") {
+        url = livesite + "EmployeeMenu/addon";
+    }
+
+    $("#container").load(url, function () {
+        isDashboardShown = false;
+    });
+
+});
+</script>

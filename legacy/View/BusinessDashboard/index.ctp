@@ -1,0 +1,5078 @@
+<!-- <!?php
+if (!isset($GLOBALS['attendance_rendered'])) {
+    $GLOBALS['attendance_rendered'] = true;
+    echo $this->element('attendance-results');
+}
+?> -->
+
+<style>
+    /* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap'); */
+    /* 
+    body {
+        font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        background-color: #f4f6f9;
+        color: #333;
+    } */
+
+    table.dataTable tbody th,
+    table.dataTable tbody td {
+        text-align: center;
+    }
+
+    .table>thead>tr>th {
+        padding: 3px !important;
+    }
+
+    .container {
+        width: 100%;
+        padding-right: 27px;
+        padding-left: 20px;
+        margin-left: auto;
+        box-sizing: border-box;
+        max-width: 100%;
+    }
+
+    /* Ensure container is responsive */
+    /* @media (max-width: 480px) {
+        .container {
+            padding-right: 10px;
+            padding-left: 10px;
+        }
+    }
+
+    @media (max-width: 320px) {
+        .container {
+            padding-right: 5px;
+            padding-left: 5px;
+        }
+    }
+
+    @media (min-width: 200px) and (max-width: 319px) {
+        .container {
+            padding-right: 4px;
+            padding-left: 4px;
+        }
+    } */
+
+    /* Dashboard header */
+    h1 {
+        font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-weight: 600;
+        font-size: 32px;
+    }
+
+    /* Chart titles */
+    .box-title {
+        font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-weight: 400;
+        font-size: 14px !important;
+    }
+
+    /* Summary tables */
+    .emp-summary-table th,
+    .emp-summary-table td {
+        font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 14px;
+    }
+
+    .dt-buttons {
+        margin-top: 10px !important;
+    }
+
+    .emp-summary-table th {
+        font-weight: 600;
+    }
+
+
+
+    .emp-summary-container {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 20px;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin-top: 0;
+    }
+
+    .emp-summary-wrapper,
+    .emp-summary-wrapper2 {
+        width: 100%;
+        height: 100%;
+        transition: all 0.3s ease;
+        min-height: 380px;
+        min-width: 600px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        min-width: 300px;
+        overflow: hidden;
+    }
+
+    .content-wrapper {
+        min-height: 796px !important;
+    }
+
+    .box.box-info:hover,
+    .box.box-warning:hover,
+    .emp-summary-wrapper:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .emp-summary-table {
+        width: 100%;
+        min-width: 100%;
+        white-space: nowrap;
+        font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        border-collapse: collapse;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .emp-summary-table tr {
+        transition: all 0.3s ease;
+    }
+
+    .emp-summary-table tr:hover {
+        background-color: #f8f9fa;
+        transform: translateX(5px);
+        cursor: pointer;
+    }
+
+    .emp-summary-table th,
+    .emp-summary-table td {
+        padding: 25px 20px;
+        border: 1px solid #e0e0e0;
+        text-align: left;
+        font-size: 16px min-width: 120px;
+    }
+
+    .emp-summary-table th {
+        background-color: #f1f1f1;
+        width: 60%;
+        font-weight: 600;
+    }
+
+    .emp-badge-yes {
+        background-color: #2e7d32;
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 15px;
+        font-size: 14px;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+
+    .emp-badge-no {
+        background-color: #c62828;
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 15px;
+        font-size: 14px;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+
+    .emp-leave-count {
+        font-size: 16px;
+        font-weight: 600;
+        color: #222;
+        transition: all 0.3s ease;
+    }
+
+    .emp-badge-yes:hover {
+        background-color: #1e5c25;
+        transform: scale(1.1);
+    }
+
+    .emp-badge-no:hover {
+        background-color: #9c1f1f;
+        transform: scale(1.1);
+    }
+
+    .box.box-success {
+        transition: all 0.3s ease;
+    }
+
+    .box-body {
+        flex: 1;
+        position: relative;
+        padding-bottom: 20px;
+        /* Add padding at bottom */
+    }
+
+    .box.box-info {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .box.box-info,
+    .box.box-warning {
+        height: 400px;
+        transition: all 0.3s ease;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        min-width: 300px;
+        overflow: hidden;
+    }
+
+
+
+    .box-body {
+        /* height: calc(100% - 60px); */
+        overflow: hidden;
+        padding: 15px;
+        height: 400px;
+    }
+
+
+    /* Ensure chart containers are properly isolated */
+    .box-body.chart-responsive {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .box-body.chart-responsive>div {
+        position: relative !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        isolation: isolate;
+        box-sizing: border-box;
+    }
+
+    /* Prevent chart overflow and mixing */
+    .box.box-primary {
+        overflow: hidden;
+        position: relative;
+        isolation: isolate;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Ensure all charts scale properly on small screens */
+    .box-body.chart-responsive svg,
+    .box-body.chart-responsive canvas {
+        max-width: 100% !important;
+        width: 100% !important;
+        /* height: auto !important; */
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    /* Force Morris charts to respect container width */
+    .morris,
+    .morris svg {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    /* Ensure Morris chart containers don't overflow */
+    .morris-chart-row {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden;
+    }
+
+
+
+    #dashboard-container {
+        max-width: 100%;
+        overflow-x: hidden;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+
+  
+
+    .coverage-cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 25px;
+        padding: 20px;
+        height: 100%;
+        overflow: hidden;
+        min-width: 600px;
+    }
+
+    .coverage-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        min-width: 250px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        height: auto;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .coverage-icon {
+        width: 70px;
+        height: 70px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+    }
+
+    .coverage-icon i {
+        font-size: 32px;
+        color: rgb(12, 12, 76);
+    }
+
+    .coverage-details h4 {
+        margin: 0 0 8px 0;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 18px;
+        /* Increased from 16px */
+        color: #666;
+        font-weight: 600;
+        white-space: normal;
+        /* Changed from nowrap to allow wrapping */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.2;
+        /* Add line height for wrapped text */
+        min-height: 44px;
+        /* Add minimum height for 2 lines */
+    }
+
+    .coverage-indicator {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 20px;
+        font-weight: 500;
+    }
+
+  
+
+    .coverage-indicator i {
+        font-size: 24px;
+        /* Increased from default */
+    }
+
+    /* Add to your existing CSS */
+    .chart-pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 6px;
+    }
+
+    .pagination-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .pagination-controls button {
+        padding: 0px 12px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .pagination-controls button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .pagination-controls button:hover:not(:disabled) {
+        background: #f0f0f0;
+    }
+
+    .page-number {
+        font-size: 14px;
+        color: #666;
+        margin: 0 10px;
+    }
+
+    .pagination-info {
+        font-size: 14px;
+        color: #666;
+    }
+
+
+    .leave-counter {
+        display: flex;
+        align-items: baseline;
+        gap: 5px;
+        white-space: nowrap;
+    }
+
+
+    .leave-days {
+        font-size: 32px;
+        font-weight: 600;
+        color: rgb(2, 171, 16);
+    }
+
+    .leave-label {
+        font-size: 18px;
+        color: #666;
+    }
+
+    .dashboard {
+        width: 25%;
+    }
+
+    /*edited by sinsiya on 17-06-2024*/
+    .pws_tabs_container ul.pws_tabs_controll li a {
+        width: 180px;
+        height: 56px;
+        text-align: center;
+
+    }
+
+
+    #todayattandence .serial-number {
+        padding-left: 20px !important;
+        /* Adjust padding as needed */
+    }
+
+    #todayattandence th.serial-number {
+        padding-left: 20px !important;
+        /* Adjust padding as needed */
+    }
+
+    #todayattandence .direction-column {
+        padding-left: 60px !important;
+        /* Adjust padding as needed */
+    }
+
+
+    #todayattandence th.direction-column {
+        padding-left: 60px !important;
+        /* Adjust padding as needed */
+    }
+
+    .sl-no-forward {
+        padding-left: 20px !important;
+        /* Adjust the value as needed */
+    }
+
+    .direction-forward {
+        padding-left: 60px !important;
+        /* Adjust the value as needed */
+    }
+
+    /*edited  by ASHIN on 28-06-24*/
+    #todayattandence th.date-column {
+        width: 50px;
+        /* Adjust the width as needed */
+    }
+
+    #todayattandence_filter {
+        margin-top: 10px;
+    }
+
+    #thismonthattandence_filter {
+        margin-top: 10px;
+    }
+
+    #lastmonthattandence_filter {
+        margin-top: 10px;
+    }
+
+    #thismonthattandence th.date-column {
+        width: 50px;
+    }
+
+    #lastmonthattandence th.date-column {
+        width: 50px;
+    }
+
+    #loadlists th.date-column {
+        width: 50px;
+    }
+
+    #misspunch th.date-column {
+        width: 50px;
+    }
+
+    #reportproblem th.date-column {
+        width: 50px;
+    }
+
+    #EmployeesUpdaets th.date-column {
+        width: 50px;
+    }
+
+    #EmployeesEvents th.date-column {
+        width: 50px;
+    }
+
+    .box {
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        border: none;
+        background: #ffffff;
+        margin-bottom: 25px;
+    }
+
+  
+
+    .approvals-section {
+        margin-bottom: 20px;
+    }
+
+    .events-list,
+    .approval-list {
+        max-height: 320px;
+        /* Adjust based on your header height */
+        overflow: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        padding: 15px;
+    }
+
+   
+    .info-box {
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+
+
+    .box.box-danger {
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+        height: auto;
+        min-height: 450px;
+        margin-top: 10px;
+    }
+
+    .main-content-wrapper {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        /* Add this to prevent content overflow */
+        transition: margin-left 0.3s ease;
+        /* Smooth transition when sidebar toggles */
+    }
+
+   
+
+    /* Hide scrollbar by default */
+    #salaryChartContainer {
+        overflow-x: hidden;
+    }
+
+  
+    .chart-responsive,
+    .emp-summary-wrapper {
+        scrollbar-width: thin;
+        scrollbar-color: scrollbar-color: rgba(158, 158, 158, 0.7) #E8E8E8;
+    }
+
+    /* Ensure containers have proper overflow settings */
+    .chart-responsive,
+    .emp-summary-wrapper {
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 10px;
+
+    }
+
+    */ .box.box-danger:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .box.box-danger .box-header {
+        padding: 20px;
+        border-bottom: 1px solid #f0f0f0;
+        background: #ffffff;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .box.box-danger .box-title {
+        font-size: 14px;
+        font-weight: 400;
+        color: #2c3e50;
+    }
+
+    .box.box-danger .chart-responsive {
+        padding: 15px;
+        background: #ffffff;
+        border-radius: 0 0 12px 12px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .box.box-primary .chart-responsive {
+        padding: 20px;
+        height: 350px;
+        display: flex;
+        align-items: center;
+        min-height: 350px;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .chart-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .chart-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    .chart-responsive::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+    }
+
+    .chart-responsive::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+  
+    .morris-hover.morris-default-style {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.95);
+        /* 5. Background with transparency */
+        border: none;
+        border-radius: 8px;
+        padding: 12px 15px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        /* 6. Subtle shadow effect */
+        font-famly: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        /* z-index: 1000; */
+        min-width: 150px;
+        padding: 6px;
+        color: #666;
+    }
+
+    .morris-bar-label {
+        font-size: 12px;
+        font-weight: bold;
+        text-align: center;
+        fill: #333;
+    }
+
+
+    .morris-hover-info {
+        padding: 5px;
+    }
+
+    .morris-hover-info .dept-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+        white-space: nowrap;
+    }
+
+    .morris-hover-info .emp-count {
+        font-size: 13px;
+        color: #666;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        height: 30px !important;
+        line-height: 50px !important;
+        font-size: 1.1rem;
+        padding: 3px;
+    }
+
+    .box-title {
+        padding-left: 10px !important;
+    }
+
+
+    .morris-hover-info .emp-count span {
+        font-weight: 600;
+        color: #32CD32;
+    }
+
+    /*update by lakshmi 07-06-2025*/
+    .charts-container {
+        display: grid;
+        grid-template-columns: repeat(2, 2fr);
+        gap: 25px;
+        padding: 20px;
+        margin-bottom: 30px;
+        align-items: stretch;
+        /* This will align items to the top */
+        clear: both;
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .month-year-select {
+        padding: 4px 24px;
+        border: 1px solid #242e52ff;
+        border-radius: 4px;
+        font-size: 13px;
+        /* background: white; */
+        color: #242e52ff;
+        margin: 5px 0;
+        width: auto;
+        min-width: 120px;
+        max-width: 300px;
+        cursor: pointer;
+        height: 28px;
+        line-height: 20px;
+    }
+
+    .month-year-select:hover {
+        border-color: #007BFF;
+    }
+
+    .month-year-select option {
+        color: #242e52ff;
+        background: white;
+        padding: 5px;
+    }
+
+    .chart-header-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .chart-header-controls .box-title {
+        font-size: 14px;
+        margin: 0;
+        flex: 1;
+        min-width: 200px;
+    }
+
+    @media (max-width: 768px) {
+        .chart-header-controls {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 8px 10px;
+        }
+
+        .month-year-select {
+            max-width: 100%;
+            width: 100%;
+            font-size: 12px;
+        }
+
+        .chart-header-controls .box-title {
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .chart-header-controls {
+            padding: 6px 8px;
+            gap: 6px;
+        }
+
+        .month-year-select {
+            font-size: 11px;
+            padding: 3px 6px;
+            height: 26px;
+            min-width: 100px;
+        }
+
+        .chart-header-controls .box-title {
+            font-size: 12px;
+            margin-bottom: 6px;
+            min-width: auto;
+        }
+    }
+
+    @media (max-width: 320px) {
+        .chart-header-controls {
+            padding: 5px 6px;
+            gap: 5px;
+        }
+
+        .month-year-select {
+            font-size: 10px;
+            padding: 2px 5px;
+            height: 24px;
+            min-width: 90px;
+            max-width: 100%;
+        }
+
+        .chart-header-controls .box-title {
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+    }
+
+    @media (min-width: 200px) and (max-width: 319px) {
+        .chart-header-controls {
+            padding: 4px 5px;
+            gap: 4px;
+        }
+
+        .month-year-select {
+            font-size: 9px;
+            padding: 2px 4px;
+            height: 22px;
+            min-width: 80px;
+            max-width: 100%;
+            line-height: 18px;
+        }
+
+        .chart-header-controls .box-title {
+            font-size: 10px;
+            margin-bottom: 4px;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+    }
+
+    .charts-left-column {
+        display: flex;
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .chart-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding: 0 15px;
+    }
+
+    .chart-legend {
+        display: flex;
+        align-items: center;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        font-size: 13px;
+        color: #666;
+    }
+
+    .color-box {
+        width: 12px;
+        height: 12px;
+        background: #32CD32;
+        margin-right: 8px;
+        border-radius: 2px;
+    }
+
+    .department-filter {
+        width: 200px;
+    }
+
+    .chart-search {
+        padding: 0 15px;
+        margin-bottom: 15px;
+    }
+
+    #dept-search {
+        max-width: 300px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        padding: 6px 12px;
+    }
+
+    .upcoming-events-container {
+        height: 400px;
+        /* Fixed height container */
+        overflow: hidden;
+        position: relative;
+        border-radius: 8px;
+    }
+
+    .upcoming-events {
+        height: 100%;
+        overflow-y: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 15px;
+        padding: 15px;
+        max-height: none;
+        padding-bottom: 20px;
+
+    }
+
+    .upcoming-events::-webkit-scrollbar {
+        width: 6px;
+        background-color: #f4f4f4;
+    }
+
+    .upcoming-events::-webkit-scrollbar-track {
+        background: #f4f4f4;
+        border-radius: 3px;
+    }
+
+    .upcoming-events::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+    }
+
+    .upcoming-events::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+    .upcoming-events {
+        scrollbar-width: thin;
+        scrollbar-color: #888 #f4f4f4;
+    }
+
+    .event-item {
+        margin-bottom: 10px;
+        margin-right: 5px;
+        /* Add space for scrollbar */
+    }
+
+   
+    .custom-modal-width {
+        max-width: 95% !important;
+        /* or any value you want */
+        width: 95% !important;
+    }
+
+   
+    .option-row {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 16px 0;
+    }
+
+    .option-card {
+        background: #ffffff;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        padding: 16px 22px;
+        min-width: 260px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        flex: 1 1 240px;
+        max-width: 100%;
+        border: none;
+    }
+
+    .option-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .option-icon-circle {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 18px;
+        background-color: #2563eb;
+        /* example color */
+        flex-shrink: 0;
+    }
+
+    .option-card.active {
+        box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+        transform: scale(1.02);
+        outline: 2px solid #2563eb;
+        outline-offset: 0px;
+        background-color: #f0f8ff;
+    }
+
+    .option-card.active .option-icon {
+        font-size: 2.2rem;
+    }
+
+    .option-card.attendance .option-icon-circle {
+        background: #2563eb;
+        /* blue */
+    }
+
+    .option-card.missed .option-icon-circle {
+        background: #dc2626;
+        /* red */
+    }
+
+    .option-card.visits .option-icon-circle {
+        background: #059669;
+        /* green */
+    }
+
+    .option-card.support .option-icon-circle {
+        background: #7c3aed;
+        /* purple */
+    }
+
+    .option-label {
+        font-size: 1.1rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #1e293b;
+    }
+
+    .option-card.active {
+        border: 2px solid #2563eb;
+        background-color: #e8f0ff;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .option-card.active .option-label {
+        color: #1d4ed8;
+    }
+
+    div#attendance-results>.attendance-table-wrapper:nth-child(2) {
+        display: none;
+    }
+
+
+    .option-icon {
+        font-size: 2rem;
+        color: #ffffff;
+        /* white icon */
+        margin-bottom: 0;
+        /* remove previous offset */
+        text-shadow: none;
+        /* remove glow */
+    }
+
+    @media (max-width: 900px) {
+        .option-row {
+            flex-direction: column;
+            gap: 14px;
+            align-items: stretch;
+        }
+
+        .option-card {
+            width: 100%;
+            min-width: unset;
+            max-width: unset;
+        }
+    }
+
+    .attendance-options {
+        display: flex;
+        gap: 18px;
+        margin-bottom: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    .option-card.active .option-label {
+        font-size: 1.15rem;
+        /* slightly larger */
+        font-weight: 600;
+        color: #1d4ed8;
+        /* slightly deeper blue for text */
+    }
+
+    .optio-card {
+        background: #ffffff;
+        /* pure white */
+        border-radius: 14px;
+        padding: 16px 22px;
+        min-width: 220px;
+        text-align: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+    }
+
+    .optio-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .optio-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: rgb(0, 149, 168);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .optio-card h4 {
+        margin: 0;
+        font-famly: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 1.3rem;
+        font-weight: 500;
+        color: #1e293b;
+    }
+
+    .attendance-results {
+        background: transparent;
+        border-radius: 0;
+        padding: 0;
+        box-shadow: none;
+        min-height: 0;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+
+    .loading {
+        text-align: center;
+        padding: 40px;
+        color: #6B7280;
+    }
+
+    @media (max-width: 768px) {
+        .option-row {
+            flex-direction: column;
+        }
+
+        .attendance-options {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+
+    .box.box-success {
+        height: 100%;
+        min-height: 350px;
+        margin: 0;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 0;
+        padding: 0;
+        width: 100%;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .box.box-success .chart-responsive {
+        padding: 15px 25px 15px 15px;
+        height: calc(100% - 50px);
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #salaryChart {
+        /* height: 300px !important; */
+        width: 100% !important;
+        /* min-height: 280px; */
+        margin-left: -10px;
+    }
+
+    #bar-chart {
+        height: 280px !important;
+    }
+
+    .box.box-primary,
+    .box.box-danger {
+        margin: 0;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+
+    #issue-report-table {
+        font-famly: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        border: none;
+    }
+
+    /* Style table headers */
+    #issue-report-table thead th {
+        background-color: #0c5e8e;
+        color: white;
+        text-align: center;
+
+    }
+
+    /* Style rows */
+    #issue-report-table tbody td {
+        padding: 8px 10px;
+        border: none;
+    }
+
+    .box.box-danger {
+        height: auto;
+        margin-top: 10px;
+        /* Adjust this value to move chart higher */
+    }
+
+    .box.box-primary {
+        transition: all 0.3s ease;
+    }
+
+    .box.box-primary:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Adjust chart heights */
+    #horizontal-bar-chart {
+        height: 400px !important;
+        width: 100%;
+        margin-top: 20px;
+        min-width: 400px !important;
+        padding: 20px;
+        position: relative;
+
+    }
+
+    #horizontal-bar-chart {
+        transition: all 0.3s ease;
+        transform-origin: left center;
+    }
+
+
+    #horizontal-bar-chart rect {
+        transition: all 0.3s ease;
+        cursor: pointer
+    }
+
+    .salary-chart-scroll {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-bottom: 8px;
+    }
+
+    .salary-chart-inner {
+        min-width: 700px;
+    }
+
+    .dashboard-container {
+        padding: 0 20px;
+        max-width: 100%;
+        margin: 0 auto 0 auto;
+    }
+
+    /* Make chart fully responsive and remove scrollbars */
+    #salaryChartContainer {
+        overflow-x: hidden !important;
+        width: 100%;
+    }
+
+    /* Ensure inner divs don't add extra width */
+    .salary-chart-scroll,
+    .salary-chart-inner {
+        width: 100%;
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Morris chart container */
+    #salaryChart {
+        width: 100% !important;
+        /* height: 300px !important; */
+        /* min-height: 280px; */
+        margin: 0 auto;
+        /* center it */
+        padding: 0;
+    }
+
+    /* Optional: Smooth resizing inside responsive boxes */
+    .box-body.chart-responsive {
+        overflow: hidden;
+        width: 100%;
+    }
+
+
+
+
+
+    .box.box-primary .box-body {
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 0;
+    }
+
+ 
+
+    #horizontal-bar-chart rect:hover {
+        opacity: 0.8;
+        cursor: pointer;
+    }
+
+
+
+
+    #horizontal-bar-chart {
+        height: 100%;
+        width: 100%;
+    }
+
+
+
+
+    .emp-summary-table th,
+    .emp-summary-table td {
+        padding: 12px 15px;
+        /* Slightly reduced padding */
+    }
+
+    /* Update the charts container styles */
+    .charts-container {
+        display: grid;
+        grid-template-columns: repeat(2, 2fr);
+        gap: 25px;
+        padding: 20px;
+        margin-bottom: 30px;
+        align-items: start;
+        min-height: 400px;
+        /* Set minimum height for container */
+    }
+
+    .box.box-primary {
+        height: auto;
+        margin-bottom: 30px;
+
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid #8091c1bf;
+
+        border-radius: 8px;
+        width: 100%;
+    }
+
+    /* Add scroll indicator */
+    .scroll-hint {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        opacity: 0.8;
+        transition: opacity 0.3s;
+    }
+
+    .scroll-hint:hover {
+        opacity: 1;
+    }
+
+
+
+    .chart-zoom-controls .btn:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-zoom-controls .btn i {
+        font-size: 14px;
+    }
+
+    .chart-zoom-controls .btn+.btn {
+        margin-left: 2px;
+    }
+
+    /* Update the box styles for both charts */
+    .box.box-primary,
+    .box.box-danger {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    #horizontal-bar-chart text {
+        font-family: sans-serif !important;
+        font-size: 10px !important;
+        /* fill: #333 !important; */
+        /* text-rendering: optimizeLegibility;
+        white-space: pre-wrap !important;
+        word-wrap: break-word !important; */
+        /* letter-spacing: 0.1px; */
+    }
+
+    #branch-bar-chart text {
+        font-family: sans-serif !important;
+        font-size: 10px !important;
+        /* fill: #333 !important;
+        text-rendering: optimizeLegibility;
+        white-space: pre-wrap !important;
+        word-wrap: break-word !important; */
+        /* letter-spacing: 0.1px; */
+    }
+
+    #designation-bar-chart text {
+        font-family: sans-serif !important;
+        font-size: 10px !important;
+        /* fill: #333 !important;
+        text-rendering: optimizeLegibility;
+        white-space: pre-wrap !important;
+        word-wrap: break-word !important; */
+        /* letter-spacing: 0.1px; */
+    }
+
+    /* Add custom SVG text wrapping */
+    #horizontal-bar-chart .morris-hover {
+        white-space: normal;
+        width: 150px;
+    }
+
+    .chart-responsive {
+        position: relative;
+        overflow-x: auto;
+        overflow-y: hidden;
+        flex: 1;
+        padding: 0;
+        padding-left: 0 !important;
+        /* Increased left padding for labels */
+        min-height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+
+    /* Specific adjustments for horizontal bar chart */
+    #horizontal-bar-chart {
+        height: 400px !important;
+        padding: 2px;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    /* Headers styling */
+    .box-header {
+        padding: 5px 3px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    /* 
+    .box-title {
+        font-size: 14px;
+        font-weight: 400;
+        margin: 0;
+    } */
+
+    .info-sections-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .events-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .event-item {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        border-bottom: 1px solid #f0f0f0;
+        transition: all 0.3s ease;
+        border-radius: 4px;
+        background: #fff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-item:hover {
+        background-color: #f8f9fa;
+        transform: translateX(5px);
+    }
+
+    .event-date {
+        font-weight: 600;
+        min-width: 60px;
+    }
+
+    .event-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        margin: 0 10px;
+    }
+
+    .event-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        color: #fff;
+    }
+
+    .event-icon.hol {
+        background: rgb(243, 22, 18);
+    }
+
+    .event-icon.bir {
+        background: #00a65a;
+    }
+
+    .event-icon.join {
+        background: #3c8dbc;
+    }
+
+    .event-details {
+        flex: 1;
+        min-width: 0;
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .event-name {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 3px;
+    }
+
+    .event-date {
+        color: #666;
+        font-size: 12px;
+    }
+
+    .event-description {
+        font-size: 14px;
+        color: #999;
+        margin-top: 2px;
+    }
+
+    .event-actions {
+        display: flex;
+        gap: 5px;
+    }
+
+    .event-actions button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .event-actions button:hover {
+        background: #0056b3;
+    }
+
+
+    .no-events {
+        text-align: center;
+        color: #999;
+        padding: 20px;
+    }
+
+    .stats-container {
+        display: flex;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .stat-card {
+        flex: 1;
+        display: flex;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+        min-height: 80px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-icon {
+        width: 80px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover .stat-icon {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
+    }
+
+    .stat-card:hover .stat-value {
+        transform: scale(1.1);
+    }
+
+
+    .stat-icon i {
+        font-size: 24px;
+        color: #fff;
+    }
+
+    .stat-details {
+        flex: 1;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 5px;
+    }
+
+    .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .bg-info {
+        background: linear-gradient(135deg, #00BCD4, #008b9c);
+    }
+
+    .bg-success {
+        background: linear-gradient(135deg, #4CAF50, #388E3C);
+    }
+
+    .bg-primary {
+        background: linear-gradient(135deg, rgba(240, 190, 73, 0.97), rgb(210, 114, 25));
+    }
+
+    .bg-danger {
+        background: linear-gradient(135deg, rgb(159, 57, 50), rgb(155, 28, 28));
+    }
+
+    @media (max-width: 768px) {
+        .stats-container {
+            flex-direction: column;
+        }
+
+        .stat-card {
+            width: 100%;
+        }
+    }
+
+
+
+    /* Approvals Section */
+    .approval-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .approval-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        transition: all 0.3s ease;
+    }
+
+    .approval-item:hover {
+        background-color: rgba(248, 249, 250, 0.53);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .approval-type {
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+    }
+
+    .approval-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #f39c12;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+    }
+
+    .approval-icon i {
+        font-size: 24px;
+    }
+
+    .approval-icon.leave {
+        background: #f39c12;
+    }
+
+    .approval-icon.promotion {
+        background: #00a65a;
+    }
+
+    .approval-icon.expense {
+        background: #dd4b39;
+    }
+
+    .approval-icon.regularisation {
+        background: #605ca8;
+    }
+
+    .approval-icon.verification {
+        background: #0073b7;
+    }
+
+    .approval-content {
+        flex: 1;
+    }
+
+    .approval-label {
+        display: block;
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 5px;
+    }
+
+    .approval-count {
+        display: block;
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .approval-subtitle {
+        display: block;
+        font-size: 12px;
+        color: #999;
+        margin-top: 2px;
+    }
+
+    .total-count {
+        background: #fff;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-left: 10px;
+        font-size: 18px;
+        color: #f39c12;
+    }
+
+
+
+
+    .approval-details {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .employee-name {
+        font-weight: 500;
+    }
+
+    .request-date {
+        font-size: 12px;
+        color: #666;
+    }
+
+    .approval-actions {
+        display: flex;
+        gap: 5px;
+    }
+
+
+    .approvals-section {
+        overflow: hidden;
+        /* Removes scrollbar */
+    }
+
+    .box-body {
+        overflow: visible;
+        max-height: none;
+    }
+
+    .approval-list {
+        overflow: visible;
+        /* Removes scrollbar */
+        height: auto;
+        /* Allows content to expand naturally */
+        max-height: none;
+        /* Removes any height restriction */
+    }
+
+
+    /* Event and approval items hover effects */
+    .event-item:hover,
+    .approval-item:hover {
+        background-color: #f8f9fa;
+        transform: translateX(5px);
+    }
+
+    /* Update badge hover effects */
+    .event-badge,
+    .approval-type {
+        transition: all 0.3s ease;
+    }
+
+    .event-badge:hover,
+    .approval-type:hover {
+        transform: scale(1.1);
+    }
+
+    /* Style the empty state */
+    .events-list:empty::after,
+    .approval-list:empty::after {
+        content: 'No items to display';
+        display: block;
+        text-align: center;
+        padding: 20px;
+        color: #666;
+        font-style: italic;
+    }
+
+    .emp-summary-wrapper {
+        overflow: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #686868 #f8fafc;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        overflow-x: auto;
+    }
+
+    .emp-summary-wrapper::-webkit-scrollbar {
+        display: none;
+        width: 6px;
+        height: 6px;
+    }
+
+    .emp-summary-wrapper::-webkit-scrollbar-track {
+        background: #E8E8E8;
+        border-radius: 3px;
+    }
+
+    .emp-summary-wrapper::-webkit-scrollbar-thumb {
+        background: rgba(158, 158, 158, 0.7);
+        border-radius: 3px;
+    }
+
+
+    /* Update coverage cards */
+    .coverage-cards {
+        display: grid;
+        grid-template-columns: repeat(2, 2fr);
+        gap: 15px;
+        padding: 10px;
+        width: 100%;
+        min-width: 300px;
+    }
+
+    .coverage-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        min-width: 50px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        height: 200px;
+    }
+
+    .content-header>.breadcrumb {
+        background: none !important;
+    }
+
+    .coverage-details {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .coverage-details h4 {
+        margin: 0 0 8px 0;
+        font-size: 17px;
+        color: #666;
+        font-weight: 600;
+        white-space: pre-wrap;
+        /* Changed from normal */
+        overflow-wrap: break-word;
+        /* Add this */
+        word-wrap: break-word;
+        /* Add this */
+        line-height: 1.3;
+        margin-right: 10px;
+        max-width: 150px;
+    }
+
+    .leave-counter {
+        display: flex;
+        flex-direction: column;
+        /* Stack label below number */
+        gap: 8px;
+    }
+
+    .leave-days {
+        font-size: 30px;
+        font-weight: 600;
+        color: rgb(2, 171, 16);
+        line-height: 1;
+    }
+
+    .leave-label {
+        font-size: 15px;
+        color: #666;
+        white-space: pre-wrap;
+        /* Changed from normal */
+        line-height: 1.2;
+    }
+
+    /* Add wrapper scroll styling */
+    .emp-summary-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        padding: 15px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .chart-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .chart-responsive::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 4px;
+    }
+
+    #branch-bar-chart {
+        height: 300px;
+        width: 100%;
+    }
+
+    #employee-month-bar {
+        height: 300px;
+        width: 100%;
+    }
+
+    #employee-month-bar {
+        height: 300px;
+        width: 100%;
+    }
+
+    #designation-bar-chart {
+        height: 300px;
+        width: 100%;
+    }
+
+    #employee-present-bar {
+        height: 300px;
+        width: 100%;
+    }
+
+    #employee-leave-bar {
+        height: 400px;
+        width: 100%;
+    }
+
+
+    .salary-card {
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .salary-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+    }
+
+    .salary-table {
+        border-radius: 12px !important;
+        overflow: hidden;
+    }
+
+    .salary-table thead th {
+        border-bottom: 2px solid #e0e0e0;
+        font-weight: 600;
+    }
+
+    .salary-table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+    .salary-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .card-header {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .box.box-primary:has(#designation-bar-chart) #pagination-controls,
+    .box.box-primary:has(#designation-bar-chart)+* #pagination-controls {
+        display: none !important;
+    }
+
+    .box.box-primary:has(#branch-bar-chart) #pagination-controls,
+    .box.box-primary:has(#branch-bar-chart)+* #pagination-controls {
+        display: none !important;
+    }
+
+    .box.box-primary:has(#employee-month-bar) #pagination-controls,
+    .box.box-primary:has(#employee-month-bar)+* #pagination-controls {
+        display: none !important;
+    }
+
+    .box.box-primary:has(#salaryChart) #pagination-controls,
+    .box.box-primary:has(#salaryChart)+* #pagination-controls {
+        display: none !important;
+    }
+
+    .box.box-primary:has(#gender-pie-chart) #pagination-controls,
+    .box.box-primary:has(#gender-pie-chart)+* #pagination-controls {
+        display: none !important;
+    }
+
+    .box.box-primary:has(#ctc-pie-chart) #pagination-controls,
+    .box.box-primary:has(#ctc-pie-chart)+* #pagination-controls {
+        display: none !important;
+    }
+
+    .box.box-primary:has(#salary-department-pie) #pagination-controls,
+    .box.box-primary:has(#salary-department-pie)+* #pagination-controls {
+        display: none !important;
+    }
+
+    .box.box-primary:has(#designation-pie-chart) #pagination-controls,
+    .box.box-primary:has(#designation-pie-chart)+* #pagination-controls {
+        display: none !important;
+    }
+
+    .box.box-primary:has(#variable-addition-bar) #pagination-controls,
+    .box.box-primary:has(#variable-addition-bar)+* #pagination-controls {
+        display: none !important;
+    }
+
+    .box.box-primary:has(#variable-deduction-bar) #pagination-controls,
+    .box.box-primary:has(#variable-deduction-bar)+* #pagination-controls {
+        display: none !important;
+    }
+
+    .box.box-primary:has(#employee-leave-bar) #pagination-controls,
+    .box.box-primary:has(#employee-leave-bar)+* #pagination-controls {
+        display: none !important;
+    }
+
+    .box.box-primary:has(#employee-present-bar) #pagination-controls,
+    .box.box-primary:has(#employee-present-bar)+* #pagination-controls {
+        display: none !important;
+    }
+</style>
+<style>
+    .salary-card {
+        border-radius: 18px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .salary-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    .salary-card .card-header {
+        border-top-left-radius: 18px;
+        border-top-right-radius: 18px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+    }
+
+    .salary-table {
+        border-radius: 12px !important;
+        overflow: hidden;
+        border: 2px solid transparent;
+    }
+
+    .salary-table thead th {
+        font-weight: 600;
+    }
+
+    .card-body-custom {
+        background: #fff;
+        border-radius: 12px;
+        border: 2px solid #28a745;
+        margin: 20px;
+        padding: 25px;
+    }
+
+    .card-body-custom-red {
+        background: #fff;
+        border-radius: 12px;
+        border: 2px solid #dc3545;
+        margin: 20px;
+        padding: 25px;
+    }
+
+    .breadcrumb {
+        background: #ffffffff;
+    }
+</style>
+
+<style>
+    /* 🌐 Common Chart Table Style — Apply to all tables like #ctc-color-table, #salary-dept-color-table, etc. */
+    .chart-color-table {
+        width: 100%;
+        margin: 0px auto;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        font-family: "Segoe UI", Arial, sans-serif;
+        box-sizing: border-box;
+        max-width: 100%;
+    }
+
+    .chart-color-table thead {
+        background: linear-gradient(90deg, #007BFF, #20C997);
+        padding-left: 10px;
+        padding-top color: white;
+        text-align: center;
+        font-weight: 600;
+        height: 0px !important;
+    }
+
+    .chart-color-table th,
+    .chart-color-table td {
+        padding: 10px 14px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+        word-wrap: break-word;
+        box-sizing: border-box;
+    }
+
+    .chart-color-table th {
+        color: white;
+        font-weight: 400;
+        font-size: 14px;
+        text-align: center;
+        padding: 8px 0px;
+    }
+
+
+    .chart-color-table tbody tr:hover {
+        background-color: #f7f7f7;
+        transition: 0.2s;
+    }
+
+    .chart-color-table td {
+        text-align: center;
+    }
+
+    .chart-color-table span {
+        display: inline-block;
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+
+   
+    .box .box-body {
+        text-align: center;
+    }
+
+    /* Prevent unwanted page breaks */
+    #dashboard-container,
+    #dashboard-container * {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-before: auto;
+        page-break-after: auto;
+    }
+
+    /* Improve table look in PDF */
+    table {
+        border-collapse: collapse !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+
+
+    }
+
+    #salaryChartContainer {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    #salaryChart {
+        width: 100% !important;
+        /* height: 300px !important; */
+        margin: 0;
+        padding: 0;
+    }
+
+    .box-body.chart-responsive {
+        padding: 0 10px 10px 10px;
+    }
+</style>
+<style>
+    .emp-summary-wrapper {
+        width: 100%;
+        padding: 15px;
+    }
+
+    /* Use Grid for perfect alignment */
+    .coverage-cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    /* Base card style */
+    .coverage-card {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    /* Hover effect */
+    .coverage-card:hover {
+        transform: translateY(-4px);
+    }
+
+    /* Icon */
+    .coverage-icon {
+        font-size: 34px;
+        color: #00659f;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    /* Title */
+    .coverage-details h4 {
+        font-size: 18px;
+        margin: 0;
+        color: #333;
+        font-weight: 600;
+    }
+
+    /* Counter section */
+    .leave-counter {
+        display: flex;
+        flex-direction: column;
+        margin-top: 5px;
+    }
+
+    .leave-days {
+        font-size: 26px;
+        font-weight: bold;
+        color: #00659f;
+        line-height: 1.1;
+    }
+
+    .leave-label {
+        font-size: 14px;
+        color: #666;
+    }
+
+    /* 💻 Medium screens (tablets, small laptops) */
+    @media (max-width: 1100px) {
+        .coverage-card {
+            padding: 16px;
+        }
+
+        .coverage-icon {
+            font-size: 28px;
+            margin-right: 12px;
+        }
+
+        .coverage-details h4 {
+            font-size: 16px;
+        }
+
+        .leave-days {
+            font-size: 22px;
+        }
+
+        .leave-label {
+            font-size: 13px;
+        }
+    }
+
+    /* 📱 Small screens (mobiles / 150% zoom) */
+    @media (max-width: 768px) {
+        .coverage-cards {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .coverage-card {
+            padding: 12px;
+        }
+
+        .coverage-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .coverage-details h4 {
+            font-size: 14px;
+        }
+
+        .leave-days {
+            font-size: 18px;
+        }
+
+        .leave-label {
+            font-size: 12px;
+        }
+    }
+
+    /* 📱 Extra small screens (very small mobiles) */
+    @media (max-width: 500px) {
+        .coverage-cards {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .coverage-card {
+            padding: 10px;
+        }
+
+        .coverage-icon {
+            font-size: 22px;
+        }
+
+        .coverage-details h4 {
+            font-size: 13px;
+        }
+
+        .leave-days {
+            font-size: 16px;
+        }
+
+        .leave-label {
+            font-size: 11px;
+        }
+    }
+
+    .chart-border-container {
+        border: 1px solid #ccccccff;
+        border-radius: 8px;
+        margin: 20px 10px;
+    }
+</style>
+
+
+
+<div class="text-right mb-3" style="margin:0 15px;padding-top:10px;">
+    <button id="download-dashboard" class="btn btn-danger">
+        <!-- <i class="fa fa-file-pdf-o"></i> Download -->
+        <i class="fa fa-file-pdf-o"></i>
+    </button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#download-dashboard').click(function() {
+            const element = document.getElementById('dashboard-container');
+
+            // 🧩 Prevent any transformations messing with layout
+            element.style.transform = "none";
+            element.style.width = "100%";
+
+            // 🧱 Ensure elements stay together in PDF
+            $('#dashboard-container *').css({
+                'page-break-inside': 'avoid',
+                'break-inside': 'avoid',
+                'page-break-before': 'auto',
+                'page-break-after': 'auto'
+            });
+
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: 'Dashboard_Report_<?php echo date("Y-m-d"); ?>.pdf',
+                image: {
+                    type: 'jpeg',
+                    quality: 1
+                },
+                html2canvas: {
+                    scale: 3, // higher = sharper
+                    useCORS: true,
+                    scrollY: 0,
+                    windowWidth: document.body.scrollWidth
+                },
+                jsPDF: {
+                    unit: 'px',
+                    format: [1600, 1100], // adjust if your dashboard is taller
+                    orientation: 'landscape'
+                },
+                pagebreak: {
+                    mode: ['avoid', 'css', 'legacy'],
+                    before: '#avoid-break', // optional anchor to start new page
+                    after: '.avoid-break' // optional per-section control
+                }
+            };
+
+            // 🧾 Generate the PDF
+            html2pdf().set(opt).from(element).save();
+        });
+    });
+</script>
+
+
+
+<script>
+    function toggleAttendanceOptions() {
+        const card = document.getElementById('attendanceCard');
+        var $options = $('#attendance-options');
+        var $results = $('#attendance-results');
+
+        if ($options.is(':visible')) {
+            $options.slideUp(180);
+            $results.slideUp(180);
+        } else {
+            $options.slideDown(180);
+        };
+
+    }
+
+    function setActiveOption(clickedElement) {
+        const isAlreadyActive = clickedElement.classList.contains('active');
+
+        // Remove active class from all option cards
+        document.querySelectorAll('.option-card').forEach(card => card.classList.remove('active'));
+
+        // If it wasn't already active, make it active
+        if (!isAlreadyActive) {
+            clickedElement.classList.add('active');
+        }
+    }
+    //attendance options click handler
+    function loadAttendanceData(type) {
+        if (type === 'today') {
+            $('#attendance-results').html('<div class="loading">Loading...</div>').show();
+            $.ajax({
+                url: '/DashboardNew/ajax_today_attendance',
+                type: 'GET',
+                success: function(data) {
+                    $('#attendance-results').html(data).show();
+                    //edited  by athira on 18-08-2025
+                    var table = $('#todayattandence').DataTable({
+                        paging: true,
+                        lengthChange: false,
+                        searching: true,
+                        ordering: true,
+                        info: true,
+                        autoWidth: false,
+                        dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
+                            "<'row'<'col-sm-12'tr>>" +
+                            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                        buttons: [{
+                                extend: 'print',
+                                messageTop: 'My Payroll Master Employees Today Attendance Report.',
+                                title: 'My Payroll Master - Today Attendance Report',
+                                exportOptions: {
+                                    columns: ':visible',
+                                    format: {
+                                        body: function(data, row, column, node) {
+                                            // SL No column
+                                            if (column === 0) return row + 1;
+                                            // Strip HTML from other columns if any
+                                            return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                extend: 'pdf',
+                                messageTop: 'My Payroll Master Employees Today Attendance Report.',
+                                title: 'My Payroll Master - Today Attendance Report',
+                                exportOptions: {
+                                    columns: ':visible',
+                                    format: {
+                                        body: function(data, row, column, node) {
+                                            if (column === 0) return row + 1;
+                                            return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                extend: 'excel',
+                                messageTop: 'My Payroll Master Employees Today Attendance Report.',
+                                title: 'My Payroll Master - Today Attendance Report',
+                                exportOptions: {
+                                    columns: ':visible',
+                                    format: {
+                                        body: function(data, row, column, node) {
+                                            if (column === 0) return row + 1;
+                                            return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                                        }
+                                    }
+                                }
+                            }
+                        ],
+                        columnDefs: [{
+                            targets: 0, // SL No column
+                            orderable: false,
+                            searchable: false
+                        }],
+                        ajax: livesite + "DashboardNew/listtodayattendance"
+                    });
+
+                    // 🔥 Update SL No after search, order, or page change
+                    table.on('order.dt search.dt draw.dt', function() {
+                        table.column(0, {
+                                search: 'applied',
+                                order: 'applied',
+                                page: 'current'
+                            })
+                            .nodes()
+                            .each(function(cell, i) {
+                                cell.innerHTML = i + 1;
+                            });
+                    }).draw();
+
+                    //end
+
+                    $('.buttons-print').ready(function() {
+                        $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');
+
+                    });
+                    $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');;
+                    $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+                },
+                error: function() {
+                    $('#attendance-results').html('<div class="loading">Failed to load data.</div>').show();
+                }
+            });
+        } else if (type === 'current_month') {
+            $('#attendance-results').html('<div class="loading">Loading...</div>').show();
+            $.ajax({
+                url: '/DashboardNew/ajax_thismonth_attendance',
+                type: 'GET',
+                success: function(data) {
+                    $('#attendance-results').html(data).show();
+                    //edited  by athira on 18-08-2025
+                    var table = $('#thismonthattandence').DataTable({
+                        "paging": true,
+                        "lengthChange": false,
+                        "searching": true,
+                        "ordering": true,
+                        "info": true,
+                        "autoWidth": false,
+                        dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
+                            "<'row'<'col-sm-12'tr>>" +
+                            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                        buttons: [{
+                                extend: 'print',
+                                messageTop: 'My Payroll Master Employees Today Attendance Report.',
+                                title: 'My Payroll Master - Today Attendance Report',
+                                exportOptions: {
+                                    columns: ':visible',
+                                    format: {
+                                        body: function(data, row, column, node) {
+                                            // SL No column
+                                            if (column === 0) return row + 1;
+                                            // Strip HTML from other columns if any
+                                            return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                extend: 'pdf',
+                                messageTop: 'My Payroll Master Employees Today Attendance Report.',
+                                title: 'My Payroll Master - Today Attendance Report',
+                                exportOptions: {
+                                    columns: ':visible',
+                                    format: {
+                                        body: function(data, row, column, node) {
+                                            if (column === 0) return row + 1;
+                                            return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                extend: 'excel',
+                                messageTop: 'My Payroll Master Employees Today Attendance Report.',
+                                title: 'My Payroll Master - Today Attendance Report',
+                                exportOptions: {
+                                    columns: ':visible',
+                                    format: {
+                                        body: function(data, row, column, node) {
+                                            if (column === 0) return row + 1;
+                                            return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                                        }
+                                    }
+                                }
+                            }
+                        ],
+                        columnDefs: [{
+                            targets: 0, // SL No column
+                            orderable: false,
+                            searchable: false
+                        }],
+                        "ajax": livesite + "DashboardNew/listthismonthattendance"
+                    });
+
+                    // 🔥 Update SL No after search, order, or page change
+                    table.on('order.dt search.dt draw.dt', function() {
+                        table.column(0, {
+                                search: 'applied',
+                                order: 'applied',
+                                page: 'current'
+                            })
+                            .nodes()
+                            .each(function(cell, i) {
+                                cell.innerHTML = i + 1;
+                            });
+                    }).draw();
+                    //end
+
+                    $('.buttons-print').ready(function() {
+                        $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');
+
+                    });
+                    $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');;
+                    $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+                },
+                error: function() {
+                    $('#attendance-results').html('<div class="loading">Failed to load data.</div>').show();
+                }
+            });
+        } else if (type === 'last_month') {
+            $('#attendance-results').html('<div class="loading">Loading...</div>').show();
+            $.ajax({
+                url: '/DashboardNew/ajax_lastmonth_attendance',
+                type: 'GET',
+                success: function(data) {
+                    $('#attendance-results').html(data).show();
+                    //edited  by athira on 18-08-2025
+                    var table = $('#lastmonthattandence').DataTable({
+                        "paging": true,
+                        "lengthChange": false,
+                        "searching": true,
+                        "ordering": true,
+                        "info": true,
+                        "autoWidth": false,
+                        dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
+                            "<'row'<'col-sm-12'tr>>" +
+                            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                        buttons: [{
+                                extend: 'print',
+                                messageTop: 'My Payroll Master Employees Today Attendance Report.',
+                                title: 'My Payroll Master - Today Attendance Report',
+                                exportOptions: {
+                                    columns: ':visible',
+                                    format: {
+                                        body: function(data, row, column, node) {
+                                            // SL No column
+                                            if (column === 0) return row + 1;
+                                            // Strip HTML from other columns if any
+                                            return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                extend: 'pdf',
+                                messageTop: 'My Payroll Master Employees Today Attendance Report.',
+                                title: 'My Payroll Master - Today Attendance Report',
+                                exportOptions: {
+                                    columns: ':visible',
+                                    format: {
+                                        body: function(data, row, column, node) {
+                                            if (column === 0) return row + 1;
+                                            return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                extend: 'excel',
+                                messageTop: 'My Payroll Master Employees Today Attendance Report.',
+                                title: 'My Payroll Master - Today Attendance Report',
+                                exportOptions: {
+                                    columns: ':visible',
+                                    format: {
+                                        body: function(data, row, column, node) {
+                                            if (column === 0) return row + 1;
+                                            return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                                        }
+                                    }
+                                }
+                            }
+                        ],
+                        columnDefs: [{
+                            targets: 0, // SL No column
+                            orderable: false,
+                            searchable: false
+                        }],
+                        "ajax": livesite + "DashboardNew/listlastmonthattendance"
+                    });
+
+                    // 🔥 Update SL No after search, order, or page change
+                    table.on('order.dt search.dt draw.dt', function() {
+                        table.column(0, {
+                                search: 'applied',
+                                order: 'applied',
+                                page: 'current'
+                            })
+                            .nodes()
+                            .each(function(cell, i) {
+                                cell.innerHTML = i + 1;
+                            });
+                    }).draw();
+
+                    //end
+
+                    $('.buttons-print').ready(function() {
+                        $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');
+
+                    });
+                    $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');;
+                    $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+                },
+                error: function() {
+                    $('#attendance-results').html('<div class="loading">Failed to load data.</div>').show();
+                }
+            });
+        } else {
+            $('#attendance-results').hide();
+        }
+    }
+
+    function loadCustomerVisitsData() {
+        const $btn = $('.option-card.customer-visits');
+        const $resultsDiv = $('#customer-visits-results');
+
+        // Remove 'selected' class from all option cards
+        $('.option-card').removeClass('selected');
+
+        // If already visible, hide it
+        if ($resultsDiv.is(':visible')) {
+            $resultsDiv.slideUp();
+            return;
+        }
+        $btn.addClass('selected');
+
+        $resultsDiv.html('<div class="loading">Loading...</div>').slideDown();
+        $.ajax({
+            url: '/DashboardNew/ajax_locationtracking',
+            type: 'GET',
+            success: function(data) {
+                $resultsDiv.html(data);
+            },
+            error: function() {
+                $resultsDiv.html('<div class="loading text-danger">Failed to load data.</div>');
+            }
+        });
+    }
+
+    function loadIssueReport(issuedate = 0) {
+        const $btn = $('.option-card.issue-report');
+        const $resultsDiv = $('#support-requests-results');
+
+        $('.option-card').removeClass('selected');
+
+        if ($resultsDiv.is(':visible')) {
+            $resultsDiv.slideUp();
+            return;
+        }
+        $btn.addClass('selected');
+
+        $resultsDiv.html('<div class="loading">Loading...</div>').slideDown();
+
+        // Prepare the table structure before DataTable renders
+        const tableHTML = `
+        <table id="issue-report-table" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th style="width: 76px;">Sl. No</th>
+                    <th>Employee Name</th>
+                    <th>Employee ID</th>
+                    <th>Branch</th>
+                    <th>Reported Date</th>
+                    <th>Report Type</th>
+                    <th>Remarks</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>`;
+        $resultsDiv.html(tableHTML);
+
+        $.ajax({
+            url: '/DashboardNew/issuereport/' + issuedate,
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                //edited by athira on 18-08-2025
+                var table = $('#issue-report-table').DataTable({
+                    data: response.data,
+                    columns: [{
+                            title: "Sl. No"
+                        },
+                        {
+                            title: "Employee Name"
+                        },
+                        {
+                            title: "Employee ID"
+                        },
+                        {
+                            title: "Branch"
+                        },
+                        {
+                            title: "Reported Date"
+                        },
+                        {
+                            title: "Report Type"
+                        },
+                        {
+                            title: "Remarks"
+                        },
+                        {
+                            title: "Location"
+                        }
+                    ],
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    autoWidth: false,
+                    dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                    buttons: [{
+                            extend: 'print',
+                            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+                            title: 'My Payroll Master - Today Attendance Report',
+                            exportOptions: {
+                                columns: ':visible',
+                                format: {
+                                    body: function(data, row, column, node) {
+                                        // SL No column
+                                        if (column === 0) return row + 1;
+                                        // Strip HTML from other columns if any
+                                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+                            title: 'My Payroll Master - Today Attendance Report',
+                            exportOptions: {
+                                columns: ':visible',
+                                format: {
+                                    body: function(data, row, column, node) {
+                                        if (column === 0) return row + 1;
+                                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+                            title: 'My Payroll Master - Today Attendance Report',
+                            exportOptions: {
+                                columns: ':visible',
+                                format: {
+                                    body: function(data, row, column, node) {
+                                        if (column === 0) return row + 1;
+                                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    columnDefs: [{
+                        targets: 0, // SL No column
+                        orderable: false,
+                        searchable: false
+                    }],
+
+                });
+
+                // 🔥 Update SL No after search, order, or page change
+                table.on('order.dt search.dt draw.dt', function() {
+                    table.column(0, {
+                            search: 'applied',
+                            order: 'applied',
+                            page: 'current'
+                        })
+                        .nodes()
+                        .each(function(cell, i) {
+                            cell.innerHTML = i + 1;
+                        });
+                }).draw();
+                //end
+
+                $('.buttons-print').ready(function() {
+                    $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');
+
+                });
+                $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');;
+                $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+            },
+            error: function() {
+                $resultsDiv.html('<div class="loading text-danger">Failed to load issue report.</div>');
+            }
+        });
+    }
+
+  
+
+    function loadMissedAttendance(element) {
+
+        document.querySelectorAll('.option-card').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+
+        $('#attendance-results').html('<div class="loading">Loading Missed Attendance...</div>').show();
+
+        $.ajax({
+            url: '/DashboardNew/getMissedAttendance',
+            type: 'GET',
+            success: function(data) {
+                $('#attendance-results').html(data).show();
+
+                // Destroy any existing DataTable to avoid reinitialization error
+                if ($.fn.DataTable.isDataTable('#empmisspunches')) {
+                    $('#empmisspunches').DataTable().destroy();
+                }
+
+                //edited by athira on 18-08-2025
+                // Initialize DataTable with buttons
+                var table = $('#empmisspunches').DataTable({
+                    paging: true,
+                    lengthChange: false,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    order: [
+                        [1, "desc"]
+                    ],
+                    autoWidth: false,
+                    dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                    buttons: [{
+                            extend: 'print',
+                            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+                            title: 'My Payroll Master - Today Attendance Report',
+                            exportOptions: {
+                                columns: ':visible',
+                                format: {
+                                    body: function(data, row, column, node) {
+                                        // SL No column
+                                        if (column === 0) return row + 1;
+                                        // Strip HTML from other columns if any
+                                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+                            title: 'My Payroll Master - Today Attendance Report',
+                            exportOptions: {
+                                columns: ':visible',
+                                format: {
+                                    body: function(data, row, column, node) {
+                                        if (column === 0) return row + 1;
+                                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            messageTop: 'My Payroll Master Employees Today Attendance Report.',
+                            title: 'My Payroll Master - Today Attendance Report',
+                            exportOptions: {
+                                columns: ':visible',
+                                format: {
+                                    body: function(data, row, column, node) {
+                                        if (column === 0) return row + 1;
+                                        return typeof data === 'string' ? data.replace(/<[^>]*>/g, '') : data;
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    columnDefs: [{
+                        targets: 0, // SL No column
+                        orderable: false,
+                        searchable: false
+                    }],
+                    drawCallback: function(settings) {
+                        var api = this.api();
+                        var start = api.page.info().start;
+                        api.column(0, {
+                            page: 'current'
+                        }).nodes().each(function(cell, i) {
+                            cell.innerHTML = start + i + 1;
+                        });
+                    }
+                });
+
+                table.on('order.dt search.dt draw.dt', function() {
+                    table.column(0, {
+                            search: 'applied',
+                            order: 'applied',
+                            page: 'current'
+                        })
+                        .nodes()
+                        .each(function(cell, i) {
+                            cell.innerHTML = i + 1;
+                        });
+                }).draw();
+
+
+                //end
+
+                $('.buttons-print').ready(function() {
+                    $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');
+
+                });
+                $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');;
+                $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+
+                // Optional: Remove sorting icon on Sl. No. column
+                $('#empmisspunches thead th:eq(0)').removeClass('sorting sorting_asc sorting_desc').off('click');
+            },
+            error: function() {
+                $('#attendance-results').html('<div class="loading text-danger">Failed to load Missed Attendance.</div>').show();
+            }
+        });
+
+    }
+
+    $(document).ready(function() {
+        //edited by athira on 01-05-2025
+        $('#absent_this_month').on('click', function() {
+            var url = '/dashboardNew/absenttoday';
+            showModalForm(url);
+        });
+
+        $('#present-today').on('click', function() {
+            var url = '/dashboardNew/presenttoday';
+            showModalForm(url);
+        });
+        $('#active-today').on('click', function() {
+            var url = '/dashboardNew/activetoday';
+            showModalForm(url);
+        });
+
+
+
+
+
+
+        $('#pf-not-covered').on('click', function() {
+            var url = '/dashboardNew/pfnotcovered';
+            showModalForm(url);
+        });
+
+        $('#leaves-this-month').on('click', function() {
+            var url = '/dashboardNew/leavesthismonth';
+            showModalForm(url);
+        });
+
+        $('#no-esi').on('click', function() {
+            var url = '/dashboardNew/noesi';
+            showModalForm(url);
+        });
+
+        $('#no-qualification').on('click', function() {
+            var url = '/dashboardNew/noqualification';
+            showModalForm(url);
+        });
+
+        $('#no-nominee').on('click', function() {
+            var url = '/dashboardNew/nonominee';
+            showModalForm(url);
+        });
+
+        $('#pending-leaves').on('click', function() {
+            var url = '/dashboardNew/pendingleaves';
+            showModalForm(url);
+        });
+
+
+        $('#late-comers').on('click', function() {
+            var url = '/dashboardNew/latecomers';
+            showModalForm(url);
+        });
+
+        $('#notice-period').on('click', function() {
+            var url = '/dashboardNew/noticeperiod';
+            showModalForm(url);
+        });
+
+
+        $('#retired-employees').on('click', function() {
+            var url = '/dashboardNew/retiredemployees';
+            showModalForm(url);
+        });
+        //end
+    });
+
+    function viewEmployeeMissPunches() {
+        if (!arguments.length) {
+            return false;
+        }
+        var emp_id = arguments[0];
+        if (emp_id) {
+            $("#container").isLoading({
+                text: "Loading",
+                position: "overlay"
+            });
+            var url = "/EditPunches/index/" + emp_id;
+            $("#container").load(url, function() {
+                isDashboardShown = false;
+            });
+        }
+    }
+
+  
+</script>
+
+<div id="dashboard-container">
+    <section class="content-header">
+        <div style="display: flex;align-items:center;justify-content: center;">
+            <input type="hidden"
+                id="company_logo"
+                name="company_logo"
+                value="<?php echo h($company_logo); ?>" />
+            <h1 style="text-align:center; font-size:32px;">
+                <?php if (!empty($company_logo)) : ?>
+                    <img
+                        src="<?= $this->webroot . h($company_logo); ?>"
+                        alt="Company Logo"
+                        style="max-height: 80px; width: auto; margin-right:10px;" />
+                <?php endif; ?>
+            </h1>
+            <input type="hidden"
+                id="company_name"
+                name="company_name"
+                value="<?php echo h($company_name); ?>" />
+
+            <h1 style="text-align:center; font-size:32px;">
+                <i class=""></i>
+                <?php echo h($company_name); ?>
+            </h1>
+        </div>
+        <br>
+
+        <h1 style="text-align:center; font-size: 14px;
+    margin-top: -30px; margin-bottom:20px;">
+            <i class=""></i>
+            <?php echo h($company_address) . ',' . h($company_city) . ',' . h($company_state) . ',' . h($company_pincode); ?>
+        </h1>
+
+
+        <ol style="text-align:center;">
+         
+            <li class="active" style="margin-left: 10px;">
+                <?php
+                function ordinalSuffix($day)
+                {
+                    return $day;
+                }
+                //edited by ASHIN on 28-06-24
+                $date = date("d-m-Y");
+                list($day, $month, $year) = explode('-', $date);
+
+                $months = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+
+                echo '<sub style="font-size: 18px; vertical-align: -0.07em;font-weight: bold;">' . ordinalSuffix($day) . ' ' . $months[$month - 1] . ' ' . $year . '</sub>';
+                ?>
+            </li><br>
+          
+        </ol>
+
+
+    </section>
+
+    <div class="charts-container">
+   
+        <div class="box box-primary">
+            <div class="box-header with-border" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:8px 0px;color: white;border-top-right-radius: 8px;
+     border-top-left-radius: 8px;">
+                <h3 class="box-title" style="color:white;">Age Groups</h3>
+            </div>
+            <div class="box-body chart-responsive">
+                <div id="donut-chart" style="height: 400px;padding:50px;"></div>
+            </div>
+        </div>
+        <!-- 2. Gender Ratio -->
+        <div class="box box-primary">
+            <div class="box-header with-border" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:8px 0px;color: white;border-bottom: 1px solid #f0f0f0;border-radius: 12px 12px 0 0;">
+                <h3 class="box-title">Employee Gender Ratio (Total Employees: <?php echo h($activeEmployee); ?>)</h3>
+            </div>
+            <div class="box-body chart-responsive">
+                <div id="gender-pie-chart" style="height: 400px;padding:50px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="charts-container">
+        <!-- 3.Department bar chart -->
+        <div class="box box-primary">
+            <div class="box-header" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:0px;color: white;border-bottom: 1px solid #f0f0f0;border-radius: 12px 12px 0 0;padding: 3px;">
+            </div>
+            <div class="box-body chart-responsive">
+                <div id="horizontal-bar-chart" style="height: 400px;"></div>
+            </div>
+        </div>
+        <!-- 4. Designation Wise -->
+        <div class="box box-primary">
+            <div class="box-header" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:0px;color: white;border-bottom: 1px solid #f0f0f0;border-radius: 12px 12px 0 0;padding: 3px;">
+                <div id="designation-pagination-controls" class="chart-pagination" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:0px;color: white;margin:0;padding:0px;"></div>
+            </div>
+
+            <div class="box-body chart-responsive">
+                <div id="designation-bar-chart" style="height: 400px;"></div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <div class="charts-container">
+        <!-- 5. Branch-wise Employee Count -->
+        <div class="box box-primary">
+            <div class="box-header" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:0px;color: white;border-bottom: 1px solid #f0f0f0;border-radius: 12px 12px 0 0;padding: 3px;">
+                <!-- <h3 class="box-title">Branch-wise Employee Count</h3> -->
+                <div id="branch-pagination-controls" class="chart-pagination" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:0px;color: white;margin:0;padding:0px;"></div>
+            </div>
+
+            <div class="box-body chart-responsive">
+                <div id="branch-bar-chart" style="height: 400px;"></div>
+            </div>
+        </div>
+        <div class="emp-summary-wrapper">
+            <div class="coverage-cards">
+                <!-- 1️⃣ UAN not provided -->
+                <div class="coverage-card">
+                    <div class="coverage-icon">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <div class="coverage-details">
+                        <h4>UAN not provided</h4>
+                        <div class="leave-counter">
+                            <span class="leave-days"><?php echo (int)$coverageStats['uan_not_provided']; ?></span>
+                            <span class="leave-label">Employees</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2️⃣ ESI Coverage -->
+                <div class="coverage-card">
+                    <div class="coverage-icon">
+                        <i class="fa fa-plus-square"></i>
+                    </div>
+                    <div class="coverage-details">
+                        <h4>ESI Coverage</h4>
+                        <div class="leave-counter">
+                            <span class="leave-days"><?php echo (int)$coverageStats['esi_not_covered']; ?></span>
+                            <span class="leave-label">Not Covered</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3️⃣ PAN not provided -->
+                <div class="coverage-card">
+                    <div class="coverage-icon">
+                        <i class="fa fa-file-text"></i>
+                    </div>
+                    <div class="coverage-details">
+                        <h4>PAN not provided</h4>
+                        <div class="leave-counter">
+                            <span class="leave-days"><?php echo (int)$coverageStats['pan_not_provided']; ?></span>
+                            <span class="leave-label">Employees</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4️⃣ Leave Approvals Pending -->
+                <div class="coverage-card">
+                    <div class="coverage-icon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    <div class="coverage-details">
+                        <h4>Leave Approvals Pending</h4>
+                        <div class="leave-counter">
+                            <span class="leave-days"><?php echo (int)$coverageStats['total_leaves']; ?></span>
+                            <span class="leave-label">Pending</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="chart-border-container">
+        <div style="text-align: center;">
+            <select id="common-month-select" class="month-year-select">
+                <?php if (!empty($availableMonths)): ?>
+                    <?php foreach ($availableMonths as $month): ?>
+                        <option value="<?php echo $month['value']; ?>" <?php echo ($month['value'] == $defaultMonth) ? 'selected' : ''; ?>>
+                            <?php echo $month['label']; ?>
+                        </option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </select>
+        </div>
+        <div class="charts-container">
+            <div class="box box-primary">
+                <div class="box-header with-border" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:8px 0px;color: white;border-radius: 12px 12px 0 0;border-bottom: 1px solid #f0f0f0;">
+                    <h3 class="box-title">Employee Count</h3>
+                </div>
+                <div class="box-body chart-responsive">
+                    <div id="employee-month-bar" style="height: 400px;"></div>
+                </div>
+            </div>
+            <div class="box box-primary">
+                <!-- 7.employee present count -->
+                <div class="box-header with-border" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:8px 0px;color: white;border-bottom: 1px solid #f0f0f0;border-radius: 12px 12px 0 0;">
+                    <h3 class="box-title">Man Days</h3>
+                </div>
+                <div class="box-body chart-responsive">
+                    <div id="employee-present-bar" style="height: 400px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-container">
+            <!-- 8.salary line chart-->
+
+            <div class="box box-primary">
+                <div class="box-header with-border" style="background: linear-gradient(90deg, #007BFF, #20C997); padding:8px 0; color: white;">
+                    <h3 class="box-title">Salary Chart</h3>
+                </div>
+
+                <div class="box-body chart-responsive" style="position: relative; overflow: hidden; min-height: 390px; width: 100%;">
+                    <div id="monthlyCTCChart" style="height: 400px; width: 100%; position: relative; max-width: 100%;"></div>
+                </div>
+            </div>
+
+            <div class="box box-primary" style="clear: both;">
+                <div class="box-header with-border" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:8px 0px;color: white;border-bottom: 1px solid #f0f0f0;border-radius: 12px 12px 0 0;">
+                    <h3 class="box-title">Absense Days - Leave & LOP</h3>
+                </div>
+                <div class="box-body chart-responsive" style="position: relative; overflow: hidden; min-height: 400px; width: 100%;">
+                    <div id="absence-line-chart" style="height: 400px; width: 100%; position: relative; max-width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="charts-container">
+            <!-- 10.Uploaded Variable Additions-->
+            <div class="box box-primary">
+                <div class="box-header with-border" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:8px 0px;color: white;border-bottom: 1px solid #f0f0f0;border-radius: 12px 12px 0 0;">
+                    <h3 class="box-title">Variable Salary Additions</h3>
+                </div>
+                <div class="box-body chart-responsive">
+                    <div id="variable-addition-bar" style="height: 400px;"></div>
+                </div>
+            </div>
+
+            <div class="box box-primary">
+                <!-- 11.Uploaded Variable Deduction-->
+                <div class="box-header with-border" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:8px 0px;color: white;border-bottom: 1px solid #f0f0f0;border-radius: 12px 12px 0 0;">
+                    <h3 class="box-title">Variable Salary Deduction</h3>
+                </div>
+                <div class="box-body chart-responsive">
+                    <div id="variable-deduction-bar" style="height: 400px;"></div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- 12. CTC Breakup - Pie Chart - Fixed Monthly Components, Variable Components, Employer Contributions -->
+        <div class="charts-container">
+            <div class="box box-primary">
+                <div class="box-header with-border" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:8px 0px;color: white;border-bottom: 1px solid #f0f0f0;border-radius: 12px 12px 0 0;">
+                    <h3 class="box-title" id="ctc-breakup-title" style="margin:0;flex:1;color:white;">CTC Breakup - Components</h3>
+                </div>
+                <div class="box-body chart-responsive">
+                    <div id="ctc-pie-chart" style="height: 400px;padding:50px;"></div>
+                </div>
+            </div>
+            <table id="ctc-color-table" class="chart-color-table">
+                <thead>
+                    <tr style="padding:8px 14px;">
+                        <th>Legend</th>
+                        <th>Component</th>
+                        <th>Amount (₹)</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- 13. CTC Breakup - Pie Chart - Department wise -->
+        <div class="charts-container">
+            <div class="box box-primary">
+                <div class="box-header with-border" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:8px 0px;color: white;border-bottom: 1px solid #f0f0f0;border-radius: 12px 12px 0 0;">
+                    <h3 class="box-title" id="ctc-dept-title" style="margin:0;flex:1;color:white;">CTC Breakup - Department Wise</h3>
+
+                </div>
+                <div class="box-body chart-responsive">
+                    <div id="salary-department-pie" style="height: 400px;padding:50px;"></div>
+                </div>
+            </div>
+            <table id="salary-dept-color-table" class="chart-color-table">
+                <thead>
+                    <tr>
+                        <th style="padding:8px 14px;">Legend</th>
+                        <th>Department</th>
+                        <th>Amount (₹)</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- 14. CTC Breakup - Pie Chart - Designation Wise -->
+        <div class="charts-container">
+            <div class="box box-primary">
+                <div class="box-header with-border" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:8px 0px;color: white;border-bottom: 1px solid #f0f0f0;border-radius: 12px 12px 0 0;">
+                    <h3 class="box-title" id="ctc-designation-title" style="margin:0;flex:1;color:white;">CTC Breakup - Designation Wise</h3>
+
+                </div>
+                <div class="box-body chart-responsive">
+                    <div id="designation-pie-chart" style="height: 400px;padding:50px;"></div>
+                </div>
+            </div>
+            <table id="designation-color-table" class="chart-color-table">
+                <thead>
+                    <tr>
+                        <th style="padding:8px 14px;">Legend</th>
+                        <th>Designation</th>
+                        <th>Amount (₹)</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- 15. CTC Breakup - Pie Chart - Branch Wise -->
+        <div class="charts-container">
+            <div class="box box-primary">
+                <div class="box-header with-border" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:8px 0px;color: white;border-bottom: 1px solid #f0f0f0;border-radius: 12px 12px 0 0;">
+                    <h3 class="box-title" id="ctc-branch-title" style="margin:0;flex:1;color:white;">CTC Breakup - Branch Wise</h3>
+
+                </div>
+                <div class="box-body chart-responsive">
+                    <div id="branch-pie-chart" style="height: 400px;padding:50px;"></div>
+                </div>
+            </div>
+            <table id="branch-color-table" class="chart-color-table">
+                <thead>
+                    <tr>
+                        <th style="padding:8px 14px;">Legend</th>
+                        <th>Branch</th>
+                        <th>Amount (₹)</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+
+        <div class="container my-4">
+            <div class="row justify-content-center">
+
+                <!-- 🟩 Top 5 Highest Salaries -->
+                <div class="col-md-6 mb-4" style="padding-right: 6px;">
+                    <div class="card salary-card border-danger shadow-sm">
+                        <div class="text-white" style="
+                    background: linear-gradient(90deg, #007BFF, #20C997);
+                    padding:18px;
+                    color: white;
+                    text-align: center !important;
+                    font-weight: 600;
+                    font-size:18px;
+                    height:0px !important;">
+                            <div style="margin-top:-10px;font-weight:400;font-size:14px;">
+                                Top 5 Highest Salaries
+                            </div>
+                        </div>
+
+                        <div class="card-body card-body-custom">
+                            <table class="table table-bordered table-hover align-middle mb-0 salary-table border-success">
+                                <thead class="table-success text-center">
+                                    <tr>
+                                        <th style="width: 60px;">S.No</th>
+                                        <th>Employee Name</th>
+                                        <th class="text-end">Total CTC</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Filled dynamically via AJAX -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- 🟥 Top 5 Lowest Salaries -->
+                <div class="col-md-6 mb-4">
+                    <div class="card salary-card border-danger shadow-sm">
+                        <div class="text-white" style="
+                    background: linear-gradient(90deg, #007BFF, #20C997);
+                    padding:18px;
+                    color: white;
+                    text-align: center !important;
+                    font-weight: 600;
+                    font-size:18px;
+                    height:0px !important;">
+                            <div style="margin-top:-10px;font-weight:400;font-size:14px;">
+                                5 Lowest Salaries
+                            </div>
+                        </div>
+
+                        <div class="card-body card-body-custom-red">
+                            <table class="table table-bordered table-hover align-middle mb-0 salary-table-low border-danger">
+                                <thead class="table-danger text-center">
+                                    <tr>
+                                        <th style="width: 60px;">S.No</th>
+                                        <th>Employee Name</th>
+                                        <th class="text-end">Total CTC</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Loaded dynamically via AJAX -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- end -->
+
+<!-- Pending Approvals Section -->
+
+</div>
+</div>
+
+<script>
+    function loadLowSalaries(monthYear) {
+        $.ajax({
+            url: '<?php echo $this->webroot; ?>BusinessDashboard/lowestSalaries',
+            type: 'GET',
+            data: {
+                month: monthYear
+            },
+            dataType: 'html',
+            success: function(response) {
+                $('.salary-table-low tbody').html(response);
+            },
+            error: function() {
+                $('.salary-table-low tbody').html('<tr><td colspan="3" class="text-center text-muted py-3">Error loading data</td></tr>');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        const defaultMonth = '<?php echo $defaultMonth; ?>';
+        loadLowSalaries(defaultMonth);
+
+        $('#common-month-select').on('change', function() {
+            loadLowSalaries($(this).val());
+        });
+    });
+</script>
+
+<script>
+    function loadTopSalaries(monthYear) {
+        $.ajax({
+            url: '<?php echo $this->webroot; ?>BusinessDashboard/highestSalaries',
+            type: 'GET',
+            data: {
+                month: monthYear
+            },
+            dataType: 'html',
+            success: function(response) {
+                $('.salary-table tbody').html(response);
+            },
+            error: function() {
+                $('.salary-table tbody').html('<tr><td colspan="3" class="text-center text-muted py-3">Error loading data</td></tr>');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        const defaultMonth = '<?php echo $defaultMonth; ?>';
+        loadTopSalaries(defaultMonth);
+
+        $('#common-month-select').on('change', function() {
+            loadTopSalaries($(this).val());
+        });
+    });
+</script>
+<script>
+    function loadVariableAddition(monthYear) {
+        $.ajax({
+            url: '<?php echo $this->webroot; ?>BusinessDashboard/getVariableAddition',
+            type: 'GET',
+            data: {
+                month_year: monthYear
+            },
+            dataType: 'json',
+            success: function(response) {
+                const formattedVariableAddition = response.map(item => ({
+                    month: item[0].month_year, // <- fix here
+                    amount: parseFloat(item[0].total_upload) || 0
+                }));
+
+                // Render chart
+                new Morris.Bar({
+                    element: 'variable-addition-bar',
+                    data: formattedVariableAddition,
+                    xkey: 'month',
+                    ykeys: ['amount'],
+                    labels: ['Uploaded Amount'],
+                    barColors: ['#2ecc71'],
+                    resize: true,
+                    parseTime: false,
+                    grid: true,
+                    hideHover: 'auto',
+                    xLabelAngle: 0,
+                    xLabelMargin: 25,
+                    barSizeRatio: 0.5,
+                    gridTextSize: 11,
+                    hoverCallback: function(index, options, content, row) {
+                        return `<b>${row.month}</b>: ₹${row.amount.toLocaleString()}`;
+                    }
+                });
+            },
+            error: function() {
+                $('#variable-addition-bar').html('<p class="text-center text-muted mt-3">Error loading data</p>');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        const defaultMonth = '<?php echo isset($defaultMonth) ? $defaultMonth : date("Y-m"); ?>';
+        loadVariableAddition(defaultMonth);
+
+        $('#common-month-select').on('change', function() {
+            loadVariableAddition($(this).val());
+        });
+    });
+</script>
+
+<script>
+    function fillChartTable(tableId, data, colors) {
+        const tableBody = $(`#${tableId} tbody`);
+        tableBody.empty();
+        data.forEach((d, i) => {
+            const row = `
+            <tr>
+                <td><span style="background:${colors[i % colors.length]};"></span></td>
+                <td>${d.label}</td>
+                <td>₹${parseFloat(d.value).toLocaleString()}</td>
+            </tr>`;
+            tableBody.append(row);
+        });
+    }
+</script>
+<script>
+    // Function to load CTC Breakup by Designation
+    function loadCTCBreakupByDesignation(monthYear) {
+        $.ajax({
+            url: '<?php echo $this->webroot; ?>BusinessDashboard/getCTCBreakupByDesignation',
+            type: 'GET',
+            data: {
+                month_year: monthYear
+            },
+            dataType: 'json',
+            success: function(response) {
+                const designationData = response.data || [];
+                const monthName = response.monthName || '';
+                const designationColors = [
+                    '#f28e2b', '#4e79a7', '#e15759', '#76b7b2',
+                    '#59a14f', '#edc949', '#af7aa1', '#ff9da7',
+                    '#9c755f', '#bab0ab'
+                ];
+
+                $('#ctc-designation-title').text(`CTC Breakup - Designation Wise`);
+
+                const tableBody = $('#designation-color-table tbody');
+                tableBody.empty();
+
+                if (designationData && designationData.length > 0) {
+                    $('#designation-pie-chart').empty();
+                    new Morris.Donut({
+                        element: 'designation-pie-chart',
+                        data: designationData,
+                        colors: designationColors,
+                        resize: false,
+                        formatter: (value) => '₹' + value.toLocaleString()
+                    });
+
+                    let totalValue = 0;
+                    designationData.forEach((d, i) => {
+                        totalValue += parseFloat(d.value);
+                        const row = `
+                            <tr>
+                                <td><span style="display:inline-block;width:20px;height:20px;background:${designationColors[i % designationColors.length]};border-radius:3px;"></span></td>
+                                <td>${d.label}</td>
+                                <td>₹${parseFloat(d.value).toLocaleString()}</td>
+                            </tr>`;
+                        tableBody.append(row);
+                    });
+
+                    // ✅ Total Row
+                    const totalRow = `
+                        <tr style="font-weight:bold; background:#f8f9fa;">
+                            <td colspan="2" style="text-align:right;">Total:</td>
+                            <td>₹${totalValue.toLocaleString()}</td>
+                        </tr>`;
+                    tableBody.append(totalRow);
+
+                } else {
+                    $('#designation-pie-chart').html('<p class="text-center text-muted mt-3">No data available</p>');
+                }
+            },
+            error: function() {
+                $('#designation-pie-chart').html('<p class="text-center text-muted mt-3">Error loading data</p>');
+            }
+        });
+    }
+
+    // Function to load CTC Breakup by Branch
+    function loadCTCBreakupByBranch(monthYear) {
+        $.ajax({
+            url: '<?php echo $this->webroot; ?>BusinessDashboard/getCTCBreakupByBranch',
+            type: 'GET',
+            data: {
+                month_year: monthYear
+            },
+            dataType: 'json',
+            success: function(response) {
+                const branchData = response.data || [];
+                const monthName = response.monthName || '';
+                const branchColors = [
+                    '#e83e8c', '#007bff', '#28a745', '#ffc107', '#dc3545',
+                    '#17a2b8', '#6610f2', '#fd7e14',
+                    '#20c997', '#6f42c1'
+                ];
+
+                $('#ctc-branch-title').text(`CTC Breakup - Branch Wise`);
+
+                const tableBody = $('#branch-color-table tbody');
+                tableBody.empty();
+
+                if (branchData && branchData.length > 0) {
+                    $('#branch-pie-chart').empty();
+                    new Morris.Donut({
+                        element: 'branch-pie-chart',
+                        data: branchData,
+                        colors: branchColors,
+                        resize: false,
+                        formatter: (value) => '₹' + value.toLocaleString()
+                    });
+
+                    let totalValue = 0;
+                    branchData.forEach((d, i) => {
+                        totalValue += parseFloat(d.value);
+                        const row = `
+                            <tr>
+                                <td><span style="display:inline-block;width:20px;height:20px;background:${branchColors[i % branchColors.length]};border-radius:3px;"></span></td>
+                                <td>${d.label}</td>
+                                <td>₹${parseFloat(d.value).toLocaleString()}</td>
+                            </tr>`;
+                        tableBody.append(row);
+                    });
+
+                    // ✅ Total Row
+                    const totalRow = `
+                        <tr style="font-weight:bold; background:#f8f9fa;">
+                            <td colspan="2" style="text-align:right;">Total:</td>
+                            <td>₹${totalValue.toLocaleString()}</td>
+                        </tr>`;
+                    tableBody.append(totalRow);
+
+                } else {
+                    $('#branch-pie-chart').html('<p class="text-center text-muted mt-3">No data available</p>');
+                }
+            },
+            error: function() {
+                $('#branch-pie-chart').html('<p class="text-center text-muted mt-3">Error loading data</p>');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+
+        const defaultMonth = '<?php echo isset($defaultMonth) ? $defaultMonth : date("Y-m"); ?>';
+
+        loadCTCBreakupByDesignation(defaultMonth);
+        loadCTCBreakupByBranch(defaultMonth);
+
+        $('#common-month-select').on('change', function() {
+            loadCTCBreakupByDesignation($(this).val());
+        });
+
+        $('#common-month-select').on('change', function() {
+            loadCTCBreakupByBranch($(this).val());
+        });
+    });
+</script>
+
+<script>
+    // Function to load CTC Breakup by Department
+    function loadCTCBreakupByDept(monthYear) {
+        $.ajax({
+            url: '<?php echo $this->webroot; ?>BusinessDashboard/getCTCBreakupByDept',
+            type: 'GET',
+            data: {
+                month_year: monthYear
+            },
+            dataType: 'json',
+            success: function(response) {
+                const deptData = response.data || [];
+                const monthName = response.monthName || '';
+
+                $('#ctc-dept-title').text(`CTC Breakup - Department Wise`);
+
+                if (!deptData || deptData.length === 0) {
+                    $('#salary-department-pie').html('<p class="text-center text-muted mt-3">No data available</p>');
+                    $('#salary-dept-color-table tbody').empty();
+                    return;
+                }
+
+                const colors = [
+                    '#1E90FF', '#28A745', '#FFC107', '#E83E8C',
+                    '#6F42C1', '#17A2B8', '#FF5733', '#20C997'
+                ];
+
+                // Draw Donut Chart
+                $('#salary-department-pie').empty();
+                new Morris.Donut({
+                    element: 'salary-department-pie',
+                    data: deptData,
+                    colors: colors,
+                    resize: false,
+                    formatter: function(value) {
+                        return '₹' + value.toLocaleString();
+                    }
+                });
+
+                // Build Table
+                const tableBody = $('#salary-dept-color-table tbody');
+                tableBody.empty();
+
+                let totalValue = 0;
+                deptData.forEach((d, i) => {
+                    totalValue += parseFloat(d.value);
+                    const row = `
+                        <tr>
+                            <td><span style="display:inline-block;width:20px;height:20px;background:${colors[i % colors.length]};border-radius:3px;"></span></td>
+                            <td>${d.label}</td>
+                            <td>₹${parseFloat(d.value).toLocaleString()}</td>
+                        </tr>`;
+                    tableBody.append(row);
+                });
+
+                // ✅ Add Total Row
+                const totalRow = `
+                    <tr style="font-weight:bold; background:#f8f9fa;">
+                        <td colspan="2" style="text-align:right;">Total:</td>
+                        <td>₹${totalValue.toLocaleString()}</td>
+                    </tr>`;
+                tableBody.append(totalRow);
+            },
+            error: function() {
+                $('#salary-department-pie').html('<p class="text-center text-muted mt-3">Error loading data</p>');
+            }
+        });
+    }
+    $(document).ready(function() {
+
+        const defaultMonth = '<?php echo isset($defaultMonth) ? $defaultMonth : date("Y-m"); ?>';
+
+        loadCTCBreakupByDept(defaultMonth);
+
+        // 🔥 Use common month selector
+        $('#common-month-select').on('change', function() {
+            loadCTCBreakupByDept($(this).val());
+        });
+    });
+</script>
+
+<script>
+    function loadCTCBreakup(monthYear) {
+
+        $.ajax({
+            url: '<?php echo $this->webroot; ?>BusinessDashboard/getCTCBreakup',
+            type: 'GET',
+            data: {
+                month_year: monthYear
+            },
+            dataType: 'json',
+
+            success: function(ctcData) {
+
+                $('#ctc-breakup-title').text(`CTC Breakup - Components`);
+
+                // -------------------------------
+                // ORIGINAL VALUES (with + / -)
+                // -------------------------------
+                const originalValues = [
+                    parseFloat(ctcData.fixed_salary || 0),
+                    parseFloat(ctcData.variable_salary || 0),
+                    parseFloat(ctcData.employer_contribution || 0)
+                ];
+
+                const labels = [
+                    "Fixed Monthly Components",
+                    "Variable Components",
+                    "Employer Contributions"
+                ];
+
+                // -------------------------------
+                // MORRIS NEEDS ABS VALUES
+                // -------------------------------
+                const donutData = originalValues.map((v, i) => ({
+                    label: labels[i],
+                    value: Math.abs(v), // absolute value for chart
+                    originalValue: v // store actual value
+                }));
+
+                // -------------------------------
+                // DRAW MORRIS DONUT
+                // -------------------------------
+                $('#ctc-pie-chart').empty();
+
+                new Morris.Donut({
+                    element: 'ctc-pie-chart',
+                    data: donutData,
+                    colors: ['#59a14f', '#f28e2b', '#4e79a7'],
+                    resize: true,
+
+                    formatter: function(val, row) {
+                        const real = row.originalValue;
+
+                        return real < 0 ?
+                            `-₹${Math.abs(real).toLocaleString()}` :
+                            `₹${real.toLocaleString()}`;
+                    }
+                });
+
+                // -------------------------------
+                // TABLE BELOW DONUT
+                // -------------------------------
+                const tableBody = $('#ctc-color-table tbody');
+                tableBody.empty();
+
+                let positiveTotal = 0;
+                let negativeTotal = 0;
+
+                donutData.forEach((d, i) => {
+                    const real = d.originalValue;
+
+                    const formatted = real < 0 ?
+                        `-₹${Math.abs(real).toLocaleString()}` :
+                        `₹${real.toLocaleString()}`;
+
+                    if (real >= 0) positiveTotal += real;
+                    else negativeTotal += Math.abs(real);
+
+                    tableBody.append(`
+                    <tr>
+                        <td>
+                            <span style="display:inline-block;width:20px;height:20px;background:${['#59a14f','#f28e2b','#4e79a7'][i]};border-radius:3px;"></span>
+                        </td>
+                        <td>${d.label}</td>
+                        <td>${formatted}</td>
+                    </tr>
+                `);
+                });
+
+                const finalTotal = positiveTotal - negativeTotal;
+                const finalFormatted = finalTotal < 0 ?
+                    `-₹${Math.abs(finalTotal).toLocaleString()}` :
+                    `₹${finalTotal.toLocaleString()}`;
+
+                tableBody.append(`
+                <tr style="font-weight:bold; background:#f8f9fa;">
+                    <td colspan="2" style="text-align:right;">Total:</td>
+                    <td>${finalFormatted}</td>
+                </tr>
+            `);
+
+            },
+
+            error: function() {
+                $('#ctc-pie-chart').html('<p class="text-center text-muted mt-3">Error loading data</p>');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        const defaultMonth = '<?php echo isset($defaultMonth) ? $defaultMonth : date("Y-m"); ?>';
+        loadCTCBreakup(defaultMonth);
+
+        $('#common-month-select').on('change', function() {
+            loadCTCBreakup($(this).val());
+        });
+    });
+</script>
+
+
+<script>
+    // Global responsive helper functions - defined early for all charts to use
+    window.getResponsiveTextSize = function() {
+        const width = $(window).width();
+        if (width <= 200) return 7;
+        if (width <= 320) return 8;
+        if (width <= 480) return 9;
+        if (width <= 768) return 10;
+        return 11;
+    };
+
+    window.getResponsiveAngle = function() {
+        const width = $(window).width();
+        if (width <= 200) return 90;
+        if (width <= 320) return 90;
+        if (width <= 480) return 60;
+        if (width <= 768) return 45;
+        return 0;
+    };
+</script>
+
+
+<script>
+    $(document).ready(function() {
+        // Monthly CTC Bar Chart
+        try {
+            const monthlyCTCData = JSON.parse('<?php echo $monthlyCTCData; ?>');
+
+            $('#monthly-ctc-bar').empty();
+
+            if (monthlyCTCData && monthlyCTCData.length > 0) {
+                new Morris.Bar({
+                    element: 'monthly-ctc-bar',
+                    data: monthlyCTCData.map(item => ({
+                        month: item.month,
+                        ctc: parseFloat(item.ctc) || 0
+                    })),
+                    xkey: 'month',
+                    ykeys: ['ctc'],
+                    labels: ['CTC'],
+                    barColors: ['#007BFF'],
+                    gridTextSize: getResponsiveTextSize(),
+                    hideHover: 'auto',
+                    resize: false,
+                    barSizeRatio: 0.5,
+                    grid: true,
+                    axes: true,
+                    xLabelAngle: getResponsiveAngle(),
+                    parseTime: false,
+                    yLabelFormat: function(y) {
+                        return '₹' + Math.round(y).toLocaleString();
+                    },
+                    hoverCallback: function(index, options, content, row) {
+                        return '<b>' + row.month + '</b>: ₹' + row.ctc.toLocaleString();
+                    }
+                });
+            } else {
+                $('#monthly-ctc-bar').html('<p class="text-center text-muted mt-3">No data available</p>');
+            }
+        } catch (e) {
+            console.error('Error loading monthly CTC chart:', e);
+            $('#monthly-ctc-bar').html('<p class="text-center text-muted mt-3">Error loading data</p>');
+        }
+    });
+</script>
+
+
+<!-- Leave Requests Modal -->
+
+<script>
+    $(document).ready(function() {
+        $('#leave-requests-approval').on('click', function() {
+            $('#leaveRequestsModalBody').html('<div class="loading">Loading...</div>');
+            $('#leaveRequestsModal').modal('show');
+            $.ajax({
+                url: '/DashboardNew/listleaverequests', // Adjust if your route is different
+                type: 'GET',
+                success: function(data) {
+                    $('#leaveRequestsModalBody').html(data);
+                },
+                error: function() {
+                    $('#leaveRequestsModalBody').html('<div class="loading text-danger">Failed to load leave requests.</div>');
+                }
+            });
+        });
+        $('#promotion-approval').on('click', function() {
+            $('#promotionModalBody').html('<div class="loading">Loading...</div>');
+            $('#promotionModal').modal('show');
+            $.ajax({
+                url: '/DashboardNew/promotion', // Adjust if your route is different
+                type: 'GET',
+                success: function(data) {
+                    $('#promotionModalBody').html(data);
+                },
+                error: function() {
+                    $('#promotionModalBody').html('<div class="loading text-danger">Failed to load leave requests.</div>');
+                }
+            });
+        });
+        $('#expense-approval').on('click', function() {
+            $('#expenseModalBody').html('<div class="loading">Loading...</div>');
+            $('#expenseModal').modal('show');
+            $.ajax({
+                url: '/DashboardNew/expense', // Adjust if your route is different
+                type: 'GET',
+                success: function(data) {
+                    $('#expenseModalBody').html(data);
+                },
+                error: function() {
+                    $('#expenseModalBody').html('<div class="loading text-danger">Failed to load leave requests.</div>');
+                }
+            });
+        });
+        $('#regularisation').on('click', function() {
+            $('#regularisationModalBody').html('<div class="loading">Loading...</div>');
+            $('#regularisationModal').modal('show');
+            $.ajax({
+                url: '/DashboardNew/AttendanceRegularisation', // Adjust if your route is different
+                type: 'GET',
+                success: function(data) {
+                    $('#regularisationModalBody').html(data);
+                },
+                error: function() {
+                    $('#regularisationModalBody').html('<div class="loading text-danger">Failed to load leave requests.</div>');
+                }
+            });
+        });
+
+        $('#verification').on('click', function() {
+            $('#verificationModalBody').html('<div class="loading">Loading...</div>');
+            $('#verificationModal').modal('show');
+            $.ajax({
+                url: '/DashboardNew/Attendanceverification', // Adjust if your route is different
+                type: 'GET',
+                success: function(data) {
+                    $('#verificationModalBody').html(data);
+                },
+                error: function() {
+                    $('#verificationModalBody').html('<div class="loading text-danger">Failed to load leave requests.</div>');
+                }
+            });
+        });
+
+    });
+</script>
+
+
+<!-- Include html2pdf -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- ✅ Add the HTML2PDF library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+
+<script>
+  
+    $(document).ready(function() {
+        $('#sidebarToggle').on('click', function() {
+            $('body').toggleClass('sidebar-expanded');
+        });
+        // Global variables
+        let allDepartmentData = <?php echo $departmentStats; ?>;
+        let currentPage = 1;
+        //edited by athira on 22-07-2025
+        const itemsPerPage = 5;
+        //end
+        let barChart = null;
+
+        // Function to paginate data
+        function paginateData(data, page) {
+            const start = (page - 1) * itemsPerPage;
+            return data.slice(start, start + itemsPerPage);
+        }
+        //edited by athira on 22-07-2025
+        function updateBarChart(page) {
+            let paginatedData = paginateData(allDepartmentData, page);
+
+            $('#horizontal-bar-chart').empty();
+
+            // ✅ Inject dummy bars to ensure 7 total bars per page
+            const dummyCount = itemsPerPage - paginatedData.length;
+            for (let i = 0; i < dummyCount; i++) {
+                paginatedData.push({
+                    department: '\u200B', // Zero-width space keeps layout but hides label
+                    value: 0 // Invisible bar
+                });
+            }
+
+            // ✅ Adjust chart height
+            $('#horizontal-bar-chart').css('height', `${itemsPerPage * 30 + 40}px`);
+
+
+            // ✅ Render chart with Morris.js
+            barChart = new Morris.Bar({
+                element: 'horizontal-bar-chart',
+                data: paginatedData.map(item => ({
+                    department: item.department.toString().split(' ').join('\n'),
+                    value: parseInt(item.value)
+                })),
+                xkey: 'department',
+                ykeys: ['value'],
+                labels: ['Employees'],
+                horizontal: true,
+                barColors: ['#11e707', '#00008B'],
+                gridTextSize: 7,
+                hideHover: 'auto',
+                resize: false,
+                barSizeRatio: 0.5,
+                grid: true,
+                axes: true,
+
+                xLabelMargin: 30,
+                padding: 45,
+                // barOpacity: 0.8,
+                // labelTop: true,
+
+                // ymin: 0,
+                // ymax: 200,
+                parseTime: false,
+                hoverCallback: function(index, options, content, row) {
+                    if (row.department.trim() === '\u200B') return '';
+                    return row.department.replace(/\n/g, ' ') + ': ' + row.value + ' Employees';
+                }
+            });
+
+            updatePaginationControls();
+        }
+
+        document
+            .getElementById('horizontal-bar-chart')
+            .addEventListener('mouseleave', function() {
+                document.querySelectorAll('.morris-hover').forEach(el => el.style.display = 'none');
+            });
+        //end
+
+
+        // Function to update pagination controls
+        function updatePaginationControls() {
+            const totalPages = Math.ceil(allDepartmentData.length / itemsPerPage);
+            const paginationHTML = `
+             <div class="pagination-info">
+                <h3 class="box-title" style="color:white;">Department-wise Employee Count</h3>
+            </div>
+            <div class="pagination-controls">
+                <button ${currentPage === 1 ? 'disabled' : ''} 
+                        onclick="changePage('prev')" 
+                        class="btn btn-default">
+                    <i class="fa fa-chevron-left"></i> Previous
+                </button>
+                <span class="page-number">Page ${currentPage} of ${totalPages}</span>
+                <button ${currentPage === totalPages ? 'disabled' : ''} 
+                        onclick="changePage('next')" 
+                        class="btn btn-default">
+                    Next <i class="fa fa-chevron-right"></i>
+                </button>
+            </div>
+        `;
+
+            $('#pagination-controls').html(paginationHTML);
+        }
+
+        // Define changePage function in window scope
+        window.changePage = function(direction) {
+            const totalPages = Math.ceil(allDepartmentData.length / itemsPerPage);
+
+            if (direction === 'prev' && currentPage > 1) {
+                currentPage--;
+                updateBarChart(currentPage);
+            } else if (direction === 'next' && currentPage < totalPages) {
+                currentPage++;
+                updateBarChart(currentPage);
+            }
+
+            // Force redraw of chart
+            setTimeout(() => {
+                if (barChart) {
+                    barChart.redraw();
+                }
+            }, 50);
+        };
+
+        // Add pagination controls container to DOM - only for department chart
+        $('.box-primary:has(#horizontal-bar-chart) .box-header').html(`
+        <div id="pagination-controls" class="chart-pagination" style="background: linear-gradient(90deg, #007BFF, #20C997);padding:0px;color: white;margin:0;"></div>
+    `);
+
+        updateBarChart(currentPage);
+
+
+        if (document.getElementById('donut-chart')) {
+            try {
+                new Morris.Donut({
+                    element: 'donut-chart',
+                    data: <?php echo $donutData; ?>,
+                    colors: <?php echo $donutColors; ?>,
+                    resize: false,
+                    formatter: function(value, data) {
+                        return value + ' Employees';
+                    }
+                });
+            } catch (e) {
+                console.error('Error loading donut chart:', e);
+                $('#donut-chart').html('<p class="text-center text-muted mt-3">Error loading chart</p>');
+            }
+        }
+
+
+
+        if (document.getElementById('salaryChart')) {
+            new Morris.Line({
+                element: 'salaryChart',
+                data: <?php echo $chartData; ?>,
+                xkey: 'month',
+                ykeys: ['value'],
+                labels: ['Salary'],
+                parseTime: false,
+                lineColors: ['#0000CD'],
+                pointFillColors: ['#32CD32'],
+                pointStrokeColors: ['#32CD32'],
+                grid: true,
+                axes: true,
+                hideHover: 'auto',
+                resize: false, // ✅ ensures chart fits parent width
+                padding: 30, // ✅ reduced padding to prevent overflow
+                yLabelPadding: 10,
+                //  xLabelPadding: 50,
+                gridTextSize: 11,
+                gridTextFamily: 'Inter',
+                gridTextColor: '#888',
+                gridTextWeight: '500',
+                pointSize: 3,
+                lineWidth: 2,
+                yLabelFormat: function(y) {
+                    return Math.round(y).toLocaleString();
+                }
+            });
+
+        }
+    });
+
+    $(function() {
+        $('.option-card').on('click', function() {
+            var $this = $(this);
+            var isAttendance = $this.hasClass('attendance');
+            var isMissed = $this.hasClass('missed');
+            var isVisits = $this.hasClass('visits');
+            var isSupport = $this.hasClass('support');
+
+            var wasActive = $this.hasClass('active');
+
+            // Always hide all dropdowns/results
+            $('#attendance-options').slideUp(180);
+            $('#attendance-results').slideUp(180);
+            $('#missed-attendance-results').slideUp(180);
+            $('#customer-visits-results').slideUp(180);
+            $('#support-requests-results').slideUp(180);
+
+
+            // Remove all active
+            $('.option-card').removeClass('active');
+
+            // If already active, just close all and return
+            if (wasActive) return;
+
+            // Otherwise, open the clicked one
+            $this.addClass('active');
+
+            if (isAttendance) {
+                $('#attendance-options').slideDown(180);
+            } else if (isMissed) {
+                $('#attendance-results').html('<div class="loading">Loading Missed Attendance...</div>').show();
+                loadMissedAttendance(this);
+            } else if (isVisits) {
+                loadCustomerVisitsData();
+                $('#customer-visits-results').slideDown(180);
+            } else if (isSupport) {
+                loadIssueReport(issuedate = 0);
+                $('#support-requests-results').slideDown(180);
+            }
+            // else if (isSupport) { ... }
+        });
+    });
+
+    function openWishModal(empPkey, event) {
+        // Assuming 'event' is a string
+        var eventText = event;
+
+        var url = "Dashboard/wish_modal/" + empPkey + "/" + encodeURIComponent(eventText);
+        showModalForm(livesite + url);
+    }
+
+    $(".dateget").change(function() {
+        var issuedate = $('#reportdate').val();
+        tablereport.ajax.url(livesite + "Dashboard/issuereport/" + issuedate).load();
+    });
+    $('.dateget').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true
+    });
+
+
+    // Gender Ratio (Donut Chart)
+
+    $(document).ready(function() {
+        // Parse PHP data
+        const genderData = <?php echo $genderData; ?>;
+
+        // Initialize Donut chart
+        new Morris.Donut({
+            element: 'gender-pie-chart',
+            data: genderData,
+            colors: ['#4e79a7', '#f28e2b', '#e15759'], // Male, Female, Other
+            resize: false,
+            formatter: function(value, data) {
+                return value + ' Employees';
+            }
+        });
+    });
+
+ 
+</script>
+
+<script>
+    $(document).ready(function() {
+        let allBranchData = <?php echo $branchempdata; ?>;
+        console.log(allBranchData);
+        let currentBranchPage = 1;
+        const branchItemsPerPage = 6;
+        let branchChart = null;
+
+        // Function to paginate data
+        function paginateBranchData(data, page) {
+            const start = (page - 1) * branchItemsPerPage;
+            return data.slice(start, start + branchItemsPerPage);
+        }
+
+        // Function to initialize/update bar chart
+        function updateBranchChart(page) {
+            const paginatedData = paginateBranchData(allBranchData, page);
+
+            $('#branch-bar-chart').empty(); // clear container
+
+            if (!paginatedData.length) {
+                $('#branch-bar-chart').html('<p>No data available.</p>');
+                return;
+            }
+
+            branchChart = new Morris.Bar({
+                element: 'branch-bar-chart',
+                data: paginatedData.map(item => ({
+                    branch_name: item.branch.toString().split(' ').join('\n'),
+                    value: parseInt(item.value)
+                })),
+                xkey: 'branch_name',
+                ykeys: ['value'],
+                labels: ['Employees'],
+                horizontal: true,
+                barColors: ['#007bff'],
+                gridTextSize: 7,
+                hideHover: 'auto',
+                barSizeRatio: 0.5,
+                xLabelAngle: 0,
+                xLabelMargin: 30, // adds space for wrapped text
+                grid: true,
+                axes: true,
+                resize: false,
+                padding: 45,
+                // barOpacity: 0.8,
+                parseTime: false,
+                hoverCallback: function(index, options, content, row) {
+                    return row.branch_name.replace('\n', ' ') + ': ' + row.value + ' Employees';
+                }
+            });
+
+            updateBranchPaginationControls();
+        }
+
+        // Pagination controls
+        function updateBranchPaginationControls() {
+            const totalPages = Math.ceil(allBranchData.length / branchItemsPerPage);
+            const paginationHTML = `
+            <div class="pagination-info">
+                <h3 class="box-title" style="color:white;">Branch-wise Employee Count</h3>
+            </div>
+            <div class="pagination-controls">
+                <button ${currentBranchPage === 1 ? 'disabled' : ''} 
+                        onclick="changeBranchPage('prev')" 
+                        class="btn btn-default">
+                    <i class="fa fa-chevron-left"></i> Previous
+                </button>
+                <span class="page-number">Page ${currentBranchPage} of ${totalPages}</span>
+                <button ${currentBranchPage === totalPages ? 'disabled' : ''} 
+                        onclick="changeBranchPage('next')" 
+                        class="btn btn-default">
+                    Next <i class="fa fa-chevron-right"></i>
+                </button>
+            </div>
+        `;
+            $('#branch-pagination-controls').html(paginationHTML);
+        }
+
+        // Define change page in global scope
+        window.changeBranchPage = function(direction) {
+            const totalPages = Math.ceil(allBranchData.length / branchItemsPerPage);
+            if (direction === 'prev' && currentBranchPage > 1) {
+                currentBranchPage--;
+                updateBranchChart(currentBranchPage);
+            } else if (direction === 'next' && currentBranchPage < totalPages) {
+                currentBranchPage++;
+                updateBranchChart(currentBranchPage);
+            }
+
+            setTimeout(() => {
+                if (branchChart) {
+                    branchChart.redraw();
+                }
+            }, 50);
+        };
+
+        // Initialize chart
+        updateBranchChart(currentBranchPage);
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        let allDesignationData = <?php echo $designationData; ?>;
+        let currentDesignationPage = 1;
+        const designationItemsPerPage = 6;
+        let designationChart = null;
+
+        function paginateDesignationData(data, page) {
+            const start = (page - 1) * designationItemsPerPage;
+            return data.slice(start, start + designationItemsPerPage);
+        }
+
+        function updateDesignationChart(page) {
+            let paginatedData = paginateDesignationData(allDesignationData, page);
+            $('#designation-bar-chart').empty();
+
+            // ✅ Add dummy bars to keep uniform height like department chart
+            const dummyCount = designationItemsPerPage - paginatedData.length;
+            for (let i = 0; i < dummyCount; i++) {
+                paginatedData.push({
+                    designation: '\u200B',
+                    value: 0
+                });
+            }
+
+            // ✅ Set uniform chart height
+            // $('#designation-bar-chart').css('height', `${designationItemsPerPage * 30 + 40}px`);
+
+            designationChart = new Morris.Bar({
+                element: 'designation-bar-chart',
+                data: paginatedData.map(item => ({
+                    designation: item.designation.toString().split(' ').join('\n'),
+                    value: parseInt(item.value)
+                })),
+                xkey: 'designation',
+                ykeys: ['value'],
+                labels: ['Employees'],
+                horizontal: true, // match department chart orientation
+                barColors: ['#007BFF', '#20C997'], // gradient-style consistency
+                gridTextSize: 6,
+                hideHover: 'auto',
+                resize: false,
+                barSizeRatio: 0.5, // same as department chart
+                grid: true,
+                axes: true,
+                xLabelMargin: 30,
+                padding: 50,
+                parseTime: false,
+                hoverCallback: function(index, options, content, row) {
+                    if (row.designation.trim() === '\u200B') return '';
+                    return row.designation.replace(/\n/g, ' ') + ': ' + row.value + ' Employees';
+                }
+            });
+
+            // ✅ Fix label alignment and wrapping
+            $('#designation-bar-chart text[text-anchor="middle"]').css({
+                'white-space': 'pre',
+                'font-size': '10px',
+                'text-align': 'center'
+            });
+
+            updateDesignationPaginationControls();
+        }
+
+        // Hide hover box when mouse leaves
+        document
+            .getElementById('designation-bar-chart')
+            .addEventListener('mouseleave', function() {
+                document.querySelectorAll('.morris-hover').forEach(el => el.style.display = 'none');
+            });
+
+        function updateDesignationPaginationControls() {
+            const totalPages = Math.ceil(allDesignationData.length / designationItemsPerPage);
+            const paginationHTML = `
+            <div class="pagination-info">
+                <h3 class="box-title" style="color:white;">Designation-wise Employee Count</h3>
+            </div>
+            <div class="pagination-controls">
+                <button ${currentDesignationPage === 1 ? 'disabled' : ''}
+                        onclick="changeDesignationPage('prev')"
+                        class="btn btn-default">
+                    <i class="fa fa-chevron-left"></i> Previous
+                </button>
+                <span class="page-number">Page ${currentDesignationPage} of ${totalPages}</span>
+                <button ${currentDesignationPage === totalPages ? 'disabled' : ''}
+                        onclick="changeDesignationPage('next')"
+                        class="btn btn-default">
+                    Next <i class="fa fa-chevron-right"></i>
+                </button>
+            </div>
+        `;
+            $('#designation-pagination-controls').html(paginationHTML);
+        }
+
+        window.changeDesignationPage = function(direction) {
+            const totalPages = Math.ceil(allDesignationData.length / designationItemsPerPage);
+            if (direction === 'prev' && currentDesignationPage > 1) {
+                currentDesignationPage--;
+                updateDesignationChart(currentDesignationPage);
+            } else if (direction === 'next' && currentDesignationPage < totalPages) {
+                currentDesignationPage++;
+                updateDesignationChart(currentDesignationPage);
+            }
+
+            setTimeout(() => {
+                if (designationChart) designationChart.redraw();
+            }, 50);
+        };
+
+        // Initial render
+        updateDesignationChart(currentDesignationPage);
+    });
+</script>
+
+<script>
+    function loadAbsenceData(monthYear) {
+        $.ajax({
+            url: '<?php echo $this->webroot; ?>BusinessDashboard/getAbsenceData',
+            type: 'GET',
+            data: {
+                month: monthYear
+            },
+            dataType: 'json',
+            success: function(absenceCount) {
+                $('#absence-line-chart').empty();
+
+                if (absenceCount.length === 0) {
+                    $('#absence-line-chart').html(
+                        '<p class="text-center text-muted mt-3">No data available</p>'
+                    );
+                    return;
+                }
+
+                const formatted = absenceCount.map(item => ({
+                    month: item.month,
+                    leave: parseFloat(item.leave) || 0,
+                    lop: parseFloat(item.lop) || 0
+                }));
+
+                new Morris.Line({
+                    element: 'absence-line-chart',
+                    data: formatted,
+                    xkey: 'month',
+                    ykeys: ['leave', 'lop'],
+                    labels: ['Leave Days', 'LOP Days'],
+                    lineColors: ['#11e707', '#e74c3c'],
+                    pointFillColors: ['#11e707', '#e74c3c'],
+                    pointStrokeColors: ['#11e707', '#e74c3c'],
+                    parseTime: false,
+                    hideHover: 'auto',
+                    grid: true,
+                    resize: false,
+                    gridTextSize: 11,
+
+                    //  Custom tooltip: highest value shown first
+                    hoverCallback: function(index, options, content, row) {
+
+                        let leave = row.leave;
+                        let lop = row.lop;
+
+                        // Which is higher?
+                        let firstLabel = '';
+                        let firstValue = 0;
+                        let firstColor = '';
+
+                        let secondLabel = '';
+                        let secondValue = 0;
+                        let secondColor = '';
+
+                        if (leave >= lop) {
+                            // Leave comes first
+                            firstLabel = 'Leave';
+                            firstValue = leave;
+                            firstColor = '#11e707';
+
+                            secondLabel = 'LOP';
+                            secondValue = lop;
+                            secondColor = '#e74c3c';
+                        } else {
+                            // LOP comes first
+                            firstLabel = 'LOP';
+                            firstValue = lop;
+                            firstColor = '#e74c3c';
+
+                            secondLabel = 'Leave';
+                            secondValue = leave;
+                            secondColor = '#11e707';
+                        }
+
+                        return `
+            <b>${row.month}</b><br>
+            <span style="color:${firstColor};">
+                ${firstLabel}: ${firstValue} days
+            </span><br>
+            <span style="color:${secondColor};">
+                ${secondLabel}: ${secondValue} days
+            </span>
+        `;
+                    }
+                });
+            },
+            error: function() {
+                $('#absence-line-chart').html(
+                    '<p class="text-center text-muted mt-3">Error loading data</p>'
+                );
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        const defaultMonth = '<?php echo $defaultMonth; ?>';
+        loadAbsenceData(defaultMonth);
+
+        //  Trigger on common month selection
+        $('#common-month-select').on('change', function() {
+            loadAbsenceData($(this).val());
+        });
+    });
+</script>
+
+
+<script>
+    function loadEmployeeCount(monthYear) {
+        $.ajax({
+            url: '<?php echo $this->webroot; ?>BusinessDashboard/getEmployeeCount',
+            type: 'GET',
+            data: {
+                month: monthYear
+            },
+            dataType: 'json',
+            success: function(response) {
+                const empPerMonth = response.empPerMonth || [];
+                $('#employee-month-bar').empty();
+
+                if (empPerMonth.length > 0) {
+                    new Morris.Bar({
+                        element: 'employee-month-bar',
+                        data: empPerMonth.map(item => ({
+                            month: item.month,
+                            count: parseInt(item.count)
+                        })),
+                        xkey: 'month',
+                        ykeys: ['count'],
+                        labels: ['Employees'],
+                        barColors: ['#6f42c1'],
+                        gridTextSize: 11,
+                        hideHover: 'auto',
+                        resize: false,
+                        barSizeRatio: 0.5, // same as department chart
+                        grid: true,
+                        axes: true,
+                        xLabelMargin: 30,
+                        padding: 50,
+                        parseTime: false,
+                    });
+                } else {
+                    $('#employee-month-bar').html('<p class="text-center text-muted mt-3">No data available</p>');
+                }
+            },
+            error: function() {
+                $('#employee-month-bar').html('<p class="text-center text-muted mt-3">Error loading data</p>');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        const defaultMonth = '<?php echo isset($defaultMonth) ? $defaultMonth : date("Y-m"); ?>';
+        loadEmployeeCount(defaultMonth);
+
+        // Use common month selector
+        $('#common-month-select').on('change', function() {
+            loadEmployeeCount($(this).val());
+        });
+    });
+</script>
+<script>
+    function loadPresentCount(monthYear) {
+        $.ajax({
+            url: '<?php echo $this->webroot; ?>BusinessDashboard/getPresentCount',
+            type: 'GET',
+            data: {
+                month: monthYear
+            },
+            dataType: 'json',
+            success: function(response) {
+                const presentCount = response.presentCount || [];
+                $('#employee-present-bar').empty();
+
+                if (presentCount.length > 0) {
+                    // Convert month YYYY-MM -> Mon YYYY
+                    const formattedPresentCount = presentCount.map(item => {
+                        const [year, month] = item.month.split('-');
+                        const dateObj = new Date(year, month - 1); // month is 0-indexed
+                        return {
+                            month: dateObj.toLocaleString('en-US', {
+                                month: 'short',
+                                year: 'numeric'
+                            }),
+                            count: parseFloat(item.count)
+                        };
+                    });
+
+                    new Morris.Bar({
+                        element: 'employee-present-bar',
+                        data: formattedPresentCount,
+                        xkey: 'month',
+                        ykeys: ['count'],
+                        labels: ['Present days'],
+                        barColors: ['#00008B'],
+                        gridTextSize: 11,
+                        hideHover: 'auto',
+                        resize: false,
+                        barSizeRatio: 0.5,
+                        grid: true,
+                        axes: true,
+                        xLabelMargin: 30,
+                        padding: 50,
+                        parseTime: false,
+                    });
+                } else {
+                    $('#employee-present-bar').html('<p class="text-center text-muted mt-3">No data available</p>');
+                }
+            },
+            error: function() {
+                $('#employee-present-bar').html('<p class="text-center text-muted mt-3">Error loading data</p>');
+            }
+        });
+    }
+    $(document).ready(function() {
+        const defaultMonth = '<?php echo isset($defaultMonth) ? $defaultMonth : date("Y-m"); ?>';
+        loadPresentCount(defaultMonth);
+        $('#common-month-select').on('change', function() {
+            loadPresentCount($(this).val());
+        });
+    });
+</script>
+<script>
+    function loadVariableDeduction(monthYear) {
+        $.ajax({
+            url: '<?php echo $this->webroot; ?>BusinessDashboard/getVariableDeduction',
+            type: 'GET',
+            data: {
+                month_year: monthYear
+            },
+            dataType: 'json',
+            success: function(response) {
+                const formattedvariableDeduction = response.map(item => ({
+                    month: new Date(item.m.month_year.split('-')[1] + '-' + item.m.month_year.split('-')[0] + '-01')
+                        .toLocaleString('en-US', {
+                            month: 'short',
+                            year: 'numeric'
+                        }),
+                    amount: parseFloat(item[0].total_upload) || 0
+                }));
+
+                new Morris.Bar({
+                    element: 'variable-deduction-bar',
+                    data: formattedvariableDeduction,
+                    xkey: 'month',
+                    ykeys: ['amount'],
+                    labels: ['Uploaded Amount'],
+                    barColors: ['#e74c3c'],
+                    resize: true,
+                    parseTime: false,
+                    hideHover: 'auto',
+                    xLabelAngle: 0,
+                    xLabelMargin: 25,
+                    barSizeRatio: 0.5,
+                    grid: true,
+                    gridTextSize: 11,
+                    hoverCallback: function(index, options, content, row) {
+                        return `<b>${row.month}</b>: ₹${row.amount.toLocaleString()}`;
+                    }
+                });
+            },
+            error: function() {
+                $('#variable-deduction-bar').html('<p class="text-center text-muted mt-3">Error loading data</p>');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        const defaultMonth = '<?php echo isset($defaultMonth) ? $defaultMonth : date("Y-m"); ?>';
+        loadVariableDeduction(defaultMonth);
+
+        // Use common month selector
+        $('#common-month-select').on('change', function() {
+            loadVariableDeduction($(this).val());
+        });
+    });
+</script>
+<script>
+    function loadMonthlyCTCChart(month) {
+        $.ajax({
+            url: '<?php echo $this->webroot; ?>BusinessDashboard/monthlyCTCChartData',
+            type: 'GET',
+            data: {
+                month: month
+            },
+            dataType: 'json',
+            success: function(data) {
+                $('#monthlyCTCChart').empty(); // clear old chart
+
+                if (!data || data.length === 0) {
+                    $('#monthlyCTCChart').html('<p class="text-center text-muted mt-3">No data available</p>');
+                    return;
+                }
+
+                new Morris.Line({
+                    element: 'monthlyCTCChart',
+                    data: data,
+                    xkey: 'month',
+                    ykeys: ['value'],
+                    labels: ['Salary'],
+                    parseTime: false,
+                    lineColors: ['#00008B'],
+                    pointFillColors: ['#11e707'],
+                    pointStrokeColors: ['#FF4500'],
+                    grid: true,
+                    axes: true,
+                    hideHover: 'auto',
+                    resize: true,
+                    padding: 30,
+                    yLabelPadding: 10,
+                    gridTextSize: 11
+                });
+            },
+            error: function() {
+                $('#monthlyCTCChart').html('<p class="text-center text-muted mt-3">Error loading chart</p>');
+            }
+        });
+    }
+
+    // On page load
+    $(document).ready(function() {
+        const defaultMonth = $('#common-month-select').val();
+        loadMonthlyCTCChart(defaultMonth);
+
+        $('#common-month-select').on('change', function() {
+            loadMonthlyCTCChart($(this).val());
+        });
+    });
+</script>

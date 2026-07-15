@@ -1,0 +1,1321 @@
+<style type="text/css">
+    /**
+     * Nestable
+     */
+    .tree-folder-open {
+        background: none;
+    }
+
+    .fa-user:before {
+        content: "\f007";
+    }
+
+    .tree-folder {
+        background: none;
+    }
+
+    .tree-folder:before {
+        content: "\f007";
+    }
+
+    .tree-file:before {
+        content: "\f007";
+    }
+
+    .tree-file {
+        background: none;
+    }
+
+
+
+    .datagrid-row-selected .edit-button {
+        color: #FFFFFF !important;
+        /* Forces the color of the Edit button to remain white */
+    }
+
+    /* <!-- edited by bindu 12-12-25 --> */
+    .heading {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        /* margin-left: 20px; */
+    }
+
+    .home {
+        background-color: #ffffffff;
+        border-radius: 50px;
+        padding: 2px 15px;
+        color: #1e516e !important;
+        /* margin-right: 15px; */
+        color: white;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: #1e516e 1px solid;
+    }
+
+    /* <!-- edited by bindu 12-12-25 end --> */
+</style>
+
+
+<!-- edited by bindu 12-12-25 -->
+<section class="content-header heading" style="margin-top:0;">
+    <h1 class="text-primary-18">Daily Time Verification</h1>
+    <!-- edited by sinsiya on 02-11-2024-->
+    <div class="heading">
+
+        <div class="col-md-12" align="right" style="margin: 10px 0;">
+            <button onclick="updateamendmence();" title="If your datas not being proccessed, Please click this button to update all the entries again" id="updateamendance" class="btn btn-primary pull-right pull-up">Refresh</button>
+        </div>
+        <div class="text-primary-16 home" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <i class="fa" style="font-size:16px;">&#xf104;</i>
+            Back
+        </div>
+    </div>
+    <!-- edited by bindu 12-12-25 end -->
+</section>
+
+<!-- <hr style="margin-top: 58px;margin-bottom: -2px;"> -->
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="">
+            <div class="box ">
+
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <!-- Edited by Akshay on 24-4-2026 -->
+                        <label class="col-md-1 control-label" for="filterby_branch" style="text-align: left;">Branch</label>
+                        <div class="col-md-3">
+                            <select id="filterby_branch" name="filterby_branch" class="form-control" onchange="filterDailyOvertime();">
+                                <?php
+                                foreach ($arr_branches as $key => $value) {
+                                    echo '<option value="' . $value['branch_code'] . '">' . $value['branch_name'] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <!-- End -->
+                        <label class="col-md-1 control-label" for="filterby_branch" style="text-align: left;">Month</label>
+                        <div class="col-md-3">
+                            <select id="filterby_month" name="filterby_month" class="form-control" onchange="filterDailyOvertime();">
+                                <option value="">Select </option>
+                                <?php
+                                // $start_month = strtotime(date('Y-m')); 
+
+                                $start_month =  strtotime("+1 month", strtotime(date('Y-m')));
+                                for ($i = 0; $i < 10; $i++) {
+                                    $month = date('Y-m', strtotime("-$i month", $start_month));
+                                    if ($month == date('Y-m')) {
+                                        echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                    } else {
+                                        echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
+                            <input type="hidden" id="date1" name="date1" value="">
+                            <input type="hidden" id="date2" name="date2" value="">
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="col-sm-2" style="display: block;    margin-top: 20px;" id="dateDiv1">
+                            <!-- <h3>Date</h3> -->
+                            <div id="dailyovertimedates" style="width:100%; height:530px; background-color:white;"></div>
+                        </div>
+                        <div class="col-sm-2" style="display: none;    margin-top: 20px;" id="dateDiv2">
+                            <!-- <h3>Date</h3> -->
+                            <div id="dailyovertimedates_verify" style="width:100%; height:530px; background-color:white;"></div>
+                        </div>
+                        <div class="col-sm-10" id="data-tab-select" style="padding-right:0px;">
+                            <br>
+                            <div class="tabset-attendanceregister" style="padding-left: 0px;padding-right:0px;">
+                                <div id="tab1" data-pws-tab="tab1" data-pws-tab-name="Not Verified" data-pws-tab-icon="fa-spinner fa-spin" onclick="load_date_grid(1)">
+                                    <div style="width:100%; height:450px; background-color:white;">
+                                        <div class="datagrid-toolbar">
+                                            <table cellspacing="0" cellpadding="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <a href="javascript:void(0)" onclick="verifyRegisterEntries();" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                                                <span class="l-btn-left l-btn-icon-left">
+                                                                    <span class="l-btn-text">Verify</span>
+                                                                    <span class="l-btn-icon icon-ok">&nbsp;</span>
+                                                                </span>
+                                                            </a>
+                                                        </td>
+                                                        <!-- Edited by Akshay on 20-1-2026 -->
+                                                        <td>
+                                                            <a href="javascript:void(0)"
+                                                                class="l-btn l-btn-small l-btn-plain"
+                                                                onclick="onUpdateSelected();">
+                                                                <span class="l-btn-left l-btn-icon-left">
+                                                                    <span class="l-btn-text">Update</span>
+                                                                    <span class="l-btn-icon icon-edit">&nbsp;</span>
+                                                                </span>
+                                                            </a>
+
+                                                        </td>
+                                                        <!-- End -->
+                                                        <td style="padding-left: 10px;">Select Employee : </td>
+                                                        <td>
+                                                            <!-- Edited by Akshay on 27-1-2026 -->
+                                                            <select style="margin-left: 15px; width:400px;" id="employee_select" name="employee_select" class="form-control" onchange="filterDailyOvertimeByEmployee(this);">
+                                                                <option value="">--All--</option>
+                                                            </select>
+                                                            <!-- End -->
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <table id="dailyovertimediv" class="table table-bordered table-hover easyui-datagrid">
+
+                                        </table>
+                                    </div>
+                                </div>
+                                <div id="tab2" data-pws-tab="tab2" data-pws-tab-name="Verified" data-pws-tab-icon="fa-spinner fa-spin" onclick="load_date_grid(2)">
+                                    <div style="width:100%; height:450px; background-color:white;">
+                                        <div class="datagrid-toolbar">
+                                            <table cellspacing="0" cellpadding="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <a href="javascript:void(0)" onclick="removeEntries();" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                                                <span class="l-btn-left l-btn-icon-left">
+                                                                    <span class="l-btn-text">Remove</span>
+                                                                    <span class="l-btn-icon icon-cancel">&nbsp;</span>
+                                                                </span>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <table id="dailyovertimediv_verified" class="table table-bordered table-hover easyui-datagrid">
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="col-sm-5">
+                            <h3>All employees</h3>
+                            <div id="allempsforsbo" style="width:100%; height:400px; background-color:white;"></div>
+                        </div>
+                        <div class="col-sm-5">
+                            <h3>Employees taken break off in selected date </h3>
+                            <div id="empsinsbo" style="width:100%; height:400px; background-color:white;"></div>
+                        </div> -->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var monthChoosen = $('#filterby_month').val();
+    var branch = $('#filterby_branch').val();
+
+    var dailyovertimedates;
+
+    var dailyovertimedates_verified;
+
+    jQuery(document).ready(function() {
+        $('.tabset-attendanceregister').pwstabs({
+            effect: 'scale', // You can change effects of your tabs container: scale / slideleft / slideright / slidetop / slidedown / none
+            defaultTab: 1, // The tab we want to be opened by default
+            containerWidth: '100%', // Set custom container width if not set then 100% is used
+            tabsPosition: 'horizontal', // Tabs position: horizontal / vertical
+            horizontalPosition: 'top', // Tabs horizontal position: top / bottom
+            verticalPosition: 'left', // Tabs vertical position: left / right
+            responsive: true, // Make tabs container responsive: true / false - boolean
+            theme: '',
+            rtl: false // Right to left support: true/ false
+        });
+
+        // Edited by Akshay on 24-4-2026
+        $('#filterby_branch').select2({
+            width: '100%',
+            minimumResultsForSearch: 0 // keeps search enabled
+        });
+        // End
+    });
+
+    jQuery('#data-tab-select .pws_tabs_controll a').on('click', function() {
+        var tabIndex = $(this).data('tabId');
+        load_date_grid(tabIndex);
+    });
+
+    //---------Daily Attendance/Overtime Verifys---------
+    function overtimeDateSelect(date) {
+        $('#date1').val(date);
+        $('#dailyovertimediv').datagrid('load', {
+            branch: $("#filterby_branch").val(),
+            month: date,
+            monthChosen: $('#filterby_month').val() + '-01', // Edited by Akshay on 25-3-2026
+            empid: $('#employee_select').val(), // Edited by Akshay on 19-12-2025
+        });
+
+    }
+
+    function overtimeDateVerifiedSelect(date) {
+        $('#date2').val(date);
+        // overtimeDataUpdate(date); // Edited by Akshay on 21-1-2026
+        $('#dailyovertimediv_verified').datagrid('load', {
+            branch: $("#filterby_branch").val(),
+            month: date,
+            yearmonth: $("#filterby_month").val(), // Edited by Akshay on 23-4-2026
+        });
+    }
+
+    // Edited by Akhay on 27-11-2025
+    function validateOTInput(input) {
+        // Remove unwanted characters but preserve existing valid digits/dot
+        input.value = input.value.replace(/[^0-9.]/g, '');
+
+        // Allow only one dot
+        input.value = input.value.replace(/(\..*)\./g, '$1');
+
+        // Convert to number for comparison
+        let num = parseFloat(input.value);
+
+        if (!isNaN(num)) {
+            if (num < 0) num = 0;
+            if (num > 1440) num = 1440;
+            input.value = num;
+        }
+    }
+
+    // Edited by Akshay on 21-1-2026
+    // function overtimeDataUpdate(date) {
+    //     // Call overtime update separately
+    //     $.ajax({
+    //         url: livesite + 'DailyOvertimeVerifyNew/overtimeDataUpdate',
+    //         type: 'GET',
+    //         data: {
+    //             branch: $("#filterby_branch").val(),
+    //             month: date,
+    //             empid: $('#employee_select').val()
+    //         }
+    //     });
+    // }
+    // End
+
+    // End
+
+    dailyovertimedates = new dhtmlXGridObject('dailyovertimedates');
+    dailyovertimedates.setHeader("Date");
+    dailyovertimedates.setColAlign("left");
+    dailyovertimedates.setColumnIds("day_time_desc");
+    dailyovertimedates.setInitWidthsP("100");
+    dailyovertimedates.attachHeader("#text_search");
+    //myGrid.enableAutoHeight(true,400);
+    dailyovertimedates.attachEvent("onRowSelect", overtimeDateSelect);
+    dailyovertimedates.enableAutoWidth(true);
+    dailyovertimedates.setColTypes("ro");
+    dailyovertimedates.init();
+    dailyovertimedates.load("<?php echo $this->webroot; ?>DailyOvertimeVerifyNew/listbreakoffdatesforsbo/" + monthChoosen + "/" + branch, "json");
+
+    dailyovertimedates_verified = new dhtmlXGridObject('dailyovertimedates_verify');
+    dailyovertimedates_verified.setHeader("Date");
+    dailyovertimedates_verified.setColAlign("left");
+    dailyovertimedates_verified.setColumnIds("day_time_desc");
+    dailyovertimedates_verified.setInitWidthsP("100");
+    dailyovertimedates_verified.attachHeader("#text_search");
+    //myGrid.enableAutoHeight(true,400);
+    dailyovertimedates_verified.attachEvent("onRowSelect", overtimeDateVerifiedSelect);
+    dailyovertimedates_verified.enableAutoWidth(true);
+    dailyovertimedates_verified.setColTypes("ro");
+    dailyovertimedates_verified.init();
+    dailyovertimedates_verified.load("<?php echo $this->webroot; ?>DailyOvertimeVerifyNew/listbreakoffdatesforsbo_verified/" + monthChoosen + "/" + branch, "json");
+
+    function filterDailyOvertime() {
+        $('#date1').val();
+        $('#date2').val();
+        //console.log('hi'); 
+        var monthChoosen = $('#filterby_month').val();
+        let branch = $("#filterby_branch").val();
+        dailyovertimedates.clearAndLoad("<?php echo $this->webroot; ?>DailyOvertimeVerifyNew/listbreakoffdatesforsbo/" + monthChoosen + "/" + branch, "json");
+        dailyovertimedates_verified.clearAndLoad("<?php echo $this->webroot; ?>DailyOvertimeVerifyNew/listbreakoffdatesforsbo_verified/" + monthChoosen + "/" + branch, "json");
+        //  edited by sinsiya on 22-11-2024
+        $('#dailyovertimediv').datagrid('loadData', {
+            total: 0,
+            rows: []
+        });
+
+        // Clear the datagrid data for #dailyovertimediv_verified
+        $('#dailyovertimediv_verified').datagrid('loadData', {
+            total: 0,
+            rows: []
+        });
+        $('#dailyovertimediv').datagrid('load', {
+            month: '',
+            branch: branch,
+            empid: $('#employee_select').val(), // Edited by Akshay on 19-12-2025
+            monthChosen: $('#filterby_month').val() + '-01', // Edited by Akshay on 25-3-2026
+        });
+
+        $('#dailyovertimediv_verified').datagrid('load', {
+            month: monthChoosen, // Edited by Akshay on 4-5-2026
+            branch: branch,
+            yearmonth: $("#filterby_month").val(), // Edited by Akshay on 23-4-2026
+        });
+
+    }
+
+    function filterDailyOvertimeByEmployee(selectElement) {
+        var monthChosen = $('#filterby_month').val() + '-01'; // Edited by Akshay on 25-3-2026
+        var dateSelected = $('#date1').val();
+        var branch = $("#filterby_branch").val();
+        var empid = $(selectElement).val();
+
+        $('#dailyovertimediv').datagrid({
+            queryParams: {
+                branch: branch,
+                month: dateSelected,
+                monthChosen: monthChosen, // Edited by Akshay on 25-3-2026
+                empid: empid
+            },
+            height: '430px',
+            url: livesite + "DailyOvertimeVerifyNew/listpunches",
+            autoRowHeight: true,
+            pagination: true,
+            pageSize: 10,
+            rownumbers: true,
+            singleSelect: false,
+            width: '100%',
+            onLoadSuccess: function(data) {
+
+                $.notify(data.message, {
+                    type: data.type,
+                    allow_dismiss: false
+                });
+
+
+            },
+            //fitColumns: true,
+            pageList: [10, 20, 32, 50, 100],
+            rowStyler: function(index, row) {
+                var style = "";
+                if (row.status == 'N') {
+                    style += 'background-color:rgba(214, 110, 13, 0.92);color:#FFFFFF';
+                } else {
+                    if (row.C1 == 'out') {
+                        style += 'background-color:#A9F5A9;';
+                    } else if (row.C1 == 'in') {
+                        style += 'background-color:#FAAC58;';
+                    }
+                }
+                return style;
+            },
+
+            columns: [
+                [
+
+                    {
+                        field: 'chek_encash_remove',
+                        title: '',
+                        width: "2%",
+                        checkbox: true
+                    },
+                    {
+                        field: 'first_name',
+                        title: 'Employee',
+                        width: "38%"
+                    },
+
+                    {
+                        field: 'duration',
+                        title: 'Duration',
+                        width: "8%",
+                    },
+                    {
+                        field: 'status',
+                        title: 'Status',
+                        width: "8%",
+                        formatter: function(value, row, index) {
+                            var e = "<strong style=\"color: " + row.status_color + ";\">" + row.leaves + "" + '  ' + "" + value + " </strong>";
+                            return e;
+                        }
+                    },
+
+
+                    {
+                        field: 'ot_duration',
+                        title: 'OT Min',
+                        width: "6%",
+                    }, {
+                        field: 'set_duration',
+                        title: '<span style="color:green;">New OT Min</span>',
+                        width: "9%",
+                    },
+                    //EDITED BY SINSIYA ON 06-03-2025
+                    {
+                        field: 'remarks',
+                        title: '<span style="color:green;">Remarks</span>',
+                        width: "19%",
+                    },
+                    {
+                        field: 'action',
+                        title: 'Attendance', // Edited by Akshay on 24-11-2025
+                        width: "9%",
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            // if (row.company_code != 'HRBL' ) {
+                            if (row.editable && row.joining_date <= row.att_date) {
+                                // if (row.joining_date <= row.att_date) {
+                                var e = '<a href="#" class="edit-button" onclick="showEditOnPopup(\'' + window.btoa(JSON.stringify(row)) + '\');">View</a> ';
+                                return e;
+                            }
+                        }
+                    },
+                ]
+            ],
+            //Ends
+        });
+
+
+
+        // Clear existing data in both grids
+        $('#dailyovertimediv').datagrid('loadData', {
+            total: 0,
+            rows: []
+        });
+        $('#dailyovertimediv_verified').datagrid('loadData', {
+            total: 0,
+            rows: []
+        });
+
+        // 🔁 Load new data filtered by employee
+        $('#dailyovertimediv').datagrid('load', {
+            month: $('#date1').val(), // Edited by Akshay on 25-3-2026
+            branch: branch,
+            empid: empid, // 👈 Add employee filter
+            monthChosen: $('#filterby_month').val() + '-01', // Edited by Akshay on 25-3-2026
+        });
+
+        $('#dailyovertimediv_verified').datagrid('load', {
+            month: monthChoosen,
+            branch: branch,
+            empid: empid, // 👈 Add employee filter
+            yearmonth: $("#filterby_month").val(), // Edited by Akshay on 23-4-2026
+        });
+    }
+
+    // Edited by Akshay on 27-1-2026
+    let employeeLoaded = false;
+    $('#employee_select').select2();
+
+    $('#employee_select').on('select2:open', function() {
+
+        let branch = $('#filterby_branch').val();
+
+        if (!branch) {
+            $.notify('Please select Branch first', {
+                type: 'warning',
+                allow_dismiss: false
+            });
+            return;
+        }
+
+        // Prevent multiple reloads
+        if (employeeLoaded) {
+            return;
+        }
+
+        employeeLoaded = true;
+
+        $('#employee_select').html('<option value="">Loading...</option>');
+
+        $.ajax({
+            url: livesite + 'DailyOvertimeVerifyNew/getEmployeesByBranch',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                branch: branch
+            },
+            success: function(res) {
+
+                let options = '<option value="">--All--</option>';
+
+                if (res && res.length > 0) {
+                    $.each(res, function(i, row) {
+                        if (!row.emp_details) return;
+
+                        let emp = row.emp_details;
+
+                        options += `
+                        <option value="${emp.emp_pkey}">
+                            ${(emp.first_name || '').trim()}
+                            ${(emp.last_name || '').trim()}
+                            - ${emp.emp_id || ''}
+                        </option>`;
+                    });
+                } else {
+                    options += '<option value="">No Employees Found</option>';
+                }
+
+                // Update options
+                $('#employee_select').html(options);
+
+                // 🔥 Force Select2 refresh
+                $('#employee_select').select2('close');
+
+                setTimeout(function() {
+                    $('#employee_select').select2('open');
+                }, 0);
+            }
+
+        });
+    });
+
+    $('#filterby_branch').on('change', function() {
+
+        employeeLoaded = false;
+
+        $('#employee_select')
+            .html('<option value="">--All--</option>')
+            .val('')
+            .trigger('change');
+
+        $('#dailyovertimediv').datagrid('loadData', {
+            total: 0,
+            rows: []
+        });
+        $('#dailyovertimediv_verified').datagrid('loadData', {
+            total: 0,
+            rows: []
+        });
+    });
+
+
+    // End
+
+    var monthChoosen = $('#filterby_month').val();
+    var empid = $('#employee_select').val();
+    console.log(empid);
+    $('#dailyovertimediv').datagrid({
+        queryParams: {
+            // branch: $("#filterby_branch").val(),
+            //monthselected: $("#filterby_month").val()+'-01',
+            empid: empid
+        },
+        height: '430px',
+        url: livesite + "DailyOvertimeVerifyNew/listpunches",
+        autoRowHeight: true,
+        pagination: true,
+        pageSize: 10,
+        rownumbers: true,
+        singleSelect: false,
+        //iconCls: 'icon-edit',
+        width: '100%',
+        onLoadSuccess: function(data) {
+
+            $.notify(data.message, {
+                type: data.type,
+                allow_dismiss: false
+            });
+
+
+        },
+        //fitColumns: true,
+        pageList: [10, 20, 32, 50, 100],
+        rowStyler: function(index, row) {
+            var style = "";
+            if (row.status == 'N') {
+                style += 'background-color:rgba(214, 110, 13, 0.92);color:#FFFFFF';
+            } else {
+                if (row.C1 == 'out') {
+                    style += 'background-color:#A9F5A9;';
+                } else if (row.C1 == 'in') {
+                    style += 'background-color:#FAAC58;';
+                }
+            }
+            return style;
+        },
+
+        columns: [
+            [
+
+                {
+                    field: 'chek_encash_remove',
+                    title: '',
+                    width: "2%",
+                    checkbox: true
+                },
+                {
+                    field: 'first_name',
+                    title: 'Employee',
+                    width: "38%"
+                },
+
+                {
+                    field: 'duration',
+                    title: 'Duration',
+                    width: "8%",
+                },
+                {
+                    field: 'status',
+                    title: 'Status',
+                    width: "8%",
+                    formatter: function(value, row, index) {
+                        var e = "<strong style=\"color: " + row.status_color + ";\">" + row.leaves + "" + '  ' + "" + value + " </strong>";
+                        return e;
+                    }
+                },
+
+
+                {
+                    field: 'ot_duration',
+                    title: 'OT Min',
+                    width: "6%",
+                }, {
+                    field: 'set_duration',
+                    title: '<span style="color:green;">New OT Min</span>',
+                    width: "9%",
+
+                },
+                //EDITED BY SINSIYA ON 06-03-2025
+                {
+                    field: 'remarks',
+                    title: '<span style="color:green;">Remarks</span>',
+                    width: "19%",
+                },
+                {
+                    field: 'action',
+                    title: 'Attendance', // Edited by Akshay on 24-11-2025
+                    width: "9%",
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        // if (row.company_code != 'HRBL' ) {
+                        if (row.editable && row.joining_date <= row.att_date) {
+                            // if (row.joining_date <= row.att_date) {
+                            var e = '<a href="#" class="edit-button" onclick="showEditOnPopup(\'' + window.btoa(JSON.stringify(row)) + '\');">View</a> ';
+                            return e;
+                        }
+                    }
+                },
+            ]
+        ],
+        //Ends
+    });
+
+    $('#dailyovertimediv_verified').datagrid({
+        queryParams: {},
+        height: '430px',
+        url: livesite + "DailyOvertimeVerifyNew/listpunchesverify",
+        pagination: true,
+        pageSize: 10,
+        singleSelect: false,
+        iconCls: 'icon-edit',
+        onLoadSuccess: function(data) {
+
+        },
+        fitColumns: true,
+        pageList: [10, 20, 32, 50, 100],
+        rowStyler: function(index, row) {
+            var style = "";
+            if (row.status == 'N') {
+                style += 'background-color:rgba(214, 110, 13, 0.92);color:#FFFFFF';
+            } else {
+                if (row.C1 == 'out') {
+                    style += 'background-color:#A9F5A9;';
+                } else if (row.C1 == 'in') {
+                    style += 'background-color:#FAAC58;';
+                }
+            }
+            return style;
+        },
+
+        columns: [
+            [{
+                    field: 'chek_encash_remove',
+                    title: '',
+                    width: "2%",
+                    checkbox: true
+                },
+                {
+                    field: 'first_name',
+                    title: 'Employee',
+                    width: "38%"
+                },
+                {
+                    field: 'duration',
+                    title: 'Duration',
+                    width: "10%",
+                },
+                {
+                    field: 'status',
+                    title: 'Status',
+                    width: "8%",
+                    formatter: function(value, row, index) {
+                        var e = "<strong style=\"color: " + row.status_color + ";\">" + row.leaves + "" + '  ' + "" + value + " </strong>";
+                        return e;
+                    }
+                },
+                {
+                    field: 'ot_duration',
+                    title: 'OT Min',
+                    width: "6%",
+                }, {
+                    field: 'set_duration',
+                    title: 'New OT Min',
+                    width: "9%",
+                }, {
+                    field: 'remarks',
+                    title: 'Remarks',
+                    width: "28%",
+                }
+            ]
+        ],
+        //Ends
+    });
+
+    // Edited by Akshay on 20-1-2026
+    function onUpdateSelected() {
+        var rows = $('#dailyovertimediv').datagrid('getSelections');
+
+        if (!rows || rows.length === 0) {
+            alert('Please select at least one row!');
+            return;
+        }
+
+        var set_ot = 0;
+        var remarks = '';
+        if (rows.length === 1) {
+            set_ot = rows[0].set_duration;
+            remarks = rows[0].remarks;
+
+            if (set_ot === null || set_ot === undefined || set_ot === '') {
+                set_ot = 0;
+            } else {
+                set_ot = parseInt(set_ot, 10);
+            }
+
+
+        }
+        // console.log('rows', rows[0].set_duration);
+
+        var url = livesite +
+            'DailyOvertimeVerifyNew/updateOvertime/' +
+            set_ot + '/' +
+            encodeURIComponent(remarks);
+
+        showModalForm(url);
+    }
+    // End
+
+    function showEditOnPopup(str_row) {
+        var site_transactions_fkey = 0;
+        var row = JSON.parse(window.atob(str_row));
+
+        extract(row, this);
+        if (att_date && emp_pkey) {
+            showModalForm(livesite + 'DailyOvertimeVerifyNew/editpunch/' + att_date + '/' + emp_id + '/' + site_transactions_fkey + '/' + encodeURI(att_in_time) + '/' + encodeURI(att_out_time));
+        } else {
+            alert("Please select a record!")
+        }
+    }
+
+    function extract(data, where) {
+        for (var key in data) {
+            where[key] = data[key];
+        }
+    }
+
+    function load_date_grid(tab) {
+        if (tab == "tab1") {
+            $("#dateDiv1").css("display", "block");
+            $("#dateDiv2").css("display", "none");
+
+        } else if (tab == "tab2") {
+            $("#dateDiv1").css("display", "none");
+            $("#dateDiv2").css("display", "block");
+        }
+
+    }
+
+    function verify(str_row) {
+        if (confirm('Are you sure to verify the record?')) {
+            var row = JSON.parse(window.atob(str_row));
+            extract(row, this);
+            if (att_date && emp_pkey) {
+                $.ajax({
+                    url: livesite + "DailyOvertimeVerifyNew/verify",
+                    data: {
+                        att_date: att_date,
+                        emp_pkey: emp_pkey
+                    },
+                    success: function(response) {
+                        if (response) {
+                            // $("#test_div").html(response);
+                            $.notify("Verified Successfully", {
+                                type: 'success',
+                                allow_dismiss: false
+                            });
+
+                            $('#dailyovertimediv').datagrid('load', {
+                                branch: $("#filterby_branch").val(),
+                                month: $('#date1').val(),
+                                empid: $('#employee_select').val(), // Edited by Akshay on 19-12-2025
+                                monthChosen: $('#filterby_month').val() + '-01'
+                            });
+                            $('#dailyovertimediv_verified').datagrid('load', {
+                                branch: $("#filterby_branch").val(),
+                                month: $('#date1').val(),
+                                yearmonth: $("#filterby_month").val(), // Edited by Akshay on 23-4-2026
+                            });
+                            filterDailyOvertime();
+                        } else {
+                            $.notify('Someting wrong. please try again!', {
+                                type: 'danger',
+                                allow_dismiss: false
+                            });
+                        }
+                    }
+                });
+            } else {
+                alert("Please select a record!")
+            }
+        }
+    }
+
+    function updateDuration(str_row) {
+        var row = JSON.parse(window.atob(str_row));
+        extract(row, this);
+        let setDuration = $("#setDuration" + row.emp_detail_timeattandance_pkey).val(); // This is the text field value
+
+        if (att_date && emp_pkey && setDuration) {
+            $.ajax({
+                url: livesite + "DailyOvertimeVerifyNew/updateSetDuration",
+                data: {
+                    att_date: att_date,
+                    emp_pkey: emp_pkey,
+                    value: setDuration
+                },
+                success: function(response) {
+                    if (response) {
+                        // Show success notification
+                        var notification = $.notify("Updated Successfully", {
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+
+                        // Hide the notification after 1 second
+                        setTimeout(function() {
+                            notification.close(); // Manually close the notification
+                        }, 1000); // 1000 ms = 1 second
+                    } else {
+                        // Show error notification
+                        var errorNotification = $.notify('Something went wrong. Please try again!', {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+
+                        // Hide the error notification after 1 second
+                        setTimeout(function() {
+                            errorNotification.close(); // Manually close the notification
+                        }, 1000); // 1000 ms = 1 second
+                    }
+                }
+            });
+        } else {
+            // Show error notification for missing data
+            var missingDataNotification = $.notify('Required data is missing.', {
+                type: 'danger',
+                allow_dismiss: false
+            });
+
+            // Hide the missing data notification after 1 second
+            setTimeout(function() {
+                missingDataNotification.close(); // Manually close the notification
+            }, 1000); // 1000 ms = 1 second
+        }
+    }
+
+
+    function setRemarks(str_row) {
+        var row = JSON.parse(window.atob(str_row)); // Decode and parse row data
+        var emp_pkey = row.emp_detail_timeattandance_pkey; // Extract employee key
+        var att_date = row.att_date; // Extract attendance date
+
+        // Get the value of the remark input field by targeting the correct input
+        let remark = $("#remark" + emp_pkey).val(); // This is the text field value
+
+        // Check if att_date, emp_pkey, and remark are valid
+        if (att_date && emp_pkey && remark) {
+            $.ajax({
+                url: livesite + "DailyOvertimeVerifyNew/setRemarks", // Backend URL for setting remarks
+                type: "POST", // Specify HTTP method
+                data: {
+                    att_date: att_date,
+                    emp_pkey: emp_pkey,
+                    value: remark
+                },
+                success: function(response) {
+                    if (response) {
+                        // Show success notification
+                        $.notify("Updated Successfully", {
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+
+                        // Optionally, you can reload the data grid or refresh the UI here
+                        // $('#dailyovertimediv').datagrid('reload'); // Uncomment if needed
+                    } else {
+                        // Show error notification
+                        $.notify('Something went wrong. Please try again!', {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                    }
+                },
+                error: function() {
+                    // Handle AJAX error
+                    $.notify('Error in the request. Please try again!', {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        } else {
+            // Handle case where required data is missing
+            $.notify('Remark cannot be empty.', {
+                type: 'warning',
+                allow_dismiss: false
+            });
+        }
+    }
+
+
+
+    // Edited by Akshay on 23-4-2026
+    function verifyRegisterEntries() {
+
+        var rows = $('#dailyovertimediv').datagrid('getSelections');
+
+        if (rows.length > 0) {
+
+            var records = [];
+
+            for (var i = 0; i < rows.length; i++) {
+                var data = rows[i];
+
+                records.push({
+                    emp_pkey: data.emp_pkey,
+                    att_date: data.att_date,
+                    yearmonth: data.yearmonth
+                });
+            }
+
+            doVerificationProcedure(records);
+
+        } else {
+            alert("Please select atleast one record to verify.");
+        }
+    }
+    // End
+
+    // Edited by Akshay on 23-4-2026
+    function doVerificationProcedure(records) {
+
+        if (confirm("Are you sure to verifying the selected entries?")) {
+
+            $.ajax({
+                url: livesite + "DailyOvertimeVerifyNew/verifyregisterentries",
+                type: 'post',
+                data: {
+                    records: JSON.stringify(records)
+                },
+
+                success: function(response) {
+
+                    // Parse response once
+                    var data = (typeof response === 'string') ?
+                        $.parseJSON(response) :
+                        response;
+
+                    if (data.success) {
+
+                        // Success notification
+                        $.notify({
+                            message: "Updated Successfully"
+                        }, {
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+
+                        // Show danger message only if valid
+                        if (
+                            typeof data.danger_message === 'string' &&
+                            data.danger_message.trim() !== ''
+                        ) {
+
+                            $.notify({
+                                message: data.danger_message
+                            }, {
+                                type: 'danger',
+                                allow_dismiss: false
+                            });
+                        }
+
+                        // Keep current page while reload
+                        var pager = $('#dailyovertimediv').datagrid('getPager');
+                        var opts = pager.pagination('options');
+                        var currentPage = pager.pagination('options').pageNumber;
+                        console.log('currentPage', currentPage);
+
+
+                        $('#dailyovertimediv').datagrid('load', {
+                            branch: $("#filterby_branch").val(),
+                            month: $('#date1').val(),
+                            empid: $('#employee_select').val(),
+                            monthChosen: $('#filterby_month').val() + '-01',
+
+                            page: currentPage,
+                            rows: opts.pageSize
+                        });
+
+                        // Reload verified grid
+                        $('#dailyovertimediv_verified').datagrid('reload');
+
+                        // Refresh totals/filters
+                        filterDailyOvertime();
+
+                    } else {
+
+                        $.notify({
+                            message: data.message || data.danger_message || 'Error occurred'
+                        }, {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                    }
+                },
+
+                error: function(xhr, status, error) {
+
+                    console.log(xhr.responseText);
+
+                    $.notify({
+                        message: "Server Error"
+                    }, {
+                        type: 'danger',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        }
+    }
+    // End
+
+    // Edited by Akshay on 23-4-2026
+    function removeEntries() {
+
+        var rows = $('#dailyovertimediv_verified').datagrid('getSelections');
+
+        if (rows.length === 0) {
+            alert("Please select atleast one record to remove.");
+            return;
+        }
+
+        var records = [];
+        var blockedCount = 0;
+
+        for (var i = 0; i < rows.length; i++) {
+            var data = rows[i];
+
+            if (data.attendance_register === 'N') {
+                records.push({
+                    emp_pkey: data.emp_pkey,
+                    att_date: data.att_date,
+                    yearmonth: data.yearmonth
+                });
+            } else {
+                blockedCount++;
+            }
+        }
+
+        // ❌ ALL blocked
+        if (records.length === 0) {
+            alert("All selected records are already verified in attendance register. Cannot remove.");
+            return;
+        }
+
+        // ⚠️ PARTIAL
+        if (blockedCount > 0) {
+            alert(blockedCount + " record(s) are already verified and will be skipped.");
+        }
+
+        // ✅ Proceed always if at least one valid record exists
+        doRemovalProcedure(records);
+    }
+
+    function doRemovalProcedure(records) {
+
+        if (confirm("Are you sure to remove the selected items?")) {
+
+            $.ajax({
+                url: livesite + "DailyOvertimeVerifyNew/removeentries",
+                type: 'post',
+
+                data: {
+                    records: JSON.stringify(records)
+                },
+
+                success: function(response) {
+
+                    try {
+
+                        var parsedResponse = $.parseJSON(response);
+
+                        var removed = parsedResponse.removed_count || 0;
+
+                        var attendanceLocked =
+                            parsedResponse.attendance_locked || 0;
+
+                        var otVerified =
+                            parsedResponse.ot_verified || 0;
+
+                        var messages = [];
+
+                        // ✅ success message
+                        if (removed > 0) {
+
+                            $.notify(
+                                removed +
+                                " employee(s) removed successfully", {
+                                    type: 'success',
+                                    allow_dismiss: false
+                                }
+                            );
+                        }
+
+                        // ✅ attendance verified
+                        if (attendanceLocked > 0) {
+
+                            $.notify(
+                                attendanceLocked +
+                                " employee(s) can't remove, attendance already verified", {
+                                    type: 'danger',
+                                    allow_dismiss: false
+                                }
+                            );
+                        }
+
+                        // ✅ OT verified
+                        if (otVerified > 0) {
+
+                            $.notify(
+                                otVerified +
+                                " employee(s) can't remove, OT already approved", {
+                                    type: 'danger',
+                                    allow_dismiss: false
+                                }
+                            );
+                        }
+
+                        // 🔄 reload grids
+                        $('#dailyovertimediv').datagrid('load', {
+
+                            branch: $("#filterby_branch").val(),
+
+                            month: $('#date1').val(),
+
+                            empid: $('#employee_select').val(),
+
+                            monthChosen: $('#filterby_month').val() + '-01'
+                        });
+
+                        $('#dailyovertimediv_verified').datagrid('load', {
+
+                            branch: $("#filterby_branch").val(),
+
+                            month: $('#date1').val(),
+
+                            yearmonth: $("#filterby_month").val()
+                        });
+
+                        filterDailyOvertime();
+
+                    } catch (e) {
+
+                        console.log('e', e);
+
+                        // $.notify(
+                        //     "Error processing server response.", {
+
+                        //         type: 'danger',
+
+                        //         allow_dismiss: false
+                        //     });
+                    }
+                },
+
+                error: function() {
+
+                    // $.notify(
+                    //     "Error communicating with the server.", {
+
+                    //         type: 'danger',
+
+                    //         allow_dismiss: false
+                    //     });
+                }
+            });
+        }
+    }
+    // End
+
+
+    function updateamendmence() {
+        var brn = $('#filterby_branch').val();
+        var mnth = $('#filterby_month').val();
+        $('#updateamendance').html('<li class="fa fa-spinner fa-spin"></li>Loading ...').attr("disabled", "disabled");
+        $.ajax({
+            type: "POST",
+            url: livesite + "EditPunches/Updateamendmens",
+            data: {
+                brn: brn,
+                month: mnth
+            },
+            success: function(resp) {
+                $('#updateamendance').html('Refresh again').attr("disabled", false);
+                $.notify("Attandence Updates successfully", {
+                    type: 'success',
+                    allow_dismiss: false
+                });
+
+
+            }
+        });
+    }
+    /* edited by bindu 20-02-26 */
+    $(".home").on("click", function() {
+
+        $("#container").isLoading({
+            text: "Loading",
+            position: "overlay",
+        });
+
+        let url = "";
+        var userGroup = <?php echo json_encode($user_group); ?>
+
+        if (userGroup == "1") {
+            url = livesite + "AttendanceSetup/index";
+        } else if (userGroup == "2") {
+            url = livesite + "EmployeeMenu/addon";
+        }
+
+        $("#container").load(url, function() {
+            isDashboardShown = false;
+        });
+
+    });
+    /* edited by bindu 20-02-26 end*/
+</script>

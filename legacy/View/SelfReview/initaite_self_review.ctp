@@ -1,0 +1,236 @@
+<style>
+    .datagrid-wrap.panel-body.panel-body-noheader {
+        width: 100% !important;
+        max-width: 1400px !important;
+    }
+
+    .datagrid-view {
+        width: 100% !important;
+        max-width: 1400px !important;
+    }
+
+    .datagrid-view1 {
+        width: 2% !important;
+        max-width: 1400px !important;
+    }
+
+    .datagrid-view2 {
+        width: 98% !important;
+        max-width: 1400px !important;
+    }
+
+    .datagrid-header {
+        width: 100% !important;
+        max-width: 1400px !important;
+    }
+
+    .datagrid-body {
+        width: 100% !important;
+        max-width: 1400px !important;
+    }
+</style>
+<!-- Choices.js CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+
+<!-- Choices.js JS -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<section class="content-header">
+    <h1 style="font-size: 30px;">Annual Performance Assessment</h1>
+    <hr style="margin-top: 6px;margin-bottom: -2px;">
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- My Leave Requests -->
+            <!-- DIRECT CHAT DANGER -->
+            <div class="box box-primary">
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="myleaverequeststable" class="table table-bordered table-hover">
+
+                    </table>
+                </div><!-- /.box-body -->
+            </div><!--/.direct-chat -->
+        </div><!-- /.col -->
+    </div>
+</section>
+<script>
+    jQuery(document).ready(function() {
+        $('#myleaverequeststable').datagrid({
+            url: livesite + "SelfReview/listreviews",
+            pagination: true,
+            singleSelect: true,
+            rownumbers: true,
+            queryParams: {
+                isHR: true
+            },
+            toolbar: [{
+                    text: 'New',
+                    iconCls: 'icon-add',
+                    handler: function() {
+                        showLargeModalForm(livesite + 'SelfReview/newReview', function() {
+                            $('#myleaverequeststable').datagrid('reload');
+                        });
+                    }
+                },
+                // Edited by Akshay on 5-6-2025
+                {
+                    text: 'Bulk Allocation',
+                    iconCls: 'icon-add',
+                    handler: function() {
+                        showLargeModalForm(livesite + 'SelfReview/newBulkReview', function() {
+                            $('#myleaverequeststable').datagrid('reload');
+                        });
+                    }
+                },
+                // End
+                {
+                    iconCls: 'icon-remove',
+                    text: 'Delete',
+                    handler: function() {
+                        var row = $('#myleaverequeststable').datagrid('getSelected');
+                        if (row) {
+                            if (row.status === 'Draft' || row.status === 'New' || row.status === 'Rejected' || row.status == 1 || row.status == 2 || row.status == 5) {
+                                if (confirm('Are you sure you want to delete this entry?')) {
+                                    $.ajax({
+                                        url: livesite + 'SelfReview/deleteSelfReview', // Your PHP endpoint
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        data: {
+                                            // self_review_details_pkey: row.self_review_details_pkey
+                                            table: row.table,
+                                            pkey: row.pkey
+                                        },
+                                        success: function(response) {
+                                            if (response.status === 'success') {
+                                                $('#myleaverequeststable').datagrid('reload'); // Refresh the table
+                                                $.notify(response.message || 'Deleted successfully.', {
+                                                    type: 'success'
+                                                });
+                                                // $('#myleaverequeststable').datagrid('reload'); // Refresh the table
+                                            } else {
+                                                $.notify(response.message || 'Failed to delete.', {
+                                                    type: 'error'
+                                                });
+                                            }
+                                        },
+                                        error: function() {
+                                            $.notify('AJAX request failed.', {
+                                                type: 'error'
+                                            });
+                                        }
+                                    });
+                                }
+                            } else {
+                                $.notify('Cannot delete a submitted record.', {
+                                    type: 'danger'
+                                });
+                            }
+
+                        } else {
+                            $.notify('Please select a row.', {
+                                type: 'danger'
+                            });
+                        }
+                    }
+                },
+                // Edited by Akshay on 9-6-2025
+                {
+                    text: 'Pdf',
+                    handler: function() {
+                        var row = $('#myleaverequeststable').datagrid('getSelected');
+                        if (row && row.emp_pkey && row.table) {
+                           // if (row.status_label.toLowerCase() === 'reviewing person submitted the appraisal'.toLowerCase()) {
+                                var url = livesite + 'TeamReview/previewPdfReviewHR/' + row.emp_pkey + '/' + row.pkey;
+                                if (row.table === 'assessment_attributes_staff_details') {
+                                    url = livesite + 'HierarchyReview/previewPdfReview/' + row.pkey;
+                                }
+                                window.open(url, '_blank');
+                            // } else {
+                            //     $.notify('The reviewing officer has not submitted the appraisal.', {
+                            //         type: 'danger'
+                            //     });
+                            // }
+
+                        } else {
+                            $.notify('Please select a valid row to download the PDF.', {
+                                type: 'danger'
+                            });
+                        }
+                    }
+                },
+                // End
+
+            ],
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            rowStyler: function(index, row) {
+                if (row.LEAVESTATUS == 'Can not Apply') {
+                    return 'background-color:#FF6666;color:#fff;font-weight:bold;';
+                }
+            },
+            columns: [
+                [{
+                        field: 'emp_fkey',
+                        title: 'Employee Name',
+                        width: "18%"
+                    },
+                    {
+                        field: 'reporting_officer',
+                        title: 'Reporting Officer',
+                        width: "18%"
+                    },
+                    {
+                        field: 'reviewing_officer',
+                        title: 'Reviewing Officer',
+                        width: "18%"
+                    },
+                    {
+                        field: 'created_by',
+                        title: 'Created By',
+                        width: "18%"
+                    },
+                    {
+                        field: 'created_date',
+                        title: 'Created Date & Time ',
+                        width: "12%"
+                    },
+                    // {
+                    //     field: 'modified_by',
+                    //     title: 'Modified By',
+                    //     width: "18%"
+                    // },
+                    // {
+                    //     field: 'modified_date',
+                    //     title: 'Modified Date & Time',
+                    //     width: "14%"
+                    // },
+                    // {
+                    //     field: 'status',
+                    //     title: 'Status',
+                    //     width: "14%",
+                    //     formatter: function(value, row, index) {
+                    //         switch (value) {
+                    //             case 'New':
+                    //                 return 'Self Assessment Initiated';
+                    //             case 'Drafted':
+                    //                 return 'Self Appraisal Drafted';
+                    //             default:
+                    //                 return value;
+                    //         }
+                    //     }
+                    // },
+                    {
+                        field: 'status_label',
+                        title: 'Status',
+                        width: "22%",
+                    }
+                ]
+            ]
+
+
+        });
+    });
+</script>

@@ -1,0 +1,351 @@
+<style>
+
+    .modal-content {width: 125% !important;     }
+
+.box{border-top: 0px solid #d2d6de !important;border-bottom: 0px solid #d2d6de !important;}
+</style>
+
+<?php if ($mode == '') { ?>
+    <div class="modal-body" style="overflow-y: auto;">
+       
+        <h2 style="font-weight: bold;text-align: center;"><?php echo "  Employee Loan - " .$mname."  "  .$year. " to " .$mname1. " ".$year1?>  </h2>     
+      <h2 style="font-weight: bold;text-align: center;font-size: 19px;"><?php echo  "(Report Run by " . $user_id . " at " . $date_time . ")"?>  </h2>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box ">
+                    <?php
+                    if (count($arr_emp_loan_template) == 0) {
+                        ?>
+                       <div style="font-size: 16px;text-align:left;">
+        No data available under the selected criteria</div>
+                        <?php
+                    } else {
+                        ?>
+                        <?php if (isset($needBranchWiseReport) && $needBranchWiseReport == true) { //do branchwise listing ?>
+                            <?php foreach ($arr_emp_loan_template as $branch_code => $emp_loan) { ?>
+                                <div class="box-body" style="overflow-y: auto;">
+                                    <fieldset>
+                                        <legend><?php echo $emp_loan['branch_name']; ?></legend>
+                                    </fieldset>
+                                    <!--<br>-->
+                                    <fieldset>
+                                        <table class="table table-bordered pagination_table">
+                                            <thead>
+                                                <tr>
+                                                    <th>SL NO</th>
+                                                    <th>Employee Name</th>
+                                                    <th>Employee ID</th>
+                                                    <th>Designation</th>
+                                                    <th>Department</th>
+                                                    <th>Loan Amount</th>
+                                                    <th>Tenure(month)</th>
+                                                    <th>Interest Rate(%)</th>
+                                                    <th>EMI Amount</th>
+                                                    <th>EMI Start Month</th>
+                                                    <th>EMI End Month</th>
+                                                    <th>Paid Amount</th>
+                                                    <!--edited by sinsiya on 04-07-2024-->
+                                                    <th>Balance Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php $arr_data = $emp_loan['employeeloan']; ?>
+                                                <?php
+                                                if (count($arr_data) > 0) {
+                                                    $count = 0;
+                                                    ?>
+                                                    <?php
+                                                    foreach ($arr_data as $val) {
+                                                        ;
+                                                        ?>
+                                                        <tr> 
+                                                            <?php $count = $count + 1; ?> 
+                                                            <td><?php echo $count; ?></td>	
+                                                            <td><?php echo $val['emp_name']; ?><?php echo $val['status']; ?></td>
+                                                            <td><?php echo $val['employee_id']; ?></td>
+                                                            <td><?php echo $val['designation']; ?></td>
+                                                            <td><?php echo $val['department']; ?></td>
+
+                                                            <td> <?php echo $val['loan_amount']; ?></td>
+                                                            <td><?php echo $val['tenure']; ?></td>
+                                                            <td><?php echo $val['intrest_rate']; ?></td>
+                                                            <td><?php echo $val['emi_amount']; ?></td>
+                                                            <td><?php echo $val['start_month']; ?></td>
+                                                            <!--edited by sinsiya on 04-07-2024-->
+                                                            <td><?php echo date('M-Y', strtotime($val['emi_end_month'])); ?></td>
+                                                            <td><?php echo $val['remarks']; ?></td>
+                                                             <!--edited by sinsiya on 04-07-2024-->
+                                                            <td><?php $balanceamt= $val['loan_amount']-$val['remarks'];echo $balanceamt;?></td>
+                                                        </tr>
+                                                    <?php } ?>
+                                                <?php } else { ?>
+                                                    <tr>
+                                                        <td colspan="6">No employees found under this branch.</td>
+                                                    </tr>  
+                                                <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </fieldset>
+                                </div>
+                            <?php }//end foreach    ?>
+                        <?php } else { ?>
+                            <div class="box-body">
+                                <fieldset>
+                                    <table class="table table-bordered pagination_table">
+                                        <thead>
+                                            <tr>
+                                                <th>Sl No</th>
+                                                <th>Employee Name</th>
+                                                <th>Employee ID</th>
+                                                <th>Designation</th>
+                                                <th>Department</th>
+                                                <th>Branch</th>
+                                                <th>Loan Amount</th>
+                                                <th>Tenure(month)</th>
+                                                <th>Interest Rate(%)</th>
+                                                <th>EMI Amount</th>
+                                                <th>EMI Start Month</th>
+                                                <th>EMI End Month</th>
+                                                <th>Paid Amount</th>
+                                                 <!--edited by sinsiya on 04-07-2024-->
+                                                 <th>Balance Amount </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php if(isset($arr_emp_loan_template['employeeloan'])){$arr_data = $arr_emp_loan_template['employeeloan']; }?>
+                                            <?php if (count($arr_data) > 0) {
+                                                ?>
+                                                <?php
+                                                $i = 1;
+                                                foreach ($arr_data as $val) {
+
+                                                    // debug($val);
+                                                    ?>
+                                                    <tr> 
+                                                        <td><?php echo $i; ?> </td>
+                                                        <td><?php echo $val['emp_name']; ?><?php echo $val['status']; ?></td>
+                                                        <td><?php echo $val['employee_id']; ?></td>
+                                                        <td><?php echo $val['designation']; ?></td>
+                                                        <td><?php echo $val['department']; ?></td>
+                                                        <td><?php echo $val['branch']; ?></td>
+                                                        <td><?php echo $val['loan_amount']; ?></td>
+                                                        <td><?php echo $val['tenure']; ?></td>
+                                                        <td><?php echo $val['intrest_rate']; ?></td>
+                                                        <td><?php echo $val['emi_amount']; ?></td>
+                                                        <td><?php echo $val['start_month']; ?></td>
+                                                       <!--edited by sinsiya on 04-07-2024-->
+                                                        <td><?php echo date('M-Y', strtotime($val['emi_end_month'])); ?></td>
+                                                        <td><?php echo $val['remarks']; ?></td>
+                                                         <!--edited by sinsiya on 04-07-2024-->
+                                                         <td><?php $balanceamt= $val['loan_amount']-$val['remarks'];echo $balanceamt;?></td>
+                                                    </tr>
+                                                    <?php
+                                                    $i++;
+                                                }
+                                                ?>
+                                            <?php } else { ?>
+                                                <tr>
+                                                    <td colspan="6">No employees found under this branch.</td>
+                                                </tr>  
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+                            </div>
+                        <?php
+                        }//Branch wise of Employee wise check.
+                    }//Empty Condition
+                    ?> <!-- /.box-body -->
+                </div>
+            </div>
+        </div>   
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('.pagination_table').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+            });
+        });
+    </script>
+<?php } else { ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';       ?>
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+        .row {
+            height: 32px;
+        }
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+        table {
+            border: 1px solid #f4f4f4;
+            width: 80%;
+            max-width: 80%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        td, th {
+            text-align: left;
+            padding: 6px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border: 1px solid #B2B2B2;
+        }
+    </style>
+   
+   <?php
+echo $this->element('reportadminheader',array(
+'title'=>'Employee Loan - ' .$mname."  "  .$year . '<br><br> Report Run by ' . $user_id . ' at ' . $date_time));
+?>
+ <br>
+    <?php
+    if (count($arr_emp_loan_template) == 0) {
+        ?>
+       <div style="font-size: 16px;text-align:left;">
+        No data available under the selected criteria</div>
+        <?php
+    } else {
+        ?>
+        <?php if (isset($needBranchWiseReport) && $needBranchWiseReport == true) { //do branchwise listing      ?>
+            <?php foreach ($arr_emp_loan_template as $branch_code => $emp_loan) { ?>
+                <h4><?php echo $emp_loan['branch_name']; ?></h4>
+                <table  align="center" style="padding-top:10px;">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Employee Name</th>
+                            <th>Employee ID</th>
+                            <th>Designation</th>
+                            <th>Department</th>
+                            <th>Loan<br>Amount</th>
+                            <th>Tenure<br>(month)</th>
+                            <th>Interest<br>Rate(%)</th>
+                            <th>EMI<br>Amount</th>
+                            <th>EMI Start Month</th>
+                            <th>EMI End Month</th>
+                            <th>Paid<br>Amount</th>
+                             <!--edited by sinsiya on 04-07-2024-->
+                            <th>Balance Amount </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $arr_data = $emp_loan['employeeloan']; ?>
+                        <?php if (count($arr_data) > 0) {
+                            ?>
+                            <?php
+                            $i = 1;
+                            foreach ($arr_data as $val) {
+                                ?>
+                                <tr> 
+
+                                    <td><?php echo $i; ?></td>	
+                                    <td><?php echo $val['emp_name']; ?></td>
+                                    <td><?php echo $val['employee_id']; ?></td>
+                                    <td><?php echo $val['designation']; ?></td>
+                                    <td><?php echo $val['department']; ?></td>
+                                    <td> <?php echo $val['loan_amount']; ?></td>
+                                    <td><?php echo $val['tenure']; ?></td>
+                                    <td><?php echo $val['intrest_rate']; ?></td>
+                                    <td><?php echo $val['emi_amount']; ?></td>
+                                    <td><?php echo $val['start_month']; ?></td>
+                                   <!--edited by sinsiya on 04-07-2024-->
+                                    <td><?php echo date('M-Y', strtotime($val['emi_end_month'])); ?></td>
+                                    <td><?php echo $val['remarks']; ?></td>
+                                     <!--edited by sinsiya on 04-07-2024-->
+                                     <td><?php $balanceamt= $val['loan_amount']-$val['remarks'];echo $balanceamt;?></td>
+                                </tr>
+                                <?php
+                                $i++;
+                            }
+                            ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="6">No employees found under this branch.</td>
+                            </tr>  
+                        <?php } ?>
+                    </tbody>
+                </table>
+
+            <?php }//end foreach    ?>
+        <?php } else { ?>
+            
+            <table  align="center" style="width:50%!important;">
+                <thead>
+                    <tr>
+                        <th>Sl No</th>
+                        <th>Employee Name</th>
+                        <th>Employee ID</th>
+                        <th>Designation</th>
+                        <th>Department</th>
+                        <th>Branch</th>
+                        <th>Loan<br>Amount</th>
+                        <th>Tenure<br>(month)</th>
+                        <th>Interest<br>Rate(%)</th>
+                        <th>EMI Amount</th>
+                        <th>EMI Start Month</th>
+                        <th>EMI End Month</th>
+                        <th>Paid<br>Amount</th>
+                         <!--edited by sinsiya on 04-07-2024-->
+                        <th>Balance Amount </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php $arr_data = $arr_emp_loan_template['employeeloan']; ?>
+                    <?php if (count($arr_data) > 0) { ?>
+                        <?php
+                        $i = 1;
+                        foreach ($arr_data as $val) {
+                            ?>
+                            <tr> 
+                                <td><?php echo $i; ?></td>
+                                <td><?php echo $val['emp_name']; ?></td>
+                                <td><?php echo $val['employee_id']; ?></td>
+                                <td><?php echo $val['designation']; ?></td>
+                                <td><?php echo $val['department']; ?></td>
+                                <td><?php echo $val['branch']; ?></td>
+                                <td> <?php echo $val['loan_amount']; ?></td>
+                                <td><?php echo $val['tenure']; ?></td>
+                                <td><?php echo $val['intrest_rate']; ?></td>
+                                <td><?php echo $val['emi_amount']; ?></td>
+                                <td><?php echo $val['start_month']; ?></td>
+                               <!--edited by sinsiya on 04-07-2024-->
+                                <td><?php echo date('M-Y', strtotime($val['emi_end_month'])); ?></td> 
+                                <td><?php echo $val['remarks']; ?></td>
+                                 <!--edited by sinsiya on 04-07-2024-->
+                                 <td><?php $balanceamt= $val['loan_amount']-$val['remarks'];echo $balanceamt;?></td>
+                            </tr>
+                            <?php
+                            $i++;
+                        }
+                        ?>
+                    <?php } else { ?>
+                        <tr>
+                            <td colspan="6">No employees found under this branch.</td>
+                        </tr>  
+                    <?php } ?>
+                </tbody>
+            </table>
+
+
+        <?php
+        }//Closing of branch or employee check
+    }//Closing of empty case
+    ?> <!-- /.box-body -->
+
+<?php } ?>

@@ -1,0 +1,508 @@
+<!-- <div class="modal-dialog"> -->
+<style>
+    .notify-container {
+        z-index: 2000 !important;
+    }
+
+    #inputTable {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    #inputTable,
+    #inputTable th,
+    #inputTable td {
+        border: 1px solid black;
+    }
+
+    #inputTable th,
+    #inputTable td {
+        padding: 8px;
+        text-align: left;
+    }
+
+    #inputTable input {
+        width: 100%;
+    }
+</style>
+<!-- Modal content-->
+<div class="modal-content" style="z-index: 10000;">
+    <!-- <div class="modal-header">
+            <h4 class="modal-title">Upload File</h4>
+        </div> -->
+    <div class="modal-header" style="background: #00659f; color: white; display: flex; justify-content: space-between;">
+        <?php
+        if ($pkey == 0) { ?>
+            <h4 class="modal-title" style="margin: 0;"> New Gate Pass</h4>
+        <?php } else { ?>
+            <h4 class="modal-title" style="margin: 0;"> Edit Gate Pass</h4>
+        <?php }
+        ?>
+
+
+    </div>
+    <div class="modal-body">
+        <!-- Form starts -->
+        <div class="container" style="width:100%;">
+            <form class="form-horizontal" method="post" action="<?php echo $this->webroot; ?>GatePass/savePass" id="uploadForm">
+                <!-- <input id="gate_pass_pkey" name="gate_pass_pkey" value="<?php echo isset($arr_gate_pass["gate_pass_pkey"]) ? $arr_gate_pass["gate_pass_pkey"] : ''; ?>" type="hidden" class="form-control input-md"> -->
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label style="text-align:left;" class="col-md-4 control-label" for="classification">Gate Pass Type &nbsp;<span style="color:red;">*</span></label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <select id="type" name="type" onchange="updateReturnDateState()" class="form-control js-example-basic-single" style="width: 230px;" required>
+                                <option value="">--Select--</option>
+                                <option value="Material Gate Pass - Free" <?php echo (isset($arr_gate_pass["type"]) && $arr_gate_pass["type"] == 'Material Gate Pass - Free') ? 'selected="selected"' : ''; ?>>Material Gate Pass - Free</option>
+                                <option value="Material Gate Pass - Sale" <?php echo (isset($arr_gate_pass["type"]) && $arr_gate_pass["type"] == 'Material Gate Pass - Sale') ? 'selected="selected"' : ''; ?>>Material Gate Pass - Sale</option>
+                                <option value="Material Gate Pass - Return" <?php echo (isset($arr_gate_pass["type"]) && $arr_gate_pass["type"] == 'Material Gate Pass - Returnable') ? 'selected="selected"' : ''; ?>>Material Gate Pass - Returnable</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label style="text-align:left;margin-right: -6px;width: 140px" class="col-md-4 control-label" for="gate_pass_no">Gate Pass No &nbsp;</label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <input id="gate_pass_no" name="gate_pass_no" readonly value="<?php echo isset($arr_gate_pass['gate_pass_no']) ? $arr_gate_pass['gate_pass_no'] : ''; ?>" type="text" placeholder="" class="form-control input-md" required autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label style="text-align:left;" class="col-md-4 control-label" for="req_person">Requested By<span style="color:red;">*</span></label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <select id="req_person" name="req_person" class="form-control js-example-basic-single"  style="width: 230px;" required="">
+                                <option value="">--Select--</option>
+                                <?php
+                                foreach ($arr_emp as $emp) { ?>
+                                    <option value="<?php echo $emp['ei']['emp_pkey']; ?>" <?php echo (isset($arr_gate_pass["req_person"]) && $arr_gate_pass["req_person"] == $emp['ei']['emp_pkey']) ? 'selected="selected"' : ''; ?>><?php echo $emp['ei']['EmpName'] . ' - ' . $emp['ei']['employee_id']; ?></option>
+                                <?php }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+              <!--       <div class="col-md-6">
+                        <label style="text-align:left;" class="col-md-4 control-label" for="issued_to">Issued To<span style="color:red;">*</span></label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <select id="issued_to" name="issued_to" class="form-control js-example-basic-single" style="width: 100%" required="">
+                                <option value="">--Select--</option>
+                                <?php
+                                foreach ($arr_emp as $emp) { ?>
+                                    <option value="<?php echo $emp['ei']['emp_pkey']; ?>" <?php echo (isset($arr_gate_pass["issued_to"]) && $arr_gate_pass["issued_to"] == $emp['ei']['emp_pkey']) ? 'selected="selected"' : ''; ?>><?php echo $emp['ei']['EmpName'] . ' - ' . $emp['ei']['employee_id']; ?></option>
+                                <?php }
+                                ?>
+                            </select>
+                        </div>
+                    </div> -->
+                     <div class="col-md-6">
+                        <label style="text-align:left;" class="col-md-4 control-label" for="remarks">Issued To<span style="color:red;">*</span></label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <textarea id="issued_to" name="issued_to" maxlength="50" required class="form-control input-md" style="height: 40px;"><?php echo isset($arr_gate_pass["issued_to"]) ? $arr_gate_pass["issued_to"] : ''; ?></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6"><!--Nationality added by ARUL P DAS on 9/5/21-->
+                        <label style="text-align:left;" class="col-md-4 control-label" for="purpose">Purpose &nbsp;<span style="color:red;">*</span></label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <textarea id="purpose" name="purpose" maxlength="50" required class="form-control input-md" style="height: 40px; width: 230px;" ><?php echo isset($arr_gate_pass["purpose"]) ? $arr_gate_pass["purpose"] : ''; ?></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label style="text-align:left;" class="col-md-4 control-label" for="remarks">Remarks<span style="color:red;">*</span></label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <textarea id="remarks" name="remarks" maxlength="50" required class="form-control input-md" style="height: 40px;"><?php echo isset($arr_gate_pass["remarks"]) ? $arr_gate_pass["remarks"] : ''; ?></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button id="addItemBtn" type="button" class="btn btn-primary">Add Item</button>
+                </div>
+
+                <?php
+                //debug($arr_item);
+                if (count($arr_item) > 0) { ?>
+                    <div id='tableDiv' class="col-md-12" style="display: block; margin-bottom:20px;">
+                    <?php } else { ?>
+                        <div id='tableDiv' class="col-md-12" style="display: none; margin-bottom:20px;">
+                        <?php }
+                        ?>
+
+                        <table id="inputTable">
+                            <thead>
+                                <tr>
+                                    <th>Sl No.</th>
+                                    <th>Item Name</th>
+                                    <th>Quantity</th>
+                                    <th style="width: 100px;">UOM</th>
+                                    <th>Rate</th>
+                                    <th>Amount</th>
+                                    <th>Expected Returnable Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Add your rows with input boxes here -->
+                                <?php
+                                // debug($arr_item);
+                                foreach ($arr_item as $key => $item) {
+                                ?>
+                                    <input type="hidden" name="gate_pass_items_pkey[]" value="<?php echo isset($item['gate_pass_items_pkey']) ? $item['gate_pass_items_pkey'] : 0; ?>">
+                                    <tr>
+
+                                        <td><?php echo $key + 1; ?></td>
+                                        <td><input name="item_name[]" maxlength="100" type="text" value="<?php echo $item['GatePassItems']['item_name']; ?>" placeholder=""></td>
+                                        <td><input name="qty[]" type="number" class="qty" oninput="updateAmount(this)" value="<?php echo $item['GatePassItems']['qty']; ?>" placeholder=""></td>
+                                        <td>
+                                            <select name="units[]" class="form-control">
+                                                <option value="">--Select--</option>
+                                                <?php
+                                                $unitOptions = ['Meter', 'Kilogram', 'Litre']; // Your array of units
+                                                foreach ($unitOptions as $option) {
+                                                    $selected = ($item['GatePassItems']['units'] == $option) ? 'selected="selected"' : '';
+                                                    echo "<option value='$option' $selected>$option</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                        </td>
+                                        <td><input name="rate[]" type="number" class="rate" oninput="updateAmount(this)" value="<?php echo $item['GatePassItems']['rate']; ?>" placeholder=""></td>
+                                        <td><input name="amount[]" type="text" readonly value="<?php echo $item['GatePassItems']['amount']; ?>" placeholder=""></td>
+                                        <td><input disabled name="return[]" class="return_date" type="text" value="<?php echo $item['GatePassItems']['return']; ?>" placeholder="" format="yyyy-mm-dd"></td>
+                                    </tr>
+                                <?php
+                                }
+                                ?>
+                                <!-- Add more rows as needed -->
+                            </tbody>
+                        </table>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <label style="text-align:left;" class="col-md-4 control-label" for="issued_by">Issued By&nbsp;<span style="color:red;">*</span></label>
+                                <div class="col-md-1">:</div>
+                                <div class="col-md-7">
+                                    <select id="issued_by" name="issued_by" class="form-control js-example-basic-single"  style="width: 230px;" required="">
+                                        <option value="">--Select--</option>
+                                        <?php
+                                        foreach ($arr_emp as $emp) { ?>
+                                            <option value="<?php echo $emp['ei']['emp_pkey']; ?>" <?php echo (isset($arr_gate_pass["issued_by"]) && $arr_gate_pass["issued_by"] == $emp['ei']['emp_pkey']) ? 'selected="selected"' : ''; ?>><?php echo $emp['ei']['EmpName'] . ' - ' . $emp['ei']['employee_id']; ?></option>
+                                        <?php }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label style="text-align:left;" class="col-md-4 control-label" for="sanctioned_by">Sanctioned By &nbsp;<span style="color:red;">*</span></label>
+                                <div class="col-md-1">:</div>
+                                <div class="col-md-7">
+                                    <select id="sanctioned_by" name="sanctioned_by" class="form-control js-example-basic-single" style="width: 100%" required="">
+                                        <option value="">--Select--</option>
+                                        <?php
+                                        foreach ($arr_emp as $emp) { ?>
+                                            <option value="<?php echo $emp['ei']['emp_pkey']; ?>" <?php echo (isset($arr_gate_pass["sanctioned_by"]) && $arr_gate_pass["sanctioned_by"] == $emp['ei']['emp_pkey']) ? 'selected="selected"' : ''; ?>><?php echo $emp['ei']['EmpName'] . ' - ' . $emp['ei']['employee_id']; ?></option>
+                                        <?php }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <label style="text-align:left;" class="col-md-4 control-label" for="issued_date">Date&nbsp;<span style="color:red;">*</span></label>
+                                <div class="col-md-1">:</div>
+                                <div class="col-md-7">
+                                    <input id="issued_date" name="issued_date" value="<?php echo isset($arr_gate_pass["issued_date"]) ? $arr_gate_pass["issued_date"] : ''; ?>" type="text" required class="form-control input-md" autocomplete="off"  style="width: 230px;">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label style="text-align:left;" class="col-md-4 control-label" for=""> &nbsp;</label>
+                                <div class="col-md-1">&nbsp;</div>
+                                <div class="col-md-7">
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" onclick="$('#largeModalForm').modal('hide');">Cancel</button>
+                            <button type="button" id="btn-submit" onclick="btnIssue()" class="btn btn-primary">Submit</button>
+                        </div>
+
+            </form>
+        </div>
+        <!-- form ends-->
+    </div>
+</div>
+<!-- </div> -->
+
+<script>
+    function toggleTableDivVisibility() {
+        var rowCount = $('#inputTable tbody tr').length;
+        console.log('rowCount', rowCount);
+        $('#tableDiv').toggle(rowCount > 0);
+    }
+
+    function btnIssue() {
+        // Flag to check if all fields have values
+        var allFieldsFilled = true;
+
+        // Iterate through each input field within the form
+        $("#uploadForm input[type='text'], #uploadForm select").each(function() {
+            // Check if the field has a value
+            $('input, select').each(function() {
+                // Check if the field is not disabled
+                if (!$(this).is(':disabled')) {
+                    // Check if the field is empty
+                    if ($(this).val() === "") {
+                        emptyField = $(this).attr('id') || $(this).attr('name');
+                        if (emptyField !== 'searchqupo') {
+                            allFieldsFilled = false;
+                            console.log('emptyField', emptyField);
+                            return false; // Stop the iteration if any non-disabled field is empty
+                        }
+                    }
+                }
+            });
+        });
+
+        var rowCount = $('#inputTable tbody tr').length;
+        if(rowCount <= 0){
+            $.notify("No item to submit.", {
+                            type: 'danger',
+                            allow_dismiss: false,
+                            className: 'notify-container',
+                            z_index: 9999 
+                        });
+        }else{
+                    // Display a message based on whether all fields are filled
+        if (allFieldsFilled) {
+            // Add any additional actions you want to perform when all fields are filled
+
+            var confirmation = confirm("Are you sure you want to submit the form?");
+
+            if (confirmation) {
+                // Collect form data
+                var pkey = <?php echo json_encode($pkey); ?>;
+                var formData = $("#uploadForm").serialize();
+
+                // Perform AJAX request
+                $.ajax({
+                    url: "<?php echo $this->webroot; ?>GatePass/savePass/" + pkey,
+                    type: "POST",
+                    data: formData,
+                    success: function(response) {
+                        // Handle the response from the server
+                        $.notify('Form submitted successfully!', {
+                            type: 'success',
+                            allow_dismiss: false,
+                            className: 'notify-container',
+                            z_index: 9999 
+                        });
+
+                        var passPkey = response.pkey
+
+                        // Simulate loading delay
+                        $('.loading-overlay').show();
+                        setTimeout(function() {
+                            // Hide loading overlay after a delay (simulating content loading)
+                            $('.loading-overlay').hide();
+                        }, 2000);
+
+                        showLargeModalForm(livesite + 'GatePass/savePreview/' + passPkey);
+
+                        //$("#largeModalForm").modal("hide");
+
+
+
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors
+                        // console.error(xhr.responseText);
+                        $.notify('Error submitting the form. Please try again.', {
+                            type: 'danger',
+                            allow_dismiss: false,
+                            className: 'notify-container',
+                            z_index: 9999 
+                        });
+                        $("#largeModalForm").modal("hide");
+                    }
+                });
+            } else {
+                // $("#largeModalForm").modal("hide");
+            }
+            $('#documents_manager').datagrid('reload');
+        } else {
+            // alert("Please fill the required fields.");
+            $.notify("Please fill the required fields.", {
+                            type: 'danger',
+                            allow_dismiss: false,
+                            className: 'notify-container',
+                            z_index: 9999 
+                        });
+        }
+        }
+
+    }
+
+    $('#type').select2();
+    $('#req_person').select2();
+    //$('#issued_to').select2();
+    $('#issued_by').select2();
+    $('#sanctioned_by').select2();
+
+    function updateReturnDateState() {
+        console.log('Gate pass', $('#type').val());
+        if ($('#type').val() === 'Material Gate Pass - Return') {
+            $('.return_date').prop('disabled', false);
+        } else {
+            $('.return_date').prop('disabled', true);
+        }
+    }
+
+
+    //Amount
+    function updateAmount(input) {
+        // Get the row containing the input field
+        var row = input.closest('tr');
+
+        // Find the related input fields and amount element within the same row
+        var qtyInput = row.querySelector('.qty');
+        var rateInput = row.querySelector('.rate');
+        var amountInput = row.querySelector('.amount');
+
+        // Get the values of qty and rate
+        var qty = parseFloat(qtyInput.value) || 0;
+        var rate = parseFloat(rateInput.value) || 0;
+
+        // Calculate the product of qty and rate
+        var amount = qty * rate;
+        console.log('Amount', amount);
+        // Update the amount field in the same row
+        amountInput.value = amount.toFixed(2);
+    }
+
+
+
+    $(document).ready(function() {
+
+        $('.return_date').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+            // You can customize the date format as needed
+        });
+
+        if ($('#type').val() === 'Material Gate Pass - Return') {
+            $('.return_date').prop('disabled', false);
+        } else {
+            $('.return_date').prop('disabled', true);
+        }
+
+        var currentIssuedDate = $("#issued_date").val();
+
+        var rowCount = rowCount = $('#inputTable tbody tr').length;
+        if (rowCount > 0) {
+            $('#tableDiv').show();
+        } else {
+            $('#tableDiv').hide();
+        }
+
+
+        // Set the datepicker with the current value of issued_date as the default value
+        $("#issued_date").datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
+
+        // $(".return_date").datepicker({
+        //     format: 'yyyy-mm-dd',
+        //     autoclose: true
+        // });
+
+
+
+
+        // Add item button click event
+        $('#addItemBtn').on('click', function() {
+            $('#tableDiv').toggle(true);
+            // Clone the first row and append it to the tbody
+            var rowCount = $('#inputTable tbody tr').length + 1;
+            var newRow = $('<tr><td>' + rowCount + '</td>' +
+                '<td><input name="item_name[]" maxlength="100" type="text" value="" placeholder=""></td>' +
+                '<td><input name="qty[]" class="qty" oninput="updateAmount(this)" type="number" value="" placeholder=""></td>' +
+                '<td><select name="units[]" class="form-control"><option value="">--Select--</option><option value="Meter">Meter</option><option value="Kilogram">Kilogram</option><option value="Litre">Litre</option></select></td>' +
+                '<td><input name="rate[]" class="rate" oninput="updateAmount(this)" type="number" value="" placeholder=""></td>' +
+                '<td><input name="amount[]" class="amount" readonly type="text" value="" placeholder=""></td>' +
+                '<td><input name="return[]" class="return_date"  type="text" value="" placeholder="" disabled autocomplete="off" ></td></tr>');
+
+
+            newRow.find('td:first').text(rowCount);
+
+            // Clear input values in other columns
+            newRow.find('td:not(:first) input').val('');
+
+            console.log('newRow', newRow);
+            // Append the new row to the tbody
+            $('#inputTable tbody').append(newRow);
+
+            // Initialize the date picker for the dynamically added input
+            newRow.find('.return_date').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true
+                // You can customize the date format as needed
+            });
+
+            if ($('#type').val() === 'Material Gate Pass - Return') {
+                $('.return_date').prop('disabled', false);
+            } else {
+                $('.return_date').prop('disabled', true);
+            }
+
+            // Show the table if it was hidden
+            $('#inputTable').show();
+            $('#tableDiv').show();
+
+            // toggleTableDivVisibility();
+        });
+
+        // Initial check and hide the table if there are zero rows
+        toggleTableDivVisibility();
+
+        // Initial check and hide the table if there are zero rows
+        if ($('#inputTable tbody tr').length === 0) {
+            $('#inputTable').hide();
+        }
+
+        // Handle change in Gate Pass Type select
+        $('#type').on('change', function() {
+            var isReturnable = $(this).val() === 'Material Gate Pass - Returnable';
+
+            // Set readonly attribute for the 7th column textarea in all rows
+            $('#inputTable tbody tr').find('td:nth-child(7) textarea').prop('readonly', !isReturnable);
+            // Clear value if not returnable
+            if (!isReturnable) {
+                $('#inputTable tbody tr').find('td:nth-child(7) textarea').val('');
+            }
+        });
+
+
+
+
+        $("#cancelButton").click(function() {
+            // Hide the modal when the Cancel button is clicked
+            $("#largeModalForm").modal("hide");
+        });
+    });
+</script>

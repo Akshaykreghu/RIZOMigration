@@ -1,0 +1,278 @@
+<style>
+    .datagrid .panel-body
+    {
+        width: 100% !important;
+    }
+    #encash td[field="EmployeeDetails[]"] {
+        width: 35px;
+    }
+</style>
+
+<section class="content-header">
+    <h1 style="font-size: 30px;">Employee Leave Encashment</h1>
+    <hr style="margin-top: 8px;margin-bottom: -2px;">
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <br>
+        <!-- Leave Requests -->
+        <!-- DIRECT CHAT DANGER -->
+        <!--                <div class="box-header with-border">
+                            <div class="box-tools pull-right">
+                                <button class="btn btn-box-tool" data-widget="collapse">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <button class="btn btn-box-tool" >
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                        </div>-->
+        <!-- /.box-header -->
+        <div class="col-md-3" id="div-items-criteria1">
+
+            <form method="post" id="encash" class="col-md-12">
+                <div>
+                    <ul title="Employees" lines="true" style="width:100%;min-height:200px;height:auto;max-height:500px;"></ul>
+                </div>
+            </form>
+            <div class="col-md-12 pull-right" style="margin-top: 10px;">
+                <button onclick="showencash();" class="btn btn-primary">Show Selected</button>
+            </div>
+
+        </div>
+        <div class="col-md-9">
+            <div class="tabset-attendanceregister">
+                <div class="tabset-attendanceregister">
+                    <!--                        <div id="tab0" data-pws-tab="tab0" data-pws-tab-name="To be Verify">
+                                                <h3>Leave Requests</h3>
+                                            </div>-->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" id="personal" class="active" onclick="showencashToBeVerify();">
+                            <a href="#div-empsetuppersonal" aria-controls="div-empsetuppersonal" role="tab" data-toggle="tab">Not Verified</a>
+                        </li>
+                        <li role="presentation" id="proffessional" onclick="showencashVerified();">
+                            <a href="#div-empsetupprofessional" aria-controls="div-empsetupprofessional" role="tab" data-toggle="tab">Verified</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="div-empsetuppersonal">
+                            <div class="box " style="margin-top:24px; ">
+                                <table id="empleaverequeststable" class="table table-bordered table-hover">
+
+                                </table>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="div-empsetupprofessional">
+                            <div class="box " style="margin-top:24px; ">
+                                <table id="empleaverequeststableverified" class="table table-bordered table-hover">
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div><!-- /.col -->
+</section>
+<script>
+    function showencash() {
+        var serialize = [];
+        serialize = $('#encash').serialize()
+        $('#empleaverequeststable').datagrid('load', {id: $('#encash').serialize()});
+        $('#empleaverequeststableverified').datagrid('load', {id: $('#encash').serialize()});
+    }
+    function showencashToBeVerify() {
+        $('#empleaverequeststable').datagrid('reload');
+    }
+    function showencashVerified() {
+        $('#empleaverequeststableverified').datagrid('reload');
+    }
+    function save(s, applied, employee, salaryheaditemsfkey) {
+        var input_te = $(s).siblings('input');
+        var applied_value = $(input_te).val();
+        if (applied == 0) {
+            $(s).prop("disabled", true).html("No Balance");
+            return false;
+        } else {
+            $.ajax({
+                url: livesite + "LeaveEncashmentRequest/encashemp",
+                type: "POST",
+				dataType: 'json',
+                data: {emp: employee, applied_days: applied_value, salaryheaditemsfkey: salaryheaditemsfkey},
+                success: function (resp) {
+                    if (resp.msg == true) {
+                        //$(s).html('<li class="fa fa-spinner fa-spin"></li>');
+                        $(s).fadeOut(90, function () {
+                            $(s).parent('div').append('Approved');
+                            $('#empleaverequeststable').datagrid('reload');
+                            $('#empleaverequeststableverified').datagrid('load');
+                        });
+                    }else{
+					$.notify("Can't approve leave encashment.Payroll Processed for this month. ", {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                    return false;
+					}
+                }
+            });
+        }
+    }
+    jQuery(document).ready(function () {
+
+        var criteria = 'EmployeeDetails';
+
+        $('#div-items-criteria1 ul').datalist({
+            fitColumns: true,
+            searchFilter: true,
+            toolbar: [{
+                    text: 'Select all',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        $('#div-items-criteria1 ul').datalist('checkAll');
+                        $('#div-items-criteria1 input:checkbox').each(function () {
+                            this.checked = true;
+                        });
+                    }
+                }, {
+                    text: 'Deselect all',
+                    iconCls: 'icon-delete',
+                    handler: function () {
+                        $('#div-items-criteria1 ul').datalist('clearChecked');
+                        $('#div-items-criteria1 input:checkbox').each(function () {
+                            this.checked = false;
+                        });
+                    }
+                }],
+            //frozenColumns:[[
+            columns: [[
+                    {
+                        field: criteria + '[]',
+                        width: 30,
+                        fixed: true,
+                        formatter: function (value, row, index) {
+                            return '<input type="checkbox" name="' + row.key + '" value="' + row.key + '" />';
+                        }
+                    },
+                    {
+                        field: 'Name',
+                        width: 200,
+                        fixed: true,
+                        formatter: function (value, row, index) {
+                            return row.text;
+                        }
+                    }
+                ]],
+            url: livesite + 'miscellaniousReports/listcriteriaitems/' + criteria,
+            //checkbox: true,
+            checkOnSelect: true,
+            singleSelect: false,
+            lines: true,
+            valueField: "key",
+            onCheck: function (i, rows) {
+
+            },
+            onUncheck: function (i, rows) {
+
+            },
+            onLoadSuccess: function () {
+
+            }
+        });
+
+
+
+
+
+        $('#empleaverequeststable').datagrid({
+            url: livesite + "LeaveEncashmentRequest/listallempsforencash",
+            pagination: false,
+            singleSelect: true,
+//            pageSize: 10,
+            rownumbers: true,
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            onLoadSuccess: function (data) {
+//                $.messager.show({
+//                    title: 'Info',
+//                    msg: 'You have  ' + data.total + ' Leave Requests'
+//                });
+            },
+            columns: [
+                [
+                    {field: 'emp_name', title: 'Employee Name', width: "20%"},
+                    {field: 'leave_encash_limit', title: 'Encashable Leaves', width: "14%"},
+                    {field: 'yearlybalance', title: 'Yearly Balance', width: "13%"},
+                    {field: 'eligible', title: 'Applicable Days', width: "13%"},
+                    {field: 'item', title: 'Item', width: "20%"},
+                    {field: 'applied', title: 'Approve', width: "20%", formatter: function (value, row, index) {
+                            if (row.editing == false) {
+                                var s = '<a href="#" onclick="saverow(this)">Save</a> ';
+                                var c = '<a href="#" onclick="cancelrow(this)">Cancel</a>';
+                                return s + c;
+                            } else {
+                                var e = '<input value="' + row.eligible + '" max="' + row.eligible + '" min = "0" step="any" type="number" style="color:black;width: 80px; "> ';
+                                if (row.eligible > 0) {
+                                    var es = '<button style="background:#5bba6f;padding:4px 9px;" onclick="save(this,' + row.eligible + ',' + row.emp_pkey + ',' + row.salary_head_item_fkey + ');" class="btn">Approve</button>';
+                                } else {
+                                    var es = '<button style="background:#5bba6f;padding:4px 9px;" class="btn" disabled="disabled" >Approve</button>';
+                                }
+                                return e + es;
+                            }
+                        }}
+                ]
+            ]
+        });
+
+        $('#empleaverequeststableverified').datagrid({
+            url: livesite + "LeaveEncashmentRequest/listallempsforverified",
+            pagination: true,
+            rownumbers: true,
+//            searchFilter: true,
+            singleSelect: true,
+            pageSize: 10,
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+//            toolbar: [{
+//                    iconCls: 'icon-edit',
+//                    text: 'Manage Leave',
+//                    handler: function () {
+//                        var row = $('#empleaverequeststableverified').datagrid('getSelected');
+//                        var leaveentryId = row.LEAVEENTRYID;
+//                        showLargeModalForm(livesite + 'LeaveEncashmentRequest/manageleave/' + row.leave_encashment_master_pkey);
+//                    }
+//                }],
+            columns: [
+                [
+                    {field: 'emp_name', title: 'Employee Name', width: 150, fixed: true},
+                    {field: 'encash_days', title: 'Encash Days', width: 120, fixed: true},
+                    {field: 'available_days', title: 'Available Days', width: 120, fixed: true},
+                    {field: 'requested_days', title: 'Requested Days', width: 120, fixed: true},
+                    {field: 'item', title: 'Item', width: 120, fixed: true},
+                    {field: 'approved_days', title: 'Approved Day', width: 120, fixed: true},
+//                    {field: 'remarks', title: 'Remarks', width: 120, fixed: true},
+                    {field: 'approved_date', title: 'Approved Date', width: 135, fixed: true}
+                ]
+            ]
+        });
+        function loadtabs() {
+            $('.tabset-attendanceregister').pwstabs({
+                effect: 'scale', // You can change effects of your tabs container: scale / slideleft / slideright / slidetop / slidedown / none
+                defaultTab: 1, // The tab we want to be opened by default
+                containerWidth: '100%', // Set custom container width if not set then 100% is used
+                tabsPosition: 'horizontal', // Tabs position: horizontal / vertical
+                horizontalPosition: 'top', // Tabs horizontal position: top / bottom
+                verticalPosition: 'left', // Tabs vertical position: left / right
+                responsive: false, // Make tabs container responsive: true / false - boolean
+                theme: '',
+                rtl: false                    // Right to left support: true/ false
+            });
+        }
+        //loadtabs();
+    });
+
+</script>

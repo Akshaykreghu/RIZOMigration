@@ -1,0 +1,242 @@
+<?php if ($mode == '') { ?>
+    <div class="modal-body" style="overflow-y: auto;">
+        <legend style="text-align: center; font-weight: bold;">Employee Hierarchy </legend>
+        <h4 align="center" style="font-weight:bold;">(<?php echo isset($user_id) ? "Report run by " . ($user_id) . " - " . $date_time : ''; ?>)</h4>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box ">
+
+                    <?php
+                    if (count($arr_hierarchy_for_template) == 0) {
+                        echo "<h3>No Data Available With The Selected Criteria</h3>";
+                    } ?>
+                    <?php
+                    $i = 0;
+                    foreach ($arr_hierarchy_for_template as $value) {
+                        $i += 1;
+                        if (count($value['summary']) > 0) {
+                    ?>
+                            <div class="box-body" style="">
+                                <fieldset>
+                                    <legend style="font-weight: bold ; "> <?php $empstatus = isset($value['summary']['0']['0']['superior_status']) && $value['summary']['0']['0']['superior_status'] == "2" ? '  (Resigned)' : '';
+                                                                            echo isset($value['summary']['0']['0']['superior']) ? "Superior - " . $value['summary']['0']['0']['superior'] . "  (" . $value['summary']['0']['0']['superior_comp_id'] . ")" . $empstatus : ''; ?> </legend>
+
+                                </fieldset>
+                                <!--  <br>
+                                <fieldset> -->
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Sl No </th>
+
+                                            <th>Employee ID</th>
+                                            <th>Employee Name</th>
+                                            <th>Joining Date</th>
+                                            <th>Branch</th>
+                                            <th>Department</th>
+                                            <th>Designation</th>
+                                            <th>Termination Date</th>
+                                            <th>Order</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $arr_data = $value['summary'];  ?>
+                                        <?php if (count($arr_data) > 0) { ?>
+                                            <?php $i = 1; ?>
+                                            <?php
+                                            foreach ($arr_data as $val) {
+                                                $empstatus1 = isset($val['ed']['status']) && $val['ed']['status'] == "2" ? '  (Resigned)' : '';
+                                            ?>
+
+                                                <tr>
+
+                                                    <td><?php echo $i; ?></td>
+                                                    <!-- edited by athira on 25-04-2025 -->
+                                                    <td>
+                                                        <?php
+                                                        $empId = $val['employee_info']['employee_id'];
+                                                        
+                                                        echo $empId;
+                                                        ?>
+                                                    </td>
+                                                    <!-- end -->
+                                                    <td><?php echo $val['employee_info']['EmpName'] . $empstatus1; ?></td>
+                                                    <td><?php $joiningDate = $val['employee_info']['joining_date'];
+                                                        $join = date('d-m-Y', strtotime($joiningDate));
+                                                        echo $join; ?></td>
+                                                    <td><?php echo $val['employee_info']['branch']; ?></td>
+                                                    <td><?php echo $val['employee_info']['department']; ?></td>
+                                                    <td><?php echo $val['employee_info']['designation']; ?></td>
+                                                    <td><?php $terminn = $val['te']['last_approved_working_date'];
+                                                        if (!empty($terminn)) {
+                                                            $termin = date('d-m-Y', strtotime($terminn));
+                                                        } else {
+                                                            $termin = '';
+                                                        }
+                                                        echo $termin; ?></td>
+                                                    <td><?php echo $val['emp_config']['hirc_leval']; ?></td>
+
+                                                </tr>
+
+                                            <?php
+                                                $i++;
+                                            }
+
+                                            ?>
+                                        <?php } else { ?>
+                                            <tr>
+                                                <td colspan="10">No Data found found under this Criteria </td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+
+                                <!--  </fieldset>
+                                <br> -->
+
+                            </div>
+                    <?php
+                        }
+                    }
+                    ?> <!-- /.box-body -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        $(document).ready(function() {
+
+            $('.buttons-print').ready(function() {
+                $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');;
+            });
+            $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');;
+            $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+        });
+    </script>
+<?php } else { ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';    
+    ?>
+
+
+
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+
+        .row {
+            height: 32px;
+        }
+
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+
+        table {
+            border: 1px solid #f4f4f4;
+            width: 80%;
+            max-width: 80%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            font-size: 10px;
+            border: 1px solid #B2B2B2;
+        }
+    </style>
+
+    <?php
+    echo $this->element('reportadminheader', array(
+        'title' => 'Employee Hierarchy Report'
+    ));
+    ?>
+    <h4 align="center" style="font-weight:bold;">(<?php echo isset($user_id) ? "Report run by " . ($user_id) . " - " . $date_time : ''; ?>)</h4>
+    <?php
+    if (count($arr_hierarchy_for_template) == 0) {
+        echo "<h3>No Data Available With The Selected Criteria</h3>";
+    } ?>
+    <?php
+    $i = 0;
+    foreach ($arr_hierarchy_for_template as $value) {
+        $i += 1;
+        if (count($value['summary']) > 0) {
+    ?>
+
+            <h5> <?php $empstatus = isset($value['summary']['0']['0']['superior_status']) && $value['summary']['0']['0']['superior_status'] == "2" ? '  (Resigned)' : '';
+                    echo isset($value['summary']['0']['0']['superior']) ? "Superior - " . $value['summary']['0']['0']['superior'] . "  (" . $value['summary']['0']['0']['superior_comp_id'] . ")" . $empstatus : ''; ?> </h5>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Sl No </th>
+
+                        <th>Employee ID</th>
+                        <th>Employee Name</th>
+
+                        <th>Branch</th>
+                        <th>Department</th>
+                        <th>Designation</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php $arr_data = $value['summary'];  ?>
+                    <?php if (count($arr_data) > 0) { ?>
+                        <?php $i = 1; ?>
+                        <?php
+                        foreach ($arr_data as $val) {
+                            $empstatus1 = isset($val['ed']['status']) && $val['ed']['status'] == "2" ? '  (Resigned)' : '';
+
+                        ?>
+
+                            <tr>
+
+                                <td><?php echo $i; ?></td>
+                                <td><?php echo $val['emp_proff']['emp_company_id']; ?></td>
+                                <td><?php echo $val['0']['emp_name'] . $empstatus1; ?></td>
+                                <td><?php echo $val['employee_info']['branch']; ?></td>
+                                <td><?php echo $val['employee_info']['department']; ?></td>
+                                <td><?php echo $val['employee_info']['designation']; ?></td>
+
+                            </tr>
+
+                        <?php
+                            $i++;
+                        }
+
+                        ?>
+                    <?php } else { ?>
+                        <tr>
+                            <td colspan="10">No Data found found under this Criteria </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+
+    <?php
+        }
+    }
+    ?>
+
+<?php } ?>

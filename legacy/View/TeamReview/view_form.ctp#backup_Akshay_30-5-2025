@@ -1,0 +1,135 @@
+
+<style>
+/* General form styling */
+form{
+    padding:0 40px 40px 40px;
+}
+/* Heading styles */
+h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+    margin-top:0px;
+}
+
+/* Textarea styling */
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+    font-size: 14px;
+     font-weight:normal;
+    line-height: 1.5;
+}
+
+.self_review_details{
+    padding:40px 40px 0 40px;
+}
+
+
+
+</style>
+
+<div>
+<h3 style="margin:0;padding:20px;background-color:#00659F;color:white"><b>Executive Performance Review Summary</b></h3>
+</div>
+<div style="padding:40px;">
+<!-- edited by athira on 06-05-2025 -->
+<div>
+<table  cellpadding="10" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+
+<?php foreach($employee_details as $value) {?>
+    <tr>
+    <td style="padding:8px;"><b>Employee ID </b></td>
+    <td>:</td>
+    <td style="padding:8px;"><b><?php echo $value['p']['employee_id'] ?></b> </td> 
+    </tr>
+    <tr>
+    <td style="padding:8px;"><b>Employee Name </b></td>
+    <td>:</td>
+    <td style="padding:8px;"><b><?php echo $value[0]['employee_name'] ?> </b></td> 
+    </tr>
+    <tr>
+    <td style="padding:8px;"><b>Designation </b> </td>
+    <td>:</td>
+    <td style="padding:8px;"><b><?php echo $value['p']['designation'] ?></b> </td> 
+    </tr>
+
+    <?php }?>
+</table>
+</div>
+<!-- end -->
+
+<div style="margin-top:15px;">
+    <h5>Does the Reporting Officer agree with the statement made in Part II ? If not, the extent of disagreement and reasons are thereof. </h5>
+    <textarea rows="5" disabled readonly>
+        <?= h($summary['agreement_comment']) ?>
+        </textarea>
+</div>
+
+
+<table class="attributes" cellpadding="6" cellspacing="0" border="1" style="width: 100%; border-collapse: collapse;margin-top:15px;">
+    <thead>
+        <tr>
+            <th  style="padding:8px;width:80%;text-align:center;">Attributes</th>
+            <th  style="padding:8px;width:20%;text-align:center;">Marks  (Out of 5)</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php $i = 1; ?>
+    <?php foreach ($attributeMarks as $row): ?>
+        <tr>
+            <td  style="padding:8px;"><?= $i++."."." ". h($row['a']['attributes']) ?></td>
+            <td style="padding:8px;">
+    <?= $officerRole === 'reporting_officer' 
+        ? h($row['d']['reporting_officer_marks']) 
+        : h($row['d']['reviewing_officer_marks']) ?>
+</td>
+
+        </tr>
+    <?php endforeach; ?>
+    <tr>
+        <th  style="padding:8px;text-align:center;" >Total Marks</th>
+        <td  style="padding:8px;"><?= h($summary['total_marks']) ?></td>
+    </tr>
+    <tr>
+        <th  style="padding:8px;text-align:center;">Grade</th>
+        <td  style="padding:8px;"><?= h($summary['grade']) ?></td>
+    </tr>
+    </tbody>
+    </table>
+    <div>
+        <h5>Training Need Assessment</h5>
+        <textarea rows="5" disabled readonly>
+        <?= h($summary['training_need']) ?>
+        </textarea>
+    </div>    
+    <div>
+        <h5>Comments & Recommendation based on overall Performance<</h5>
+        <textarea rows="5" disabled readonly>
+            <?= h($summary['comments_recommendation']) ?>
+        </textarea>
+    </div>
+
+    <div style="display:flex;justify-content:end;align-items:center;margin-top:8px;">
+    <button type="button" class="btn btn-danger" onclick='hideModal();'>Cancel</button>
+    <div>
+ 
+</div>
+<script>
+
+function hideModal() {
+    $('#largeModalForm').modal('hide');
+}
+    </script>
+
+
+
+
+
+
+
+
+

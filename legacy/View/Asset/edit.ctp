@@ -1,0 +1,122 @@
+<script type="text/javascript">
+$(document).ready(function(){
+    /*
+     * Tax Head save
+     */
+    
+            var usersoptions = {
+            url: function (phrase) {
+                return livesite+"Asset/getassets?asset=" + phrase;
+            },
+            getValue: "name",
+            list: {
+                onClickEvent: function () {
+                     var selectedItem = $("#assetname").getSelectedItemData();
+                    var site_fkey = selectedItem.asset_pkey;
+                    $('#asset_fkey').val(selectedItem.asset_pkey);
+                 
+
+                }
+            }
+        };
+
+        $('#assetname').easyAutocomplete(usersoptions);
+    $('#Assetsform').parsley();
+    var options = {
+        success : function(responseText, statusText, xhr, $form) {
+            //alert("success");
+            $('#modalDetailForm').modal('hide');
+            $("#Assets").DataTable().ajax.reload();
+             $.notify("Asset Allocated And Saved Successfully",{
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+        }
+    };
+
+    // bind to the form's submit event
+    $('#Assetsform').submit(function() {
+     
+            $(this).ajaxSubmit(options);
+       
+        return false;
+    });
+    //Ends  
+});
+</script>
+<div class="modal-body">
+<!-- Form Name -->
+<legend>Create Asset</legend>
+<form class="form-horizontal" method="post" action="<?php echo $this->webroot; ?>Asset/AddnewAsset" id="Assetsform">
+    <div class="modal-body">
+       <div class="form-group">
+           <input type="hidden" name="emp_fkey" id="" value="<?php echo $pkey ; ?>">
+           <input type="hidden" name="asset" id="asset_fkey" value="">
+           
+                         <label for="in_date" class="col-sm-4 control-label">Asset Type<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                             <select class="form-control" name="Type">
+                                 <?php if(isset($arr_emp['0']['assets']['Type']))
+                                 {
+                                     
+                                 ?>
+                                 <option value="<?php //echo $arr_emp['0']['assets']['Type']; ?>"><?php// echo $arr_emp['0']['assets']['Type']; ?></option>
+                                 <?php
+                                 }
+                                 ?>
+                                 <option value="Laptop">Laptop</option>
+                                 <option value="Tablet">Tab</option>
+                                 <option value="Mouse">Mouse</option>
+                                 <option value="Keyboard">Keyboard</option>
+                                 <option value="Laptop Bag">Laptop Bag</option>
+                                 <option value="Calculator">Calculator</option>
+                                 <option value="Mobile Phone">Mobile Phone</option>
+                                 <option value="Sim Card">Sim Card</option>
+                                 <option value="Pen Drive">Pen Drive</option>
+                                 <option value="Other">Other</option>
+                             </select>
+                        </div>
+                      </div>
+        
+        <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Asset Name<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                          <input type="text" required="required" class="form-control" value="" name="name" id="assetname" style="width:444px;">
+                         </div>
+                      </div>
+    <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Allocated Date<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                          <input type="text" required="required" class="form-control" value="" name="allocated_date" id="allocated_date" >
+                         </div>
+                      </div>
+        <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Returned Date Date<span class="star"></span></label>
+                         <div class="col-sm-8">
+                          <input type="text" class="form-control" value="" name="retreived_date" id="retreived_date	" >
+                         </div>
+                      </div>
+        <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Transaction<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                         <select class="form-control" name="status">
+                                 <option value="Allocated">Allocation</option>
+                                 <option value="Returned">Return</option>
+                             </select> </div>
+                      </div>
+        <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Value<span class="star"></span></label>
+                         <div class="col-sm-8">
+                          <input type="text" class="form-control" value="" name="value" id="warranty" >
+                         </div>
+                      </div>
+        
+        
+    </div>           
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" onclick="$('#modalDetailForm').modal('hide');">Cancel</button>
+        <button type="submit" id="btn-submit" class="btn btn-primary">Save</button>
+    </div>
+
+</form>
+</div>

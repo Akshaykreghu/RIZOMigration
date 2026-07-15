@@ -1,0 +1,148 @@
+
+
+<section class="content">
+    <div class="row">
+<div class="col-md-12">
+<div class="box box-header">
+    <section class="content-header">
+    <h1 style="text-align:left; font-size: 3em;"> Employee Separation </h1>
+</section>
+       <div class="box-body" id="div-reportcriterias">
+                     <div class="col-md-12">
+                         <input onclick="Terminatre();" type="button" class="btn btn-danger" value="Separate An Employee">
+            </div>
+                </div>
+  
+    
+    
+</div>
+
+</div>
+        
+    </div>
+
+   
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Employee List -->
+            <!-- DIRECT CHAT DANGER -->
+           <div class="box box-body">
+               
+                    
+                    <table id="emptable" class="table table-bordered table-hover">
+                     
+                    </table>
+
+                </div><!-- /.box-body -->
+
+            </div><!--/.direct-chat -->
+        </div><!-- /.col -->
+
+</section>
+<div id="empSetupModalForm" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Content will be loaded here from "remote.php" file -->
+        </div>
+    </div>
+</div>
+<script>
+   function Terminatre()
+   {
+          showLargeModalForm(livesite+'EmployeeResignation/setup/0');
+   }
+       function filterEmployees(obj) {
+        var branch = $('#filterby_branch').val();   
+        var employee = $('#filterby_employees').val();
+        
+        var designation = $('#filterby_Designation').val()
+ 
+        $('#emptable').datagrid('load', {
+            branch: branch,
+            employee: employee,
+            designation:designation,
+           
+        }); 
+           
+    } 
+    
+    
+    
+    jQuery(document).ready(function() {       
+           
+                      function filterAttendanceautocomplete(obj) {
+        var branch = $('#filterby_branch').val();   
+        var employee = obj;
+        
+        var designation = $('#filterby_Designation').val()
+ 
+        $('#emptable').datagrid('load', {
+            branch: branch,
+            employee: employee,
+            designation:designation,
+           
+        }); 
+           
+    } 
+    
+    var usersoptions = {
+        url: function (phrase) {   
+            var branch = $('#filterby_branch').val();
+            return "Employee/getautocompletions?username=" +phrase + "&branch="+branch;
+        },
+        getValue: "emp_name",
+        list: {
+            onClickEvent: function () {
+                //var selectedItem = $('#filterby_employees').getSelectedItemData();
+                //var site_pkey = selectedItem.emp_pkey;
+                filterAttendanceautocomplete($('#hid_filterby_employees').val());
+            },
+            onKeyEnterEvent: function () {
+                filterAttendanceautocomplete($('#hid_filterby_employees').val());
+            },
+            onSelectItemEvent: function () {
+                var selectedItem = $('#filterby_employees').getSelectedItemData();
+                var site_pkey = selectedItem.emp_pkey;
+                $('#hid_filterby_employees').val(site_pkey);
+            }
+        }
+    };
+
+    $('#filterby_employees').easyAutocomplete(usersoptions);
+
+
+        
+        //  $('#filterby_employees').easyAutocomplete(getstages);
+$('#emptable').datagrid({
+				url:livesite+"EmployeeResignation/listemployees",
+				pagination:true,
+				singleSelect:true,
+                                width:'96%',
+				toolbar: [],
+				fitColumns:true,
+				pageList:[2,5,10,50,100],
+				columns:[
+				[
+						
+			              {field:'emp_company_id',title:'Employee ID',width:"20%",sortable:true},
+			              {field:'name',title:'Full Name',width:"20%",sortable:true},
+			              {field:'desig_name',title:'Designation',width:"20%",sortable:true},
+			              {field:'Reason',title:'Reason',width:"10%",sortable:true},
+			              {field:'ed',title:'End Date',width:"10%",sortable:true},
+                                      {field:'Reason_desc',title:'Reason Desc',width:"20%",sortable:true}
+				]
+				]
+				});
+        
+  
+    }); 
+</script>

@@ -1,0 +1,303 @@
+<div class="row">
+    <!-- Edited by Akshay on 5-12-2023 -->
+    <div class="alert alert-success" role="alert" style="display:none;">
+        <h4 class="alert-heading">Sending Emails!</h4>
+        <p>
+            <li class="fa fa-spinner fa-spin"></li> Please wait...
+        </p>
+    </div>
+    <!-- End -->
+    <div class="col-md-12">
+        <div class="datagrid-toolbar">
+            <table cellspacing="0" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <?php if ($tab == 0) { ?>
+                            <td>
+                                <a href="javascript:void(0)" onclick="approvePayroll();" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                    <span class="l-btn-left l-btn-icon-left">
+                                        <span class="l-btn-text">Approve</span>
+                                        <span class="l-btn-icon icon-ok">&nbsp;</span>
+                                    </span>
+                                </a>
+                            </td>
+                        <?php $id = 'filterby_employee';
+                        } else {
+                            $id = 'select_filterby_employee';
+                        } ?>
+                        <!-- Edited by Akshay on 5-12-2023 -->
+                        <?php
+                        if ($tab != 0) {
+                        ?>
+                            <!-- Edited by Akshay on 18-11-2024 -->
+                            <?php
+                          //  if ($company_code == 'DEMO' ||  $company_code == 'GLET') {
+                            ?>
+                               <!-- <td>
+                                    <a href="javascript:void(0)" onclick=" generatePasswords();" class="l-btn l-btn-small l-btn-plain" group="" id="passwordBtn">
+                                        <span class="l-btn-left l-btn-icon-left">
+                                            <span class="l-btn-text">Password Generation</span>
+                                            <span class="l-btn-icon icon-ok">&nbsp;</span>
+                                        </span>
+                                    </a>
+                                </td> -->
+                            <?php
+                          //  }
+                            ?>
+                            <!-- End -->
+                            <?php
+                            if ($company_code == 'DEMO' || $company_code == 'HRBL' || $company_code == 'KWMT' || $company_code == 'GLET') {
+                            ?>
+                                <td>
+                                    <a href="javascript:void(0)" onclick="sendSlipEmailtoPersons();" class="l-btn l-btn-small l-btn-plain" group="" id="emailBtn">
+                                        <span class="l-btn-left l-btn-icon-left">
+                                            <span class="l-btn-text">Email Slip</span>
+                                            <span class="l-btn-icon icon-ok">&nbsp;</span>
+                                        </span>
+                                    </a>
+                                </td>
+                            <?php
+                            }
+                            ?>
+                        <?php } ?>
+                        <td>
+                            <select id="<?php echo $id; ?>" name="<?php echo $id; ?>" class="form-control" onchange="filterPayrollByEmployee(<?php echo $tab; ?>);">
+                                <option value="">--All--</option>
+                                <?php
+                                //edited by arul on 12/12/2019 Employee company id added
+                                //                                foreach ($arr_employees as $key => $value) {
+                                //                                    echo '<option value="' . $value['emp_pkey'] . '">' . $value['emp_name'] . '</option>';
+                                //                                }
+                                foreach ($arr_employees as $value) {
+                                    echo '<option value="' . $value['emp_details']['emp_pkey'] . '">' . $value['emp_details']['first_name'] . ' ' . $value['emp_details']['last_name'] . ' - ' . $value['emp_proff']['emp_company_id'] . '</option>';
+                                }
+                                //end Employee company id added
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <?php if ($tab == 0) { ?>
+            <table id="approvepayrolltable" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th field="chk_payroll" checkbox="true"></th>
+                        <th field="btn_view_salaryslip" align="center" formatter="viewSalarySlip">View Slip</th>
+                        <th data-options="field:'emp_name',width:'20%'" sortable="true">Employee name</th>
+                        <th data-options="field:'days_presant',width:'8%'" sortable="true">Days present</th>
+                        <th data-options="field:'days_leave',width:'8%'" sortable="true">Days on leave</th>
+                        <th data-options="field:'loss_of_pay',width:'8%'" sortable="true">Loss of pay</th>
+                        <th data-options="field:'monthly_ctc',width:'10%'" sortable="true">Monthly CTC</th>
+                        <th data-options="field:'monthly_amount',width:'10%'" sortable="true">Monthly Amount</th>
+                        <th data-options="field:'gross_salary',width:'10%'" sortable="true">Gross Salary</th>
+                        <th data-options="field:'total_deduction',width:'13%'" sortable="true">Total Deductions</th>
+                        <th data-options="field:'net_salary',width:'13%'" sortable="true">Net Salary</th>
+                        <th data-options="field:'last_month_net_salary',width:'13%'" sortable="false">Last Month Salary</th>
+                        <th data-options="field:'calander_days',width:'13%'" sortable="true">Calender Days</th>
+                        <th data-options="field:'working_days',width:'13%'" sortable="true">Working Days</th>
+                    </tr>
+                </thead>
+            </table>
+        <?php } else { ?>
+            <table id="approvedpayrolltable" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th field="chk_processedpayroll" checkbox="true"></th>
+                        <th data-options="field:'emp_name',width:'20%'" sortable="true">Employee name</th>
+                        <th data-options="field:'days_present',width:'8%'" sortable="true">Days present</th>
+                        <th data-options="field:'days_leave',width:'8%'" sortable="true">Days on leave</th>
+                        <th data-options="field:'days_lop',width:'8%'" sortable="true">Loss of pay</th>
+                        <th data-options="field:'monthly_ctc',width:'10%'" sortable="true">Monthly CTC</th>
+                        <th data-options="field:'monthly_amount',width:'10%'" sortable="true">Monthly Amount</th>
+                        <th data-options="field:'gross_salary',width:'10%'" sortable="true">Gross Salary</th>
+                        <th data-options="field:'total_deductions',width:'13%'" sortable="true">Total Deductions</th>
+                        <th data-options="field:'net_salary',width:'13%'" sortable="true">Net Salary</th>
+                        <th data-options="field:'calander_days',width:'13%'" sortable="true">Calender Days</th>
+                        <th data-options="field:'working_days',width:'13%'" sortable="true">Working Days</th>
+                    </tr>
+                </thead>
+            </table>
+        <?php } ?>
+    </div>
+</div>
+<?php if ($tab == 0) { ?>
+    <script>
+        var branch = $('#approvepayrollfilter #filterby_branch').val();
+        var employee = $('#filterby_employee').val();
+        var month = $('#approvepayrollfilter #filterby_month').val();
+        $('#approvepayrolltable').datagrid({
+            url: livesite + "payroll/listapprovepayroll",
+            pagination: true,
+            singleSelect: false,
+            queryParams: {
+                branch: branch,
+                employee: employee,
+                month: month
+            },
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100]
+        });
+        $('#filterby_employee').select2(); //This is to search employee name or company id. By ***ARUL P DAS on 20/12/2019
+    </script>
+<?php } else { ?>
+    <script>
+        var branch = $('#approvepayrollfilter #filterby_branch').val();
+        var employee = $('#select_filterby_employee').val();
+        var month = $('#approvepayrollfilter #filterby_month').val();
+        $('#approvedpayrolltable').datagrid({
+            url: livesite + "payroll/listapprovedpayroll",
+            pagination: true,
+            singleSelect: false,
+            queryParams: {
+                branch: branch,
+                employee: employee,
+                month: month
+            },
+            width: '100%',
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100]
+        });
+        $('#select_filterby_employee').select2(); //This is to search employee name or company id. By ***ARUL P DAS on 20/12/2019
+
+        //Edited by Akshay on 27-11-2024
+        jQuery(document).ready(function() {
+            var companyCode = <?php echo json_encode($company_code); ?>;console.log('companyCode', companyCode, typeof companyCode);
+            if (companyCode === 'HRBL' || companyCode === 'DEMO' || companyCode === 'GLET') {
+                // Create a Date object for the current date
+                var currentDate = new Date();
+
+                // Subtract one month
+                var previousMonthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1);
+
+                // Format the previous month and year
+                var formatter = new Intl.DateTimeFormat('en-GB', {
+                    timeZone: 'Asia/Kolkata',
+                    year: 'numeric',
+                    month: '2-digit',
+                });
+
+                var parts = formatter.formatToParts(previousMonthDate);
+                var previousYear = parts.find(part => part.type === 'year').value;
+                var previousMonth = parts.find(part => part.type === 'month').value;
+
+                var previousMonthYear = previousYear + '-' + previousMonth;
+
+                console.log('Month', month);
+                console.log('previousMonthYear', previousMonthYear);
+                if (month !== previousMonthYear) {
+                    $('#passwordBtn').hide();
+                    $('#emailBtn').hide();
+                } else {
+                    $('#passwordBtn').show();
+                    $('#emailBtn').show();
+                }
+            }
+        });
+        //End
+    </script>
+<?php } ?>
+<script>
+    function filterPayrollByEmployee(tab) {
+        if (tab == 1) {
+            var branch = $('#approvepayrollfilter #filterby_branch').val();
+            var employee = $('#select_filterby_employee').val();
+            var month = $('#approvepayrollfilter #filterby_month').val();
+            $('#approvedpayrolltable').datagrid('load', {
+                branch: branch,
+                employee: employee,
+                month: month
+            });
+        } else {
+            var branch = $('#approvepayrollfilter #filterby_branch').val();
+            var employee = $('#filterby_employee').val();
+            var month = $('#approvepayrollfilter #filterby_month').val();
+            $('#approvepayrolltable').datagrid('load', {
+                branch: branch,
+                employee: employee,
+                month: month
+            });
+        }
+    }
+
+    function viewSalarySlip(value, row) {
+        var payroll_master_pkey = row.payroll_master_pkey;
+        return '<a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-cancel" onclick="showSmallModalForm(\'' + livesite + 'payroll/showsalaryslip/' + payroll_master_pkey + '\');">View Slip</a>';
+    }
+
+    //Edited by Akshay on 18-11-2024
+    function sendSlipEmailtoPersons() {
+        var row = $('#approvedpayrolltable').datagrid('getSelected');
+        var arr_emp_pkeys = [];
+        var arr_payroll_pkeys = [];
+        var checkedRows = $('#approvedpayrolltable').datagrid('getChecked');
+        var month = $('#approvepayrollfilter #filterby_month').val();
+        for (var register in checkedRows) {
+            arr_emp_pkeys.push(checkedRows[register]['emp_fkey']);
+            arr_payroll_pkeys.push(checkedRows[register]['payroll_master_pkey']);
+        }
+        console.log("arr_payroll_pkeys", arr_payroll_pkeys);
+        if (row) {
+            // Show the modal
+            $(".alert-success").show();
+            //Edited by Akshay on 30-11-2024
+            var companyCode = <?php echo json_encode($company_code);?>;
+            var url_path = (companyCode === 'KWMT')? "SalaryReports/sendSliptoMail": "SalaryReports/sendSliptoMailSynthite";
+            //End
+            $.ajax({
+                url: livesite + url_path,//Edited by Akshay on 30-11-2024
+                type: 'get',
+                data: {
+                    emps: arr_emp_pkeys,
+                    month: month
+                },
+                success: function(response) {
+                    $.notify("Salary slip sent successfully.", {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                }
+            });
+            setTimeout(function() {
+                $(".alert-success").fadeOut(); // Hide the alert with a fade-out effect
+            }, 5000); // 5000ms = 5 seconds delay
+        } else {
+            alert('Please select a row.');
+            return; // Prevent further execution of the function
+        }
+    }
+
+    function generatePasswords() {
+        var month = $('#approvepayrollfilter #filterby_month').val();
+
+        // Show the modal
+        $(".alert-success").show();
+        $.ajax({
+            url: livesite + "Payroll/generatePasswords",
+            type: 'get',
+            data: {
+                month: month
+            },
+            success: function(response) {
+                const res = JSON.parse(response);
+                if (res.status === 'success') {
+                    $.notify("Passwords sent successfully.", {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                } else if (res.status === 'partial_success') {
+                    alert(res.message + '\n' + res.failed_employees.join(', '));
+                } else {
+                    alert('An unexpected error occurred.');
+                }
+                setTimeout(function() {
+                    $(".alert-success").fadeOut(); // Hide the alert with a fade-out effect
+                }, 5000); // 5000ms = 5 seconds delay
+            },
+            error: function() {
+                alert('An unexpected error occurred.');
+            }
+        });
+    }
+</script>

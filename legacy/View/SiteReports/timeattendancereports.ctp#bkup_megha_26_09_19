@@ -1,0 +1,265 @@
+<?php if( $mode == '' ){ ?>
+<div class="modal-body" style="overflow-y: auto;">
+    <legend>Site Assignment Wise Attendance  Report</legend>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box ">
+                   <?php $i=0; foreach ($arr_leavepolicydetails_for_template as $value) {
+                   $i += 1; 
+                   if(empty($value['summary'])) continue;
+//                   debug($value);
+                  ?>
+                <div class="box-body">
+                    <fieldset>  <?php $arr_daata  = $value['summary']; ?>
+                       <legend>Attendance Details of  
+                    <?php  
+//                    debug($arr_daata);
+                   $pp= isset($arr_daata[0]['site']['site_name'])?$arr_daata[0]['site']['site_name']:''; 
+                        if($criterias != 'EmployeeDetails')
+                        {
+                        echo isset($arr_daata[0]['site']['site_name'])?$arr_daata[0]['site']['site_name']:''; 
+                        }
+                        else
+                        {
+                        echo isset($val['emp_details']['first_name'])?$val['emp_details']['first_name'].' '.$val['emp_details']['last_name']:''; 
+                        
+                        }
+                        
+                        ?>
+                        </legend>
+                      
+                        <div class="row">
+                            <div class="col-md-12">
+                                
+                            </div>
+                        </div>
+                       
+                      
+                    </fieldset>
+                    <br>
+                    <fieldset>
+			<!--<legend>Stat Rule</legend>-->
+
+			    <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                 <th>Client name </th>
+                                    <th>Site Name</th>
+                                    <th>Employee ID </th>
+                             <th>Employee Name</th>
+                                  <th>Designation</th>
+                                  <th>Total Hours</th>
+                                  <th> Actual Working Days </th>
+              </tr>
+                            </thead>
+                            <tbody>
+                                <?php $arr_data  = $value['summary']; ?>
+                                <?php if(count($arr_data)>0){ ?>
+                                    <?php foreach($arr_data as $val){ ?>
+                                    <tr> 
+                                               <td><?php echo $val['contacts']['company_name']; ?> </td>     
+                                            <td><?php echo $val['site']['site_name']; ?></td>
+                                            <td><?php echo $val['emp_proff']['emp_company_id']; ?></td>
+                                            <td><?php echo $val['emp_details']['first_name'].$val['emp_details']['last_name']; ?></td>
+                                            <td><?php echo $val['designation']['desig_name']; ?></td>
+                                            <td><?php echo $val['0']['times']; ?></td>
+                                            <td><?php echo $val['0']['days']; ?></td> </tr>
+                                    </tr>
+                                    <?php } ?>
+                                <?php }else{ ?>
+                                        <tr>
+                                            <td colspan="6">No employees found under this Site</td>
+                                        </tr>  
+                                <?php } ?>
+                            </tbody>
+                        </table>
+		
+                    </fieldset>
+                    <br>
+                   <!-- <fieldset>
+                        <legend>Employee List</legend>
+                        <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                  <th>Name</th>
+                                  <th>Designation</th>
+                                  <th>Branch</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <?php $arr_data  = $value['employees']; ?>
+                                <?php if(count($arr_data)>=0){ ?>
+                                    <?php foreach($arr_data as $val){ ?>
+                                        <tr> 
+                                            <td><?php echo $val['EmployeeDetails']['first_name'].' '.$val['EmployeeDetails']['last_name']; ?></td>
+                                            <td><?php echo $val['EmployeeProfessionalDetails']['designation']; ?></td>
+                                            <td><?php echo $val['Units']['branch_name']; ?></td>
+                                        </tr>
+                                    <?php } ?>
+                                <?php }else{ ?>
+                                        <tr>
+                                            <td colspan="4">No employees found under this shift</td>
+                                        </tr>  
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </fieldset> -->
+                </div>
+                   <?php  } ?> <!-- /.box-body -->
+            </div>
+        </div>
+    </div>   
+</div>
+<?php }else{ ?>
+<?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>'; ?>
+<style type="text/css">
+    body {
+        line-height: 2em;
+    }
+    .block-container {
+        width: 95%;
+        padding: 20px;
+        border: #000000 solid thin;
+    }
+    .sub-head {
+        border-bottom: #000000 solid thin;
+    }
+    .row {
+        height: 32px;
+    }
+    .col-md-4 {
+        width: 33.33%;
+        float: left;
+    }
+    table {
+        border: 1px solid #f4f4f4;
+        width: 80%;
+        max-width: 80%;
+        margin-bottom: 20px;
+        background-color: transparent;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+    td, th {
+        text-align: left;
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border: 1px solid #B2B2B2;
+    }
+</style>
+<?php
+echo $this->element('reportadminheader',array(
+'title'=>'Site Assignment Wise Attendance  Report'));
+?>
+<!--    <h1>Site Assignment Wise Attendance  Report</h1>--> 
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box ">
+                   <?php $i=0; foreach ($arr_leavepolicydetails_for_template as $value) {
+                   $i += 1; 
+                   if(empty($value['summary'])) continue;
+//                   debug($value);
+                  ?>
+                <div class="box-body">
+                      <?php $arr_daata  = $value['summary']; ?>
+                       <h2>Attendance Details of  
+                    <?php  
+//                    debug($arr_daata);
+                   $pp= isset($arr_daata[0]['site']['site_name'])?$arr_daata[0]['site']['site_name']:''; 
+                        if($criterias != 'EmployeeDetails')
+                        {
+                        echo isset($arr_daata[0]['site']['site_name'])?$arr_daata[0]['site']['site_name']:''; 
+                        }
+                        else
+                        {
+                        echo isset($val['emp_details']['first_name'])?$val['emp_details']['first_name'].' '.$val['emp_details']['last_name']:''; 
+                        
+                        }
+                        
+                        ?>
+                        </h2>
+                      
+                        <div class="row">
+                            <div class="col-md-12">
+                                
+                            </div>
+                        </div>
+                       
+                      
+                   
+                    <br>
+              
+            <!--<legend>Stat Rule</legend>-->
+
+                <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                 <th>Client name </th>
+                                    <th>Site Name</th>
+                                    <th>Employee ID </th>
+                             <th>Employee Name</th>
+                                  <th>Designation</th>
+                                  <th>Total Hours</th>
+                                  <th> Actual Working Days </th>
+              </tr>
+                            </thead>
+                            <tbody>
+                                <?php $arr_data  = $value['summary']; ?>
+                                <?php if(count($arr_data)>0){ ?>
+                                    <?php foreach($arr_data as $val){ ?>
+                                    <tr> 
+                                              <td><?php echo $val['contacts']['company_name']; ?> </td>      
+                                            <td><?php echo $val['site']['site_name']; ?></td>
+                                            <td><?php echo $val['emp_proff']['emp_company_id']; ?></td>
+                                            <td><?php echo $val['emp_details']['first_name'].$val['emp_details']['last_name']; ?></td>
+                                            <td><?php echo $val['designation']['desig_name']; ?></td>
+                                            <td><?php echo $val['0']['times']; ?></td>
+                                            <td><?php echo $val['0']['days']; ?></td> </tr>
+                             
+                                    <?php } ?>
+                                <?php }else{ ?>
+                                        <tr>
+                                            <td colspan="6">No employees found under this Site</td>
+                                        </tr>  
+                                <?php } ?>
+                            </tbody>
+                        </table>
+        
+                  
+                    <br>
+                   <!-- <fieldset>
+                        <legend>Employee List</legend>
+                        <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                  <th>Name</th>
+                                  <th>Designation</th>
+                                  <th>Branch</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <?php $arr_data  = $value['employees']; ?>
+                                <?php if(count($arr_data)>=0){ ?>
+                                    <?php foreach($arr_data as $val){ ?>
+                                        <tr> 
+                                            <td><?php echo $val['EmployeeDetails']['first_name'].' '.$val['EmployeeDetails']['last_name']; ?></td>
+                                            <td><?php echo $val['EmployeeProfessionalDetails']['designation']; ?></td>
+                                            <td><?php echo $val['Units']['branch_name']; ?></td>
+                                        </tr>
+                                    <?php } ?>
+                                <?php }else{ ?>
+                                        <tr>
+                                            <td colspan="4">No employees found under this shift</td>
+                                        </tr>  
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </fieldset> -->
+                </div>
+                   <?php  } ?> <!-- /.box-body -->
+            </div>
+        </div>
+    </div>   
+
+<?php } ?>

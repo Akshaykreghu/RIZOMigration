@@ -1,0 +1,117 @@
+<?php if($criteria == 'EmployeeProfessionalDetails'){ ?>
+    <div class="col-md-6">
+        <label class="col-md-4 control-label" for="reportfrom">From:</label>
+        <div class="col-md-8">
+            <input class="form-control input-md" id="reportfrom" name="reportfrom" value="" type="text" >
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label class="col-md-4 control-label" for="reportto">To:</label>
+        <div class="col-md-8">
+            <input class="form-control input-md" id="reportto" name="reportto" value="" type="text" >
+        </div>
+    </div>
+<style>
+    .checkw{
+        width: 14px !important;
+    }
+</style>
+<script>
+jQuery(document).ready(function() {
+    $('#reportfrom').datepicker({
+        format: 'yyyy-mm-dd'
+    })
+    $("#reportfrom").inputmask("yyyy-mm-dd");
+    $('#reportto').datepicker({
+        format: 'yyyy-mm-dd'
+    })
+    $("#reportto").inputmask("yyyy-mm-dd");
+});
+</script>
+<?php }else{ ?>
+<div class="col-md-2">
+    <a onclick="toggleItemsDisplay(<?php echo $index; ?>);"><i class="fa fa-minus"></i></a>
+</div>
+<div class="col-md-10">
+    <ul title="<?php echo 'Select '.$criteria; ?>" lines="true" style="width:100%;min-height:200px;height:auto;max-height:500px;"></ul>
+</div>
+<!--<button onclick="setwidth();" type="button">Cloick</button>-->
+<script>
+function toggleItemsDisplay(index){
+    $('#div-items-criteria'+index+' .panel-body').fadeToggle('slow', function() {
+        $('#div-items-criteria'+index+' a .fa').toggleClass('fa-plus');
+        $('#div-items-criteria'+index+' a .fa').toggleClass('fa-minus');
+//        if($(this).is(":visible")){
+//            $('#div-items-criteria'+index+' a .fa').removeClass('fa-plus');
+//            $('#div-items-criteria'+index+' a .fa').addClass('fa-minus');
+//        }else{
+//            $('#div-items-criteria'+index+' a .fa').removeClass('fa-minus')
+//            $('#div-items-criteria'+index+' a .fa').addClass('fa-plus');
+//        }
+    });
+}
+function setwidth(){
+        //alert("hi");
+        $('.checkw').parent().parent().addClass('checkw').css("width","30px");
+    }
+$(document).ready(function(){
+    var criteria = $('#hidden-criteria<?php echo $index; ?>').val();
+    $('#div-items-criteria<?php echo $index; ?> ul').datalist({
+        toolbar: [{
+            text: 'Select all',
+            iconCls: 'icon-ok',
+            handler: function () {
+                $('#div-items-criteria<?php echo $index; ?> ul').datalist('checkAll');
+                $('#div-items-criteria<?php echo $index; ?> input:checkbox').each(function(){
+                    this.checked = true;
+                });
+            }
+        },{
+            text: 'Deselect all',
+            iconCls: 'icon-delete',
+            handler: function () {
+                $('#div-items-criteria<?php echo $index; ?> ul').datalist('clearChecked');
+                $('#div-items-criteria<?php echo $index; ?> input:checkbox').each(function(){
+                    this.checked = false;
+                });
+            }
+        }],
+        //frozenColumns:[[
+        columns:[[
+		{
+                    field:criteria+'[]',
+                    width:10,
+                    formatter: function(value,row,index){
+                        return '<input type="checkbox" class="checkw" name="'+criteria+'[]" value="'+row.key+'" />';
+                    }
+                },
+		{
+                    field:'Name',
+                    width:80,
+                    formatter: function(value,row,index){
+                        return row.text;
+                    }
+                }
+	]],
+        url: livesite + 'salaryReports/listcriteriaitems/'+criteria,
+        //checkbox: true,
+        checkOnSelect: true,
+	searchFilter:true,
+        singleSelect: false,
+        lines: true,
+        fitColumns: true,
+        valueField: "key",
+        onCheck: function (i, rows) {
+            
+        },
+        onUncheck: function (i, rows) {
+
+        },
+        onLoadSuccess: function () {
+              setwidth();
+        }
+    });
+    
+});
+</script>
+<?php } ?>

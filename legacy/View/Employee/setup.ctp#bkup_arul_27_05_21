@@ -1,0 +1,1614 @@
+<style>
+    table.dataTable{width:100%;margin:0 auto;clear:both;border-collapse:separate;border-spacing:0}table.dataTable thead th,table.dataTable tfoot th{font-weight:bold}table.dataTable thead th,table.dataTable thead td{padding:10px 18px;border-bottom:1px solid #111}table.dataTable thead th:active,table.dataTable thead td:active{outline:none}table.dataTable tfoot th,table.dataTable tfoot td{padding:10px 18px 6px 18px;border-top:1px solid #111}table.dataTable thead .sorting,table.dataTable thead .sorting_asc,table.dataTable thead .sorting_desc{cursor:pointer;*cursor:hand}table.dataTable thead .sorting,table.dataTable thead .sorting_asc,table.dataTable thead .sorting_desc,table.dataTable thead .sorting_asc_disabled,table.dataTable thead .sorting_desc_disabled{background-repeat:no-repeat;background-position:center right}table.dataTable thead .sorting{background-image:url("../images/sort_both.png")}table.dataTable thead .sorting_asc{background-image:url("../images/sort_asc.png")}table.dataTable thead .sorting_desc{background-image:url("../images/sort_desc.png")}table.dataTable thead .sorting_asc_disabled{background-image:url("../images/sort_asc_disabled.png")}table.dataTable thead .sorting_desc_disabled{background-image:url("../images/sort_desc_disabled.png")}table.dataTable tbody tr{background-color:#ffffff}table.dataTable tbody tr.selected{background-color:#B0BED9}table.dataTable tbody th,table.dataTable tbody td{padding:8px 10px}table.dataTable.row-border tbody th,table.dataTable.row-border tbody td,table.dataTable.display tbody th,table.dataTable.display tbody td{border-top:1px solid #ddd}table.dataTable.row-border tbody tr:first-child th,table.dataTable.row-border tbody tr:first-child td,table.dataTable.display tbody tr:first-child th,table.dataTable.display tbody tr:first-child td{border-top:none}table.dataTable.cell-border tbody th,table.dataTable.cell-border tbody td{border-top:1px solid #ddd;border-right:1px solid #ddd}table.dataTable.cell-border tbody tr th:first-child,table.dataTable.cell-border tbody tr td:first-child{border-left:1px solid #ddd}table.dataTable.cell-border tbody tr:first-child th,table.dataTable.cell-border tbody tr:first-child td{border-top:none}table.dataTable.stripe tbody tr.odd,table.dataTable.display tbody tr.odd{background-color:#f9f9f9}table.dataTable.stripe tbody tr.odd.selected,table.dataTable.display tbody tr.odd.selected{background-color:#acbad4}table.dataTable.hover tbody tr:hover,table.dataTable.display tbody tr:hover{background-color:#f6f6f6}table.dataTable.hover tbody tr:hover.selected,table.dataTable.display tbody tr:hover.selected{background-color:#aab7d1}table.dataTable.order-column tbody tr>.sorting_1,table.dataTable.order-column tbody tr>.sorting_2,table.dataTable.order-column tbody tr>.sorting_3,table.dataTable.display tbody tr>.sorting_1,table.dataTable.display tbody tr>.sorting_2,table.dataTable.display tbody tr>.sorting_3{background-color:#fafafa}table.dataTable.order-column tbody tr.selected>.sorting_1,table.dataTable.order-column tbody tr.selected>.sorting_2,table.dataTable.order-column tbody tr.selected>.sorting_3,table.dataTable.display tbody tr.selected>.sorting_1,table.dataTable.display tbody tr.selected>.sorting_2,table.dataTable.display tbody tr.selected>.sorting_3{background-color:#acbad5}table.dataTable.display tbody tr.odd>.sorting_1,table.dataTable.order-column.stripe tbody tr.odd>.sorting_1{background-color:#f1f1f1}table.dataTable.display tbody tr.odd>.sorting_2,table.dataTable.order-column.stripe tbody tr.odd>.sorting_2{background-color:#f3f3f3}table.dataTable.display tbody tr.odd>.sorting_3,table.dataTable.order-column.stripe tbody tr.odd>.sorting_3{background-color:whitesmoke}table.dataTable.display tbody tr.odd.selected>.sorting_1,table.dataTable.order-column.stripe tbody tr.odd.selected>.sorting_1{background-color:#a6b4cd}table.dataTable.display tbody tr.odd.selected>.sorting_2,table.dataTable.order-column.stripe tbody tr.odd.selected>.sorting_2{background-color:#a8b5cf}table.dataTable.display tbody tr.odd.selected>.sorting_3,table.dataTable.order-column.stripe tbody tr.odd.selected>.sorting_3{background-color:#a9b7d1}table.dataTable.display tbody tr.even>.sorting_1,table.dataTable.order-column.stripe tbody tr.even>.sorting_1{background-color:#fafafa}table.dataTable.display tbody tr.even>.sorting_2,table.dataTable.order-column.stripe tbody tr.even>.sorting_2{background-color:#fcfcfc}table.dataTable.display tbody tr.even>.sorting_3,table.dataTable.order-column.stripe tbody tr.even>.sorting_3{background-color:#fefefe}table.dataTable.display tbody tr.even.selected>.sorting_1,table.dataTable.order-column.stripe tbody tr.even.selected>.sorting_1{background-color:#acbad5}table.dataTable.display tbody tr.even.selected>.sorting_2,table.dataTable.order-column.stripe tbody tr.even.selected>.sorting_2{background-color:#aebcd6}table.dataTable.display tbody tr.even.selected>.sorting_3,table.dataTable.order-column.stripe tbody tr.even.selected>.sorting_3{background-color:#afbdd8}table.dataTable.display tbody tr:hover>.sorting_1,table.dataTable.order-column.hover tbody tr:hover>.sorting_1{background-color:#eaeaea}table.dataTable.display tbody tr:hover>.sorting_2,table.dataTable.order-column.hover tbody tr:hover>.sorting_2{background-color:#ececec}table.dataTable.display tbody tr:hover>.sorting_3,table.dataTable.order-column.hover tbody tr:hover>.sorting_3{background-color:#efefef}table.dataTable.display tbody tr:hover.selected>.sorting_1,table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_1{background-color:#a2aec7}table.dataTable.display tbody tr:hover.selected>.sorting_2,table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_2{background-color:#a3b0c9}table.dataTable.display tbody tr:hover.selected>.sorting_3,table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_3{background-color:#a5b2cb}table.dataTable.no-footer{border-bottom:1px solid #111}table.dataTable.nowrap th,table.dataTable.nowrap td{white-space:nowrap}table.dataTable.compact thead th,table.dataTable.compact thead td{padding:4px 17px 4px 4px}table.dataTable.compact tfoot th,table.dataTable.compact tfoot td{padding:4px}table.dataTable.compact tbody th,table.dataTable.compact tbody td{padding:4px}table.dataTable th.dt-left,table.dataTable td.dt-left{text-align:left}table.dataTable th.dt-center,table.dataTable td.dt-center,table.dataTable td.dataTables_empty{text-align:center}table.dataTable th.dt-right,table.dataTable td.dt-right{text-align:right}table.dataTable th.dt-justify,table.dataTable td.dt-justify{text-align:justify}table.dataTable th.dt-nowrap,table.dataTable td.dt-nowrap{white-space:nowrap}table.dataTable thead th.dt-head-left,table.dataTable thead td.dt-head-left,table.dataTable tfoot th.dt-head-left,table.dataTable tfoot td.dt-head-left{text-align:left}table.dataTable thead th.dt-head-center,table.dataTable thead td.dt-head-center,table.dataTable tfoot th.dt-head-center,table.dataTable tfoot td.dt-head-center{text-align:center}table.dataTable thead th.dt-head-right,table.dataTable thead td.dt-head-right,table.dataTable tfoot th.dt-head-right,table.dataTable tfoot td.dt-head-right{text-align:right}table.dataTable thead th.dt-head-justify,table.dataTable thead td.dt-head-justify,table.dataTable tfoot th.dt-head-justify,table.dataTable tfoot td.dt-head-justify{text-align:justify}table.dataTable thead th.dt-head-nowrap,table.dataTable thead td.dt-head-nowrap,table.dataTable tfoot th.dt-head-nowrap,table.dataTable tfoot td.dt-head-nowrap{white-space:nowrap}table.dataTable tbody th.dt-body-left,table.dataTable tbody td.dt-body-left{text-align:left}table.dataTable tbody th.dt-body-center,table.dataTable tbody td.dt-body-center{text-align:center}table.dataTable tbody th.dt-body-right,table.dataTable tbody td.dt-body-right{text-align:right}table.dataTable tbody th.dt-body-justify,table.dataTable tbody td.dt-body-justify{text-align:justify}table.dataTable tbody th.dt-body-nowrap,table.dataTable tbody td.dt-body-nowrap{white-space:nowrap}table.dataTable,table.dataTable th,table.dataTable td{-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box}.dataTables_wrapper{position:relative;clear:both;*zoom:1;zoom:1}.dataTables_wrapper .dataTables_length{float:left}.dataTables_wrapper .dataTables_filter{float:right;text-align:right}.dataTables_wrapper .dataTables_filter input{margin-left:0.5em}.dataTables_wrapper .dataTables_info{clear:both;float:left;padding-top:0.755em}.dataTables_wrapper .dataTables_paginate{float:right;text-align:right;padding-top:0.25em}.dataTables_wrapper .dataTables_paginate .paginate_button{box-sizing:border-box;display:inline-block;min-width:1.5em;padding:0.5em 1em;margin-left:2px;text-align:center;text-decoration:none !important;cursor:pointer;*cursor:hand;color:#333 !important;border:1px solid transparent;border-radius:2px}.dataTables_wrapper .dataTables_paginate .paginate_button.current,.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover{color:#333 !important;border:1px solid #979797;background-color:white;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #fff), color-stop(100%, #dcdcdc));background:-webkit-linear-gradient(top, #fff 0%, #dcdcdc 100%);background:-moz-linear-gradient(top, #fff 0%, #dcdcdc 100%);background:-ms-linear-gradient(top, #fff 0%, #dcdcdc 100%);background:-o-linear-gradient(top, #fff 0%, #dcdcdc 100%);background:linear-gradient(to bottom, #fff 0%, #dcdcdc 100%)}.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active{cursor:default;color:#666 !important;border:1px solid transparent;background:transparent;box-shadow:none}.dataTables_wrapper .dataTables_paginate .paginate_button:hover{color:white !important;border:1px solid #111;background-color:#585858;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #585858), color-stop(100%, #111));background:-webkit-linear-gradient(top, #585858 0%, #111 100%);background:-moz-linear-gradient(top, #585858 0%, #111 100%);background:-ms-linear-gradient(top, #585858 0%, #111 100%);background:-o-linear-gradient(top, #585858 0%, #111 100%);background:linear-gradient(to bottom, #585858 0%, #111 100%)}.dataTables_wrapper .dataTables_paginate .paginate_button:active{outline:none;background-color:#2b2b2b;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #2b2b2b), color-stop(100%, #0c0c0c));background:-webkit-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:-moz-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:-ms-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:-o-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:linear-gradient(to bottom, #2b2b2b 0%, #0c0c0c 100%);box-shadow:inset 0 0 3px #111}.dataTables_wrapper .dataTables_paginate .ellipsis{padding:0 1em}.dataTables_wrapper .dataTables_processing{position:absolute;top:50%;left:50%;width:100%;height:40px;margin-left:-50%;margin-top:-25px;padding-top:20px;text-align:center;font-size:1.2em;background-color:white;background:-webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255,255,255,0)), color-stop(25%, rgba(255,255,255,0.9)), color-stop(75%, rgba(255,255,255,0.9)), color-stop(100%, rgba(255,255,255,0)));background:-webkit-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);background:-moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);background:-ms-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);background:-o-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);background:linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%)}.dataTables_wrapper .dataTables_length,.dataTables_wrapper .dataTables_filter,.dataTables_wrapper .dataTables_info,.dataTables_wrapper .dataTables_processing,.dataTables_wrapper .dataTables_paginate{color:#333}.dataTables_wrapper .dataTables_scroll{clear:both}.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody{*margin-top:-1px;-webkit-overflow-scrolling:touch}.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody th,.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody td{vertical-align:middle}.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody th>div.dataTables_sizing,.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody td>div.dataTables_sizing{height:0;overflow:hidden;margin:0 !important;padding:0 !important}.dataTables_wrapper.no-footer .dataTables_scrollBody{border-bottom:1px solid #111}.dataTables_wrapper.no-footer div.dataTables_scrollHead table,.dataTables_wrapper.no-footer div.dataTables_scrollBody table{border-bottom:none}.dataTables_wrapper:after{visibility:hidden;display:block;content:"";clear:both;height:0}@media screen and (max-width: 767px){.dataTables_wrapper .dataTables_info,.dataTables_wrapper .dataTables_paginate{float:none;text-align:center}.dataTables_wrapper .dataTables_paginate{margin-top:0.5em}}@media screen and (max-width: 640px){.dataTables_wrapper .dataTables_length,.dataTables_wrapper .dataTables_filter{float:none;text-align:center}.dataTables_wrapper .dataTables_filter{margin-top:0.5em}}
+</style>
+<script>
+    //added by megha joining date condition 28_04_2020
+    $('#date_of_birth').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        endDate: '-18y',
+    }).on('changeDate', function (selected) {
+        var dob = new Date(document.getElementById('date_of_birth').value);
+        var year = dob.getFullYear();
+        var month = dob.getMonth();
+        var day = dob.getDate();
+        var c = new Date(year + 18, month, day);
+        var doj = [c.getFullYear(), c.getMonth() + 1, c.getDate()].join('-');
+<?php
+if ($user == 'VGFS' || $user == 'vgfs') {
+    
+} else {
+    ?>
+            $('#joining_date').datepicker('setStartDate', doj);
+<?php } ?>
+        $('#joining_date').val('');
+
+    });
+    $('#joining_date').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+<?php if ($user == 'VGFS' || $user == 'vgfs') { ?>
+            endDate: '+4d',
+            startDate: '-4d'
+<?php } ?>
+    });
+    //end
+</script>
+<script type="text/javascript">
+    var empPkey = $('#empsetuppersonal #emp_pkey').val();
+    function showdetails()
+    {
+        var empPkey = $('#empsetuppersonal #emp_pkey').val();
+        console.log(empPkey);
+        if (empPkey == 0) {
+            alert("Add an employee first");
+            return false;
+        }
+        var url = livesite + 'Employee/addqualification/' + empPkey;
+
+        var container = $("#modalDetailForm #modaldetails-content")
+        container.load(url, function () {
+            $("#modalDetailForm").modal('show');
+        });
+    }
+    function opendepartment() {
+        var url = livesite + "Department/form";
+
+        var container = $("#modalDetailForm #modaldetails-content")
+        container.load(url, function () {
+            $("#modalDetailForm").modal('show');
+        });
+    }
+    function showtabhistory()
+    {
+        $('#history_details').addClass('active');
+        $('#div-emphistorical').addClass("active");
+        $('#div-emphistorical').addClass("in");
+        $('#history_details').addClass("active");
+        $('#div-empqualification').removeClass("active");
+        $('#div-empqualification').removeClass("in");
+        $('#qualifications').removeClass("active");
+    }
+    function showtabfamy() {
+        $('#family').addClass('active');
+        $('#div-empsetupfamily').addClass("active");
+        $('#div-empsetupfamily').addClass("in");
+        $('#div-emphistorical').removeClass("active");
+        $('#div-emphistorical').removeClass("in");
+        $('#history_details').removeClass("active");
+    }
+    function showtabpass() {
+        $('#passport').addClass('active');
+        $('#div-empsetuppassport').addClass("active");
+        $('#div-empsetuppassport').addClass("in");
+        $('#div-empsetupfamily').removeClass("active");
+        $('#div-empsetupfamily').removeClass("in");
+        $('#family').removeClass("active");
+    }
+    function showtabTax()
+    {
+        $('#ss').addClass('active');
+        $('#div-empsetuptaxation').addClass("active");
+        $('#div-empsetuptaxation').addClass("in");
+        $('#ss').addClass("active");
+        $('#div-empsetuppassport').removeClass("active");
+        $('#div-empsetuppassport').removeClass("in");
+        $('#passport').removeClass("active");
+
+    }
+    function showhistory()
+    {
+        var empPkey = $('#empsetuppersonal #emp_pkey').val();
+        console.log(empPkey);
+        if (empPkey == 0) {
+            alert("Add an employee first");
+            return false;
+        }
+        var url = livesite + 'Employee/history/' + empPkey;
+
+        var container = $("#modalDetailForm #modaldetails-content")
+        container.load(url, function () {
+            $("#modalDetailForm").modal('show');
+        });
+    }
+    function addfamily()
+    {
+        var empPkey = $('#empsetuppersonal #emp_pkey').val();
+        if (empPkey == 0) {
+            alert("Add an employee first");
+            return false;
+        }
+        var url = livesite + 'Employee/addfamily/' + empPkey;
+
+        var container = $("#modalDetailForm #modaldetails-content")
+        container.load(url, function () {
+            $("#modalDetailForm").modal('show');
+
+        });
+    }
+    function addpass()
+    {
+        empPkey = $('#empsetuppersonal #emp_pkey').val();
+        var url = livesite + 'Employee/passport/' + empPkey;
+        if (empPkey == 0) {
+            alert("Add an employee first");
+            return false;
+        }
+        var container = $("#modalDetailForm #modaldetails-content")
+        container.load(url, function () {
+            $("#modalDetailForm").modal('show');
+        });
+    }
+
+    $(document).ready(function () {
+
+        $("#classification").select2();
+        $("#maritual_status").select2();
+        $("#education").select2();
+        $("#relationship").select2();
+        $("#bank_name").select2();
+        $("#emp_type").select2();
+        $("#designation").select2();
+        $("#notice_days").select2();
+        $("#emp_dept").select2();
+        $("#emp_grade").select2();
+        $("#emp_branch").select2();
+        $("#shift").select2();
+        $("#holidays").select2();
+        $("#leave").select2();
+//        $("#salary").select2();
+
+        $('#salary').change(function () {
+
+            var salary_structure_id = $(this).val();
+            var annual_gross = $('#annual_gross').val();
+            var monthly_salary = Math.round(annual_gross / 12, 1);
+            var selected = $(this).find('option:selected');
+            var extra = parseInt(selected.data('foo'));
+
+            if (annual_gross == '0') {
+                alert("Please Enter the Annual Gross Salary First ");
+                $('#annual_gross').focus();
+                $(this).val('');
+            } else {
+//                alert("no");8333 >= 10000
+                //if(monthly_salary <= extra){
+                //edited by megha on 27_5_19 <= changed to <
+                if (monthly_salary < extra) {
+                    alert("Cannot allocate this salary structure to this Salary, Please choose another");
+                    $(this).val('');
+                    return false;
+                }
+            }
+
+        });
+
+
+
+
+        var usershierarchyoptions = {
+            url: function (phrase) {
+                var emp = $('#empsetuppersonal #emp_pkey').val();
+                return livesite + "Employee/getautohierarchycompletions?username=" + phrase + "&emp=" + emp;
+            },
+            getValue: "emp_name",
+            list: {
+                onClickEvent: function () {
+                    //var selectedItem = $('#filterby_employees').getSelectedItemData();
+                    //var site_pkey = selectedItem.emp_pkey;
+                    filterAttendanceautocomplete($('#hid_filterby_employees').val());
+                },
+                onKeyEnterEvent: function () {
+                    filterAttendanceautocomplete($('#hid_filterby_employees').val());
+                },
+                onSelectItemEvent: function () {
+                    var selectedItem = $('#hierarch').getSelectedItemData();
+                    var site_pkey = selectedItem.emp_pkey;
+                    $('#hierarch1').val(site_pkey);
+                }
+            }
+        };
+
+        $('#hierarch').easyAutocomplete(usershierarchyoptions);
+
+
+        var emp = empPkey;
+
+        //Family
+        //---------------------------//
+        var table_family = $('#example_family').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "paging": false,
+            "deferRender": false,
+            "pageNumber": false,
+            "lengthChange": true,
+            "searching": false,
+            "ordering": false,
+            "info": false,
+            "autoWidth": false,
+            "ajax": {
+                "url": livesite + "Employee/lstfamilies/" + $('#empsetuppersonal #emp_pkey').val(),
+                "type": "POST"
+            },
+            "columns": [
+                {"data": "name"},
+                {"data": "relation"},
+                {"data": "DOB"},
+                {"data": "blood_group"},
+//                {"data": "gender"},
+                {"data": "nationality"},
+                {"data": "is_nominee"},
+                {"data": "emergency_contact"},
+                {"data": function (data, type, dataToSet) {
+                        var number = '';
+                        if (data.contact_number != null) {
+                            number += data.contact_number + "<br>";
+                        }
+                        if (data.alternate_number != null) {
+                            number += data.alternate_number;
+                        }
+                        return  number;
+                    }}
+            ]
+        });
+
+        $('#example_family tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            }
+            else {
+                table_family.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        });
+
+        $('#mark_nominee').click(function () {
+            if (table_family.row('.selected').data()) {
+                var emp_family_pkey = table_family.row('.selected').data().emp_family_pkey;
+                var emp = $('#empsetuppersonal #emp_pkey').val();
+                $.ajax({
+                    url: livesite + 'Employee/mark_nominee/' + emp_family_pkey + '/' + emp,
+                    success: function (resp) {
+
+                        alert("Marked as nominee Successfully");
+                        $("#example_family").DataTable().ajax.reload();
+                    }
+                });
+
+            } else {
+                alert("please select any ! ");
+            }
+        });
+
+        $('#mark_emergency').click(function () {
+            if (table_family.row('.selected').data()) {
+                var emp_family_pkey = table_family.row('.selected').data().emp_family_pkey;
+                var emp = $('#empsetuppersonal #emp_pkey').val();
+                $.ajax({
+                    url: livesite + 'Employee/mark_emergency/' + emp_family_pkey + '/' + emp,
+                    success: function (responseText, statusText, xhr, $form) {
+                        var response = JSON.parse(responseText);
+                        if (response.success == true) {
+                            $("#example_family").DataTable().ajax.reload();
+                            alert("Marked as Emergency Contact Successfully");
+                        } else {
+                            alert(response.msg);
+                        }
+                    }
+                });
+            } else {
+                alert("please select any ! ");
+            }
+        });
+
+        $('#del1_family').click(function () {
+            if (table_family.row('.selected').data()) {
+                var emp_family_pkey = table_family.row('.selected').data().emp_family_pkey;
+
+                $.ajax({
+                    url: livesite + 'Employee/deletefdetails/' + emp_family_pkey,
+                    success: function (resp) {
+
+                        alert("Deleted Successfully");
+                        $("#example_family").DataTable().ajax.reload();
+                    }
+                });
+
+            } else {
+                alert("please select any ! ");
+            }
+        });
+        //end of datas
+        //----------------------------------//
+
+
+
+
+
+        //History
+        //-----------------------------//
+        var table = $('#example').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "paging": false,
+            "deferRender": false,
+            "pageNumber": false,
+            "lengthChange": true,
+            "searching": false,
+            "ordering": false,
+            "info": false,
+            "autoWidth": false,
+            "ajax": {
+                "url": livesite + "Employee/listhistory/" + $('#empsetuppersonal #emp_pkey').val(),
+                "type": "POST"
+            },
+            "columns": [
+                {"data": "company"},
+                {"data": "department"},
+                {"data": "designation"},
+                {"data": "from_date"},
+                {"data": "to_date"},
+                {"data": "salary"}
+            ]
+        });
+
+        $('#example tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            }
+            else {
+                table.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        });
+
+        $('#del1').click(function () {
+            if (table.row('.selected').data()) {
+                var history_pkey = table.row('.selected').data().history_pkey;
+
+                $.ajax({
+                    url: livesite + 'Employee/deletehist/' + history_pkey,
+                    success: function (resp) {
+
+                        alert("Deleted Successfully");
+                        $("#example").DataTable().ajax.reload();
+                    }
+                });
+
+            } else {
+                alert("please select any ! ");
+            }
+        });
+
+
+        //end of history
+        //---------------------------//
+
+
+        // Qualifications 
+        //------------------------------//
+        var emp = empPkey;
+        var table1 = $('#example1').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "paging": false,
+            "deferRender": false,
+            "pageNumber": false,
+            "lengthChange": true,
+            "searching": false,
+            "ordering": false,
+            "info": false,
+            "autoWidth": false,
+            "ajax": {
+                "url": livesite + "Employee/listqualifications/" + $('#empsetuppersonal #emp_pkey').val(),
+                "type": "POST"
+            },
+            "columns": [
+                {"data": "course"},
+                {"data": "university"},
+                {"data": "duration"},
+                {"data": "mark"}
+            ]
+        });
+
+        $('#example1 tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            }
+            else {
+                table1.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        });
+
+
+        $('#del').click(function () {
+//            table1.row('.selected').remove().draw( false );
+            if (table1.row('.selected').data()) {
+                var qualification_pkey = table1.row('.selected').data().qualification_pkey;
+
+                $.ajax({
+                    url: livesite + 'Employee/deletequal/' + qualification_pkey,
+                    success: function (resp) {
+
+                        alert("Deleted Successfully");
+                        $("#example1").DataTable().ajax.reload();
+                    }
+                });
+
+            } else {
+                alert("please select any ! ");
+            }
+
+        });
+        //End Qualifications
+        //-----------------------//
+
+
+        //Passport
+        //------------------------//
+        var table_passport = $('#example_passport').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "paging": false,
+            "deferRender": false,
+            "pageNumber": false,
+            "lengthChange": true,
+            "searching": false,
+            "ordering": false,
+            "info": false,
+            "autoWidth": false,
+            "ajax": {
+                "url": livesite + "Employee/listpassports/" + $('#empsetuppersonal #emp_pkey').val(),
+                "type": "POST"
+            },
+            "columns": [
+                {"data": "name"},
+                {"data": "document_type"},
+                {"data": "document_number"},
+                {"data": "relation"},
+                {"data": "valid_from"},
+                {"data": "valid_till"},
+//                {"data": "classification"},{"data": "nationality"}
+                {"data": "remind"},
+                {"data": "imgs"}
+            ]
+        });
+
+        $('#example_passport tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            }
+            else {
+                table_passport.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        });
+
+
+        $('#del_passport').click(function () {
+//            table1.row('.selected').remove().draw( false );
+            if (table_passport.row('.selected').data()) {
+                var qualification_pkey = table_passport.row('.selected').data().emp_passport_visa_pkey;
+
+                $.ajax({
+                    url: livesite + 'Employee/deletepassports/' + qualification_pkey,
+                    success: function (resp) {
+
+                        alert("Deleted Successfully");
+                        $("#example_passport").DataTable().ajax.reload();
+                    }
+                });
+
+            } else {
+                alert("please select any ! ");
+            }
+
+        });
+        //end of passports
+        //---------------------//
+
+
+        $('#empsetuppersonal').parsley();
+        var empsetuppersonaloptions = {
+            success: function (responseText, statusText, xhr, $form) {
+                $('#empsetuppersonal').find("button[type='submit']").prop('disabled', false).html('Next');
+                var response = JSON.parse(responseText);
+                if (response.success) {
+                    //alert(response.message);
+                    $('#config').addClass('active');
+                    $('#div-empsetupconfig').addClass("active");
+                    $('#div-empsetupconfig').addClass("in");
+                    $('#config').addClass("active");
+                    $('#div-empsetupprofessional').removeClass("active");
+                    $('#div-empsetupprofessional').removeClass("in");
+                    $('#proffessional').removeClass("active");
+                    $('#empsetup-save-response').removeClass('alert-danger').addClass('alert-success')
+                            .html('<strong>Success!</strong> ' + response.message).fadeIn().fadeOut(3000);
+                    $('#div-empsetuppersonal').removeClass("active");
+                    $('#div-empsetuppersonal').removeClass("in");
+                    $('#personal').removeClass("active");
+                    //alert(response.message);
+
+                    $('#empsetuppersonal #emp_pkey').val(response.pkey);
+                    $('#empsetupprofessional #emp_fkey').val(response.pkey);
+                    $('#empsetupconfig #emp_fkey').val(response.pkey);
+                    $('#empsetuptaxation #emp_pkey').val(response.pkey);
+                    $('#emp_companyd').html(response.name + ' - ' + response.emp_companyd);
+                    $("#example_family").DataTable().ajax.url(livesite + "Employee/lstfamilies/" + $('#emp_pkey').val()).load();
+                    reloadTable('emptable');
+                } else {
+                    //alert('Something wrong happened!');
+                    $('#empsetup-save-response').removeClass('alert-success').addClass('alert-danger')
+                            .html('<strong>Failed!</strong> ' + response.message).fadeIn().fadeOut(3000);
+                }
+            },
+            statusCode: {
+                200: function (response) {
+                    //OK
+                },
+                201: function (response) {
+                    //Created
+                },
+                400: function (response) {
+                    //Bad Request
+                    alert("something wrong with the request please contact the administrator ");
+                },
+                404: function (response) {
+                    alert("Please contact the administrator ");
+                },
+                408: function (response) {
+                    alert("Request Timeout, Please try Again ");
+                },
+                500: function (response) {
+                    alert("Please contact the administrator ");
+                },
+                520: function (response) {
+                    alert("Please contact the administrator ");
+                },
+                522: function (response) {
+                    alert("Please contact the administrator ");
+                }
+            }
+
+        };
+
+        // bind to the form's submit event
+        $('#empsetuppersonal').submit(function () {
+            $(this).find("button[type='submit']").html('<li class="fa fa-spinner fa-spin"></li> saving...').attr('disabled', 'disabled');
+            $(this).ajaxSubmit(empsetuppersonaloptions);
+            return false;
+        });
+
+        $('#empsetupconfig').parsley();
+        var empsetupconfigoptions = {
+            success: function (responseText, statusText, xhr, $form) {
+                $('#empsetupconfig').find("button[type='submit']").prop('disabled', false).html('Next');
+                var response = JSON.parse(responseText);
+                if (response.success) {
+                    //alert(response.message);
+                    $('#qualifications').addClass('active');
+                    $('#div-empqualification').addClass("active");
+                    $('#div-empqualification').addClass("in");
+                    $('#qualifications').addClass("active");
+                    $('#div-empsetupconfig').removeClass("active");
+                    $('#div-empsetupconfig').removeClass("in");
+                    $('#config').removeClass("active");
+                    $('#empsetup-save-response').removeClass('alert-danger').addClass('alert-success')
+                            .html('<strong>Success!</strong> ' + response.message).fadeIn().fadeOut(3000);
+                    $('#div-empsetupconfig').removeClass("active");
+                    $('#div-empsetupconfig').removeClass("in");
+                    $('#config').removeClass("active");
+                    //alert(response.message);
+
+//                    $('#empsetuppersonal #emp_pkey').val(response.pkey);
+//                    $('#empsetupprofessional #emp_fkey').val(response.pkey);
+//                    $('#empsetupconfig #emp_fkey').val(response.pkey);
+//                    $('#empsetuptaxation #emp_pkey').val(response.pkey);
+                    reloadTable('emptable');
+                } else {
+                    //alert('Something wrong happened!');
+                    $('#empsetup-save-response').removeClass('alert-success').addClass('alert-danger')
+                            .html('<strong>Failed!</strong> ' + response.message).fadeIn().fadeOut(3000);
+                }
+            }
+        };
+
+        // bind to the form's submit event
+        $('#empsetupconfig').submit(function () {
+            $(this).find("button[type='submit']").html('<li class="fa fa-spinner fa-spin"></li> saving...').attr('disabled', 'disabled');
+            $(this).ajaxSubmit(empsetupconfigoptions);
+            return false;
+        });
+
+
+        $('#empsetuptaxform').parsley();
+        var eeoptions = {
+            success: function (responseText, statusText, xhr, $form) {
+                $('#empsetuptaxform').find("button[type='submit']").html('Next').prop('disabled', false);
+            }
+        };
+        $('#empsetuptaxform').submit(function () {
+            $(this).ajaxSubmit(eeoptions);
+
+        });
+
+
+        /*
+         * Tax Head save
+         */
+
+        var usersoptions = {
+            url: function (phrase) {
+                return livesite + 'Employee/getusers/' + $('#empsetupconfig #emp_fkey').val() + '?username=' + phrase;
+            },
+            getValue: "full_name",
+            list: {
+                onClickEvent: function () {
+                    console.log('onClickEvent');
+                    var selectedItem = $("#hierarch").getSelectedItemData();
+                    var site_fkey = selectedItem.emp_pkey;
+                    //  alert(site_fkey); 
+
+
+                    $("#hierarch1").val(site_fkey);
+
+                },
+                onKeyEnterEvent: function () {
+                    console.log('onKeyEnterEvent');
+                },
+                onMouseOverEvent: function () {
+                    console.log('onMouseOverEvent');
+                }
+            }
+        };
+
+        $('#hierarch').easyAutocomplete(usersoptions);
+
+
+
+        $('#date_of_birth_nominee').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+//            endDate: '2000-12-31',
+
+        });
+        load_bank_options();
+
+
+        $('#emp_type').on('change', function () {
+            var type = $('#emp_type').val();
+            if (type == 'DAILY WAGES') {
+                $('#fieldGross').html("Daily Wage Rate");
+                $('#displaytoggle').hide();
+            } else {
+                $('#fieldGross').html("Annual Salary ");
+                $('#displaytoggle').show();
+            }
+        });
+
+        if ($('#emp_type').val() == 'DAILY WAGES') {
+            $('#fieldGross').html("Daily Wage Rate");
+            $('#displaytoggle').hide();
+        } else {
+            $('#fieldGross').html("Annual Salary ");
+            $('#displaytoggle').show();
+        }
+//        $('#joining_date').datepicker('setDate', 'today');
+
+        //$('#empsetupconfig #emp_fkey').val()
+
+//        $('#hierarch').change(function () {
+//
+//            if($("#hierarch1").val() == ''){
+//                alert("Please select By Mouse Click only");
+//                $('#hierarch').val('');
+//            }
+//        });
+
+        //Ends
+    });
+
+    function showTaxHeadDetails(obj) {
+        var taxHeadPkey = $(obj).data('tax_heads_pkey');
+        var empPkey = $('#empsetuptaxation #emp_pkey').val();
+        var url = livesite + 'Employee/showtaxheaddetail/' + empPkey + '/' + taxHeadPkey;
+
+        var container = $("#modalShowTaxHeadDetailForm #modalForm-content")
+        container.load(url, function () {
+            $("#modalShowTaxHeadDetailForm").modal('show');
+        });
+    }
+
+    function load_bank_options() {
+        $.ajax({
+            url: livesite + 'Employee/jsonsb/',
+            success: function (resp) {
+                $('#bank_name').append(resp);
+            }
+        });
+//        bank_name
+    }
+</script>
+<!--<div class="modal-body">
+
+    <div class="box box-body">
+         Form Name 
+        <legend id="emp_companyd"><?php echo $head; ?> <span><?php echo isset($arr_professionalinfo["emp_company_id"]) ? ' - ' . $arr_professionalinfo["emp_company_id"] : ''; ?></span></legend>-->
+
+<div class="modal-header" style="background: #00659f;color: white">
+    <h4 class="modal-title"><?php echo $head; ?> <span><?php echo isset($arr_professionalinfo["emp_company_id"]) ? ' - ' . $arr_professionalinfo["emp_company_id"] : ''; ?></span></h4>  
+</div>
+<div class="modal-body">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" id="personal" class="active">
+            <a href="#div-empsetuppersonal" aria-controls="div-empsetuppersonal" role="tab" data-toggle="tab">Personal Details</a>
+        </li>
+        <li role="config" id="config">
+            <a href="#div-empsetupconfig" aria-controls="div-empsetupconfig" role="tab" data-toggle="tab">Employee Config</a>
+        </li>
+        <!--        <li role="presentation" id="proffessional">
+                    <a href="#div-empsetupprofessional" aria-controls="div-empsetupprofessional" role="tab" data-toggle="tab">Professional Details</a>
+                </li>-->
+        <li role="presentation" id="qualifications">
+            <a href="#div-empqualification" aria-controls="div-empqualification" role="tab" data-toggle="tab">Qualifications</a>
+        </li>
+        <li role="presentation" id="history_details">
+            <a href="#div-emphistorical" aria-controls="div-emphistorical" role="tab" data-toggle="tab">Work Experiences</a>
+        </li>
+        <li role="presentation" id="family">
+            <a href="#div-empsetupfamily" aria-controls="div-empsetupfamily" role="tab" data-toggle="tab">Family</a>
+        </li>
+        <li role="presentation" id="passport">
+            <a href="#div-empsetuppassport" aria-controls="div-empsetuptaxation" role="tab" data-toggle="tab">Documents & Renewals</a>
+        </li>
+
+        <?php if ($user_group == 0) { ?>
+            <li role="presentation" id="ss">
+                <a href="#div-empsetuptaxation" aria-controls="div-empsetuptaxation" role="tab" data-toggle="tab">Tax Declarations</a>
+            </li>
+        <?php } ?>
+
+    </ul>
+    <input type="hidden" id="head" name="head" value="<?php echo $user_group; ?>">
+    <!-- Tab panes -->
+    <div class="tab-content">
+
+        <div role="tabpanel" class="tab-pane active" id="div-empsetuppersonal">
+            <form class="form-horizontal" method="post" action="<?php echo $this->webroot; ?>Employee/saveemployeesetupnew" id="empsetuppersonal">
+                <div class="modal-body">
+                    <input id="model" name="model" type="hidden"  value="EmployeeDetails" >
+                    <input id="emp_pkey" name="emp_pkey" type="hidden"  value="<?php echo $emp_pkey; ?>" >
+                    <div>
+                        <h3>Employee Informations</h3>
+                        <hr style="border-top: 1px solid #cec1c1; ">
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <label style="text-align:left;" class="col-md-4 control-label" for="first_name">First Name &nbsp;<span style="color:red;">*</span></label>
+                                <div class="col-md-1">:</div>
+                                <div class="col-md-7">
+                                    <input id="first_name" onclick="load_bank_options();" name="first_name" value="<?php echo isset($arr_personalinfo["first_name"]) ? $arr_personalinfo["first_name"] : ''; ?>" type="text" placeholder="First Name" class="form-control input-md" required="">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label style="text-align:left;" class="col-md-4 control-label" for="middile_name">Middle Name</label>
+                                <div class="col-md-1">:</div>
+                                <div class="col-md-7">
+                                    <input id="middile_name" name="middile_name" value="<?php echo isset($arr_personalinfo["middile_name"]) ? $arr_personalinfo["middile_name"] : ''; ?>" type="text" placeholder="Middle Name" class="form-control input-md" >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <label style="text-align:left;" class="col-md-4 control-label" for="last_name">Last Name &nbsp;<span style="color:red;">*</span></label>
+                                <div class="col-md-1">:</div>
+                                <div class="col-md-7">
+                                    <input id="last_name" name="last_name" value="<?php echo isset($arr_personalinfo["last_name"]) ? $arr_personalinfo["last_name"] : ''; ?>" type="text" placeholder="Last Name" class="form-control input-md" required="">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label style="text-align:left;" class="col-md-4 disabled control-label" for="classification">Gender &nbsp;<span style="color:red;">*</span></label>
+                                <div class="col-md-1">:</div>
+                                <div class="col-md-7">
+                                    <select id="classification" name="classification" class="form-control js-example-basic-single" style="width: 100%" required="">
+                                        <option value="">--Select--</option>
+                                        <option value="male" <?php echo($arr_personalinfo["classification"] == 'male') ? 'selected="selected"' : ''; ?>>Male</option>
+                                        <option value="female" <?php echo($arr_personalinfo["classification"] == 'female') ? 'selected="selected"' : ''; ?>>Female</option>
+                                        <option value="Other" <?php echo($arr_personalinfo["classification"] == 'Other') ? 'selected="selected"' : ''; ?>>Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="address">Address</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="address" name="address" value="<?php echo isset($arr_personalinfo["address"]) ? $arr_personalinfo["address"] : ''; ?>" type="text" placeholder="address" class="form-control input-md" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="city">City</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="city" name="city" value="<?php echo isset($arr_personalinfo["city"]) ? $arr_personalinfo["city"] : ''; ?>" type="text" placeholder="City" class="form-control input-md" >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="pincode">Zip</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="pincode" name="pincode" value="<?php echo isset($arr_personalinfo["pincode"]) ? $arr_personalinfo["pincode"] : ''; ?>" type="number" placeholder="Zip" class="form-control input-md" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="state">State</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="state" name="state" value="<?php echo isset($arr_personalinfo["state"]) ? $arr_personalinfo["state"] : ''; ?>" type="text" placeholder="State" class="form-control input-md" >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="mobile_no">Mobile No</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="mobile_no" name="mobile_no" value="<?php echo isset($arr_personalinfo["mobile_no"]) ? $arr_personalinfo["mobile_no"] : ''; ?>" type="text" placeholder="Mobile No" class="form-control input-md" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="email">Email &nbsp;</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="email" name="email" value="<?php echo isset($arr_personalinfo["email"]) ? $arr_personalinfo["email"] : ''; ?>" type="email" placeholder="Email" class="form-control input-md" >
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="border-top: 1px solid #cec1c1; ">
+
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="maritual_status">Martial Status</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="maritual_status" name="maritual_status" class="form-control js-example-basic-single" style="width: 100%" >
+                                    <option value="">--Select--</option>
+                                    <option value="single" <?php echo($arr_personalinfo["maritual_status"] == 'single') ? 'selected="selected"' : ''; ?>>Single</option>
+                                    <option value="married" <?php echo($arr_personalinfo["maritual_status"] == 'married') ? 'selected="selected"' : ''; ?>>Married</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="education">Education</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="education" name="education" class="form-control js-example-basic-single" style="width: 100%" >
+                                    <option value="">--Select--</option>
+                                    <option value="Graduate" <?php echo($arr_personalinfo["education"] == 'Graduate') ? 'selected="selected"' : ''; ?>>Graduate</option>
+                                    <option value="Post-Graduate" <?php echo($arr_personalinfo["education"] == 'Post-Graduate') ? 'selected="selected"' : ''; ?>>Post-Graduate</option>
+                                    <option value="Under-Graduate" <?php echo($arr_personalinfo["education"] == 'Under-Graduate') ? 'selected="selected"' : ''; ?>>Under-Graduate</option>
+                                    <option value="No Education" <?php echo($arr_personalinfo["education"] == 'No Education') ? 'selected="selected"' : ''; ?>>No Education</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="guradian">Father/Husband Name</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="guardian" name="guradian" value="<?php echo isset($arr_personalinfo["guradian"]) ? $arr_personalinfo["guradian"] : ''; ?>" type="text" placeholder="Enter Name" class="form-control input-md" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="relation_guardian">Relationship</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="relationship" name="relation_guardian" class="form-control js-example-basic-single" style="width: 100%" >
+                                    <option value="" >Select </option>
+                                    <option value="Father" <?php echo ($arr_personalinfo['relation_guardian'] && $arr_personalinfo['relation_guardian'] == 'Father') ? 'selected="selected"' : ''; ?> >Father</option>
+                                    <option value="Husband" <?php echo ($arr_personalinfo['relation_guardian'] && $arr_personalinfo['relation_guardian'] == 'Husband') ? 'selected="selected"' : ''; ?>>Husband</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="date_of_birth">Birth Date &nbsp;<span style="color:red;">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="date_of_birth" name="date_of_birth" value="<?php echo isset($arr_personalinfo["date_of_birth"]) ? $arr_personalinfo["date_of_birth"] : ''; ?>" type="text" placeholder="(YYYY-MM-DD)" class="form-control input-md" required="required" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="blood">Blood Group</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="blood" name="blood" value="<?php echo isset($arr_personalinfo["blood"]) ? $arr_personalinfo["blood"] : ''; ?>" type="text" placeholder="BLOOD GROUP" class="form-control input-md" >
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <?php if ($user == 'VGFS' || $user == 'vgfs') { ?>
+
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <label style="text-align:left;" class="col-md-4 control-label" for="guradian">Nominee Name &nbsp;<span style="color:red;">*</span></label>
+                                <div class="col-md-1">:</div>
+                                <div class="col-md-7">
+                                    <input id="guardian" required="" name="nominee" value="<?php echo isset($emp_family['0']['emp_family']["name"]) ? $emp_family['0']['emp_family']["name"] : ''; ?>" type="text" placeholder="Enter Name" class="form-control input-md" >
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label style="text-align:left;" class="col-md-4 control-label" for="relation_guardian">Nominee Relationship &nbsp;<span style="color:red;">*</span></label>
+                                <div class="col-md-1">:</div>
+                                <div class="col-md-7">
+                                    <select required="required" class="form-control js-example-basic-single" style="width: 100%" value="" name="relation" id="relation">
+                                        <option >Select</option>
+                                        <option <?php echo (isset($emp_family['0']['emp_family']["relation"]) && $emp_family['0']['emp_family']["relation"] == "Mother") ? 'selected="selected"' : ''; ?> value="Mother">Mother</option>
+                                        <option <?php echo (isset($emp_family['0']['emp_family']["relation"]) && $emp_family['0']['emp_family']["relation"] == "Father") ? 'selected="selected"' : ''; ?> value="Father">Father</option>
+                                        <option <?php echo (isset($emp_family['0']['emp_family']["relation"]) && $emp_family['0']['emp_family']["relation"] == "Sister") ? 'selected="selected"' : ''; ?> value="Sister">Sister</option>
+                                        <option <?php echo (isset($emp_family['0']['emp_family']["relation"]) && $emp_family['0']['emp_family']["relation"] == "Brother") ? 'selected="selected"' : ''; ?> value="Brother">Brother</option>
+                                        <option <?php echo (isset($emp_family['0']['emp_family']["relation"]) && $emp_family['0']['emp_family']["relation"] == "Cousin") ? 'selected="selected"' : ''; ?> value="Cousin">Cousin</option>
+                                        <option <?php echo (isset($emp_family['0']['emp_family']["relation"]) && $emp_family['0']['emp_family']["relation"] == "Son") ? 'selected="selected"' : ''; ?> value="Son">Son</option>
+                                        <option <?php echo (isset($emp_family['0']['emp_family']["relation"]) && $emp_family['0']['emp_family']["relation"] == "Daughter") ? 'selected="selected"' : ''; ?> value="Daughter">Daughter</option>
+                                        <option <?php echo (isset($emp_family['0']['emp_family']["relation"]) && $emp_family['0']['emp_family']["relation"] == "Spouse") ? 'selected="selected"' : ''; ?> value="Spouse">Spouse</option>
+                                        <option <?php echo (isset($emp_family['0']['emp_family']["relation"]) && $emp_family['0']['emp_family']["relation"] == "Other") ? 'selected="selected"' : ''; ?> value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="emp_family_pkey" name="emp_family_pkey" value="<?php echo isset($emp_family['0']['emp_family']["emp_family_pkey"]) ? $emp_family['0']['emp_family']["emp_family_pkey"] : ''; ?>">
+
+
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <label style="text-align:left;" class="col-md-4 control-label" for="date_of_birth">Nominee DOB &nbsp;<span style="color:red;">*</span></label>
+                                <div class="col-md-1">:</div>
+                                <div class="col-md-7">
+                                    <input id="date_of_birth_nominee" name="date_of_birth_nominee" value="<?php echo isset($emp_family['0']['emp_family']["DOB"]) ? $emp_family['0']['emp_family']["DOB"] : ''; ?>" type="text" placeholder="(YYYY-MM-DD)" class="form-control input-md" required="required" >
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label style="text-align:left;" class="col-md-4 control-label" for="blood">Nominee Blood Group</label>
+                                <div class="col-md-1">:</div>
+                                <div class="col-md-7">
+                                    <input id="blood_nominee" name="blood_nominee" value="<?php echo isset($emp_family['0']['emp_family']["blood_group"]) ? $emp_family['0']['emp_family']["blood_group"] : ''; ?>" type="text" placeholder="BLOOD GROUP" class="form-control input-md" >
+                                </div>
+                            </div>
+
+                        </div>  
+
+                    <?php } ?>
+
+                    <hr style="border-top: 1px solid #cec1c1; ">
+                    <div class="form-group">
+
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="account_no">Bank Account No</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="account_no" name="account_no" value="<?php echo isset($arr_personalinfo["account_no"]) ? $arr_personalinfo["account_no"] : ''; ?>" type="number" placeholder="Account No" class="form-control input-md" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="account_no">Bank Branch </label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="branch_name" name="branch_name" value="<?php echo isset($arr_personalinfo["branch_name"]) ? $arr_personalinfo["branch_name"] : ''; ?>" type="text" placeholder="Bank Branch" class="form-control input-md" >
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="bank_name">Bank Name</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <!--<input id="bank_name" name="bank_name" value="<?php echo isset($arr_personalinfo["bank_name"]) ? $arr_personalinfo["bank_name"] : ''; ?>" type="text" placeholder="Bank Name" class="form-control input-md" >-->
+                                <select class="form-control js-example-basic-single" style="width: 100%" value="" name="bank_name" id="bank_name">
+                                    <option value="" >Select</option>
+                                    <?php if (isset($arr_personalinfo["bank_name"]) && !$arr_personalinfo["bank_name"] == '') { ?>
+                                        <option selected="selected" ><?php echo $arr_personalinfo["bank_name"]; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="ifsc_code">Bank IFSC Code</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="ifsc_code" name="ifsc_code" value="<?php echo isset($arr_personalinfo["ifsc_code"]) ? $arr_personalinfo["ifsc_code"] : ''; ?>" type="text" placeholder="Bank IFSC Code" class="form-control input-md" >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="PAN No">PAN No</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="pan_no" name="pan_no" value="<?php echo isset($arr_personalinfo["pan_no"]) ? $arr_personalinfo["pan_no"] : ''; ?>" type="text" placeholder="PAN No" class="form-control input-md" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 disabled control-label" for="account_no">ID/AADHAR No &nbsp;<span style="color:red;">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="id_card" name="id_card" value="<?php echo isset($arr_personalinfo["id_card"]) ? $arr_personalinfo["id_card"] : ''; ?>" type="text" placeholder="ID Card No" class="form-control disabled input-md" required="" >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 disabled control-label" for="account_no">ESI - No </label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="esi" name="esi" value="<?php echo isset($arr_personalinfo["esi"]) ? $arr_personalinfo["esi"] : ''; ?>" type="text" placeholder="ESI" class="form-control disabled input-md" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 disabled control-label" for="account_no"> UAN </label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="pf" name="pf" value="<?php echo isset($arr_personalinfo["pf"]) ? $arr_personalinfo["pf"] : ''; ?>" type="text" placeholder="PF" class="form-control disabled input-md" >
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 disabled control-label" for="company_pf">PF - No</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="company_pf" name="company_pf" value="<?php echo isset($arr_personalinfo["company_pf"]) ? $arr_personalinfo["company_pf"] : ''; ?>" type="text" placeholder="PF" class="form-control disabled input-md" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 disabled control-label" for="esi_dispensary"> ESI DISPENSARY </label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="esi_dispensary" name="esi_dispensary" value="<?php echo isset($arr_personalinfo["esi_dispensary"]) ? $arr_personalinfo["esi_dispensary"] : ''; ?>" type="text" placeholder="ESI DISPENSARY" class="form-control disabled input-md" >
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!--                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" onclick="$('#largeModalForm').modal('hide');">Cancel</button>
+                                        <input type="button" id="btn-submit" class="btn btn-primary" value="Next">
+                                    </div>-->
+
+                <!--</div>-->
+
+                <div class="modal-body">
+                    <h3>Employee Company Informations</h3>
+                    <hr style="border-top: 1px solid #cec1c1; ">
+                    <!--<div role="tabpanel" class="tab-pane" id="div-empsetupprofessional">-->
+                    <input id="model" name="model" type="hidden"  value="EmployeeProfessionalDetails" >
+                    <input id="emp_fkey" name="emp_fkey" type="hidden"  value="<?php echo $emp_pkey; ?>" >
+                    <input id="emp_proff_pkey" name="emp_proff_pkey" type="hidden"  value="<?php echo isset($arr_professionalinfo['emp_proff_pkey']) ? $arr_professionalinfo['emp_proff_pkey'] : ''; ?>" >
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="joining_date">Joining Date &nbsp;<span style="color:red;">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="joining_date" name="joining_date" value="<?php echo (isset($arr_professionalinfo["joining_date"]) && $arr_professionalinfo["joining_date"] != '') ? $arr_professionalinfo["joining_date"] : date("Y-m-d"); ?>" type="text" placeholder="Joining Date" class="form-control input-md" required="" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="emp_company_id">Company Employee ID</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="emp_company_id" name="emp_company_id" value="<?php echo isset($arr_professionalinfo["emp_company_id"]) ? $arr_professionalinfo["emp_company_id"] : ''; ?>" type="text" placeholder="Leave as blanks if no ID" class="form-control input-md" >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="emp_type">Employee Type &nbsp;<span style="color:red;">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="emp_type" name="emp_type" class="form-control js-example-basic-single" style="width: 100%" required="">
+                                    <option value="">--Select--</option>
+                                    <option value="Permanent" <?php echo(isset($arr_professionalinfo["emp_type"]) && $arr_professionalinfo["emp_type"] == 'Permanent') ? 'selected="selected"' : ''; ?>>Permanent</option>
+                                    <option value="Contract"  <?php echo(isset($arr_professionalinfo["emp_type"]) && $arr_professionalinfo["emp_type"] == 'Contract') ? 'selected="selected"' : ''; ?>>Contract</option>
+                                    <option value="Probation" <?php echo(isset($arr_professionalinfo["emp_type"]) && $arr_professionalinfo["emp_type"] == 'Probation') ? 'selected="selected"' : ''; ?>>Probation</option>
+                                    <option value="Part-Time" <?php echo(isset($arr_professionalinfo["emp_type"]) && $arr_professionalinfo["emp_type"] == 'Part-Time') ? 'selected="selected"' : ''; ?>>Part-Time</option>
+                                    <option value="Temporary" <?php echo(isset($arr_professionalinfo["emp_type"]) && $arr_professionalinfo["emp_type"] == 'Temporary') ? 'selected="selected"' : ''; ?>>Temporary</option>
+                                    <option value="Consultant" <?php echo(isset($arr_professionalinfo["emp_type"]) && $arr_professionalinfo["emp_type"] == 'Consultant') ? 'selected="selected"' : ''; ?>>Consultant</option>
+                                    <option value="DAILY WAGES" <?php echo(isset($arr_professionalinfo["emp_type"]) && $arr_professionalinfo["emp_type"] == 'DAILY WAGES') ? 'selected="selected"' : ''; ?>>Daily Wages</option>
+                                    <option value="other" <?php echo(isset($arr_professionalinfo["emp_type"]) && $arr_professionalinfo["emp_type"] == 'other') ? 'selected="selected"' : ''; ?>>Other Type</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="designation">Designation &nbsp;<span style="color:red;">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="designation" name="designation" class="form-control js-example-basic-single" style="width: 100%" required="">
+                                    <option value="">--Select--</option>
+                                    <?php
+                                    foreach ($arr_designations as $key => $value) {
+                                        $selected = ($arr_professionalinfo['designation'] == $value['desig_code']) ? 'selected="selected"' : '';
+                                        echo '<option value="' . $value['desig_code'] . '" ' . $selected . '>' . $value['desig_name'] . '</option>';
+                                    }
+                                    ?>
+                                </select> 
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="joining_date">Notice Period &nbsp;<span style="color:red;">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="notice_days" name="notice_days" class="form-control js-example-basic-single" style="width: 100%" required="">
+                                    <option value="">--Select--</option>
+                                    <?php
+                                    foreach ($notice_days as $key => $value) {
+                                        $selected = ($arr_professionalinfo['notice_days'] == $value['NoticePeriod']['notice_days']) ? 'selected="selected"' : '';
+                                        echo '<option value="' . $value['NoticePeriod']['notice_days'] . '" ' . $selected . '>' . $value['NoticePeriod']['notice_days'] . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="emp_company_id">Probation Days</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="attr2" name="attr2" value="<?php echo isset($arr_professionalinfo["attr2"]) ? $arr_professionalinfo["attr2"] : ''; ?>" type="text" placeholder="Probatoin Days" class="form-control input-md" >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="emp_dept">Department &nbsp;<li onclick="opendepartment();" class="fa fa-plus"></li><span style="color:red;">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="emp_dept" name="emp_dept" class="form-control js-example-basic-single" style="width: 100%" required="">
+                                    <option value="">--Select--</option>
+                                    <?php
+                                    foreach ($arr_departments as $key => $value) {
+                                        $selected = ($arr_professionalinfo['emp_dept'] == $value['dept_code']) ? 'selected="selected"' : '';
+                                        echo '<option value="' . $value['dept_code'] . '" ' . $selected . '>' . $value['dept_name'] . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div> 
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="emp_grade">Grade</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="emp_grade" name="emp_grade" class="form-control js-example-basic-single" style="width: 100%" >
+                                    <option value="">--Select--</option>
+                                    <?php
+                                    foreach ($arr_grades as $key => $value) {
+                                        $selected = ($arr_professionalinfo['emp_grade'] == $value['grade_code']) ? 'selected="selected"' : '';
+                                        echo '<option value="' . $value['grade_code'] . '" ' . $selected . '>' . $value['grade_name'] . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- <div class="col-md-6">
+                     <label style="text-align:left;" class="col-md-4 control-label" for="emp_vertical">Vertical</label>
+                         <div class="col-md-8">
+                             <select id="emp_vertical" name="emp_vertical" class="form-control" >
+                                 <option value="">--Select--</option>
+                    <?php
+                    foreach ($arr_verticals as $key => $value) {
+                        $selected = ($arr_professionalinfo['emp_vertical'] == $value['vert_code']) ? 'selected="selected"' : '';
+                        echo '<option value="' . $value['vert_code'] . '" ' . $selected . '>' . $value['vertical_name'] . '</option>';
+                    }
+                    ?>
+                             </select>
+                         </div>
+                     </div>-->
+                    <div class="form-group">	
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="emp_branch">Branch &nbsp;<span style="color:red;">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="emp_branch" required="required" name="emp_branch" class="form-control js-example-basic-single" style="width: 100%" >
+                                    <option value="">--Select--</option>
+                                    <?php
+                                    foreach ($arr_branches as $key => $value) {
+                                        $selected = ($arr_personalinfo['branch_code'] == $value['branch_code']) ? 'selected="selected"' : '';
+                                        echo '<option value="' . $value['branch_code'] . '" ' . $selected . '>' . $value['branch_name'] . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <?php if ($user === 'VGFS' || $user === 'vgfs') { ?>
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <label style="text-align:left;" class="col-md-4 control-label" for="designation">Area &nbsp;<span style="color:red;">*</span></label>
+                                <div class="col-md-1">:</div>
+                                <div class="col-md-7">
+                                    <input id="attr4" name="attr4" value="<?php echo isset($arr_personalinfo["attr4"]) ? $arr_personalinfo["attr4"] : ''; ?>" type="text" placeholder="Area" class="form-control disabled input-md" >
+                                   <!--                                    <select id="attr4" name="attr4" class="form-control" required="">
+                                                                           <option value="">--Select--</option>
+                                    <?php
+                                    foreach ($arr_areas as $key => $value) {
+                                        $selected = ($arr_personalinfo['attr4'] == $value['Area']['area_pkey']) ? 'selected="selected"' : '';
+                                        echo '<option value="' . $value['Area']['area_pkey'] . '" ' . $selected . '>' . $value['Area']['are_name'] . '</option>';
+                                    }
+                                    ?>
+                                                                       </select>-->
+                                </div>
+                            </div>
+                        </div>
+
+                    <?php } ?>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" onclick="$('#largeModalForm').modal('hide');">Cancel</button>
+                        <!--edited by sanju on 29_06_19                           -->
+                        <?php $users = array('VGFS', 'VSFS', 'vgfs', 'vsfs'); ?>
+                        <?php if (in_array($user, $users) && $emp_pkey != 0 && $user_group == 2) { ?>
+                        <?php } else { ?>
+                            <button type="submit" id="btn-submit" class="btn btn-primary">Save & Next</button>
+                        <?php } ?>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div role="tabpanel" class="tab-pane" id="div-empqualification" style="height: 300px; ">
+            <div class="modal-header">
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-info btn-sm" data-widget="Add Items" data-toggle="tooltip" title="Add Items" data-original-title="Add Item" onclick="showdetails();">
+                        <i class="fa fa-plus"></i>
+                    </button> &nbsp;
+                    <button id="del" type="button" class="btn btn-danger btn-sm" data-widget="remove" data-toggle="tooltip" title="Remove" data-original-title="Remove">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div>
+                <table class="table table-bordered display" id="example1">
+                    <thead>
+                        <tr>
+
+<!--    <th>LEAVEPOLICY_GROUP_NAME</th> -->
+
+
+                            <th>Course</th>
+                            <th>University/College Name</th>
+                            <th>Duration</th>
+
+                            <th>Percentage/Marks</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="$('#largeModalForm').modal('hide');">Cancel</button>
+                <button type="button" id="btn-submit" onclick="showtabhistory();" class="btn btn-primary">Save & Next</button>
+            </div>
+
+        </div>
+        <div role="tabpanel" class="tab-pane" id="div-emphistorical" style="height: 350px ; ">
+            <div class="modal-header">
+                <!--           <button type="button" class="btn btn-default" onclick="showhistory();">Add History Details</button><button type="button" id="del1" class="btn btn-default">Delete</button>-->
+                <div class="form-group">
+                    <button type="button" class="btn btn-info btn-sm" data-widget="Add Items" data-toggle="tooltip" title="Add Items" data-original-title="Add Item" onclick="showhistory();">
+                        <i class="fa fa-plus"></i>
+                    </button> &nbsp;
+                    <button id="del1" type="button" class="btn btn-danger btn-sm" data-widget="remove" data-toggle="tooltip" title="Remove" data-original-title="Remove">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div>
+                <table id="example" class="table table-bordered display">
+                    <thead>
+                        <tr>
+
+<!--    <th>LEAVEPOLICY_GROUP_NAME</th> -->
+
+
+                            <th>Company</th>
+                            <th>Department</th>
+                            <th>Designation</th>
+                            <th>From Date</th>
+                            <th>To Date</th>
+                            <th>CTC</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="$('#largeModalForm').modal('hide');">Cancel</button>
+                <button onclick="showtabfamy();" type="button" id="btn-submit" class="btn btn-primary">Save & Next</button>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+        <div role="tabpanel" class="tab-pane" id="div-empsetupfamily" style="height: 350px ; ">
+            <div class="modal-header">
+
+                <div class="form-group"><button type="button" class="btn btn-info btn-sm" data-widget="Add Items" data-toggle="tooltip" title="Add Items" data-original-title="Add Item" onclick="addfamily();"><i class="fa fa-plus"></i></button> 
+                    &nbsp;<button id="del1_family" type="button" class="btn btn-danger btn-sm" data-widget="remove" data-toggle="tooltip" title="Remove" data-original-title="Remove">
+                        <i class="fa fa-times"></i></button>
+                    <button id="mark_nominee" type="button" class="btn btn-primary">Mark as Nominee </button>
+                    <button id="mark_emergency" type="button" class="btn btn-primary">Mark as Emergency Contact </button>
+                </div>
+            </div>
+            <div>
+                <table class="table table-bordered display" id="example_family">
+                    <thead>
+                        <tr>
+
+<!--    <th>LEAVEPOLICY_GROUP_NAME</th> -->
+
+
+                            <th>Name</th>
+                            <th>Relation</th>
+                            <th>DOB</th>
+                            <th>Blood Group</th>
+                            <!--<th>Gender</th>-->
+                            <th>Nationality</th>
+                            <th>Nominee</th>
+                            <th>Emergency Contact</th>
+                            <th>Contact Number</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="$('#largeModalForm').modal('hide');">Cancel</button>
+                <button type="button" id="btn-submit" onclick="showtabpass();" class="btn btn-primary">Save & Next</button>
+            </div>
+
+        </div>
+        <div role="tabpanel" class="tab-pane" id="div-empsetuppassport">
+            <div class="modal-header">
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-info btn-sm" data-widget="Add Items" data-toggle="tooltip" title="Add Items" data-original-title="Add Item" onclick="addpass();">
+                        <i class="fa fa-plus"></i>
+                    </button>&nbsp;
+                    <button id="del_passport" type="button" class="btn btn-danger btn-sm" data-widget="remove" data-toggle="tooltip" title="Remove" data-original-title="Remove">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div>
+                <table class="table table-bordered display" id="example_passport">
+                    <thead>
+                        <tr>
+
+<!--    <th>LEAVEPOLICY_GROUP_NAME</th> -->
+
+
+                            <th>Document Name</th>
+                            <th>Document Type</th>
+                            <th>Document Number</th>
+
+<!--<th>Age</th>-->
+                            <th>Relation</th>
+                            <th>Valid From</th>
+                            <th>Valid To</th>
+<!--                                <th>Gender</th>
+                            <th>Nationality</th>-->
+                            <th>Remind Before</th>
+                            <th>File</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer" style="margin-bottom: 120px;">
+                <button type="button" class="btn btn-danger" onclick="$('#largeModalForm').modal('hide');">Cancel</button>
+                <button type="button" id="btn-submit" onclick="$('#largeModalForm').modal('hide');" class="btn btn-primary">Save & Close</button>
+            </div>
+
+        </div>
+        <div role="tabpanel" class="tab-pane" id="div-empsetupconfig">
+            <form class="form-horizontal" method="post" action="<?php echo $this->webroot; ?>Employee/saveconfigs" id="empsetupconfig">
+                <h3 style="margin-left: 10px; ">Employee Config</h3><hr>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="first_name">Shift Policy </label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="shift" name="shift" class="form-control js-example-basic-single" style="width: 100%" required="">
+                                    <option value="">--Select--</option>
+                                    <?php
+                                    foreach ($arr_shifts as $values) {
+                                        ?>
+                                        <option <?php echo (isset($arr_professionalinfo['day_time_seq']) && $arr_professionalinfo['day_time_seq'] == $values['working_day_time_procedures']['day_time_seq']) ? 'selected="selected"' : ''; ?> value="<?php echo $values['working_day_time_procedures']['day_time_seq']; ?>"><?php echo $values['working_day_time_procedures']['day_time_desc']; ?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="middile_name">Holiday Policy</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="holidays" name="holidays" class="form-control js-example-basic-single" style="width: 100%" required="">
+                                    <option value="">--Select--</option>
+                                    <?php
+                                    foreach ($arr_holidays as $values) {
+                                        ?>
+                                        <option <?php echo (isset($arr_professionalinfo['HOLIDAY_GROUP_ID']) && $arr_professionalinfo['HOLIDAY_GROUP_ID'] == $values['holiday_group']['HOLIDAY_GROUP_ID']) ? 'selected="selected"' : ''; ?> value="<?php echo $values['holiday_group']['HOLIDAY_GROUP_ID']; ?>"><?php echo $values['holiday_group']['HOLIDAY_GROUP_NAME']; ?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="first_name">Leave Policy </label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="leave" name="leave" class="form-control js-example-basic-single" style="width: 100%" required="">
+                                    <option value="">--Select--</option>
+                                    <?php
+                                    foreach ($arr_leaves as $values) {
+                                        ?>
+                                        <option <?php echo (isset($arr_professionalinfo['LEAVEPOLICY_GROUP_ID']) && $arr_professionalinfo['LEAVEPOLICY_GROUP_ID'] == $values['leavepolicy_group']['LEAVEPOLICY_GROUP_ID']) ? 'selected="selected"' : ''; ?> value="<?php echo $values['leavepolicy_group']['LEAVEPOLICY_GROUP_ID']; ?>"><?php echo $values['leavepolicy_group']['LEAVEPOLICY_GROUP_NAME']; ?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" id="fieldGross" class="col-md-4 control-label" for="annual_gross">Annual Gross Salary</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input id="annual_gross" onchange="$('#calculate_monthly_gross').html(Math.round($(this).val() / 12, 2));" onkeyup="$('#calculate_monthly_gross').html(Math.round($(this).val() / 12, 2));" name="annual_gross" min="1" value="<?php echo isset($arr_gross['0']["emp_ctc_transaction"]["emp_anual_ctc"]) ? $arr_gross['0']["emp_ctc_transaction"]["emp_anual_ctc"] : 0; ?>" type="number" placeholder="Employee Gross Salary (annual)" class="form-control input-md" >
+                            </div>
+                            <div class="col-md-12" id="displaytoggle" style="padding-left: 0px; ">
+                                <!--                                    <div class="col-md-4">Monthly Salary </div>-->
+                                <div class="col-md-4"> </div>
+                                <div class="col-md-1"> </div>
+                                <div class="col-md-7">
+                                    <span id="calculate_monthly_gross" style="margin-left: 5px; ">  <?php echo isset($arr_gross['0']["emp_ctc_transaction"]["emp_anual_ctc"]) ? round($arr_gross['0']["emp_ctc_transaction"]["emp_anual_ctc"] / 12) : 0; ?>/ Per Month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="first_name">Superior </label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input type="text" placeholder="Search for you Employee" value="<?php echo isset($hierarchy_set['0']['emp_details']['first_name']) ? $hierarchy_set['0']['emp_details']['first_name'] . ' ' . $hierarchy_set['0']['emp_details']['last_name'] : ''; ?>" id="hierarch" name="hierarch1"  class="form-control strict-field" style="width:205px; ">
+                                <input type="hidden" id="hierarch1" name="hierarch"  class="form-control strict-field" value="<?php echo isset($hierarchy_set['0']['emp_details']['emp_pkey']) ? $hierarchy_set['0']['emp_details']['emp_pkey'] : ''; ?>" style="width:234px; ">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="text-align:left;" class="col-md-4 control-label" for="middile_name">Salary Policy</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <select id="salary" name="salary" class="form-control js-example-basic-single" style="width: 100%" required="">
+                                    <option value="">Select</option>
+                                    <?php
+                                    foreach ($arr_salary as $values) {
+                                        ?>
+                                        <option  data-foo="<?php echo $values['salary_structure']['structure_eg_amt']; ?>" <?php echo (isset($arr_professionalinfo['structure_id']) && $arr_professionalinfo['structure_id'] == $values['salary_structure']['structure_id']) ? 'selected="selected"' : ''; ?> value="<?php echo $values['salary_structure']['structure_id']; ?>"><?php echo $values['salary_structure']['structure_name'] . ' - ' . $values['salary_structure']['structure_eg_amt']; ?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <input type="hidden" id="emp_fkey" name="emp_fkey" value="<?php echo $emp_pkey; ?>">
+
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" onclick="$('#largeModalForm').modal('hide');">I'll Do Later</button>
+                        <button type="submit" id="btn-submit" class="btn btn-primary">Save & Next</button>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+
+
+        <!-- Tax Head Detail Form -->
+        <div id="modalShowTaxHeadDetailForm" class="modal fade">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content" id="modalForm-content">
+                    <!-- Content will be loaded here from "remote.php" file -->
+                </div>
+            </div>
+        </div>
+        <div id="modalDetailForm" class="modal fade">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content" id="modaldetails-content">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="empsetup-save-response" class="alert alert-success" style="display: none;">
+
+    </div>
+</div>

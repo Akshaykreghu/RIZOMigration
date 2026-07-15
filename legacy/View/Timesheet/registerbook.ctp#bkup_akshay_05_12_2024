@@ -1,0 +1,543 @@
+<?php
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+?>
+<style>
+    table.dataTable thead>tr>th {
+        padding-right: 8px;
+        text-align: center;
+        color: #013f62;
+        vertical-align: middle;
+    }
+    div .dataTables_paginate {
+        position: absolute;
+        right: 55px;
+        bottom: 10px;
+    }
+
+    table.dataTable tbody>tr>td {
+        text-align: center;
+    }
+    .btn {
+    padding: 3px 12px;
+    }
+    div.dataTables_filter label {
+    font-weight: bold;
+    }
+    
+
+    .btn .btn-success{
+     padding: 3px 12px;   
+     margin-top: 4px;
+    }
+    .form-control {
+    border-radius: 3px !important;
+    }
+    @media (min-width: 768px){
+     .form-inline .form-control {
+    width: 150px;}}
+    div.dataTables_filter {
+        margin-top: 0px;
+        position: absolute;
+        top: 8px;
+        right: 75px;
+    }
+
+    .dt-buttons {
+        position: absolute;
+        top: 8px;
+        right: 20px;
+    }
+
+    .calendercolor {
+        background: #cfe3ef;
+    }
+
+    .presentcolor {
+        background: #a7e7a3;
+    }
+
+    .lopcolor {
+        background: #ef6b6b;
+    }
+
+    /* Edited by Akshay on 22-4-2024 */
+    .headcol {
+        position: sticky;
+        /* Adjust background color as needed */
+        z-index: 2;
+        /* Ensure it's above other elements */
+    }
+
+    .left1 {
+        left: 0px;
+        width: 30px;
+        background-color: #f2f2f2;
+        /* border-left: 1px solid black; */
+    }
+
+    .left2 {
+        left: 30px;
+        width: 69px;
+        background-color: #f2f2f2;
+    }
+
+    .left3 {
+        left: 68px;
+        width: 68px;
+        background-color: #f2f2f2;
+    }
+
+    .left4 {
+        left: 216px;
+    }
+
+    .left5 {
+        left: 289px;
+    }
+
+    .left6 {
+        left: 340px;
+    }
+
+    .left7 {
+        left: 405px;
+    }
+
+    .left8 {
+        left: 474px;
+    }
+
+    .left9 {
+        left: 536px;
+    }
+
+    .left10 {
+        left: 595px;
+    }
+
+    .left11 {
+        left: 893px;
+    }
+    .table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td {
+    border: 1px solid #b8b8b8;
+    }
+    /* Media query for smaller screens */
+    @media (max-width: 768px) {
+
+        .table th,
+        .table td {
+            padding: 6px;
+            /* Adjust padding for smaller screens */
+        }
+    }
+
+    /* Media query for even smaller screens */
+    @media (max-width: 576px) {
+
+        .table th,
+        .table td {
+            padding: 4px;
+            /* Further adjust padding for even smaller screens */
+        }
+    }
+
+   .div-top{
+    margin-top: -2px;
+}
+</style>
+<div class="col-md-3" style="margin-top: 6px;margin-left: -20px;display: flex;">
+    <label for="month" class="control-label shiftonelabel">Status :&nbsp;</label>
+    <div class="div-top">
+    <select id="shift1combo" style="width: 150px;" >
+        <option value="0">Select</option>
+        <option value="P/P">P/P</option>
+        <!-- <option value="A/A">A/A</option> -->
+        <option value="P/A">P/A</option>
+        <option value="A/P">A/P</option>
+        <option value="LOP">LOP</option> 
+    </select>
+    </div>
+</div>
+<div class="col-md-3" style="margin-top: 6px;margin-left: -6%;display: flex;">
+    <label for="month" class="control-label shiftonelabel">Option :&nbsp;</label>
+     <div class="div-top">
+    <select id="option" style="width: 150px;" >
+        <option value="all">All Dates</option>
+        <option value="blank">Blank Dates</option>
+    </select>
+          </div>
+</div>
+<button class="btn btn-primary" onclick="updateselecteditem()" style="margin-top: 4px;margin-left: -4%;width: 150px;">Bulk Update</button>
+<section class="content">
+
+    <div title="Attendance Register" data-options="iconCls:'icon-save'" style="overflow:auto;padding:0px;" class="table table-responsive">
+
+
+        <table class="table table-bordered" id="LeaveDetailsReports">
+            <thead>
+                <th class="headcol left1"> <input type="checkbox" id="selectAll" onclick="toggleAllCheckboxes()"></th>
+                <th class="headcol left2">SN.</th>
+                <th class="headcol left3" style="white-space: nowrap;"> &nbsp; &nbsp; &nbsp;Employee Name &nbsp; &nbsp; &nbsp;</th>
+                <th class="calendercolor headcol left4">Calendar Days</th>
+                <th class="calendercolor headcol left5">Week Off</th>
+                <th class="calendercolor headcol left6">Holiday</th>
+                <th class="calendercolor headcol left7">Working Days</th>
+                <th class="presentcolor headcol left8">Present Days</th>
+                <th class="presentcolor headcol left9">Leaves</th>
+                <th class="lopcolor headcol left10">LOP</th>
+                <?php
+                if (isset($employee_attendance) && count($employee_attendance) > 0) {
+                    $date = current($employee_attendance);
+
+                    foreach ($date as $vals) {
+                ?>
+                        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo substr($vals['emp_detail_timeattandance']['att_date'], 8, 2); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                <?php
+                    }
+                }
+                ?>
+            </thead>
+            <tbody>
+
+                <?php
+                $i = 0;
+                foreach ($employee_attendance as $val) {
+                    $i += 1;
+                    $name = $val['0']['empdetails']['first_name'] . ' ' . $val['0']['empdetails']['last_name'];
+                    //Edited by Akshay on 22-4-2024
+                    $pkey = isset($val['0']['emp_detail_timeattandance']['emp_pkey']) ? $val['0']['emp_detail_timeattandance']['emp_pkey'] : (isset($val['0']['emp']['emp_fkey']) ? $val['0']['emp']['emp_fkey'] : 0);
+                    $edta_pkey =  isset($val['0']['emp_detail_timeattandance']['emp_detail_timeattandance_pkey']) ? $val['0']['emp_detail_timeattandance']['emp_detail_timeattandance_pkey'] : 0;
+                ?>
+                    <div title="expand" data-options="iconCls:'icon-save'">
+                        <tr>
+                            <td class="headcol left1"> <input type="checkbox" class="otherCheckbox" value="<?php echo $edta_pkey ?>" id="select<?php echo $pkey ?>" onclick="updateSelectAll()"></td>
+                            <td class="headcol left2"><?php echo $i ?></td>
+                            <td class="headcol left3">
+                                <span>
+                                    <?php echo $name; ?>
+                                </span>
+                                <i class="fa fa-angle-down pull-right" onclick="showEditOnPopupOption('<?php echo trim($name); ?>', '<?php echo trim($pkey); ?>')" ></i>
+                            </td>
+
+
+
+                            <td class="calendercolor headcol left4"><?php echo $val[0]['calendar_days']; ?></td>
+                            <td class="calendercolor headcol left5"><?php echo $val[0]['week_off']; ?></td>
+                            <td class="calendercolor headcol left6"><?php echo $val[0]['holiday']; ?></td>
+                            <td class="calendercolor headcol left7"><?php echo $val[0]['calendar_days'] - $val[0]['week_off'] - $val[0]['holiday']; ?></td>
+                            <td class="presentcolor headcol left8"><?php echo $val[0]['presentDays']; ?></td>
+                            <td class="presentcolor headcol left9"><?php echo $val[0]['leavetaken']; ?></td>
+                            <td class="lopcolor headcol left10"><?php echo $val[0]['lopdays']; ?></td>
+                            <?php
+                            foreach ($val as $value) {
+                                $newstatus = isset($value['eup']['main_status'])?trim($value['eup']['main_status']):trim($value['status']);
+                                
+                                
+                            ?>
+                                <td <?php if ($newstatus == 'WO') { ?> style="color:#e5e50c;white-space: nowrap;font-weight:bold;" <?php } ?> 
+                                    <?php if ($newstatus == 'HO') { ?> style="color:blue;white-space: nowrap;font-weight:bold;" <?php } ?> 
+                                    <?php if ($newstatus == 'A/A') {  ?> style="color:red;white-space: nowrap;font-weight:bold;" <?php } ?> 
+                                    <?php if ($newstatus == '') {  ?> style="background:#ebebeb;white-space: nowrap;font-weight:bold;" <?php } ?> 
+                                    <?php if ($newstatus == 'P/P' || strpos($newstatus, 'P/P') !== false) {  ?> style="color:green;white-space: nowrap;font-weight:bold;" <?php }; ?> 
+                                    <?php if ($newstatus == 'P/A') {  ?> style="color:red;white-space: nowrap;font-weight:bold;" <?php }; ?> 
+                                    <?php if ($newstatus == 'LOP/A') {  ?> style="color:red;white-space: nowrap;font-weight:bold;" <?php }; ?> 
+                                    <?php if ($newstatus == 'A/LOP' || $newstatus == 'P/LOP') { ?> style="color:red;white-space: nowrap;font-weight:bold;" <?php }; ?> 
+                                    <?php if ($newstatus == 'LOP/LOP' || $newstatus == 'LOP' || strpos($newstatus, 'LOP') !== false) { ?> style="color:red;white-space: nowrap;font-weight:bold;" <?php }; ?> 
+                                    <?php if ($newstatus == 'A/P') { ?> style="color:red;white-space: nowrap;font-weight:bold; " <?php }; ?>>
+                                    <span id="<?php echo $value['emp_detail_timeattandance']['emp_detail_timeattandance_pkey'] . '_column' ?>" style="display: inline-block;"><?php echo $newstatus; ?></span>
+                                    <?php if ($value['editable'] == true) { ?>
+                                    <i style="display: inline-block;" onclick="attendanceModal(<?php echo $month; ?>,<?php echo $value['emp_detail_timeattandance']['emp_pkey']; ?>, <?php echo $value['emp_detail_timeattandance']['emp_detail_timeattandance_pkey'] ?> )" class="fa fa-angle-down pull-right"></i>
+                                    <?php }else{?>
+                                     <span onclick="alert('Attendance Verified');"><i class="fa fa-angle-down pull-right"></i></span>
+                                     <?php } ?>
+                                </td>
+                            <?php
+                            }
+                            ?>
+                        </tr>
+                    </div>
+                    <tr class=" <?php echo trim($name) . 'in'; ?> in" id="<?php echo $pkey . '_in' ?>">
+                        <td class="headcol left1"></td>
+                        <td class="headcol left2"></td>
+                        <td class="headcol left3" style="text-align: right ; ">IN</td>
+                        <td class="calendercolor headcol left4" style="color:#fff;"><?php //echo $name; 
+                                                                                    ?></td>
+                        <td class="calendercolor headcol left5"></td>
+                        <td class="calendercolor headcol left6"></td>
+                        <td class="calendercolor headcol left7"></td>
+                        <td class="presentcolor headcol left8"></td>
+                        <td class="presentcolor headcol left9"></td>
+                        <td class="lopcolor headcol left10"></td>
+                        <?php
+                        foreach ($val as $value1) {
+                            $timein = isset($value1['emp_detail_timeattandance']['att_in_time']) ? date('H:i', strtotime($value1['emp_detail_timeattandance']['att_in_time'])) : '';
+
+                        ?>
+                            <td><?php echo $timein; ?></td>
+                        <?php
+                        }
+                        ?>
+
+                    </tr>
+                    <tr class=" <?php echo trim($name) . 'out'; ?> out" id="<?php echo $pkey . '_out' ?>">
+                        <td class="headcol left1"></td>
+                        <td class="headcol left2"></td>
+                        <td class="headcol left3" style="text-align: right ; ">OUT</td>
+                        <td class="calendercolor headcol left4" style="color:#fff;"><?php //echo $name; 
+                                                                                    ?></td>
+                        <td class="calendercolor headcol left5"></td>
+                        <td class="calendercolor headcol left6"></td>
+                        <td class="calendercolor headcol left7"></td>
+                        <td class="presentcolor headcol left8"></td>
+                        <td class="presentcolor headcol left9"></td>
+                        <td class="lopcolor headcol left10"></td>
+                        <?php
+                        foreach ($val as $out_time) {
+                            $timeout = isset($out_time['emp_detail_timeattandance']['att_out_time']) ? date('H:i', strtotime($out_time['emp_detail_timeattandance']['att_out_time'])) : '';
+                        ?>
+                            <td><?php echo $timeout; ?></td>
+                        <?php
+                        }
+                        ?>
+
+                    </tr>
+                    <tr class=" <?php echo trim($name) . 'duration'; ?> duration" id="<?php echo $pkey . '_duration' ?>">
+                        <td class="headcol left1"></td>
+                        <td class="headcol left2"></td>
+                        <td class="headcol left3" style="text-align: right ; ">Duration</td>
+                        <td class="calendercolor headcol left4" style="color:#fff;"><?php //echo $name; 
+                                                                                    ?></td>
+                        <td class="calendercolor headcol left5"></td>
+                        <td class="calendercolor headcol left6"></td>
+                        <td class="calendercolor headcol left7"></td>
+                        <td class="presentcolor headcol left8"></td>
+                        <td class="presentcolor headcol left9"></td>
+                        <td class="lopcolor headcol left10"></td>
+                        <?php
+                        foreach ($val as $duration) {
+                            $minutes = '';
+                            if ($duration['emp_detail_timeattandance']['att_in_time'] != null && $duration['emp_detail_timeattandance']['att_out_time'] != null) {
+                                $minutes = 0;
+                                $start_date = new DateTime($duration['emp_detail_timeattandance']['att_in_time']);
+                                $since_start = $start_date->diff(new DateTime($duration['emp_detail_timeattandance']['att_out_time']));
+                                $minutes = $since_start->days * 24 * 60;
+                                $minutes += $since_start->h * 60;
+                                $minutes += $since_start->i;           //To find duration arr_in - att_out
+                            }
+                        ?>
+                            <!-- <td  <?php if ($duration['emp_detail_timeattandance']['duration'] >= $duration['wd']['minuts_calc_perday']) { ?> style="background:#34F593 ; " <?php } elseif ($duration['emp_detail_timeattandance']['duration'] < $duration['wd']['minuts_calc_perday'] & $duration['emp_detail_timeattandance']['duration'] != '') { ?> style="background:#FF967E ; " <?php } ?> ><?php echo $duration['emp_detail_timeattandance']['duration'] ?></td> -->
+                            <td <?php if ($minutes >= $duration['wd']['minuts_calc_perday']) { ?> style="background:#34F593 ; " <?php } elseif ($minutes < $duration['wd']['minuts_calc_perday'] & $duration['emp_detail_timeattandance']['duration'] != '') { ?> style="background:#FF967E ; " <?php } ?>><?php echo $minutes ?></td>
+                        <?php
+                        }
+
+                        ?>
+
+                    </tr>
+                <?php
+                }
+                ?>
+            </tbody>
+
+
+        </table>
+    </div>
+    <!--  <div id="aa" class="easyui-accordion" style="width:300px;height:200px;">
+     <div title="Title1" data-options="iconCls:'icon-save'" style="overflow:auto;padding:10px;">
+         <h3 style="color:#0099FF;">Accordion for jQuery</h3>
+         <p>Accordion is a part of easyui framework for jQuery. 
+         It lets you define your accordion component on web page more easily.</p>
+     </div>
+     <div title="Title2" data-options="iconCls:'icon-reload',selected:true" style="padding:10px;">
+         content2
+     </div>
+     <div title="Title3">
+         content3
+     </div>
+ </div> -->
+</section>
+
+<script type="text/javascript">
+    $('#aa').accordion({
+        animate: true
+    });
+
+    $(document).ready(function() {
+        $('.in').hide();
+        $('.out').hide();
+        $('.duration').hide();
+        $('.tabset0').pwstabs({
+            effect: 'scale', // You can change effects of your tabs container: scale / slideleft / slideright / slidetop / slidedown / none
+            defaultTab: 1, // The tab we want to be opened by default
+            containerWidth: '100%', // Set custom container width if not set then 100% is used
+            tabsPosition: 'horizontal', // Tabs position: horizontal / vertical
+            horizontalPosition: 'top', // Tabs horizontal position: top / bottom
+            verticalPosition: 'left', // Tabs vertical position: left / right
+            responsive: true, // Make tabs container responsive: true / false - boolean
+            theme: '',
+            rtl: false // Right to left support: true/ false
+        });
+        /*$('#togglechartweek').on('click', function () {
+         $("weekChartRow").show();
+         $("monthChartRow").hide();
+         
+         })
+         $('#togglechartmonth').on('click', function () {
+         $("weekChartRow").hide();
+         $("monthChartRow").show();
+         })*/
+        $('#LeaveDetailsReports').DataTable({
+            "paging": true,
+            "pageNumber": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": false,
+            "info": false,
+            dom: 'Bfrtip',
+            buttons: [
+                //                {
+                //                    extend: 'print',
+                //                    messageTop: 'My Payroll Master  Employees Attendance Register.',
+                //                    messageBottom: null,
+                //                    title: 'My Payroll Master - Attendance Register'
+                //                },
+                {
+                    extend: 'excel',
+                    messageTop: 'My Payroll Master  Employees Attendance Register.',
+                    messageBottom: null,
+                    title: 'My Payroll Master  - Attendance Register'
+                }
+            ],
+            "autoWidth": false,
+            "lengthMenu": [
+                [40, 50, -1],
+                [40, 50, "All"]
+            ]
+        });
+
+        $('.buttons-print').ready(function() {
+            $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');;
+        });
+        $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');;
+        $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+
+        // Event listener to the two range filtering inputs to redraw on input
+        $('#leaverequests-emp-filter, #leaverequests-month-filter').change(function() {
+            empleaverequeststable.search(this.value).draw();
+        });
+    });
+
+    //Edited by Akshay on 21-4-2024
+    function attendanceModal(month, empPkey, edtPkey) {
+//         var currentStatuses = $('#'+edtPkey+'_column').val();
+// console.log(currentStatuses);
+//         if(currentStatuses =='NA'){
+//                    alert("Status cannot change.");
+//                    return false;
+//           }
+        if (true) {
+            showSmallModalForm(livesite + 'Timesheet/editpunch/' + month + '/' + empPkey + '/' + edtPkey);
+        } else {
+            alert("Please select a record!")
+        }
+    }
+
+    function showEditOnPopupOption(name, emp_pkey) {
+        //Edited by Akshay on 22-4-2024
+        var id1 = '#' + emp_pkey + "_in";
+        var id2 = '#' + emp_pkey + "_out";
+        var id3 = '#' + emp_pkey + "_duration";
+        // console.log('id1', id1);
+        $(id1).toggle();
+        $(id2).toggle();
+        $(id3).toggle();
+    }
+
+    function updateselecteditem() {
+        var status = $("#shift1combo").val();
+
+        if ($('input[type="checkbox"]:checked').not('#selectAll').length === 0) {
+            alert('Please choose any employee.');
+            return;
+        }
+
+        if (status === '0') {
+            alert('Please choose any status.');
+            return;
+        }
+        var checkedRowsData = []; // Create an array to store the data of checked rows
+        // Find all checkboxes that are checked (excluding the one with id "selectAll")
+        $('input[type="checkbox"]:checked').not('#selectAll').each(function() {
+            // Get the closest row to the checked checkbox
+            var row = $(this).closest('tr');
+
+            // Retrieve data from the row and create a rowData object
+            var rowData = {
+                // Customize these based on your table structure
+                'edtaPkey': row.find('.headcol.left1 input[type="checkbox"]').val().trim(),
+                'empPkey': row.find('.headcol.left1 input[type="checkbox"]').attr('id').replace("select", "")
+                // 'SN': row.find('.headcol.left2').text().trim(),
+                // 'EmployeeName': row.find('.headcol.left3').text().trim(),
+                // 'CalendarDays': row.find('.calendercolor.headcol.left4').text().trim(),
+                // 'WeekOff': row.find('.calendercolor.headcol.left5').text().trim(),
+                // Add more properties as needed
+            };
+
+            var shift = $('#shift1combo').val();
+
+            // Push the rowData object to the checkedRowsData array
+            checkedRowsData.push(rowData);
+        });
+
+
+        $.ajax({
+            type: "POST",
+            url: livesite + "Timesheet/bulkipdatestatus",
+            data: {
+                device_attandance_seq: checkedRowsData,
+                adstatus: $("#option").val(),
+                status: status,
+                monthYear: $("#filterby_month").val()
+            },
+            dataType: 'json',
+            success: function(resp) {
+                 
+                            filterRegister();
+                //$('#editpunches').datagrid('deleteRow', getRowIndex(target));
+                if (resp.success == true) {
+                    $.notify('Status updated successfully. Process attendance again.', {
+                                type: 'success',
+                                allow_dismiss: false
+                            });
+                } else {
+                    $.notify('Attendance Verified. Cannot update status.', {
+                                type: 'danger',
+                                allow_dismiss: false
+                            });
+                    //$.messager.alert('Failed', "Error occured while removing record", 'info');
+                }
+            }
+        });
+    }
+
+    function toggleAllCheckboxes() {
+        // Get the value of the "Select All" checkbox
+        var isChecked = $('#selectAll').prop('checked');
+
+        // Set the value of all other checkboxes to match the "Select All" checkbox
+        $('.otherCheckbox').prop('checked', isChecked);
+    }
+
+    function updateSelectAll() {
+        // Check if all other checkboxes are checked
+        var allChecked = $('.otherCheckbox:checked').length === $('.otherCheckbox').length;
+        //console.log('allChecked', allChecked);
+        // Update the "Select All" checkbox accordingly
+        $('#selectAll').prop('checked', allChecked);
+    }
+    $('#shift1combo').select2();
+    $('#option').select2();
+</script>

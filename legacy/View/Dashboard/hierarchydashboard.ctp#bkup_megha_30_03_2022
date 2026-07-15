@@ -1,0 +1,1004 @@
+       <!-- <script language="JavaScript" type="text/javascript" src="jQuery-2.1.4.min.js"></script>-->
+<style>
+
+.zoom_img{
+display:block;
+opacity:2;
+font-size:0px;
+-moz-transition:-moz-transform 0.5s ease-in; 
+-webkit-transition:-webkit-transform 0.5s ease-in; 
+-o-transition:-o-transform 0.5s ease-in;
+}
+
+#present:hover .zoom_img{
+font-size:10px;
+overflow:hidden;
+-moz-transform:scale(1.3); 
+-webkit-transform:scale(1.3);
+-o-transform:scale(1.3);
+}
+#absent:hover .zoom_img{
+font-size:10px;
+overflow:hidden;
+-moz-transform:scale(1.3); 
+-webkit-transform:scale(1.3);
+-o-transform:scale(1.3);
+}
+
+</style>
+<section class="content-header">
+    <h1 style="text-align:center;font-size:32px;">
+        <i class="fa fa-dashboard"></i> Dashboard
+        <!--<small>Control panel</small>-->
+    </h1>
+    <ol class="breadcrumb">
+<!--        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>-->
+        <li class="active"><?php echo date("Y-m-d"); ?></li> 
+    </ol>
+</section>
+        <script>
+            /*Reference:
+http://demo.tutorialzine.com/2015/04/material-design-stopwatch-alarm-and-timer/
+*/
+//function timers()
+//            {
+//                $.ajax({
+//                                url:livesite+ 'Dashboard/Timers',
+//                                success: function(resp){
+//                                    
+//                                    $.notify("Approved Attendance Selected Employees",{
+//                                        type: 'success',
+//                                        allow_dismiss: false
+//                                    });
+//                                    $('#load').load(livesite+'OtAttendance/Approved/'+month+'/'+site_fkey,function() { $('#loader').hide(); });
+//                                }
+//                            });
+//            }
+$(document).ready(function () {
+
+var interval = setInterval( function () {
+    $.ajax({
+                                url:livesite+ 'Dashboard/Timers',
+                                success: function(resp){
+                                    
+                                    $('#settimer').val($.parseJSON(resp).set);
+                                    if($.parseJSON(resp).run == 1)
+                                    //alert($('#settimer').val());
+                                        {
+                                            startTimer();
+                                        }
+                                        else
+                                        {
+                                            FixedTimer();
+                                        }
+                                    
+                                }
+                            });
+        //startTimer();
+        clearInterval(interval);
+    }, 6000 );
+    
+var alarmSound = new Audio('http://demo.tutorialzine.com/2015/04/material-design-stopwatch-alarm-and-timer/assets/06_Urban_Beat.mp3');
+//startTimer();
+
+
+
+            
+            
+            
+            
+
+var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ]; 
+var dayNames= [ "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday" ];
+
+var newDate = new Date();
+newDate.setDate(newDate.getDate());
+	
+setInterval( function() {
+	var hours = new Date().getHours();
+	$(".hour").html(( hours < 10 ? "0" : "" ) + hours);
+    var seconds = new Date().getSeconds();
+	$(".second").html(( seconds < 10 ? "0" : "" ) + seconds);
+    var minutes = new Date().getMinutes();
+	$(".minute").html(( minutes < 10 ? "0" : "" ) + minutes);
+    
+    $(".month span,.month2 span").text(monthNames[newDate.getMonth()]);
+    $(".date span,.date2 span").text(newDate.getDate());
+    $(".day span,.day2 span").text(dayNames[newDate.getDay()]);
+    $(".year span").html(newDate.getFullYear());
+}, 1000);	
+
+
+
+$(".outer").on({
+    mousedown:function(){
+        $(".dribbble").css("opacity","1");
+    },
+    mouseup:function(){
+        $(".dribbble").css("opacity","0");
+    }
+});
+
+
+
+});
+        </script>
+<section class="content-header">
+    <h1>
+        Dashboard
+        <small>Control panel</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Dashboard</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+
+<section class="content">
+    
+    <?php
+    if($wish == 1)
+    {
+    ?>
+    <div class="pad margin no-print">
+      <div class="callout callout-success" style="margin-bottom: 0!important;">
+        <h4><i class="fa fa-smile-o"></i> Happy Birthday</h4>
+        <h5>Being an employee here for so long makes you very valuable!
+            So today I wanted to say happy birthday to one of the most amazing employees of the company!.</h5>
+      </div>
+    </div>
+    <?php
+    }
+    ?>
+    <!-- Info boxes -->
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-aqua"><i class="ion ion-ios-people-outline"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Total Team Size</span>
+                    <span class="info-box-number"><?php echo $total_emps; ?></span>
+                </div><!-- /.info-box-content -->
+            </div><!-- /.info-box -->
+        </div>
+        <div  id="present" class="col-md-3 col-sm-6 col-xs-12 ">
+            <div class="info-box">
+                <span class="info-box-icon bg-green">
+                   <span class="fa-stack fa-md">
+                       <i class="fa fa-users fa-stack-1x"></i>
+                    </span>
+                  </span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Present Today</span>
+                    <span class="info-box-number cnt-present"><?php echo $present; ?></span>
+                     <span class="info-box-text zoom_img pull-right">Click To Details</span>
+                </div><!-- /.info-box-content -->
+            </div><!-- /.info-box -->
+        </div><!-- /.col -->
+        <!-- /.col -->
+
+        <!-- fix for small devices only -->
+        <div class="clearfix visible-sm-block"></div>
+
+        <div id="absent" class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-red">	
+                    <span class="fa-stack fa-md">
+                         <i class="fa fa-users fa-stack-1x"></i>
+                    </span>
+                </span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Absent Now</span>
+                    <span class="info-box-number cnt-absent"><?php echo $total_emps - $present; ?></span>
+                    <span class="info-box-text zoom_img pull-right">Click To Details</span>
+                </div><!-- /.info-box-content -->
+            </div><!-- /.info-box -->
+        </div><!-- /.col -->
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-yellow"><i class="fa fa-clock-o "></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Total Devices</span>
+                    <span class="info-box-number"><?php echo $cnt_total_devices; ?></span>
+                </div><!-- /.info-box-content -->
+            </div><!-- /.info-box -->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+    <div class="row box" style="border-top: 9px solid green; margin-left: 1px;border-bottom-left-radius: 20px;border-bottom-right-radius: 20px;">
+          <div class="col-md-4">
+              <?php if($punch_type == 'S'){ ?>
+           <button type="button" id="checkin"class="btn btn-success" value="1" onclick="checkin(this);"style="height: 50px;width: 110px;margin-top: 45px;display: none;">Check-In</button>
+           <button type="button"  id="checkout"class="btn btn-danger" value="0" onclick="checkout(this);"style="height: 50px;width: 110px;margin-top: 45px; display: none;">Check-Out</button>
+              <?php } ?>
+       </div>
+        <div class="col-md-4">
+            
+                <!--button onclick="timers();">Time</button-->
+            
+                <input type="hidden" value="" id="settimer">
+                    <div id="timerbody" class="center">
+                      
+                        Working Time
+                      <div id="clock" class="inactive">
+                        00:00
+                      </div>
+                    </div>
+        </div>
+                <div class="col-md-4 pull-right">
+            <div class="signboard outer" style="margin-right:21px; margin-top: 10px;">
+        <div class="signboard front inner anim04c">
+            <li class="year1 anim04c">
+                <span></span>
+            </li>
+            <ul class="calendarMain anim04c">
+                <li class="month anim04c">
+                    <span></span>
+                </li>
+                <li class="date anim04c">
+                    <span></span>
+                </li>
+                <li class="day anim04c">
+                    <span></span>
+                </li>
+            </ul>
+            <li class="clock minute anim04c">
+                <span></span>
+            </li>
+            <li class="calendarNormal date2 anim04c">
+                <span></span>
+            </li>
+        </div>
+        <div class="signboard left inner anim04c">
+            <li class="clock hour anim04c">
+                <span></span>
+            </li>
+            <li class="calendarNormal day2 anim04c">
+                <span></span>
+            </li>
+        </div>
+        <div class="signboard right inner anim04c">
+            <li class="clock second anim04c">
+                <span></span>
+            </li>
+            <li class="calendarNormal month2 anim04c">
+                <span></span>
+            </li>
+        </div>
+    </div>
+    </div>
+        </div>
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="tabset0">
+                <div data-pws-tab="tab1" data-pws-tab-name="Today Attendance" data-pws-tab-icon="fa-refresh fa-spin">
+                    <div class="row">
+                        <div class="col-md-8">
+
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Employee Check-In/Out Status</h3>
+                                    <div class="box-tools pull-right">
+                                        <button style="background: rgb(221, 75, 57); " type="button" onclick="Modal('Latein','Daily')" name="latein" id="latein" class="btn btn-default">Late In</button>
+                                        <button style="background: #00a65a; " type="button" onclick="Modal('Earlyin','Daily')" class="btn btn-default">Early In</button>
+                                        <button style="background: #00a65a; " type="button" onclick="Modal('Lateout','Daily')" class="btn btn-default">Late Out</button>
+                                        <button style="background: rgb(221, 75, 57); " type="button" onclick="Modal('Earlyout','Daily')" class="btn btn-default">Early Out</button>
+                                        <!--button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                        <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button-->
+                                    </div>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table no-margin" id="todayattandence">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Branch</th>
+                                                    <th>Date</th>
+                                                    <th>Time</th>
+                                                    <th>Check-In/Out</th>
+                                                    <th>Location</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div><!-- /.table-responsive -->
+                                </div><!-- /.box-body -->
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="box box-warning direct-chat direct-chat-warning">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Upcoming Events</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <span data-toggle="tooltip" title="" class="badge bg-yellow" data-original-title="3 New Messages"><?php echo count($arr_events); ?></span>
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts">
+                                            <i class="fa fa-comments"></i></button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <!-- Conversations are loaded here -->
+                                    <div class="direct-chat-messages">
+                                        <div class="direct-chat-msg righ">
+                                            <?php if($arr_events){ ?>
+                                            <?php foreach($arr_events as $val){ ?>
+                                            <?php
+                                                        $type = $val['0']['HOL'];
+                                                        if ($type == 'BIR') {
+                                                            $text = $val['0']['HOLIDAYNAME'] . "'s Birthday ";
+                                                            $class_name = 'alert-success';
+                                                        } elseif ($type == 'JOIN') {
+                                                            $text = $val['0']['HOLIDAYNAME'] . "'s Work Anniversary  ";
+                                                            $class_name = 'alert-info';
+                                                        } else {
+                                                            $text = $val['0']['HOLIDAYNAME'];
+                                                            $class_name = 'alert-warning';
+                                                        }
+                                            ?>
+                                            <div style="margin-bottom: 8px; " class="alert <?php echo $class_name; ?> alert-dismissible">
+                                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                                <!--<h4><i class="icon fa fa-check"></i> Alert!</h4>-->
+                                                        
+                                                <?php
+                                                        echo $text.' On '.$val['0']['date_month']; 
+                                                ?>
+                                            </div>
+                                            <?php } ?>
+                                            <?php } else { ?>
+                                            <p>No Events For Coming Days</p>
+                                            <!-- /.direct-chat-text -->
+                                            <?php } ?>
+                                        </div>
+                                        <!-- /.direct-chat-msg -->
+
+                                    </div>
+                                </div>
+                                <!-- /.box-footer-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div data-pws-tab="tab2" data-pws-tab-name="This Month Attendance" data-pws-tab-icon="fa-refresh fa-spin">
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Employee Check-In/Out Status</h3>
+                                    <div class="box-tools pull-right">
+                                        <button style="background: rgb(221, 75, 57); " type="button" onclick="Modal('Latein','Month')"  class="btn btn-default">Late In</button>
+                                        <button style="background: #00a65a; " type="button" onclick="Modal('Earlyin','Month')" class="btn btn-default">Early In</button>
+                                        <button style="background: #00a65a; " type="button" onclick="Modal('Lateout','Month')" class="btn btn-default">Late Out</button>
+                                        <button style="background: rgb(221, 75, 57); " type="button" onclick="Modal('Earlyout','Month')" class="btn btn-default">Early Out</button>
+                                        <!--button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                        <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button-->
+                                    </div>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table no-margin" id="thismonthattandence">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Branch</th>
+                                                    <th>Date</th>
+                                                    <th>Time</th>
+                                                    <th>Check-In/Out</th>
+                                                    <th>Location</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div><!-- /.table-responsive -->
+                                </div><!-- /.box-body -->
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="box box-danger">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Statistics</h3>
+
+                                </div>
+                                <div class="box-body chart-responsive">
+                                    <canvas id="punchChart" height="180"></canvas>
+                                </div><!-- /.box-body -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div data-pws-tab="tab3" data-pws-tab-name="Last Month Attendance" data-pws-tab-icon="fa-refresh fa-spin">
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Employee Check-In/Out Status</h3>
+                                    <div class="box-tools pull-right">
+                                        <button style="background: #00a65a; " type="button" onclick="Modal('Earlyin','LastMonth')"  class="btn btn-default">Early In</button>
+                                        <button style="background: #00a65a; " type="button"  onclick="Modal('Lateout','LastMonth')" class="btn btn-default">Late Out</button>
+                                        <button style="background: rgb(221, 75, 57); " type="button" onclick="Modal('Earlyout','LastMonth')"  class="btn btn-default">Early Out</button>
+                                        <!--button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                        <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button-->
+                                    </div>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table no-margin" id="lastmonthattandence">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Branch</th>
+                                                    <th>Date</th>
+                                                    <th>Time</th>
+                                                    <th>Check-In/Out</th>
+                                                    <th>Location</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div><!-- /.table-responsive -->
+                                </div><!-- /.box-body -->
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="box box-danger">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Statistics</h3>
+
+                                </div>
+                                <div class="box-body chart-responsive">
+                                    <canvas id="punchChart" height="180"></canvas>
+                                </div><!-- /.box-body -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-6">
+              <!-- USERS LIST -->
+              <div class="box box-danger">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Birthdays and Anniversaries</h3>
+
+                  <div class="box-tools pull-right">
+                    <span class="label label-danger"><?php echo count($arr_employees_pics); ?> Members</span>
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body no-padding">
+                  <ul class="users-list clearfix">
+                      <?php
+                      foreach($arr_employees_pics as $val)
+                      {
+                      ?>
+                    <li>
+                      <img src="<?php echo isset($val['USC']['avatar']) ? $this->webroot.'/'.$val['USC']['avatar'] :  $this->webroot.'/img/avatar5.png' ; ?>" style="width:80px;height:80px;" alt="User Image">
+                      <a class="users-list-name" href="#"><?php echo $val['EmployeeDetails']['emp_name'] ;?></a>
+                      <span class="users-list-date"><?php if(date("m-d",strtotime($val['EmployeeDetails']['date_of_birth'])) == date('m-d')) { echo "Birthday"; } else{ echo "Work Anniversary"; } ?></span>
+                    </li>
+                    <?php
+                    }
+                    ?>
+                  </ul>
+                  <!-- /.users-list -->
+                </div>
+                <!-- /.box-body -->
+                
+                <!-- /.box-footer -->
+              </div>
+              <!--/.box -->
+            </div>
+          </div>
+
+</section>
+
+<script type="text/javascript" charset="utf-8">
+    function checkin(s){
+    var x = $('#checkin').val();
+    $(s).attr("disabled",true)
+//    alert(x);
+var y =  document.getElementById("demo");
+
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else { 
+    y.innerHTML = "Geolocation is not supported by this browser.";
+  }
+
+
+function showPosition(position) {
+  var lat = position.coords.latitude;
+ var long = position.coords.longitude;
+
+        $.ajax({
+            url: livesite+'Dashboard/checkpunch/'+ x + '/' + lat +  '/'+ long,
+            type:"POST",
+            data: {
+                x: x
+            },
+              success: function (responseText, statusText, xhr, $form) {
+             var response = JSON.parse(responseText); 
+//             alert(response.success);
+              if(response.success === true){
+//                  alert("hbds");
+                   $("#checkin").hide();
+                   $("#checkout").show();
+                   location.reload();
+                   $.notify("Punch Success",{
+                    type: 'success',
+                    allow_dismiss: false
+                });
+               }
+            }
+        });
+}
+}
+function checkout(s){
+    
+    var x = $('#checkout').val();
+    $(s).attr("disabled",true)
+//    alert(x);
+var y =  document.getElementById("demo");
+
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else { 
+    y.innerHTML = "Geolocation is not supported by this browser.";
+  }
+
+
+function showPosition(position) {
+ var lat = position.coords.latitude;
+ var  long = position.coords.longitude;
+
+     $.ajax({
+            url: livesite+'Dashboard/checkpunch/'+ x + '/' + lat +  '/'+ long,
+            type:"POST",
+            data: {
+                x: x
+            },
+            success: function (responseText, statusText, xhr, $form) {
+             var response = JSON.parse(responseText); 
+//             alert(response.success);
+              if(response.success === true){
+//                  alert("hbds");
+                   $("#checkout").hide();
+                   $("#checkin").show();
+                   location.reload();
+                    $.notify("Punch Success",{
+                    type: 'success',
+                    allow_dismiss: false
+                });
+               }
+            }
+        });
+}
+}
+    function Modal(name,job)
+{
+  //  alert(name);
+    var url = 'form2/'+name+'/'+job;
+   showModalForm(url)    
+}
+
+    $.fn.dataTable.ext.search.push(
+        function( settings, data, dataIndex ) {
+            if(settings.sTableId == 'empleaverequests'){
+                var filteredByEmployee = false;
+                var filteredByMonth = false;
+
+                var emp_name = $('#leaverequests-emp-filter').val();
+                if(emp_name == '' || emp_name == data[0]){
+                    filteredByEmployee = true;
+                }
+
+                var month = $('#leaverequests-month-filter').val();
+                var fromdate = data[3];
+                var arr_fromdate = fromdate.split('-');
+                if(month == (arr_fromdate[0]+'-'+arr_fromdate[1])){
+                    filteredByMonth = true;
+                }
+
+                if(filteredByEmployee && filteredByMonth){
+                    return true;
+                }
+                return false;
+            }else{
+                return true;
+            }
+        }
+    );
+    
+    var punchChartCanvas = $("#punchChart").get(0).getContext("2d");
+    var punchChart = new Chart(punchChartCanvas);
+    
+    var cntpresent = $('.cnt-present').html();
+    var cntabsent = $('.cnt-absent').html();
+    
+    var punchData = [
+        {
+            value: cntpresent,
+            color: "#00a65a",
+            highlight: "#00a65a",
+            label: "Present"
+        },
+        {
+            value: cntabsent,
+            color: "#F75050",
+            highlight: "#F75050",
+            label: "Absent"
+        }
+
+    ];
+    var pieOptions = {
+//Boolean - Whether we should show a stroke on each segment
+        segmentShowStroke: true,
+//String - The colour of each segment stroke
+        segmentStrokeColor: "#fff",
+//Number - The width of each segment stroke
+        segmentStrokeWidth: 1,
+//Number - The percentage of the chart that we cut out of the middle
+        percentageInnerCutout: 50, // This is 0 for Pie charts
+//Number - Amount of animation steps
+        animationSteps: 100,
+//String - Animation easing effect
+        animationEasing: "easeOutBounce",
+//Boolean - Whether we animate the rotation of the Doughnut
+        animateRotate: true,
+//Boolean - Whether we animate scaling the Doughnut from the centre
+        animateScale: false,
+//Boolean - whether to make the chart responsive to window resizing
+        responsive: true,
+// Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+        maintainAspectRatio: false,
+//String - A legend template
+        legendTemplate: "<ul class=\"<%= name . toLowerCase() %>-legend\"><% for (var i = 0;i < segments . length;i++) { %><li><span style=\"background-color:<%= segments[i] . fillColor %>\"></span><% if (segments[i] . label) { %><%= segments[i] . label %><% } %></li><% } %></ul>",
+//String - A tooltip template
+        tooltipTemplate: "<%= value %> <%= label %> employees"
+    };
+//Create pie or douhnut chart
+// You can switch between pie and douhnut using the method below.  
+    punchChart.Doughnut(punchData, pieOptions);
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+    <?php
+    if (isset($settings_runner) && $settings_runner != '1') {
+    ?>
+            var url = livesite + 'dashboard/general_setting';
+            showModalForm(url);
+    <?php
+    }
+    ?>
+          $.ajax({
+            url: livesite+'Dashboard/lastpunch',
+          
+            success: function (responseText, statusText, xhr, $form) {
+             var response = JSON.parse(responseText); 
+//             alert(response.success);
+                if(response.success === true){
+//                  alert("hbds");
+                      $("#checkout").hide();
+                   $("#checkin").show();
+                  
+               }
+                else{
+                 $("#checkin").hide();
+                   $("#checkout").show();
+
+               }
+            }
+        });
+ $('#absent').on('click',function(){
+            //    alert("done");
+               var url = 'absenttoday';
+   showModalForm(url)    
+    
+    });  
+            $('#present').on('click',function(){
+            //    alert("done");
+               var url = 'presenttoday';
+   showModalForm(url)    
+      //  var site_fkey = $('#site_fkey').val();
+     //   var stage_short = $(this).val();
+      //  var stages_pkey= $('#stages_pkey').val();
+    //    $.ajax({
+      //    url:'stages/checkstagesexists',
+      //      type: 'POST',
+      //      data: {
+        //        stage_short: stage_short,
+        //        site_fkey: site_fkey,
+        //        stages_pkey:stages_pkey
+        //    },
+        //    success: function (resp)
+         //   {
+           //     if(resp > 0){
+            //        alert('Stage Exists!');
+              //      $('#stage_short').val('');
+             //   }
+          //  }
+       // });
+    })
+        
+        $('.buttons-print').ready(function(){
+        $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');
+        $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');
+        $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+        });
+        
+        
+        $('.tabset0').pwstabs({
+            effect: 'scale', // You can change effects of your tabs container: scale / slideleft / slideright / slidetop / slidedown / none
+            defaultTab: 1, // The tab we want to be opened by default
+            containerWidth: '100%', // Set custom container width if not set then 100% is used
+            tabsPosition: 'horizontal', // Tabs position: horizontal / vertical
+            horizontalPosition: 'top', // Tabs horizontal position: top / bottom
+            verticalPosition: 'left', // Tabs vertical position: left / right
+            responsive: true, // Make tabs container responsive: true / false - boolean
+            theme: '',
+            rtl: false                    // Right to left support: true/ false
+        });
+        /*$('#togglechartweek').on('click', function () {
+            $("weekChartRow").show();
+            $("monthChartRow").hide();
+
+        })
+        $('#togglechartmonth').on('click', function () {
+            $("weekChartRow").hide();
+            $("monthChartRow").show();
+        })*/
+        $('#todayattandence').DataTable({
+            "paging": true,
+            "destroy": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                     extend: 'print',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'pdf',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'excel',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                }
+            ],
+            "info": true,
+            "autoWidth": false,
+            "order": [[ 2, "desc" ]],
+            "scrollY": 200,
+            "initComplete": function () {
+                $('.pws_tabs_container').find('a[data-tab-id="tab1"]').find('.fa').removeClass("fa-spin");
+            },
+//             "createdRow": function ( row, data, index ) {
+//                if ( data[5].replace(/[\$,]/g, '') * 1 > 150000 ) {
+//                    $('td', row).eq(5).addClass('highlight');
+//                }
+//            },
+            "scrollCollapse": true,
+            "ajax": livesite + "dashboard/listtodayattendance/hierarchy"
+        });
+   $('#thismonthattandence').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                     extend: 'print',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'pdf',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'excel',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                }
+            ],
+            "info": true,
+            "autoWidth": false,
+            "ajax": livesite + "dashboard/listthismonthattendance/hierarchy"
+        });
+        $('#EmployeesUpdaets').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "order": [[ 1, "desc" ]],
+            "ajax": livesite + "dashboard/LocationUpdates/hierarchy"
+        });
+        $('#lastmonthattandence').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                     extend: 'print',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'pdf',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'excel',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                }
+            ],
+            "autoWidth": false,
+            "ajax": livesite + "dashboard/listlastmonthattendance/hierarchy"
+        });
+        var empleaverequeststable = $('#empleaverequests').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false
+        });
+        
+        // Event listener to the two range filtering inputs to redraw on input
+        $('#leaverequests-emp-filter, #leaverequests-month-filter').change( function() {
+            empleaverequeststable.search( this.value ).draw();
+        });
+    });
+
+
+    var weekdata = {
+        labels: ["January", "February", "March", "April", "May", "June", "July"],
+        datasets: [
+            {
+                label: "My First dataset",
+                fillColor: "rgba(220,220,220,0.5)",
+                strokeColor: "rgba(220,220,220,0.8)",
+                highlightFill: "rgba(220,220,220,0.75)",
+                highlightStroke: "rgba(220,220,220,1)",
+                data: [65, 59, 80, 81, 56, 55, 40]
+            },
+            {
+                label: "My Second dataset",
+                fillColor: "rgba(151,187,205,0.5)",
+                strokeColor: "rgba(151,187,205,0.8)",
+                highlightFill: "rgba(151,187,205,0.75)",
+                highlightStroke: "rgba(151,187,205,1)",
+                data: [28, 48, 40, 19, 86, 27, 90]
+            }
+        ]
+    };
+
+    /*var weekChartCanvas = $("#weekchart").get(0).getContext("2d");
+    var weekoptions = {
+        //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+        scaleBeginAtZero: true,
+        //Boolean - Whether grid lines are shown across the chart
+        scaleShowGridLines: true,
+        //String - Colour of the grid lines
+        scaleGridLineColor: "rgba(0,0,0,.05)",
+        //Number - Width of the grid lines
+        scaleGridLineWidth: 1,
+        //Boolean - Whether to show horizontal lines (except X axis)
+        scaleShowHorizontalLines: true,
+        //Boolean - Whether to show vertical lines (except Y axis)
+        scaleShowVerticalLines: true,
+        //Boolean - If there is a stroke on each bar
+        barShowStroke: true,
+        //Number - Pixel width of the bar stroke
+        barStrokeWidth: 2,
+        //Number - Spacing between each of the X value sets
+        barValueSpacing: 5,
+        //Number - Spacing between data sets within X values
+        barDatasetSpacing: 1,
+        //String - A legend template
+        legendTemplate: "<ul class=\"<%= name . toLowerCase() %>-legend\"><% for (var i = 0;i < datasets . length;i++) { %><li><span style=\"background-color:<%= datasets[i] . fillColor %>\"></span><% if (datasets[i] . label) { %><%= datasets[i] . label %><% } %></li><% } %></ul>"
+
+    };
+    var weekChart = new Chart(weekChartCanvas).Bar(weekdata, weekoptions);*/
+
+
+
+    var monthdata = {
+        labels: ["January", "February", "March", "April", "May", "June", "July"],
+        datasets: [
+            {
+                label: "My First dataset",
+                fillColor: "rgba(220,220,220,0.5)",
+                strokeColor: "rgba(220,220,220,0.8)",
+                highlightFill: "rgba(220,220,220,0.75)",
+                highlightStroke: "rgba(220,220,220,1)",
+                data: [65, 59, 80, 81, 56, 55, 40]
+            },
+            {
+                label: "My Second dataset",
+                fillColor: "rgba(151,187,205,0.5)",
+                strokeColor: "rgba(151,187,205,0.8)",
+                highlightFill: "rgba(151,187,205,0.75)",
+                highlightStroke: "rgba(151,187,205,1)",
+                data: [28, 48, 40, 19, 86, 27, 90]
+            }
+        ]
+    };
+
+    /*var monthChartCanvas = $("#monthchart").get(0).getContext("2d");
+    var monthoptions = {
+        //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+        scaleBeginAtZero: true,
+        //Boolean - Whether grid lines are shown across the chart
+        scaleShowGridLines: true,
+        //String - Colour of the grid lines
+        scaleGridLineColor: "rgba(0,0,0,.05)",
+        //Number - Width of the grid lines
+        scaleGridLineWidth: 1,
+        //Boolean - Whether to show horizontal lines (except X axis)
+        scaleShowHorizontalLines: true,
+        //Boolean - Whether to show vertical lines (except Y axis)
+        scaleShowVerticalLines: true,
+        //Boolean - If there is a stroke on each bar
+        barShowStroke: true,
+        //Number - Pixel width of the bar stroke
+        barStrokeWidth: 2,
+        //Number - Spacing between each of the X value sets
+        barValueSpacing: 5,
+        //Number - Spacing between data sets within X values
+        barDatasetSpacing: 1,
+        //String - A legend template
+        legendTemplate: "<ul class=\"<%= name . toLowerCase() %>-legend\"><% for (var i = 0;i < datasets . length;i++) { %><li><span style=\"background-color:<%= datasets[i] . fillColor %>\"></span><% if (datasets[i] . label) { %><%= datasets[i] . label %><% } %></li><% } %></ul>"
+
+    };
+    var monthChart = new Chart(monthChartCanvas).Bar(monthdata, monthoptions);*/
+
+
+
+</script>

@@ -1,0 +1,212 @@
+<div class="modal-dialog" style="width: 100% ; ">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Return Item</h4><?php //debug($arr_att);    ?>
+            
+            <?php if($bal_amt > 0){ ?>
+            <div class="callout callout-warning">
+                <h4>Please Check Loan Payments! Bal - <?php echo $bal_amt; ?></h4>
+
+                <p>Please return all items from this allocation if this employee doesn't close the EMI and click on the Update loan as completed button and Re allocate all items with Discount .</p>
+            </div>
+            <?php } ?>
+            <input type="hidden" id="loan_pkey" value="<?php echo $allocate_master['0']['itm_allocation']['loan_fkey']; ?>" >
+            <input type="hidden" id="bal_amts" value="<?php echo $bal_amt; ?>" >
+        </div>
+        <div class="modal-body">
+            <!-- Form starts -->
+            <div id="" class="">
+                <form class="form-horizontal" id="return_form" method="post" action="<?php echo $this->webroot; ?>PurchaseOrder/save" >
+
+                    
+                    <input type="hidden"  class="form-control hidden emp_fkey" value="<?php echo $allocate_master['0']['itm_allocation']['emp_fkey']; ?>" id="emp_fkey" placeholder="Enter item code"  required="required" >
+                    <?php foreach ($item_details as $val){ 
+                        if($val['ad']['qty'] - $val['ad']['returned_qty'] > 0){ 
+                        ?>
+                        <div class="form-group parents">
+                                <div class="col-md-11" style="padding-right: 1px;    padding-left: 4px; ">
+
+                                    <div class="col-md-4" style="padding-right: 1px;    padding-left: 4px; ">
+                                        <label for="in_time" class="col-sm-12 control-label">Item </label>
+                                        <div class="col-md-12" style="padding-right: 1px;    padding-left: 4px; ">
+                                            <input type="text" readonly="true"  class="form-control item_qty input" value="<?php echo isset($val['im']['item_desc'])?$val['im']['item_desc']:'' ; ?>" name="item_qty[]" id="item_qty" placeholder="Enter Qty's"  required="required" >
+                                            <input type="hidden"  class="form-control hidden item_fkey" value="<?php echo $val['im']['item_master_pkey']; ?>" id="item_fkey" placeholder="Enter item code"  required="required" >
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2" style="padding-right: 1px;    padding-left: 4px; ">
+                                        <label for="in_time" class="col-sm-12 control-label">Allocated </label>
+                                        <div class="col-md-12" style="padding-right: 1px;    padding-left: 4px; ">
+                                            <input type="text" readonly="true"  class="form-control item_qty input" value="<?php echo isset($val['ad']['qty'])?$val['ad']['qty']:'' ; ?>" name="item_qty[]" id="item_qty" placeholder="Enter Qty's"  required="required" >
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2" style="padding-right: 1px;    padding-left: 4px; ">
+                                        <label for="in_time" class="col-sm-12 control-label">Balance </label>
+                                        <div class="col-md-12" style="padding-right: 1px;    padding-left: 4px; ">
+                                            <input type="text" readonly="true"   class="form-control item_qty input" value="<?php echo isset($val['ad']['qty'])?$val['ad']['qty'] - $val['ad']['returned_qty'] - $val['ad']['damaged_qty']:'' ; ?>" name="item_qty[]" id="ret_qty" placeholder="Enter Qty's"  required="required" >
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1" style="padding-right: 1px;    padding-left: 4px; ">
+                                        <label for="in_time" class="col-sm-12 control-label">Return<span class="star">*</span></label>
+                                        <div class="col-md-12" style="padding-right: 1px;    padding-left: 4px; ">
+                                            <input type="number" min="1" max="<?php echo isset($val['ad']['qty'])?$val['ad']['qty'] - $val['ad']['returned_qty'] - $val['ad']['damaged_qty']:0 ; ?>" class="form-control ret_qty" value="<?php echo isset($val['ad']['qty'])?$val['ad']['qty'] - $val['ad']['returned_qty'] - $val['ad']['damaged_qty']:'' ; ?>" name="item_qty[]" id="item_qty" placeholder="Enter Qty's"  required="required" >
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1" style="padding-right: 1px;    padding-left: 4px; ">
+                                        <label for="in_time" class="col-sm-12 control-label">Damage</label>
+                                        <div class="col-md-12" style="padding-right: 1px;    padding-left: 4px; ">
+                                            <input required="" type="number" min="0" max="<?php echo isset($val['ad']['qty'])?$val['ad']['qty'] - $val['ad']['returned_qty'] - $val['ad']['damaged_qty']:0 ; ?>" class="form-control damaged_qty" value="0" name="damaged_qty[]" id="damaged_qty" placeholder="Enter Qty's"  required="required" >
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2" style="padding-right: 1px;    padding-left: 4px; ">
+                                        <label for="in_time" class="col-sm-12 control-label">Date</label>
+                                        <div class="col-md-12">
+                                            <input required="" type="text" class="form-control tr_date" name="tr_date[]" id="tr_date" placeholder="Enter Date"  required="required" >
+
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                                <div class="col-md-1" style="padding-right: 1px;    padding-left: 4px; ">
+                                    <br>
+                                    <a class="btn btn-primary" onclick="removei(this,<?php echo isset($val['ad']['qty'])?$val['ad']['qty'] - $val['ad']['returned_qty']:0 ; ?>,<?php echo isset($val['ad']['allocate_details_pkey'])?$val['ad']['allocate_details_pkey']:0 ; ?>);">Return</a>
+                                </div>
+                            </div>
+                    <?php
+                        }else{
+                        ?>
+                            <h3>Item already Returned</h3> 
+                    <?php
+                        }
+                        }
+                    ?>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <?php if($bal_amt > 0){ ?>
+            <button type="button" id="btn-submit" onclick="update(this);" class="btn btn-primary">Update Loan as Completed</button>
+            <?php } ?>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    
+    function update(s){
+        var mode= $('#loan_pkey').val();
+        $(s).html('<li class="fa fa-spin fa-spinner"></li>Updating Loan..... Please Wait');
+        $.ajax({
+                url:livesite+'EmployeeLoan/completed/' + mode,
+                success: function(resp){
+
+                  $(s).html('Loan Updated As Completed');
+                  
+                }
+            });
+    }
+    
+    function removei(s,bal,qtys){
+        var qty = $(s).parent().siblings().find('.ret_qty').val();
+        var item_fkey = $(s).parent().siblings().find('.item_fkey').val();
+        var ret_date = $(s).parent().siblings().find('.tr_date').val();
+        var emp_fkey = $('.emp_fkey').val();
+        var damaged_qty = parseInt($(s).parent().siblings().find('.damaged_qty').val());
+        var total = parseInt(qty) + parseInt(damaged_qty);
+        if(isNaN(damaged_qty)){
+            return false;
+        }
+        if(ret_date == ''){
+            alert("Please Select the Date ");
+            return false;
+        }
+        if(bal < total){
+            alert(total);
+            alert("Total Returning Qty Should be less than balance Qty ");
+            return false;
+        }
+        if(bal < damaged_qty){
+            alert("Damaged Qty Should be less than balance Qty ");
+            return false;
+            
+        }
+        if(bal < qty){
+            alert("Returning Qty Should be less than balance Qty ");
+            return false;
+            
+        }
+//        alert(qty);
+    var request = $.ajax({
+            url: livesite + "Uniform/return_item",
+            data:{qty:qty,pkey:qtys,item_fkey:item_fkey,emp_fkey:emp_fkey,damaged_qty:damaged_qty,ret_date:ret_date},
+            method: "POST",
+        });
+        
+        
+        request.done(function( msg ) {
+            $(s).html("success").attr("disabled",true).removeClass("btn-primary").addClass("btn-success");
+            alert(msg);
+            $('#att_table').datagrid('load');
+        });
+        
+        request.fail(function( jqXHR, textStatus ) {
+            alert( "Request failed: " + textStatus );
+        });
+    
+    }
+   
+    jQuery(document).ready(function () {
+
+        $('.tr_date').datepicker({
+            format: 'yyyy-mm-dd',       
+            autoclose: true,
+            startDate:'<?php echo $allocate_master['0']['itm_allocation']['date_allocated'];?>',
+            endDate: '0d'
+        });
+
+        $('#Purchase_form').on('submit', function (event) {
+            event.preventDefault();
+
+            if (confirm("Do You Want To Save The Form")) {
+                $('#Purchase_form').ajaxSubmit(options);
+            }
+        });
+        var options = {
+            success: function (resp) {
+                var row = $('#materialtable').datagrid('getSelected');
+                //console.log(row);
+
+
+
+                $('#largeModalForm').modal('hide');
+                $('#materialtable').datagrid('reload');
+
+                var pk = $("#po_fkey").val();
+                //alert(pk);
+
+                loadtable(pk, 1);
+
+                $.notify("Success", {
+                    type: 'success',
+                    allow_dismiss: false
+                });
+            }  // post-submit callback
+        };
+    });
+
+
+
+
+
+
+</script>

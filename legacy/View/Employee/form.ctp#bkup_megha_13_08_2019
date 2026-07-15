@@ -1,0 +1,243 @@
+<!--<style>
+    .ui-datepicker-calendar {
+        display: none;
+    }​
+</style>-->
+<script>
+    $.validate({
+        form: '#attendanceuploadtable'
+    });
+    var options = {
+        success: function (resp) {
+            $("#importemployeectcform").resetForm();
+            $('#modalForm').modal('hide');
+            $('#att_table').datagrid('reload');
+            $('#empctccsv').val('');
+            $("#filterby_branch").select2("val", "");
+            $("#emp_fkey").select2("val", "");
+            $.notify($.parseJSON(resp).msg, {
+                type: 'success',
+                allow_dismiss: false
+            });
+        }  // post-submit callback
+    };
+
+
+    $('#attendanceuploadtable').on('submit', function (event) {
+        event.preventDefault();
+        if (confirm(" Do You Want  To Save The Form")) {
+            $('#attendanceuploadtable').ajaxSubmit(options)
+        }
+    });
+
+
+</script>
+
+<div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title"> Employee Gross Salary Form</h4>  
+        </div>
+        <div class="modal-body">
+            <!-- Form starts -->
+
+            <form class="form-horizontal" id="attendanceuploadtable" action="<?php echo $this->webroot; ?>Employee/employeesave" method="POST">
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-5 control-label">Choose Employee<span class="star">*</span></label>
+                            <div class="col-sm-7">
+<!--                          <select id="emp_fkey" class="form-control" name="emp_fkey" onchange="loadExistingCTCInfo();" >-->
+                                <select id="emp_fkey" class="form-control" name="emp_fkey" required="" >
+                                    <option value="" >Select </option>
+                                    <?php
+                                    foreach ($arr_employees as $value) {
+                                        $selected = ($data['emp_fkey'] == $value['EmployeeDetails']['emp_pkey']) ? 'selected="selected"' : '';
+                                        echo '<option value="' . $value['EmployeeDetails']['emp_pkey'] . '" ' . $selected . '>' . $value['EmployeeDetails']['first_name'] . ' ' . $value['EmployeeDetails']['last_name'] . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>    
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="in_date" class="col-sm-5 control-label">Annual<span class="star">*</span></label>
+                            <div class="col-md-7">
+                                <input type="number" required="required" class="form-control" value="<?php echo isset($data['emp_anual_ctc']) ? $data['emp_anual_ctc'] : ''; ?>" name="emp_anual_ctc" id="emp_anual_ctc"  onblur="findamount();"  >
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label for="out_time" class="col-sm-5 control-label">Start Date Effective<span class="star">*</span></label>
+                            <div class="col-md-7">
+<!--                                <select id="filterby_month" name="filterby_month" class="form-control js-example-basic-single"  onchange="filterAttendanceupload(this);" >                                                 
+                                    <option value="">All</option>
+                                   // <?php
+                                //   for ($i = 0; $i <6; $i++) {
+                                //      echo '<option value="' . date('m-Y', strtotime("-$i month", strtotime(date('M-Y')))) . '">' 
+                                //             . date('M-Y', strtotime("+$i month", strtotime(date('M-Y')))) .
+                                //             '</option>';
+                                // }
+                                // 
+                                ?>
+                                </select>-->
+                                <input type="text" required="required" class="form-control " onblur="startdatecheck()" value="<?php echo isset($data['start_date_effective']) ? $data['start_date_effective'] : ""; ?>"name="start_date_effective" name="in_time" id="in_time" >
+                            </div> 
+                        </div>
+                    </div>
+                    <!--                    <div class="form-group">
+                                            <div class="col-md-10">
+                                                <label for="out_time" class="col-sm-5 control-label">End Date Effective<span class="star">*</span></label>
+                                                <div class="col-md-7">
+                                                    <input type="text" onchange="enddatecheck()" required="required" class="form-control" value="<?php // echo isset($data['end_date_effective']) ? $data['end_date_effective'] : "";     ?>" name="end_date_effective" name="out_time" id="out_time" >
+                                                </div> 
+                                            </div>
+                                        </div>-->
+                    <div class="modal-footer">
+                        <input type="hidden" required="required" class="form-control" value="<?php echo isset($data['emp_ctc_upload_pkey']) ? $data['emp_ctc_upload_pkey'] : ""; ?>" name="emp_ctc_upload_pkey" id="emp_ctc_upload_pkey" >
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        <button type="submit" id="btn-submit" class="btn btn-success">Save</button>
+
+                    </div>
+
+
+
+                </div>
+
+
+
+            </form>
+            <!-- Tax Head Detail Form -->
+
+
+
+
+
+            <!-- form ends-->
+        </div>
+
+    </div>
+
+</div>
+<div id="emp-ctc-info"></div>
+<script type="text/javascript">
+
+//validation form amount
+    function findamount() {
+        var rate = $('#emp_anual_ctc').val();
+//number format
+        ///^[1-9][0-9\.]{0,15}$/
+        ///^\d+$/
+        if (rate.match(/^[1-9][0-9\.]{0,15}$/)) {
+            if (rate < 1)
+            {
+                alert('Please Enter A Valid Amount')
+                $("#emp_anual_ctc").val('');
+            }
+        } else {
+            $("#emp_anual_ctc").val('');
+        }
+    }
+//date validation start
+    function startdatecheck()
+    {
+        var startDate = new Date($('#in_time').val());
+        var endDate = new Date($('#out_time').val());
+
+        if (startDate > endDate)
+        {
+            alert("expected starting date should be less than ending date");
+            $("#in_time").val('');
+        }
+    }
+//date validation  end
+    function enddatecheck()
+    {
+        var startDate = new Date($('#in_time').val());
+        var endDate = new Date($('#out_time').val());
+
+        if (startDate > endDate) {
+            alert("expected ending date should be greater than starting date");
+            $("#out_time").val('');
+        }
+    }
+
+
+
+    $(document).ready(function () {
+//        $(".monthPicker").datepicker({
+//            dateFormat: 'mm-yy',
+//            changeMonth: true,
+//            changeYear: true,
+//            showButtonPanel: true,
+//            onClose: function (dateText, inst) {
+//                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+//                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+//                $(this).val($.datepicker.formatDate('yy-mm', new Date(year, month, 1)));
+//            }
+//        });
+
+//        $(".monthPicker").focus(function () {
+//            $(".ui-datepicker-calendar").hide();
+//            $("#ui-datepicker-div").position({
+//                my: "center top",
+//                at: "center bottom",
+//                of: $(this)
+//            });
+//        });
+
+
+        //$("#pincode").inputmask("999");
+        //$('#attendanceuploadtable').parsley();
+//        var options = {
+//            success: function (responseText, statusText, xhr, $form) {
+//                //alert("Employee Gross Salary Successfully");
+//                //closeModal('att_table');
+//            }
+//        };
+
+        // bind to the form's submit event 
+//        $('#attendanceuploadtable').submit(function () {
+//            $(this).ajaxSubmit(options);
+//            return false;
+//        });
+
+        $('#in_time').datepicker({
+            format: 'yyyy-mm',
+            autoclose: true,
+            startView: "months",
+            minViewMode: "months"
+        })
+
+        $('#out_time').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+//            onSelect: function (selected) {
+//                var ecdt = new Date(selected);
+//                var selectedstartdate = $("#in_date").val();
+//                var esdt = new Date(selectedstartdate);
+//                if (esdt > ecdt) {
+//                    alert('Expected Out Date Should Be Greater Than Expected In Date');
+//                    $("#out_date").val('');
+//                }
+//
+//            }
+        })
+        $("#out_date").inputmask("yyyy-mm-dd");
+        //  loadExistingCTCInfo();
+    });
+//    function loadExistingCTCInfo() {
+//        var emp_fkey = $('#attendanceuploadtable #emp_fkey').val();
+//        $.ajax({
+//            url: livesite + 'employee/getctcinfo/' + emp_fkey,
+//            success: function (result) {
+//                $("#emp-ctc-info").html(result);
+//            }
+//        });
+//    }
+</script>

@@ -1,0 +1,262 @@
+
+<div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+	
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title" style="    margin: 5px 28px 0; "><b><?php echo $title; ?></b></h4>
+        </div>
+      <div class="modal-body">
+          <!-- Form starts -->
+  <div id=""class="">
+      <form class="form-horizontal" id="form-user-vehicle" action="<?php echo $this->webroot; ?>Vehicle/save" method="POST" >
+          
+      
+            
+          
+                  <!--  <div class="modal-body"> -->
+                       <div class="form-group">
+                            <div class="col-md-12">
+                                <label style="text-align:left;" class="col-md-4 control-label" >Registration No.<label style="color:red;">*</label><label style="color:red;"></label></label>
+                                <div class="col-md-7">
+                                    <input id="reg_number" name="reg_number" autocomplete="off" value="<?php echo isset($result['0']['vehicle_master']['reg_number']) ? $result['0']['vehicle_master']['reg_number'] : '' ;?>" type="text" class="form-control"   required="required" onchange="checkIfRegNoExists()">
+                                </div>
+                            </div>
+                        </div>
+                         <div class="form-group">
+                            <div class="col-md-12">
+                                <label style="text-align:left;" class="col-md-4 control-label" >Model Name<label style="color:red;">*</label><label style="color:red;"></label></label>
+                                <div class="col-md-7">
+                                  <input id="model_dec" name="model_dec" autocomplete="off" value="<?php echo isset($result['0']['vehicle_master']['model_dec']) ? $result['0']['vehicle_master']['model_dec'] : '' ;?>" type="text" class="form-control"  required="required">
+                                </div> 
+                            </div>
+                        </div>
+						<div class="form-group">
+                            <div class="col-md-12">
+                                <label style="text-align:left;" class="col-md-4 control-label" >Company</label>
+                                <div class="col-md-7">
+                                  <input id="make" name="make" autocomplete="off" value="<?php echo isset($result['0']['vehicle_master']['make']) ? $result['0']['vehicle_master']['make'] : '' ;?>" type="text" class="form-control" >
+                                </div> 
+                            </div>
+                        </div>
+						<div class="form-group">
+                            <div class="col-md-12">
+                                <label style="text-align:left;" class="col-md-4 control-label" >Vehicle Type</label>
+                                <div class="col-md-7">
+                                  <input id="vehicle_type" name="vehicle_type" autocomplete="off" value="<?php echo isset($result['0']['vehicle_master']['vehicle_type']) ? $result['0']['vehicle_master']['vehicle_type'] : '' ;?>" type="text" class="form-control"  >
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label style="text-align:left;" class="col-md-4 control-label" >Capacity</label>
+                                <div class="col-md-7">
+                                  <input id="capacity" name="capacity" autocomplete="off" value="<?php echo isset($result['0']['vehicle_master']['capacity']) ? $result['0']['vehicle_master']['capacity'] : '' ;?>" type="text" class="form-control" >
+                                </div> 
+                            </div>
+                        </div>
+						<div class="form-group">
+                            <div class="col-md-12">
+                                <label style="text-align:left;" class="col-md-4 control-label" >Make Year</label>
+                                <div class="col-md-7">
+                                  <input id="make_year" name="make_year" autocomplete="off" value="<?php echo isset($result['0']['vehicle_master']['make_year']) ? $result['0']['vehicle_master']['make_year'] : '' ;?>" type="text" class="form-control" >
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label style="text-align:left;" class="col-md-4 control-label" >Fuel Type</label>
+                                <div class="col-md-7">
+                                  <input id="fual_type" name="fual_type" autocomplete="off" value="<?php echo isset($result['0']['vehicle_master']['fual_type']) ? $result['0']['vehicle_master']['fual_type'] : '' ;?>" type="text" class="form-control" >
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label style="text-align:left;" class="col-md-4 control-label" >Tax Token No.</label>
+                                <div class="col-md-7">
+                                  <input id="tax_token_number" name="tax_token_number" autocomplete="off" value="<?php echo isset($result['0']['vehicle_master']['tax_token_number']) ? $result['0']['vehicle_master']['tax_token_number'] : '' ;?>" type="text" class="form-control" >
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label style="text-align:left;" class="col-md-4 control-label" >Tax Due Date</label>
+                                <div class="col-md-7">
+                                  <input id="tax_due_date" name="tax_due_date" autocomplete="off" value="<?php echo isset($result['0']['vehicle_master']['tax_due_date']) ? $result['0']['vehicle_master']['tax_due_date'] : '' ;?>" type="text" class="form-control" readonly>
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label style="text-align:left;" class="col-md-4 control-label" >Insurance No.</label>
+                                <div class="col-md-7">
+                                  <input id="insurance_no" name="insurance_no" autocomplete="off" value="<?php echo isset($result['0']['vehicle_master']['insurance_no']) ? $result['0']['vehicle_master']['insurance_no'] : '' ;?>" type="text" class="form-control" >
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label style="text-align:left;" class="col-md-4 control-label" >Insurance Due Date</label>
+                                <div class="col-md-7">
+                                  <input id="insurance_due_date" name="insurance_due_date" autocomplete="off" value="<?php echo isset($result['0']['vehicle_master']['insurance_due_date']) ? $result['0']['vehicle_master']['insurance_due_date'] : '' ;?>" type="text" class="form-control" readonly>
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label style="text-align:left;" class="col-md-4 control-label" >Pollution Due Date</label>
+                                <div class="col-md-7">
+                                  <input id="pollution_due_date" name="pollution_due_date" autocomplete="off" value="<?php echo isset($result['0']['vehicle_master']['pollution_due_date']) ? $result['0']['vehicle_master']['pollution_due_date'] : '' ;?>" type="text" class="form-control" readonly>
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label style="text-align:left;" class="col-md-4 control-label" >Remarks</label>
+                                <div class="col-md-7">
+                                  <input id="remarks" name="remarks" autocomplete="off" value="<?php echo isset($result['0']['vehicle_master']['remarks']) ? $result['0']['vehicle_master']['remarks'] : '' ;?>" type="text" class="form-control" >
+                                </div> 
+                            </div>
+                        </div>
+                     <!-- </div> -->
+                       
+                        
+                        
+                       
+                    <div class="modal-footer">
+                        <input type="hidden" id="vehicle_master_pkey" name="vehicle_master_pkey" value="<?php echo isset($result['0']['vehicle_master']['vehicle_master_pkey']) ? $result['0']['vehicle_master']['vehicle_master_pkey'] : '' ;?>" />
+                         <button type="submit" id="btn-submit" class="btn btn-primary">Save</button>
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                       
+                    </div>
+        </div>
+                            
+
+        
+    </form>
+    <!-- Tax Head Detail Form -->
+   
+</div>
+          
+               
+          
+<!-- form ends-->
+      </div>
+           
+    </div>
+
+</div>
+<script>
+  
+      var options = {
+        success: function (resp) {
+          var success = $.parseJSON(resp).success;
+          var msg = $.parseJSON(resp).msg;
+            // alert(resp);
+            if (success == false) {
+
+                       // alert("Expence Type name already exist");
+                        $('#btn-submit').html('Save').prop('disabled', true);                      
+                        return;
+                    }
+
+            else{
+            
+               $.notify("Vehicle Added Successfully..",{              
+                type: 'success',
+                allow_dismiss: false
+
+            });
+
+              $('#modalForm').modal('hide');
+              $('#vehicletable').datagrid('reload');
+            }
+            // $('#expensetable').datagrid('reload');
+            // $.notify("Success", {               
+            //     type: 'success',
+            //     allow_dismiss: false
+            // });
+        }  // post-submit callback
+    };
+      $('#form-user-vehicle').on('submit', function (event) {
+        event.preventDefault();
+        if(confirm("Do You Want To Save The Form")){
+        $('#form-user-vehicle').ajaxSubmit(options);
+    }
+    });
+      $('#expense_type_code').on('change',function(){
+        checkIfExpensecodeExists();
+    })
+    
+    function checkIfRegNoExists(callback){        
+        var reg_number = $('#reg_number').val();
+		var pkey = $('#vehicle_master_pkey').val();
+        $.ajax({
+            url: 'Vehicle/checkregnoexists/',
+            type: 'POST',
+            data: {
+                reg_number: reg_number,
+				pkey : pkey
+            },
+            success: function (resp)
+            {
+                if(resp > 0){      
+				//$.notify("Registration No. Already Exists!!",{              
+              //  type: 'danger',
+               // allow_dismiss: false
+               // });
+               alert("Registration No. Already Exists!!");
+                    $('#reg_number').val('');
+                }else{
+                    if(typeof callback === 'function'){
+                        callback.call();
+                    }
+                }
+            }
+        });
+    }
+    $('#expense_type_name').on('change',function(){
+        checkIfExpensenameExists();
+    })
+    
+    function checkIfExpensenameExists(callback){        
+        var expense_type_name  = $('#expense_type_name').val();
+        //var id = $('#id').val();
+        $.ajax({
+            url: 'ExpenseType/checkexpensetypenameexists/',
+            type: 'POST',
+            data: {
+                expense_type_name : expense_type_name 
+            },
+            success: function (resp)
+            {
+                if(resp > 0){      
+                   alert("Expense Name Already Exists!!");
+                    $('#expense_type_name').val('');
+
+                }else{
+                      $('#btn-submit').html('Save').prop('disabled', false);
+                    if(typeof callback === 'function'){
+                        callback.call();
+                    }
+                }
+            }
+        });
+    }
+        $('#tax_due_date').datepicker({
+         format: 'yyyy-mm-dd',
+         autoclose: true
+        });
+		$('#insurance_due_date').datepicker({
+         format: 'yyyy-mm-dd',
+         autoclose: true
+        });
+        $('#pollution_due_date').datepicker({
+         format: 'yyyy-mm-dd',
+         autoclose: true
+        });
+    </script>
+

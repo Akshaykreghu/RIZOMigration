@@ -1,0 +1,292 @@
+<style>
+    .model-content {
+        width:118% !important;
+    }
+    .table , td, th,tr {
+        border-style: solid;
+        border-color: #d4d4de;
+
+    }
+
+</style>
+
+<?php //debug($arr_leavepolicydetails_for_template);       ?>
+<?php if ($mode == '') { ?>
+<div class="modal-body" style="overflow-y:initial; padding-left:3%; padding-right:3%; padding-bottom:1%;  ">
+            <?php $i = 0;
+foreach ($arr_leavepolicydetails_for_template as $value) {
+                        foreach ($value as $valuees) {
+//                             debug($valuees);
+                             if (!empty($valuees)) {
+                                 $i++;
+                             }
+                             }
+                             }
+                             if($i <= '0'){ ?>
+                    <div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+        There is no data available</div>
+                             <?php } else {?>
+    <h3 align="center" >Cost To Company(CTC) Summary Report</h3>
+    <div class="row">
+        <div class="col-md-12">
+
+
+            <div class="box-body">
+<?php // debug($arr_leavepolicydetails_for_template);?>
+                <br>
+                <fieldset>
+
+
+                    <table class="table ">
+                        <thead>
+                            <tr>
+                                <th >Sl No</th>
+                                <th >Employee ID</th>
+                                <th >Employee Name</th>
+                                <th >Branch</th>
+                                <th >Designation</th>  
+                                <!--modify by arun 15-10-2016  as per ashokan -->
+                                <!--<th style="width: 15%">Annual Gross Salary</th>-->
+                                <th>Monthly CTC</th>
+                                <th >Annual CTC</th>  
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $auualgross = 0;
+                            $monthlygross = 0;
+                            //   $sum = 0;
+                            $i = 0;
+
+                            foreach ($arr_leavepolicydetails_for_template as $value) {
+                              
+                            if (count($value['summary'])) {
+                            ?>
+                            <?php $arr_data = $value['summary']; ?>
+                            <?php
+                            if (count($arr_data) >= 0) {
+                            $si = 0;
+                            ?>
+                            <?php foreach ($arr_data as $val)
+                              
+                            { ?>
+
+                            <tr> <?php
+                                //  debug($val);
+                                //  $totel = $val['ectc']['emp_derived_anualctc'] * 12;
+                                $monthly = isset($val['0']['emp_derived_anualctc'])?$val['0']['emp_derived_anualctc']:0;
+                                $annual = isset($val['0']['emp_anual_ctc'])?$val['0']['emp_anual_ctc']:0;
+                                $auualgross = $auualgross + $annual;
+                                $monthlygross = $monthlygross + round($monthly);
+                                //  $sum = $sum + $auualgross;
+                                // $annalsum = $annu + $val['ectc']['emp_anual_ctc'];
+                                // $sum = $sum + $val['ectc']['emp_anual_ctc'];
+                                //debug($annalsum);
+                                $si = $si + 1;
+                                ?>
+                                <td><?php echo $i + 1; ?></td>
+                                <td><?php echo $val['a']['emp_company_id']; ?></td>
+                                <td><?php echo $val['a']['first_name'] . ' ' . $val['a']['last_name']; echo (isset($val['a']['status'])) && $val['a']['status'] =="2" ? '  (Resigned)':'';?></td>
+                                <td><?php echo $val['a']['branch_name']; ?></td>
+                                <td><?php echo $val['a']['desig_name']; ?></td>
+
+                                <!--    modify by arun 15-10-2016  as per ashokan -->
+                                <!--      <td><?php // echo $val['ectc']['emp_anual_ctc'];  ?></td>-->
+                                <td><?php echo isset($val['0']['emp_derived_anualctc'])?round($val['0']['emp_derived_anualctc']):0; ?></td>
+<!--                                <td><?php echo round($monthly*12); ?></td>-->
+                                <td><?php echo round($annual); ?></td>
+                            </tr>
+                            <?php
+                            $i++;
+                            }
+                            ?>
+
+                            <?php } else { ?>
+                            <tr>
+                                <td colspan="4">No employees found under this data</td>
+                            </tr>  
+                            <?php } ?> <?php
+                            }
+                            }
+                            ?> 
+                            <tr><td></td><td></td><td></td><td></td><th>Total</th>
+                                <!--                                        <th><?php //echo $auualgross; ?></th>-->
+                                <th><?php echo round($monthlygross); ?></th>
+                                <th><?php echo round($auualgross); ?></th>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </fieldset>
+                <br>
+            </div>
+            <!-- /.box-body -->
+
+        </div>
+    </div>    
+
+    <!--div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel </button>  
+
+        <!--                    <a href="#" class="btn btn-default" onclick="downloadReport('salary', 'pdf');" ><i class="icon-file"></i>Download As PDF</a>-->
+        <!--                    <a href="#" class="btn btn-default" onclick="downloadReport('salary', 'excel');"><i class="icon-file"></i>Download As Excel</a>-->
+
+    </div-->
+
+</div>
+<?php } } else { ?>
+<?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';    ?>
+<style type="text/css">
+    body {
+        line-height: 2em;
+    }
+    .block-container {
+        width: 95%;
+        padding: 20px;
+        border: #000000 solid thin;
+    }
+    .sub-head {
+        border-bottom: #000000 solid thin;
+    }
+    .row {
+        height: 32px;
+    }
+    .col-md-4 {
+        width: 33.33%;
+        float: left;
+    }
+    table {
+        border: 1px solid #f4f4f4;
+        width: 80%;
+        max-width: 80%;
+        margin-bottom: 20px;
+        background-color: transparent;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+    td, th {
+        text-align: left;
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border: 1px solid #B2B2B2;
+    }
+</style>
+
+<?php
+echo $this->element('reportadminheader', array(
+'title' => 'Cost To Company(CTC) Summary Report'));
+?>
+  <?php $i = 0;
+foreach ($arr_leavepolicydetails_for_template as $value) {
+                        foreach ($value as $valuees) {
+//                             debug($valuees);
+                             if (!empty($valuees)) {
+                                 $i++;
+                             }
+                             }
+                             }
+                             if($i <= '0'){ ?>
+                    <div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+        There is no data available</div>
+                             <?php } else {?>
+
+<h4 style="text-align: left;padding-bottom: 10px;padding-top: 10px;"><?php
+    if ($cr == 'Units') {
+    $cr = 'Based on Branch';
+    } else {
+    $cr = 'Based on Employee';
+    }
+    echo $cr;
+    ?></h4>
+
+<table class="table" align="center">
+    <thead>
+        <tr>
+            <th style="width: 10%">Sl No</th>
+            <th style="width: 20%">Employee ID</th>
+            <th style="width: 15%">Employee Name</th>
+            <th style="width: 10%">Branch</th>
+            <th style="width: 15%">Designation</th>    
+            <!--                <th style="width: 15%">Annual Gross Salary</th>-->
+            <th>Monthly CTC</th>
+            <th style="width: 15%">Annual CTC</th> 
+        </tr>
+    </thead>       
+    <tbody>
+                            <?php
+                            $auualgross = 0;
+                            $monthlygross = 0;
+                            //   $sum = 0;
+                            $i = 0;
+
+                            foreach ($arr_leavepolicydetails_for_template as $value) {
+                            //debug($value);
+                            // debug($totel);  
+                            if (count($value['summary'])) {
+                            ?>
+                            <?php $arr_data = $value['summary']; ?>
+                            <?php
+                            if (count($arr_data) >= 0) {
+                            $si = 0;
+                            ?>
+                            <?php foreach ($arr_data as $val)
+                            //  debug($val);
+
+
+                            { ?>
+
+                            <tr> <?php
+                                //  debug($val);
+                                //  $totel = $val['ectc']['emp_derived_anualctc'] * 12;
+                                $monthly = isset($val['0']['emp_derived_anualctc'])?$val['0']['emp_derived_anualctc']:0;
+                                $annual = isset($val['0']['emp_anual_ctc'])?$val['0']['emp_anual_ctc']:0;
+                                $auualgross = $auualgross + $annual;
+                                $monthlygross = $monthlygross + round($monthly);
+                                
+                                //  $sum = $sum + $auualgross;
+                                // $annalsum = $annu + $val['ectc']['emp_anual_ctc'];
+                                // $sum = $sum + $val['ectc']['emp_anual_ctc'];
+                                //debug($annalsum);
+                                $si = $si + 1;
+                                ?>
+                                <td><?php echo $i + 1; ?></td>
+                                <td><?php echo $val['a']['emp_company_id']; ?></td>
+                                <td><?php echo $val['a']['first_name'] . ' ' . $val['a']['last_name'];  ?></td>
+                                <td><?php echo $val['a']['branch_name']; ?></td>
+                                <td><?php echo $val['a']['desig_name']; ?></td>
+
+                                <!--    modify by arun 15-10-2016  as per ashokan -->
+                                <!--      <td><?php // echo $val['ectc']['emp_anual_ctc'];  ?></td>-->
+                                <td><?php echo isset($val['0']['emp_derived_anualctc'])?round($val['0']['emp_derived_anualctc']):0;; ?></td>
+<!--                                <td><?php echo round($monthly*12); ?></td>-->
+                                <td><?php echo round($annual); ?></td>
+                            </tr>
+                            <?php
+                            $i++;
+                            }
+                            ?>
+
+                            <?php } else { ?>
+                            <tr>
+                                <td colspan="4">No employees found under this data</td>
+                            </tr>  
+                            <?php } ?> <?php
+                            }
+                            }
+                            ?> 
+                            <tr><td></td><td></td><td></td><td></td><th>Total</th>
+                                <!--                                        <th><?php //echo $auualgross; ?></th>-->
+                                <th><?php echo round($monthlygross); ?></th>
+                                <th><?php echo round($auualgross); ?></th>
+                            </tr>
+                        </tbody>
+</table>
+
+
+<br>
+<!-- /.box-body -->
+
+<?php  //die();
+
+} }?>

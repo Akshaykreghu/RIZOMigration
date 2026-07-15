@@ -1,0 +1,258 @@
+<style>
+   
+    .table , td, th,tr {
+        border-style: solid;
+        border-color: #d4d4de;
+        
+        
+    }
+  
+</style>
+
+<?php  //debug($arr_stocksummary_for_template); ?>
+<?php if( $mode == '' ){ ?>
+<div class="modal-body" style="overflow-y:initial; padding-left:3%; padding-right:3%; padding-bottom:3%;" >
+    <h3 align="center" >Stock Movement Report - (<?php echo $month; ?>) (<?php echo isset($user_id) ? "Report run by ".($user_id)." - ".$date_time : ''; ?>)</h3>
+    <div class="row">
+        <div class="col-md-12">
+            
+                   <?php $i=0; foreach ($arr_stocksummary_for_template as $value) {
+                      if(count($value) !== 0){
+                   $i += 1; 
+                  ?>
+               
+            <fieldset> 
+                
+
+                            <legend> <?php echo isset($value['0']['z']['store_location']) ? "Store - ".$value['0']['z']['store_location'] : '';
+            echo ' ';
+             ?> 
+                            </legend>
+
+                            <div class="row">
+                                <div class="col-md-12" style="overflow-y:auto;">
+
+                             
+<!--                            <div class="col-md-4">ITEM CODE : <?php echo isset($value['summary']['0']['ep']['emp_company_id']) ? $value['summary']['0']['ep']['emp_company_id'] : ''; ?>  </div>
+                            <div class="col-md-4">ITEM NAME : <?php echo isset($value['summary']['0']['br']['branch_name']) ? $value['summary']['0']['br']['branch_name'] : ''; ?>  </div>              
+                            <div class="col-md-4">QTY : <?php echo isset($value['summary']['0']['desg']['desig_name']) ? $value['summary']['0']['desg']['desig_name'] : ''; ?>  </div>               
+                            <div class="col-md-4">STORE CODE : <?php echo isset($value['summary']['0']['dpt']['dept_name']) ? $value['summary']['0']['dpt']['dept_name'] : ''; ?>  </div>-->
+
+
+
+			    <table class="table">
+                            <thead>
+                              <tr>
+                                
+                              <!--    <th>LEAVEPOLICY_GROUP_NAME</th> -->
+                                 <?php //debug($from);
+                                  $day_before = date( 'Y-m-d', strtotime( $from . ' -1 day' ) ); ?>
+                                  <th>SI No.</th>
+                                  <th>Item Code </th>
+                                  <th>Item Name</th>
+                                  <th>Opening Stock (as on <?php echo $day_before; ?>)</th>
+                                  <th>Received </th>
+                                  <th>Issued </th>
+                                  <th>Damaged </th>
+                                  <th>Returned </th>
+                                  <th>Transferred </th>
+                                  <th>Adjustment </th>
+                                  <th>PO Return</th>
+                                  <th>Closing Stock (as on <?php echo $to; ?>)</th>
+<!--                                  <th>Sales Rate</th>
+                                  <th>Value</th>-->
+                                
+                              </tr>
+                            </thead>
+                            <tbody>
+                                 <?php $arr_data  = $value;  ?>
+                                <?php if(count($arr_data)>=0){ $i = 0; $sum = 0; ?>
+                                    <?php foreach($arr_data as $val){ ?>
+                                <tr>
+                                    <?php $i = $i+1; $sum +=  $val['0']['closing_qty']; ?>
+                                    <td><?php echo $i; ?></td>
+                                    <td><?php echo $val['z']['item_code']; ?></td>
+                                    <td><?php echo $val['z']['item_desc']; ?></td>
+                                    <td><?php echo $val['0']['opening_stock']; ?></td>
+                                    <td><?php echo $val['0']['received_qty'] ?></td>
+                                    <td><?php echo $val['0']['issue_qty']; ?></td>
+                                    <td><?php echo $val['0']['damaged_qty']; ?></td>
+                                    <td><?php echo $val['0']['returned_qty'] ?></td>
+                                    <td><?php echo $val['0']['transfer_qty']; ?></td>
+                                    <td><?php echo $val['0']['adjustment_qty']; ?></td>
+                                    <td><?php echo $val['0']['PORETURN_qty']; ?></td>
+                                    <td><?php echo $val['0']['closing_qty']; ?></td>
+<!--                                    <td><?php //echo $val['0']['Prices']; ?></td>
+                                    <td><?php //echo round($val['0']['Prices'] * $val['0']['balance_qty']); ?></td>-->
+                                </tr>
+                                        
+                                        
+                                        
+                                        
+                                        
+                                    <?php } ?>
+                                          
+                                <?php }else{ ?>
+                                        <tr>
+                                            <td colspan="4">No Stocks found under this data</td>
+                                        </tr>  
+                                <?php } ?>
+                                     
+                              
+                            </tbody>
+                        </table>
+                                </div>
+                            </div>
+		
+                    </fieldset>
+                    <br>
+                              
+                
+                   <?php } 
+                   //else { echo "No Data Available With The Selected Criteria "; } 
+                   
+                   } ?> <!-- /.box-body -->
+            
+        </div>
+    </div>  
+    <!--div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel </button>  
+    </div-->
+  <!---<div class="row">
+        <div class="form-group">
+            <div class="col-md-12" align="right">
+                <a href="#" class="btn btn-default" onclick="downloadReport('salarystructure','pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                <a href="#" class="btn btn-default" onclick="downloadReport('salarystructure','excel');"><i class="icon-file"></i>Download As Excel</a>
+            </div>
+        </div>
+    </div> -->
+</div>
+<?php }else{ ?>
+<?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>'; ?>
+<style type="text/css">
+    body {
+        line-height: 2em;
+    }
+    .block-container {
+        width: 95%;
+        padding: 20px;
+        border: #000000 solid thin;
+    }
+    .sub-head {
+        border-bottom: #000000 solid thin;
+    }
+    .row {
+        height: 32px;
+    }
+    .col-md-4 {
+        width: 33.33%;
+        float: left;
+    }
+    table {
+        border: 2px solid #f4f4f4;
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+        background-color: transparent;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+    td, th {
+        text-align: left;
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border: 1px solid #B2B2B2;
+    }
+</style>
+
+
+            <?php $i=0; foreach ($arr_stocksummary_for_template as $value) {
+                if (count($value) !== 0) {
+                    $i += 1;
+                    ?>
+
+<?php
+echo $this->element('reportadminheader',array(
+'title'=>'Stock Movement Report'));
+?>
+                    
+                        
+                                <h3 style="text-align: left;padding-bottom: 0px;padding-top: 10px;"><?php echo isset($value['0']['z']['store_location']) ? "Store - ".$value['0']['z']['store_location'] : '';
+            echo ' ';
+             ?> 
+                                               </h3>
+
+                       
+                        <hr>
+                                
+                    <br>
+           
+		
+
+			    <table class="table" align="center">
+                            <thead>
+                              <tr>
+                                
+                              <!--    <th>LEAVEPOLICY_GROUP_NAME</th> -->
+                                 <?php //$date = $from;
+                                  $day_before = date( 'Y-m-d', strtotime( $from . ' -1 day' ) ); ?>
+                                  <th>SI No.</th>
+                                  <th>Item Code </th>
+                                  <th>Item Name</th>
+                                  <th>Opening Stock (as on <?php echo $day_before; ?>)</th>
+                                  <th>Received </th>
+                                  <th>Issued </th>
+                                  <th>Damaged </th>
+                                  <th>Returned </th>
+                                  <th>Transferred </th>
+                                  <th>Adjustment </th>
+                                  <th>PO Return</th>
+                                  <th>Closing Stock <br>(as on <?php echo $to; ?>)</th>
+                                
+                              </tr>
+                            </thead>
+                           
+                            <tbody>
+                                 <?php $arr_data  = $value;  ?>
+                                <?php if(count($arr_data)>=0){ $i = 0; $sum = 0; ?>
+                                    <?php foreach($arr_data as $val){ ?>
+                                <tr>
+                                    <?php $i = $i+1; $sum +=  $val['0']['closing_qty']; ?>
+                                    <td><?php echo $i; ?></td>
+                                    <td><?php echo $val['z']['item_code']; ?></td>
+                                    <td><?php echo $val['z']['item_desc']; ?></td>
+                                    <td><?php echo $val['0']['opening_stock']; ?></td>
+                                    <td><?php echo $val['0']['received_qty'] ?></td>
+                                    <td><?php echo $val['0']['issue_qty']; ?></td>
+                                    <td><?php echo $val['0']['damaged_qty']; ?></td>
+                                    <td><?php echo $val['0']['returned_qty'] ?></td>
+                                    <td><?php echo $val['0']['transfer_qty']; ?></td>
+                                    <td><?php echo $val['0']['adjustment_qty']; ?></td>
+                                    <td><?php echo $val['0']['PORETURN_qty']; ?></td>
+                                    <td><?php echo $val['0']['closing_qty']; ?></td>
+                                </tr>
+                                        
+                                        
+                                        
+                                        
+                                        
+                                    <?php } ?>
+                                          
+                                <?php }else{ ?>
+                                        <tr>
+                                            <td colspan="4">No Stocks found under this data</td>
+                                        </tr>  
+                                <?php } ?>
+                                     
+                              
+                            </tbody>
+                        </table>
+		
+              
+                    <br>
+                              
+                
+                   <?php }  } ?> <!-- /.box-body -->
+          
+<?php } ?>

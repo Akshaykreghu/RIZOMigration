@@ -1,0 +1,654 @@
+<style>
+    #alertsModalForm {
+        z-index:999999 !important;
+    }
+</style>
+<div style="background-color: #00649d; color: white; padding: 10px; width:100%;">
+    <h3 style="margin: 0px;text-align:center;">&nbsp;Update Attendance</h3>
+</div>
+
+<div class="optionselects" style="width:50%;">
+    <div class="optionselectsinner" style="width: 300px;margin: 0px;">
+        <div style="display:flex; flex-direction:row; justify-content:space-around;">
+            <div class="dropdown1" style="display: flex; color: #000; border: none; font-weight: bold; flex-direction: column;margin-top:10px;">
+                <span style="border: none;">First Half</span>
+                <span style="border: none;">&nbsp;</span>
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default" type="first" value="P" style="margin-bottom:5px;">P</button>
+
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default" type="first" value="LOP" style="margin-bottom:5px;">LOP</button>
+
+                <!-- <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default" type="first" value="WO" style="margin-bottom:5px;">WO</button> -->
+
+                <?php foreach ($arr_leave as $leave): ?>
+                    <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" data-leavekey="<?php echo $leave['salary_head_item_pkey']; ?>" data-leavebal="<?php echo $leave['leaveBalance']; ?>" data-isindirect="<?php echo $leave['isIndirect']?'true':'false'; ?>" data-itempart="<?php echo isset($leave['itemPart']) ? $leave['itemPart'] : ''; ?>" class="btn btn-default" type="first" value="<?php echo $leave['Head']; ?>" style="margin-bottom:5px;"> <?php echo $leave['Head'].($leave['isIndirect'] ? "" : " (".$leave['leaveBalance'].")"); ?></button>
+
+                <?php endforeach; ?>
+            </div>
+            <div class="dropdown1" style="display: flex; color: #000; border: none; font-weight: bold; flex-direction: column; margin-top:10px;">
+                <span style="border: none;">Second Half</span>
+                <span style="border: none;">&nbsp;</span>
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default" type="second" value="P" style="margin-bottom:5px;">P</button>
+
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default" type="second" value="LOP" style="margin-bottom:5px;">LOP</button>
+
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default" type="second" value="WO" style="margin-bottom:5px;">WO</button>
+
+                <?php foreach ($arr_leave as $leave) : ?>
+                    <button data-emp="<?php echo $emp_pkey; ?> " data-leavekey="<?php echo $leave['salary_head_item_pkey']; ?>" data-leavebal="<?php echo $leave['leaveBalance']; ?>" data-isindirect="<?php echo $leave['isIndirect']?'true':'false'; ?>" data-itempart="<?php echo isset($leave['itemPart']) ? $leave['itemPart'] : ''; ?>" onclick="updateStatuses(this)" class="btn btn-default" type="second" value="<?php echo $leave['Head']; ?>" style="margin-bottom:5px;"> <?php echo $leave['Head'].($leave['isIndirect'] ? "" : " (".$leave['leaveBalance'].")"); ?></button>
+
+                <?php endforeach; ?>
+            </div>
+
+            <input type="hidden" id="att_date_formatted" value="<?php echo $att_date_formatted; ?>">
+             <input type="hidden" id="dayIndex" value="<?php echo $dayIndex; ?>">
+              <input type="hidden" id="emp_pkey" value="<?php echo $emp_pkey; ?>">
+               <input type="hidden" id="month" value="<?php echo $month; ?>">
+
+            <div class="dropdown1" style="display: flex; color: #000; border: none; font-weight: bold; flex-direction: column;margin-top:10px;">
+                <span style="border: none;">Full Day</span>
+                <span style="border: none;">&nbsp;</span>
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default" type="full" value="P" style="margin-bottom:5px;">P</button>
+
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default" type="full" value="HO" style="margin-bottom:5px;">HO</button>
+
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default" type="full" value="WO" style="margin-bottom:5px;">WO</button>
+
+                <button data-emp="<?php echo $emp_pkey; ?>" onclick="updateStatuses(this)" class="btn btn-default" type="full" value="LOP" style="margin-bottom:5px;">LOP</button>
+
+                <?php foreach ($arr_leave as $leave) : ?>
+                    <button data-emp="<?php echo $emp_pkey; ?>" data-leavekey="<?php echo $leave['salary_head_item_pkey']; ?>" data-leavebal="<?php echo $leave['leaveBalance']; ?>" data-isindirect="<?php echo $leave['isIndirect']?'true':'false'; ?>" data-itempart="<?php echo isset($leave['itemPart']) ? $leave['itemPart'] : ''; ?>" onclick="updateStatuses(this)" class="btn btn-default" type="full" value="<?php echo $leave['Head']; ?>" style="margin-bottom:5px;"> <?php echo $leave['Head'].($leave['isIndirect'] ? "" : " (".$leave['leaveBalance'].")"); ?></button>
+
+                <?php endforeach; ?>
+            </div>
+        </div>
+<div style="text-align:center;">
+        <button type="button" id="closeModalBtn" class="btn btn-danger" style="margin: 15px;" data-dismiss="modal">Close</button>
+</div>   
+ </div>
+</div>
+
+
+
+<script>
+    $("#smallModalForm-content").css({
+        width: "50%",
+        marginLeft: "15%"
+    });
+
+    // Frontend-only persistent leave balance cache across modal opens
+    // Structure: window._leaveCache[emp_pkey][code] = number
+    window._leaveCache = window._leaveCache || {};
+
+    function formatBalanceLabel(val) {
+        var n = parseFloat(val);
+        if (isNaN(n)) return '0';
+        // if integer
+        if (Math.abs(n - Math.round(n)) < 1e-9) return String(Math.round(n));
+        // if .5 step, show single decimal
+        if (Math.abs(n * 2 - Math.round(n * 2)) < 1e-9) return (Math.round(n * 2) / 2).toString();
+        // otherwise, trim trailing zeros up to 2 decimals
+        return parseFloat(n.toFixed(2)).toString();
+    }
+
+    function initLeaveCacheForEmployee(empKey) {
+        if (!window._leaveCache[empKey]) window._leaveCache[empKey] = {};
+        // For each leave button, ensure cache has a value; if exists, rewrite label to cached value
+        $("button[data-leavekey][data-leavebal]").each(function(){
+            var code = (($(this).attr('value')||'')+"").toUpperCase();
+            if (!code) return;
+            var cached = window._leaveCache[empKey][code];
+            var isInd = ($(this).data("isindirect") === true || $(this).attr("data-isindirect") === "true");
+            if (isInd) {
+                // For indirect leaves, ensure balance is never added and cache is skipped or set to 0
+                window._leaveCache[empKey][code] = 0;
+                $(this).data('leavebal', 0);
+            } else if (typeof cached === 'number' && !isNaN(cached)) {
+                // rewrite label with cached
+                var base = ($(this).text()||'').split('(')[0].trim();
+                $(this).text(base + ' (' + formatBalanceLabel(cached) + ')');
+                $(this).data('leavebal', cached);
+            } else {
+                // seed cache from current button
+                var dat = $(this).data('leavebal');
+                var val = (typeof dat === 'undefined') ? parseFloat(((($(this).text()||'').match(/\(([-0-9.]+)\)/)||[])[1]||0)) : parseFloat(dat)||0;
+                window._leaveCache[empKey][code] = val;
+            }
+        });
+    }
+
+    function syncButtonsFromCache(empKey, code) {
+        if (!window._leaveCache[empKey]) return;
+        var val = window._leaveCache[empKey][code];
+        if (typeof val !== 'number' || isNaN(val)) return;
+        $("button[data-leavekey][value='"+code+"']").each(function(){
+            $(this).data('leavebal', val);
+            var isInd = ($(this).data("isindirect") === true || $(this).attr("data-isindirect") === "true");
+            if (!isInd) {
+                var base = ($(this).text()||'').split('(')[0].trim();
+                $(this).text(base + ' (' + formatBalanceLabel(val) + ')');
+            }
+        });
+    }
+
+    function updateStatuses(_this) {
+        var newstatuses = $(_this).attr("value");
+      // console.log('newstatuses', newstatuses);
+        var statusType = $(_this).attr("type");
+        var att_date_formatted = $('#att_date_formatted').val(); 
+        var dayIndex =$('#dayIndex').val();
+        var month =$('#month').val();
+        var emp_pkey =$('#emp_pkey').val();
+        console.log('statusType', statusType);
+       // var currentStatuses = <//?php echo json_encode($status); ?>;
+       
+//  var currentStatuses = $('#<?php echo $emp_pkey ?>_column').val();
+
+// var currentStatuses = $("#" + emp_pkey + "_" + dayIndex + "_column").text().trim();
+var currentStatuses = $("#" + emp_pkey + "_column_" + dayIndex).text().trim();
+
+
+
+
+
+        // if (!['P', 'P/P', 'P/A', 'A/P', 'A', 'NA', 'WO', 'HO', '/WO'].includes(newstatuses)) {
+        //     // your code here
+        //    // console.log("valid blacndes", $('#leave_' + newstatuses).attr('value'));
+        //     if (statusType == 'full') {
+        //        // console.log("full", parseInt($('#leave_' + newstatuses).attr('value')));
+        //         if (parseFloat($('#leave_' + newstatuses).attr('value')) < 1) {
+        //             alert("No Leave Balance Available");
+        //             return false;
+        //         }
+
+        //     } else {
+        //         if (parseFloat($('#leave_' + newstatuses).attr('value')) < 0.5) {
+        //             alert("No Leave Balance Available");
+        //             return false;
+        //         }
+
+        //     }
+        // }
+
+        if (!['P', 'P/P', 'P/A', 'A/P', 'A', 'NA', 'WO', 'HO', '/WO','LOP'].includes(newstatuses)) {
+          // Validate against cached balance if present; otherwise seed from UI
+          initLeaveCacheForEmployee(emp_pkey);
+          var codeKey = (newstatuses||'').toUpperCase();
+          var $sameCode = $("button[value='" + codeKey + "'][data-leavekey]");
+          
+          // Check if this is an indirect leave
+          var isIndirect = $sameCode.first().data("isindirect") === true || $sameCode.first().attr("data-isindirect") === "true";
+          
+          if (!isIndirect) {
+              var leaveBal = 0;
+              if (window._leaveCache[emp_pkey] && typeof window._leaveCache[emp_pkey][codeKey] === 'number') {
+                  leaveBal = window._leaveCache[emp_pkey][codeKey];
+              } else if ($sameCode.length) {
+                  var dat = $sameCode.first().data("leavebal");
+                  leaveBal = (typeof dat === 'undefined') ? parseFloat((($sameCode.first().text()||'').match(/\(([-0-9.]+)\)\s*$/)||[])[1]||0) : parseFloat(dat)||0;
+                  window._leaveCache[emp_pkey][codeKey] = leaveBal;
+              }
+
+              var need = (statusType === 'full') ? 1 : 0.5;
+              if (leaveBal < need) {
+                  alert("No leave balance available");
+                  return false;
+              }
+          }
+}
+
+//         let newStatus = currentStatuses;
+        
+//         if (statusType == 'first') {
+// // console.log(currentStatuses);
+//             if (typeof currentStatuses !== 'undefined' && currentStatuses !== null) {
+//                 var secondhalf = currentStatuses.split('/')[1];
+//             } else {
+//                 var secondhalf = '';
+//             }
+//             if (secondhalf) {
+//                 secondhalf = secondhalf.trim();
+
+//             } else {
+//                 secondhalf = 'A';
+//             }
+//             newStatus = newstatuses + '/' + (secondhalf ? secondhalf : currentStatuses);
+
+//         }
+
+//         if (statusType == 'second') {
+//             if (typeof currentStatuses !== 'undefined' && currentStatuses !== null) {
+//                 var fiirsthalf = currentStatuses.split('/')[0];
+//             } else {
+//                 var fiirsthalf = 'A';
+//             }
+//             //fiirsthalf = currentStatuses.split('/')[0];
+//             fiirsthalf = fiirsthalf.trim();
+
+//             newStatus = (fiirsthalf ? fiirsthalf : currentStatuses) + '/' + newstatuses;
+
+//         }
+
+//         if (statusType == 'full') {
+//             newStatus = newstatuses;
+
+//         }
+
+
+// ✅ Always start with clean values
+var cellId = emp_pkey + "_column_" + dayIndex;
+var currentStatuses = $("#" + cellId).text().trim();
+
+// Split current status into halves if any
+let firstHalf = '';
+let secondHalf = '';
+
+if (currentStatuses && currentStatuses.includes('/')) {
+    [firstHalf, secondHalf] = currentStatuses.split('/');
+    firstHalf = firstHalf.trim();
+    secondHalf = secondHalf.trim();
+} else if (currentStatuses) {
+    // If single status, treat it as full-day (same halves)
+    firstHalf = currentStatuses.trim();
+    secondHalf = currentStatuses.trim();
+} else {
+    // Empty cell - initialize both halves as blank (we’ll fill as needed)
+    firstHalf = '';
+    secondHalf = '';
+}
+
+// ✅ Apply updates based on statusType
+if (statusType === 'first') {
+    firstHalf = newstatuses;
+} else if (statusType === 'second') {
+    secondHalf = newstatuses;
+} else if (statusType === 'full') {
+    firstHalf = newstatuses;
+    secondHalf = newstatuses;
+}
+
+// ✅ Preserve existing halves intelligently
+if (!firstHalf && secondHalf) firstHalf = secondHalf;
+if (!secondHalf && firstHalf) secondHalf = firstHalf;
+
+// ✅ Always format as "X/Y"
+let newStatus = firstHalf + '/' + secondHalf;
+
+// ✅ For full-day same halves (like CL, P, LOP) → keep them repeated
+// if (statusType === 'full') {
+//     newStatus = newstatuses + '/' + newstatuses;
+// }
+if (statusType === 'full') {
+    firstHalf = newstatuses;
+    secondHalf = newstatuses;
+
+    if(firstHalf=='HO' && secondHalf=='HO'){
+        newstatuses=newstatuses;
+    }
+
+   else if(firstHalf=='WO' && secondHalf=='WO'){
+        newstatuses=newstatuses;
+    }
+
+    // Force sending CL/CL instead of CL
+    else{
+ newstatuses = newstatuses + "/" + newstatuses;
+    }
+   
+}
+
+
+// // ✅ Optional: clean up if both halves empty (initial case)
+// if (!firstHalf && !secondHalf) {
+//     newStatus = newstatuses + '/' + newstatuses;
+// }
+
+console.log("Final computed status:", newStatus);
+
+
+        $.ajax({
+            type: "POST",
+            url: livesite + "AttendanceRegisterNew/chnagestatus",
+            data: {
+                device_attandance_seq: $(_this).data('emp'),
+                status: newStatus,
+                statusType: statusType,
+                newstatuses: newstatuses,
+                currentStatuses: currentStatuses,
+                att_date : att_date_formatted,
+                dayIndex:dayIndex,
+                month : month,
+                emp_pkey : emp_pkey,
+            },
+            dataType: 'json',
+
+           success: function(resp) {
+
+           if (resp.success !== true) {
+        // edited by athira on 26-02-2026
+        alert(resp.message ? resp.message : "Error occured while updating");
+        // ended by athira on 26-02-2026
+        // $.messager.alert('Failed', "Error occured while updating", 'info');
+        return;
+    }
+    // if (resp.success !== true) {
+    //     $.messager.alert('Failed', "Error occured while updating", 'info');
+    //     return;
+    // }
+
+    var empKey = $('#emp_pkey').val();
+    var dayIndex = $('#dayIndex').val(); // day number
+    let cellId = empKey + "_column_" + dayIndex;
+
+    // oldStatus captured from before AJAX call (keeps pre-update value)
+    let oldStatus = currentStatuses ? currentStatuses.toString().trim() : "";
+    // new status from server
+    let newStatusFormatted = (resp.status || "").toString().trim();
+
+    console.log("AJAX success. emp:", empKey, "day:", dayIndex);
+    console.log("OLD (pre):", oldStatus, "NEW (server):", newStatusFormatted);
+
+    // If nothing changed, simply close
+    if (oldStatus === newStatusFormatted) {
+        console.log("Same leave selected → No balance deduction");
+        // still update cell and UI to be safe
+        $("#" + cellId).text(resp.status);
+        $("#" + cellId).val(resp.status);
+        applyCellColor(empKey, dayIndex, resp.status);
+        updateLopCount($("#" + cellId).closest("tr"));
+        closeSmallModalForm();
+        return;
+    }
+
+    // ====== Balance Adjust (restore old -> apply new) ======
+    initLeaveCacheForEmployee(empKey);
+
+    // helper: find actual cache key case-insensitively, with DOM fallback
+    function findKey(code) {
+        if (!code) return null;
+        const want = code.trim().toUpperCase();
+        const map = window._leaveCache[empKey] || {};
+
+        // 1) exact case-insensitive key match
+        for (let k of Object.keys(map)) {
+            if (k && k.toUpperCase() === want) return k;
+        }
+        // 2) startsWith (e.g. "CASUAL LEAVE" vs "CL")
+        for (let k of Object.keys(map)) {
+            if (k && k.toUpperCase().startsWith(want)) return k;
+        }
+        // 3) fallback to button DOM (seed cache from button)
+        let $btn = $("button[data-leavekey][value]").filter(function() {
+            return (($(this).attr('value')||'').toUpperCase() === want);
+        }).first();
+        if ($btn && $btn.length) {
+            let btnVal = ($btn.attr('value')||'').toString();
+            let dat = $btn.data('leavebal');
+            let bal = (typeof dat === 'undefined')
+                ? parseFloat((($btn.text()||'').match(/\(([-0-9.]+)\)/)||[])[1]||0)
+                : parseFloat(dat)||0;
+            window._leaveCache[empKey] = window._leaveCache[empKey] || {};
+            // if cache already has a different-cased key we keep that; else seed with btnVal
+            if (typeof window._leaveCache[empKey][btnVal] === 'undefined') {
+                window._leaveCache[empKey][btnVal] = bal;
+            }
+            return btnVal;
+        }
+        return null;
+    }
+
+    function restoreHalf(code) {
+        if (!code) return;
+        let key = findKey(code);
+        if (!key) {
+            console.log("restoreHalf: not a tracked leave type:", code);
+            return;
+        }
+
+        // Skip restoration for Indirect leaves
+        let $btn = $("button[data-leavekey][value='"+key+"']").first();
+        if ($btn.length && ($btn.data("isindirect") === true || $btn.attr("data-isindirect") === "true")) {
+            console.log("restoreHalf: indirect leave (skip):", key);
+            return;
+        }
+
+        let cur = parseFloat(window._leaveCache[empKey][key] || 0);
+        window._leaveCache[empKey][key] = +((cur + 0.5).toFixed(2));
+        console.log("restoreHalf:", key, "old:", cur, "new:", window._leaveCache[empKey][key]);
+    }
+
+    function deductHalf(code) {
+        if (!code) return;
+        let key = findKey(code);
+        if (!key) {
+            console.log("deductHalf: not a tracked leave type (skip):", code);
+            return;
+        }
+        
+        // Skip deduction for Indirect leaves
+        let $btn = $("button[data-leavekey][value='"+key+"']").first();
+        if ($btn.length && ($btn.data("isindirect") === true || $btn.attr("data-isindirect") === "true")) {
+            console.log("deductHalf: indirect leave (skip):", key);
+            return;
+        }
+
+        let cur = parseFloat(window._leaveCache[empKey][key] || 0);
+        let upd = cur - 0.5;
+        if (upd < 0) upd = 0;
+        window._leaveCache[empKey][key] = +upd.toFixed(2);
+        console.log("deductHalf:", key, "old:", cur, "new:", window._leaveCache[empKey][key]);
+    }
+
+    // normalise and split
+    let o = (oldStatus || "").toString().trim();
+    let n = (newStatusFormatted || "").toString().trim();
+
+    let [oFH, oSH] = o.includes("/") ? o.split("/") : [o, o];
+    let [nFH, nSH] = n.includes("/") ? n.split("/") : [n, n];
+
+    oFH = (oFH||'').trim();
+    oSH = (oSH||'').trim();
+    nFH = (nFH||'').trim();
+    nSH = (nSH||'').trim();
+
+    console.log("Before adjust, leave cache:", window._leaveCache[empKey]);
+
+    // ALWAYS restore old halves (if tracked leave)
+    restoreHalf(oFH);
+    restoreHalf(oSH);
+
+    // Only deduct new halves if new is not in skip-list
+    const skipList = ["P","P/P","P/A","A/P","A","NA","WO","HO","/WO",""];
+    if (!skipList.includes(n)) {
+        deductHalf(nFH);
+        deductHalf(nSH);
+    } else {
+        console.log("New status is non-leave; skipping deduction:", n);
+    }
+
+    // sync UI labels for buttons from cache before changing the table cell
+    syncButtonsFromCache(empKey);
+    console.log("After adjust, leave cache:", window._leaveCache[empKey]);
+
+    // ====== Now update DOM (cell text, color, totals) ======
+    $("#" + cellId).text(resp.status);
+    $("#" + cellId).val(resp.status);
+
+    applyCellColor(empKey, dayIndex, resp.status);
+
+    var row = $("#" + cellId).closest("tr");
+    updateLopCount(row);
+
+    closeSmallModalForm();
+}
+
+
+
+
+
+
+
+
+        // closeSmallModalForm();
+    // } else {
+    //     $.messager.alert('Failed', "Error occured while updating", 'info');
+    // }
+
+
+
+//             success: function(resp) {
+//                 //var resp = $.parseJSON(resp);
+//                 //$('#editpunches').datagrid('deleteRow', getRowIndex(target));
+//                 if (resp.success == true) {
+//                     // $.messager.show('Success', "Attandence removed successfully", 'info');
+              
+//                     //$('#<?php echo $emp_pkey ?>_column').text(newstatuses);
+//                      $('#<?php echo $emp_pkey ?>_column').text(resp.status);
+// $('#<?php echo $emp_pkey ?>_column').val(resp.status);
+//                    // console.log('#<?php echo $emp_pkey ?>_column');
+                    
+// //filterRegister1();
+//                     closeSmallModalForm();
+
+//                     //  $('#modalForm').modal('toggle');
+//                 } else {
+//                     $.messager.alert('Failed', "Error occured while removing record", 'info');
+//                     $('#modalForm').modal('toggle');
+//                 }
+//             }
+        });
+
+       // console.log((newStatus));
+        // $(_this).parents(".optionselects").parent().find('strong').html(newStatus);
+        $(_this).closest(".optionselects").parent().find('strong').text(newStatus);
+
+        // $(_this).parents(".optionselects").css("display", "none");
+    }
+
+
+function updateLopCount(row) {
+    let lopCount = 0, leaveCount = 0, workCount = 0;
+    let weekOffCount = 0, holidayCount = 0, naCount = 0;
+
+    // ⚡ Dynamically detect all leave codes except P, LOP, NA, WO, HO
+    let leaveTypes = new Set();
+
+    row.closest("table").find("td span[id*='_column_']").each(function () {
+        let txt = $(this).text().trim().toUpperCase();
+        if (!txt) return;
+        let parts = txt.includes("/") ? txt.split("/") : [txt];
+
+        parts.forEach(p => {
+            p = p.trim();
+            if (!p || ["P","LOP","NA","WO","HO"].includes(p)) return;
+
+            // any unknown code → treat as leave type
+            leaveTypes.add(p);
+        });
+    });
+
+    row.find("td span[id*='_column_']").each(function () {
+        let status = $(this).text().trim().toUpperCase();
+        if (!status) return;
+
+        let parts = status.includes("/") ? status.split("/") : [status];
+
+        parts.forEach(part => {
+            part = part.trim();
+            if (!part) return;
+
+            let weight = (parts.length === 2) ? 0.5 : 1;
+
+            if (part === "P") workCount += weight;
+            else if (part === "LOP") lopCount += weight;
+            else if (part === "NA") naCount += weight;
+            else if (part === "WO") weekOffCount += weight;
+            else if (part === "HO") holidayCount += weight;
+            else if (leaveTypes.has(part)) leaveCount += weight; // dynamic leaves
+        });
+    });
+
+    // TOTAL CALENDAR DAYS
+    let totalCalendarDays = row.find("td span[id*='_column_']").length;
+    let naHoCount = parseFloat(row.data('na-ho')) || 0;
+    let naWoCount = parseFloat(row.data('na-wo')) || 0;
+    let prorate_code = parseFloat(row.data('prorate')) || 0;
+     let emp_type = parseFloat(row.data('emptype')) || '';
+
+     if (prorate_code !== 2){
+      lopCount =lopCount + naCount +(naHoCount + naWoCount);
+   }
+   else{
+lopCount=lopCount+naCount;
+   }
+
+    // 🎯 WORKING DAYS = Calendar - (Holiday + Weekoff + NA)
+    let workingDays = totalCalendarDays - (weekOffCount + holidayCount);
+
+    
+
+    // Update UI
+    row.find("td.lopcolor.headcol.left10").text(lopCount);         // LOP
+    row.find("td.presentcolor.headcol.left8").text(workCount);     // Present
+    row.find("td.presentcolor.headcol.left9").text(leaveCount);    // Leave
+    row.find("td.calendercolor.headcol.left5").text(weekOffCount); // Weekoff
+    row.find("td.calendercolor.headcol.left6").text(holidayCount); // Holiday
+    row.find("td.calendercolor.headcol.left7").text(workingDays);                  // Working Days
+}
+
+
+
+ function applyCellColor(emp, day, value) {
+    let cell = $("#" + emp + "_column_" + day).closest("td");
+
+    // Reset cell color
+    cell.css({ "color": "", "background-color": "" });
+    value = value.trim();
+
+    // ✅ Full day Present
+    if (value == "P/P") {
+        cell.css({ "color": "white", "background-color": "#06a226" });
+    }
+    // ✅ Full day Absent
+    else if (value === "A") {
+        cell.css({ "color": "white", "background-color": "#06a226" });
+    }
+    // ✅ Full day LOP
+    else if (value === "LOP/LOP") {
+        cell.css({ "color": "white", "background-color": "#e02429" });
+    }
+    // ✅ Full day Weekly Off
+    else if (value === "WO" || value ==="WO/WO") {
+        cell.css({ "color": "white", "background-color": "#dcdc00" });
+    }
+    // ✅ Full day Holiday
+    else if (value === "HO" || value ==="HO/HO") {
+        cell.css({ "color": "white", "background-color": "#2d2df4" });
+    }
+    // 🟠 Any Half LOP (contains /LOP)
+    else if (value.includes("/LOP") || value.includes("LOP/")) {
+        cell.css({ "color": "white", "background-color": "#ef8656" }); // choose your color
+    }
+    // ✅ Empty
+    else if (value === "") {
+        cell.css({ "color": "white", "background": "#ebebeb" });
+    }
+}
+
+
+
+
+
+
+
+    $(document).ready(function() {
+        // Attach click event handler to the close button
+        $('#closeModalBtn').click(function() {
+           // $('#modalForm').modal('toggle'); // Toggle the modal
+        });
+        // Initialize cache and sync labels for this employee modal
+        var empKeyInit = $('#emp_pkey').val();
+        if (empKeyInit) {
+            initLeaveCacheForEmployee(empKeyInit);
+        }
+    });
+</script>

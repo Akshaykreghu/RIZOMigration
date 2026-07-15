@@ -1,0 +1,181 @@
+<style>
+    .datagrid .panel-body
+    {
+        width: 100% !important;
+    }
+</style>
+<section class="content-header">
+    <h1>Manage Expenses  <?php // echo $emp_leave_count;       ?></h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Leave Requests -->
+            <!-- DIRECT CHAT DANGER -->
+            <div class="box ">
+<!--                <div class="box-header with-border">
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                        <button class="btn btn-box-tool" >
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </div> /.box-header -->
+                <div class="box-body">
+
+                    <div class="tabset-attendanceregister">
+                        <!--                        <div id="tab0" data-pws-tab="tab0" data-pws-tab-name="To be Verify">
+                                                    <h3>Leave Requests</h3>
+                                                </div>-->
+                        <div id="tab1" data-pws-tab="tab1" data-pws-tab-name="To be Verify">
+                            <table id="empleaverequeststable" class="table table-bordered table-hover">
+
+                            </table>
+                        </div>
+                        <div id="tab2" data-pws-tab="tab2" data-pws-tab-name="Verified" data-pws-tab-icon="fa-video-camera">
+                            <div style="text-align: right" class="row form-inline">
+                                <label class="col-md-9 col-form-label"><b>Choose Expense Status :</b></label>
+                                <select class="col-md-3 form-control" style="width: 250px;" id="expense_status" name="expense_status" onchange="filterfunction(this);">
+                                    <option value="'Approved','Authorized','Rejected'">All</option>
+                                    <option value="'Approved'">Approved</option>
+                                    <option value="'Authorized'">Authorized</option>
+                                    <option value="'Rejected'">Rejected</option>
+                                </select>
+                            </div>
+                            <br>
+                            <table id="empleaverequeststableverified" class="table table-bordered table-hover">
+
+                            </table>
+                        </div>
+                    </div>
+
+
+                </div><!-- /.box-body -->
+            </div><!--/.direct-chat -->
+        </div><!-- /.col -->
+    </div>
+</section>
+<script>
+    function filterfunction(obj) {
+        $('#empleaverequeststableverified').datagrid('load', {
+            emp: $('#expense_status').val(),
+        });
+    }
+    jQuery(document).ready(function () {
+
+//        $('#tab1').on('change',function () {
+////            $('#expense_status').val("'Approved','Rejected'");
+//            $('#expense_status option[0]').attr('selected','selected');
+//            reloadTable('empleaverequeststableverified');
+////            $('#empleaverequeststableverified').datagrid('load', {
+//////                emp: $('#expense_status').val(),
+////            });
+//        });
+        $('.tabset-attendanceregister').pwstabs({
+            effect: 'scale', // You can change effects of your tabs container: scale / slideleft / slideright / slidetop / slidedown / none
+            defaultTab: 1, // The tab we want to be opened by default
+            containerWidth: '100%', // Set custom container width if not set then 100% is used
+            tabsPosition: 'horizontal', // Tabs position: horizontal / vertical
+            horizontalPosition: 'top', // Tabs horizontal position: top / bottom
+            verticalPosition: 'left', // Tabs vertical position: left / right
+            responsive: false, // Make tabs container responsive: true / false - boolean
+            theme: '',
+            rtl: false                    // Right to left support: true/ false
+        });
+
+        $('.pws_tabs_controll>li').click(function () {
+            $("#expense_status").val("'Approved','Rejected'").children("option:selected");
+            filterfunction();
+        });
+
+        $('#empleaverequeststable').datagrid({
+            url: livesite + "EmployeeExpenses/listempexpense",
+            pagination: true,
+            singleSelect: true,
+            rownumbers: true,
+//            PostsearchFilter: true,
+            onLoadSuccess: function (data) {
+                loadtabs();
+            },
+            toolbar: [{
+                    iconCls: 'icon-edit',
+                    text: 'Manage Expense',
+                    handler: function () {
+                        var row = $('#empleaverequeststable').datagrid('getSelected');
+                        if (row == null) {
+                            alert('Select any data');
+                            return false;
+                        }
+                        var $expenseId = row.emp_expenses_pkey;
+                        showLargeModalForm(livesite + 'EmployeeExpenses/manageexpense/' + row.emp_expenses_pkey);
+                    }
+                }],
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            columns: [
+                [
+                    {field: 'emp_name', title: 'Employee Name', width: "20%"},
+                    {field: 'expense_date', title: 'Expense Date', width: "10%"},
+                    {field: 'expenses_amount', title: 'Amount', width: "10%"},
+                    {field: 'expense_type', title: 'Expense Type', width: "20%"},
+                    {field: 'remarks', title: 'Remarks', width: "30%"},
+                    {field: 'expense_status', title: 'Status', width: "10%"}
+                ]
+            ],
+//            onSearch: function (s) {
+//
+//                $('#empleaverequeststable').datagrid('load', {
+//                    emp: $('#searchqupo').val(),
+////                    name: $('#rsndempid').val(),
+////                    branch: $('#filterby_branch').val()
+//                });
+//            }
+        });
+
+        $('#empleaverequeststableverified').datagrid({
+            url: livesite + "EmployeeExpenses/listempexpenseverified",
+            pagination: true,
+            rownumbers: true,
+            singleSelect: true,
+//            PostsearchFilter: true,
+            toolbar: [{
+                    iconCls: 'icon-edit',
+                    text: 'Manage Expense',
+                    handler: function () {
+                        var row = $('#empleaverequeststableverified').datagrid('getSelected');
+                        if (row == null) {
+                            alert('Select any data');
+                            return false;
+                        }
+                        var $expenseId = row.emp_expenses_pkey;
+                        showLargeModalForm(livesite + 'EmployeeExpenses/manageexpense/' + row.emp_expenses_pkey);
+                    }
+                }],
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            columns: [
+                [
+                    {field: 'emp_name', title: 'Employee Name', width: "20%"},
+                    {field: 'expense_date', title: 'Expense Date', width: "10%"},
+                    {field: 'expenses_amount', title: 'Amount', width: "10%"},
+                    {field: 'expense_type', title: 'Expense Type', width: "20%"},
+                    {field: 'remarks', title: 'Remarks', width: "30%"},
+                    {field: 'expense_status', title: 'Status', width: "10%"}
+                ]
+            ],
+            onSearch: function (s) {
+                $('#empleaverequeststableverified').datagrid('load', {
+                    emp: $('#expense_status').val(),
+//                    name: $('#rsndempid').val(),
+//                    branch: $('#filterby_branch').val()
+                });
+            }
+        });
+        function loadtabs() {
+            $('[data-tab-id="tab1"]').trigger('click');
+        }
+    });
+</script>

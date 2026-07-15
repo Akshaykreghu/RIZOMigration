@@ -1,0 +1,637 @@
+<style>
+    .form-horizontal .control-label {
+        text-align: left;
+    }
+
+    .datagrid-cell-c2-download_link {
+        width: 300px !important;
+        /* Change the width to your desired value */
+    }
+</style>
+<!-- Include jsPDF library -->
+<!--<script src="<?php echo $this->webroot; ?>plugins/ckeditor1/ckeditor.js" type="text/javascript"></script>-->
+
+<?php
+// Inside your view file, set the livesite variable using the webroot
+
+
+?>
+<section class="content-header">
+    <h1 style="text-align:left; font-size: 3em;"> Out Pass Generator </h1>
+</section>
+
+
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box ">
+                <br>
+                <div class="box-body">
+                    <div class="box-body">
+                        <table id="documents_manager" class="table table-bordered table-hover">
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div><!-- /.box-body -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var userGroup = <?php echo json_encode($user_group); ?>;
+
+    var placeholders = [];
+    CK_TEMPLATE = '';
+
+    function validate() {
+        var valid = true;
+        var templateObj = $('#document_form #template');
+        var employeeObj = $('#document_form #employee');
+
+        if (templateObj.val() == "") {
+            templateObj.parents('div .col-sm-12').addClass('has-error')
+            templateObj.parents('div .col-sm-10').append('<span class="help-block">Please choose a template.</span>');
+            valid = false;
+        }
+
+        if (employeeObj.val() == "") {
+            employeeObj.parents('div .col-sm-12').addClass('has-error')
+            employeeObj.parents('div .col-sm-10').append('<span class="help-block">Please choose a employee.</span>');
+            valid = false;
+        }
+        return valid;
+
+    }
+
+    function validateDocumentForm() {
+
+
+        var valid = validate();
+        var document_nameObj = $('#document_form #document_name');
+        if (document_nameObj.val() == "") {
+            document_nameObj.parents('div .col-sm-12').addClass('has-error')
+            document_nameObj.parents('div .col-sm-10').append('<span class="help-block">Please enter the document name.</span>');
+            valid = false;
+        }
+        return valid;
+    }
+    temp = '';
+
+    function documentPreview(obj) {
+        if (obj.value == "")
+            return false;
+        if ($('#document_form #template').val() != '') {
+            var emp_id = $('#document_form #employee').val() != '' ? $('#document_form #employee').val() : '';
+            var temp_id = $('#document_form #template').val() != '' ? $('#document_form #template').val() : '';
+            var company_id = $('#document_form #company').val() != '' ? $('#document_form #company').val() : '';
+            var branch_id = $('#document_form #branches').val() != '' ? $('#document_form #branches').val() : '';
+            var supplier_id = $('#document_form #suppliers').val() != '' ? $('#document_form #suppliers').val() : '';
+            var customer_id = $('#document_form #customers').val() != '' ? $('#document_form #customers').val() : '';
+            var others_id = $('#document_form #others').val() != '' ? $('#document_form #others').val() : '';
+
+            $.ajax({
+                url: livesite + "DocumentManager/docPreview/0/3",
+                type: 'POST',
+                data: {
+                    emp_id: emp_id,
+                    temp_id: temp_id,
+                    company_id: company_id,
+                    branch_id: branch_id,
+                    supplier_id: supplier_id,
+                    customer_id: customer_id,
+                    others_id: others_id,
+                    placeholders: placeholders,
+                    template: CK_TEMPLATE //CKEDITOR.instances['document_editor'].getData()
+                },
+                success: function(response) {
+                    var res = JSON.parse(response);
+                    if (res && res.status == true) {
+                        console.log('response');
+                        CKEDITOR.instances['document_editor'].setData(res.html);
+                    }
+                }
+            });
+        }
+    }
+
+    function loadPlaceholders() {
+        var templateObj = $('#document_form #template');
+        if (templateObj.val() != '') {
+            $.ajax({
+                url: livesite + 'DocumentManager/getTemplatePlaceholers/' + templateObj.val(),
+                type: 'POST',
+                success: function(resp) {
+                    var result = $.parseJSON(resp);
+                    placeholders = result.placeholer;
+                    var data = result.data;
+                    var template = (result.template).replace(/\{:text_box}/g, ' <input type="text" />');
+                    CK_TEMPLATE = template;
+                    CKEDITOR.instances['document_editor'].setData(template);
+                    jQuery('.placeholdeDropDown').addClass('hide');
+                    for (i in placeholders) {
+                        switch (placeholders[i]) {
+                            case 'emp':
+                                var employees = data[placeholders[i]];
+                                var employeeHtml = '<option   value="">Choose Employee</option>';
+                                for (i in employees) {
+                                    employeeHtml += "<option value='" + employees[i].emp_pkey + "'>" + employees[i].emp_name + "</option>";
+                                }
+                                $('#document_form #employee').html(employeeHtml);
+                                $('#emp').removeClass('hide');
+                                break;
+                            case 'branch':
+                                var branches = data[placeholders[i]];
+                                var branchesHtml = '<option   value="">Choose Branch</option>';
+                                for (i in branches) {
+                                    branchesHtml += "<option value='" + branches[i].id + "'>" + branches[i].branch_name + "</option>";
+                                }
+                                $('#document_form #branches').html(branchesHtml);
+                                $('#branch').removeClass('hide');
+                                break;
+                            case 'comp_contact':
+                                var companies = data[placeholders[i]];
+                                var companiesHtml = '<option   value="">Choose Company</option>';
+                                for (i in companies) {
+                                    companiesHtml += "<option value='" + companies[i].id + "'>" + companies[i].business_name + "</option>";
+                                }
+                                $('#document_form #company').html(companiesHtml);
+                                $('#comp_contact').removeClass('hide');
+                                break;
+                            case 'supplier':
+                                var suppliers = data[placeholders[i]];
+                                var suppliersHtml = '<option   value="">Choose Supplier</option>';
+                                for (i in suppliers) {
+                                    suppliersHtml += "<option value='" + suppliers[i].contact_id + "'>" + suppliers[i].name + "</option>";
+                                }
+                                $('#document_form #suppliers').html(suppliersHtml);
+                                $('#supplier').removeClass('hide');
+                                break;
+                            case 'customer':
+                                var customers = data[placeholders[i]];
+                                var customersHtml = '<option   value="">Choose Customer</option>';
+                                for (i in customers) {
+                                    customersHtml += "<option value='" + customers[i].contact_id + "'>" + customers[i].name + "</option>";
+                                }
+                                $('#document_form #customers').html(customersHtml);
+                                $('#customer').removeClass('hide');
+                                break;
+                            case 'other':
+                                var others = data[placeholders[i]];
+                                var othersHtml = '<option   value="">Choose Other Contact</option>';
+                                for (i in others) {
+                                    othersHtml += "<option value='" + others[i].contact_id + "'>" + others[i].name + "</option>";
+                                }
+                                $('#document_form #others').html(othersHtml);
+                                $('#other').removeClass('hide');
+                                break;
+
+
+
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    jQuery(document).ready(function() {
+        if (true) {
+            $('#documents_manager').datagrid({
+                url: livesite + "OutPass/getDocumentsFromDatabase",
+                pagination: true,
+                singleSelect: true,
+                rownumbers: true,
+                PostsearchFilter: true,
+                pageSize: 10, // Set a default page size
+
+                onBeforeLoad: function(param) {
+                    // Update the pageSize based on the selected page list value
+                    var selectedPageSize = $('#documents_manager').datagrid('getPager').pagination('options').pageSize;
+                    param.rows = selectedPageSize;
+                },
+
+                toolbar: [{
+                        text: 'New',
+                        iconCls: 'icon-add',
+                        handler: function() {
+                            showModalForm(livesite + 'OutPass/uploadForm')
+
+                        }
+                    },
+
+                    {
+                        text: 'Edit',
+                        iconCls: 'icon-edit',
+                        handler: function() {
+                            var row = $('#documents_manager').datagrid('getSelected');
+                            if (row) {
+                                if (row.status == 1) {
+                                    var out_pass_pkey = row.out_pass_pkey;
+                                    showLargeModalForm(livesite + 'OutPass/savePreview/' + out_pass_pkey + '/' + 1 + '/' + true);
+                                } else {
+                                    alert(row.type + " pass already issued.");
+                                }
+                                // reloadTable('documents_manager');
+                            } else {
+                                //alert("Please choose a store");
+                                $.notify('Please choose a document', {
+                                    type: 'danger',
+                                    allow_dismiss: false
+                                });
+                            }
+
+
+                        }
+                    },
+
+                    {
+                        iconCls: 'icon-remove',
+                        text: 'Remove',
+                        handler: function() {
+                            var rows = $('#documents_manager').datagrid('getSelected');
+                            console.log(rows.status);
+                            if(rows){
+                            if (rows.status !== '2') {
+                                var document_id = rows.out_pass_pkey;
+
+                                if (confirm("Are you sure want to delete ")) {
+                                    $.ajax({
+                                        url: livesite + "OutPass/deleteFromGrid/" + document_id,
+
+                                        success: function(response) {
+                                            // var response = $.parseJSON(response);
+
+                                            if (response.message) {
+
+                                                if (response.status === 'success') {
+                                                    $.notify(rows.type+response.message, {
+                                                        type: 'success',
+                                                        allow_dismiss: true
+                                                    });
+
+                                                } else if (response.status === 'failure') {
+                                                    $.notify(rows.type+response.message, {
+                                                        type: 'danger', // Or another appropriate type for failure/error
+                                                        allow_dismiss: true
+                                                    });
+                                                }
+                                            }
+                                            // reloadTable('documents_manager');
+                                        }
+                                    });
+                                    reloadTable('documents_manager');
+                                }
+                            }else{
+                                alert(rows.type+" out pass issued and cannot be deleted");   
+                            }
+                            }else {
+                                alert("Please select atleast one record to delete")
+                            }
+                        }
+                    }
+
+                ],
+                fitColumns: true,
+                pageList: [2, 5, 10, 50, 100],
+                columns: [
+                    [
+
+                        {
+                            field: 'out_pass_number',
+                            title: 'Out Pass No',
+                            width: '20%'
+                        },
+                        {
+                            field: 'type',
+                            title: 'Type',
+                            width: '20%'
+                        },
+                        {
+                            field: 'issued_to',
+                            title: 'Issued To',
+                            width: '20%'
+                        },
+                        {
+                            field: 'out_pass_date',
+                            title: 'Date',
+                            width: '15%'
+                        },
+                        {
+                            field: 'download_link',
+                            title: 'Document',
+                            width: '10%'
+                        },
+                        {
+                            field: 'creation_date',
+                            title: 'Created Date & Time',
+                            width: '15%'
+                        }
+                    ]
+                ],
+                onSearch: function(s) {
+                    var searchValue = $('#searchqupo').val();
+                    console.log('searchValue', searchValue);
+                    $('#documents_manager').datagrid('load', {
+                        out_pass_number: searchValue
+                    });
+                }
+            });
+        }
+
+
+
+
+    });
+
+    // JavaScript function to display the preview
+
+    // Function to load the PDF preview by sending a document key to the controller
+    function loadPDFPreview(fileKey, fileType, fileName) {
+        console.log('File Type', fileType);
+        var url = '/DocumentManager/documentPreview'; // Modify this according to your server endpoint
+
+        // Make an AJAX request to the server to fetch the file content
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                pdfPath: fileKey
+            },
+            success: function(response) {
+                var responseObject = JSON.parse(response);
+                if (responseObject && responseObject.status === 'success') {
+                    if (true) {
+                        var binaryFile = atob(responseObject.fileData); // Decode from Base64
+
+                        // Convert the binary file data to a Blob
+                        var byteArray = new Uint8Array(binaryFile.length);
+                        for (var i = 0; i < binaryFile.length; i++) {
+                            byteArray[i] = binaryFile.charCodeAt(i);
+                        }
+                        var blob = new Blob([byteArray], {
+                            type: fileType
+                        });
+
+                        // Create a URL for the Blob object
+                        var blobURL = window.URL.createObjectURL(blob);
+
+                        // Create a new modal to display the file content
+                        var modal = $('<div class="modal"></div>');
+                        var closeButton = $(' <button type="button" class="btn btn-danger" style="align-self: center;">Close</button>');
+                        var fileObject = $('<object class="file-iframe" data="' + blobURL + '" type="' + fileType + '"></object>');
+                        var overlay = $('<div class="overlay"></div>'); // Add an overlay to prevent mouse clicks
+                        var toolbarOverlay = $('<div class="toolbar-overlay"></div>');
+                        var overlay2 = $('<div class="overlay2"></div>'); // Add an overlay to prevent mouse clicks
+
+                        // Display filename on the top of the modal
+                        var filenameHeader = $('<h2 style="color: white; z-index: 10003;">' + fileName + '</h2>');
+                        modal.append(filenameHeader);
+
+                        // Add close button, overlay, and file object to the modal
+                        modal.append(fileObject);
+
+                        modal.append(closeButton);
+                        $('body').append(modal);
+                        //if (fileType === 'application/pdf') {
+                        //modal.append(toolbarOverlay);
+                        //     modal.append(overlay);
+                        //     modal.append(overlay2);
+                        // }
+
+
+                        // Display the modal with a larger size
+                        modal.css({
+                            'display': 'block',
+                            'width': '90%',
+                            'height': '100%',
+                            'top': '0',
+                            'left': '5%',
+                            'padding': '20px',
+                            'position': 'fixed',
+                            'background-color': '#323639',
+                            'border': '1px solid #000',
+                            'box-shadow': '5px 5px 15px 5px rgba(0,0,0,0.1)',
+                            'z-index': '9999',
+                            'overflow': 'auto',
+                            'display': 'flex',
+                            'flex-direction': 'column',
+                            'justify-content': 'center',
+                            'align-items': 'center'
+                        });
+
+                        // Adjust the size of the displayed file
+                        fileObject.css({
+                            'width': '100%', // Adjusted width for the file object
+                            'height': '90%' // Adjusted height for the file object
+                        });
+
+                        // Styling for the overlay to prevent mouse clicks
+                        overlay.css({
+                            'position': 'absolute',
+                            'top': '0',
+                            'left': '7%',
+                            // 'width': '96.8%',
+                            'width': '90%',
+
+                            'height': '89%',
+                            'background-color': 'transparent', // Transparent overlay
+                            'z-index': '10000', // Higher z-index to cover the file
+                            'overflow': 'auto'
+                        });
+
+                        overlay2.css({
+                            'position': 'absolute',
+                            'top': '22%',
+                            'left': '0',
+                            // 'width': '96.8%',
+                            'width': '97%',
+
+                            'height': '70%',
+                            'background-color': 'transparent', // Transparent overlay
+                            'z-index': '10000', // Higher z-index to cover the file
+                            'overflow': 'auto'
+                        });
+
+                        // Styling for the close button
+                        closeButton.css({
+                            'color': '#fff',
+                            'font-size': '14px',
+                            'font-weight': '100',
+                            'cursor': 'pointer',
+                            'padding': '5px 10px',
+                            'margin-top': '5px',
+                            'z-index': '100000',
+                        });
+
+                        toolbarOverlay.css({
+                            'position': 'absolute',
+                            'top': '0',
+
+                            'width': '100%', // Adjust the width as per your toolbar's dimensions
+                            'height': '26%', // Adjust the height according to the toolbar's height
+                            'background-color': '#323639', // Semi-transparent black to cover the toolbar
+                            'z-index': '10001', // Place it above the document, but below the close button
+                        });
+
+                        // closeButton.hover(
+                        //     function() {
+                        //         $(this).css('background-color', '#ff0000');
+                        //     },
+                        //     function() {
+                        //         $(this).css('background-color', 'rgba(255, 90, 95, 1)');
+                        //     }
+                        // );
+
+                        // Event listener to close the modal
+                        closeButton.on('click', function() {
+                            modal.remove();
+                        });
+                    } else {
+                        try {
+                            var binaryFile = atob(responseObject.fileData); // Decode from Base64
+
+                            var byteArray = new Uint8Array(binaryFile.length);
+                            for (var i = 0; i < binaryFile.length; i++) {
+                                byteArray[i] = binaryFile.charCodeAt(i);
+                            }
+
+                            var blob = new Blob([byteArray], {
+                                type: fileType
+                            });
+
+                            var blobURL = window.URL.createObjectURL(blob);
+
+                            var viewerURL = 'https://docs.google.com/viewer?url=' + encodeURIComponent(blobURL);
+
+                            var iframe = document.createElement('iframe');
+                            iframe.src = viewerURL;
+                            iframe.style.width = '100%';
+                            iframe.style.height = '500px';
+                            document.body.appendChild(iframe);
+                        } catch (error) {
+                            console.error('Error:', error);
+                        }
+
+                    }
+                } else {
+                    console.error('Error: The response does not indicate success.');
+                }
+            },
+            error: function(error) {
+                console.error('Error: Unable to fetch file content', error);
+            }
+        });
+    }
+
+    // Function to initiate the download of the file
+    function downloadFile(fileKey, fileName) {
+        var url = '/DocumentManager/documentdownload'; // Modify this according to your server endpoint
+
+        // Create a form dynamically
+        var form = $('<form>', {
+            'method': 'post',
+            'action': url,
+            'target': '_blank' // Open the link in a new tab
+        });
+
+        // Add input fields to the form
+        form.append($('<input>', {
+            'type': 'hidden',
+            'name': 'pdfPath',
+            'value': fileKey
+        }));
+
+        // Submit the form
+        form.appendTo('body').submit().remove();
+    }
+
+
+
+    function printOutPassPDF(pkey = 0, pass = false, type = '', status = 1) {
+        console.log(typeof status);
+        if (status == '2') {
+            if (true) {
+                var form = document.createElement('form');
+                form.style.display = 'none'; // Hide the form
+
+                // Construct the URL
+                var url = livesite + 'OutPass/printOutPass/';
+                if (pkey) {
+                    url += pkey;
+                }
+
+                // Set form attributes
+                form.method = 'GET';
+                form.action = url;
+
+                // Append the form to the body
+                document.body.appendChild(form);
+
+                // Prevent the default form submission (which causes a page reload)
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                });
+                $.notify('Downloading...', {
+                    type: 'success',
+                    allow_dismiss: true
+                });
+                // Submit the form
+                form.submit();
+
+                // Remove the form from the body
+                document.body.removeChild(form);
+                $("#largeModalForm").modal("hide");
+            } else {
+                alert('Personal out pass cannot be downloaded more than one time.');
+            }
+        } else {
+            if (type == 'Official') {
+                alert('Officical out pass not issued.');
+            } else {
+                alert('Personal out pass not issued.');
+            }
+        }
+
+    }
+
+    //Download pdf
+
+    function downloadPdf(htmlContent, fileName) {
+        // Append a style element to set the top margin to 0
+        const style = document.createElement('style');
+        style.textContent = '@page { margin-top: 0mm; }';
+        document.head.appendChild(style);
+
+        // Create an html2pdf instance with margin-top set to 0
+        const pdf = new html2pdf(htmlContent, {
+            margin: [0, 20, 0, 20], // [top, right, bottom, left] margins in mm
+        });
+
+        // console.log('Pdf', pdf);
+        // Generate the PDF
+        pdf.toPdf().then(function(pdfObject) {
+            // Create a Blob from the PDF data
+            const blob = pdfObject;
+
+            // Create a link element
+            const link = document.createElement('a');
+            // Set the download attribute and create an object URL for the Blob
+            link.download = fileName;
+            link.href = URL.createObjectURL(blob);
+
+            // Append the link to the document body
+            document.body.appendChild(link);
+
+            // Trigger a click on the link
+            link.click();
+
+            // Remove the link from the document body
+            document.body.removeChild(link);
+        });
+    }
+</script>

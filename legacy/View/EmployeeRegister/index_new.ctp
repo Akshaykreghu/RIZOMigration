@@ -1,0 +1,877 @@
+<style>
+    #editpunchform table tr td {
+        padding: 5px;
+        width: 100%;
+    }
+
+    .form-horizontal .control-label {
+
+        text-align: left;
+        padding-left: 2px;
+    }
+
+    a {
+        color: black;
+    }
+
+     /**
+     * Nestable
+     */
+    .tree-folder-open {
+        background: none;
+    }
+
+    .fa-user:before {
+        content: "\f007";
+    }
+
+    .tree-folder {
+        background: none;
+    }
+
+    .tree-folder:before {
+        content: "\f007";
+    }
+
+    .tree-file:before {
+        content: "\f007";
+    }
+
+    .tree-file {
+        background: none;
+    }
+
+    .gridbox .gridbox_dhx_skyblue .isModern {
+        height: 370px;
+    }
+
+    div.gridbox {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+     .heading {
+		display: flex;
+		flex-direction: row;
+		align-items: end;
+		justify-content: space-between;
+	}
+
+    .home {
+        background-color: #ffffffff;
+        border-radius: 50px;
+        padding: 2px 15px;
+        color: #1e516e !important;
+        /* margin-right: 15px; */
+        color: white;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: #1e516e 1px solid;
+    }
+
+     /* Button style */
+    .custom-btn {
+        background-color: #fff !important;
+        border: 1px solid #e0e0e0 !important;
+        color: #555 !important;
+        padding: 6px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: inline-flex;       /* Align icon and text */
+        align-items: center;        /* Vertical alignment */
+        gap: 8px;                   /* Space between icon and text */
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+
+    /* Icon color (can be customized per icon) */
+    .custom-btn i {
+        color: #1e516e;             /* Example color: blue */
+        font-size: 16px;
+    }
+
+    /* Hover effect */
+    .custom-btn:hover {
+        background-color: #f0f0f0;
+        border-color: #b0b0b0;
+        transform: translateY(-1px);
+    }
+
+    /* Optional: Active press effect */
+    .custom-btn:active {
+        transform: translateY(0);
+        background-color: #e6e6e6;
+    }
+    .diff-btn {
+    display: inline-flex;        /* Keep same alignment as custom-btn */
+    align-items: center;         /* Vertical alignment */
+    background-color: #1e516e !important; /* New background color */
+    color: #ffffff !important;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    gap: 8px;                    /* Space if text/icon added later */
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.diff-btn:hover {
+    background-color: #163f55 !important; /* Slightly darker on hover */
+    transform: translateY(-1px);
+}
+
+.diff-btn:active {
+    transform: translateY(0);
+    background-color: #0f2a38 !important; /* Darker when pressed */
+}
+.textbox-text{
+    color:black !important;
+}
+
+</style>
+<!--<section class="content-header">
+    <h1 style="text-align:left; font-size: 3em;" class="col-md-6"> Edit Attendance </h1>
+    <div id="tipeditpunches" class="col-md-4 pull-right">
+        <div class="callout callout-success">
+            <h4>Tip!</h4>
+
+            <p>Please Sync Attendances if you have any chnages. <li style="font-size: 30px; " class="fa fa-user pull-right"></li> </p>
+            
+        </div>
+
+    </div>
+</section>-->
+
+<ul class="nav nav-tabs" role="tablist">
+  <li class="active">
+    <a  data-toggle="tab" href="#tab1" role="tab">Edit Attendance</a>
+  </li>
+  <!-- <li>
+    <a  data-toggle="tab" href="#tab2" role="tab">Bulk Attendance</a>
+  </li> -->
+</ul>
+<div class="tab-content" style="margin-top:12px;">
+      <div class="tab-pane fade in active" id="tab1" role="tabpanel">
+<section class="content-header" style="padding-top:0px;">
+    <!-- edited by athira on 03-07-2025 -->
+     <div style="display:flex;justify-content:space-between;align-items:center;">
+    <h1 class=" text-primary-18" style="padding-left:0;">Edit Attendance</h1>
+    <div class="text-primary-16 home" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+        <i class="fa" style="font-size:16px;">&#xf104;</i>
+        Back
+    </div>
+
+</div>
+    <!-- end -->
+
+     <hr style="margin:0px;">
+    <!-- <div class="col-md-12" style="text-align: right;"> -->
+  
+    <!-- <button class="custom-btn" type="button" onclick="syncmem();">
+        <i class="fa fa-refresh"></i> Re-Sync
+    </button>
+    <button class="custom-btn" type="button" onclick="iteratemem();">
+        <i class="fa fa-recycle"></i> Re-iterate
+    </button> -->
+<!-- </div> -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="col-md-12">
+        <br>
+        <form class="form-horizontal" method="post" action="">
+            <div id="tb" class="form-group" style="padding:5px;height:auto">
+
+                <div class="col-md-4">
+                    <label for="month" class="col-md-3 control-label">Employee </label>
+                    <div class="col-md-1 control-label">:</div>
+                    <div class="col-md-8">
+                        <!-- edited by athira on 05-04-2025 -->
+                        <select id="employeeCombo" onchange=" refresheditpunchgrid();" style="width: 200px;">
+                            <!-- end -->
+                            <!-- <option value="">Choose Employee</option> -->
+                            <?php foreach ($arr_employees as $employee) { ?>
+                                <option value="<?php echo $employee->id; ?>" <?php echo (isset($emp_id) && $emp_id == $employee->id) ? 'selected="selected"' : ''; ?>><?php echo $employee->text; ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+
+                    <label for="month" class="col-md-3 control-label">Month </label>
+                    <div class="col-md-1 control-label">:</div>
+                    <div class="col-md-8">
+                        <!-- edited by athira on 05-04-2025 -->
+                        <select id="monthCombo" onchange=" refresheditpunchgrid();" style="width: 250px;">
+                            <!-- end -->
+                            <?php //foreach ($arr_months as $month) { 
+                            ?>
+                            <!--  <option value="<?php echo $month->id; ?>"><?php echo $month->text; ?></option> -->
+                            <?php //} 
+                            ?>
+                            <?php
+                            $start_month = strtotime(date('Y-m', strtotime("+1 month", strtotime(date('Y-m')))));
+                            for ($i = 0; $i < 28; $i++) {
+                                $month = date('Y-m', strtotime("-$i month", $start_month));
+                                if ($month == date('Y-m')) {
+                                    echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                } else {
+                                    echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div id="syncLoader" style="display:none; position:fixed; top:0; left:0; 
+    width:100%; height:100%; background:rgba(0,0,0,0.5); 
+    z-index:9999; text-align:center;">
+    <div style="position:absolute; top:50%; left:50%; 
+        transform:translate(-50%, -50%); color:white;">
+        <i class="fa fa-spinner fa-spin fa-3x"></i>
+        <h4>Syncing Attendance... Please wait</h4>
+    </div>
+</div>
+                <div class="col-md-4" style="align-items: center;display: flex;justify-content: end;margin: -3px 0;padding: 0;">
+                <button class="custom-btn"  type="button" title="If finished missing in/out punches, use Amendments to update attendance" onclick="iteratemem();">
+                    <i class="fa fa-rotate-right"></i> Refresh
+                </button>
+                  <!-- edited by athira on 16-02-2026 -->
+                <!-- <button class="custom-btn" id="bulkSyncBtn"  type="button" title="Resyncing this month attendance as bulk" onclick="syncAttendance();" style="margin-left:2px;">
+                    <i class="fa fa-rotate-right"></i> Bulk Sync
+                </button> -->
+                      <!-- end -->
+                       
+     
+               
+                </div>
+
+            </div>
+        </form>
+
+        <div>
+            <div class="box-body" style="overflow-y:scroll;">
+                <table class="easyui-datagrid" id="editpunches" class="table table-bordered table-hover">
+
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="messageModal" tabindex="-1" style="">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content"  style="width:75%;left:20%;border-radius:5px;">
+      
+      <div class="modal-body">
+        <div class="form-group" style="padding: 25px 25px 0 25px;">
+          <label for="message" class="font-weight-bold">
+            Please provide a valid reason for attendance changes <span class="text-danger">*</span>
+          </label>
+          <input type="text" 
+                 class="form-control" 
+                 placeholder="Enter your reason (max 100 characters)" 
+                 name="message" 
+                 id="message" 
+                 required 
+                 maxlength="100">
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="sendAjaxBtn">Submit</button>
+      </div>
+      
+    </div>
+  </div>
+</div>
+<!-- end -->
+<script type="text/javascript">
+    // edited by athira on 05-04-2025 
+    function refresheditpunchgrid() {
+        //var emp = $('#employeeCombo').combobox("getValue");
+        //var mnth = $('#monthCombo').combobox("getValue");
+        var emp = $('#employeeCombo').val();
+        var mnth = $('#monthCombo').val();
+        //var includeinactive = $('#includeinactive').is(":checked") ? "Y" : "N";
+
+        $('#editpunches').datagrid('load', {
+            emp: emp,
+            month: mnth,
+            //includeinactive: includeinactive
+        })
+    }
+    // end
+
+    //edited by athira on 05-04-2025
+    function updatemem() {
+        var emp = $('#employeeCombo').val();
+        var mnth = $('#monthCombo').val();
+
+        if (emp) {
+            $.ajax({
+                type: "POST",
+                url: livesite + "EmployeeRegister/Updateame",
+                data: {
+                    emp: emp,
+                    month: mnth
+                },
+                success: function(resp) {
+                    $.notify("Attendance Retrieved  successfully.", {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                    refresheditpunchgrid();
+                }
+            });
+        } else {
+            alert("Please Select a Employee");
+        }
+        // $('#editpunches').datagrid('load', {
+        //     emp: emp,
+        //     month: mnth,
+        //     //includeinactive: includeinactive
+        // })
+    }
+    //end
+
+    // function iteratemem() {
+    //     var emp = $('#employeeCombo').val();
+    //     var mnth = $('#monthCombo').val();
+
+    //     if (emp) {
+    //         $.ajax({
+    //             type: "POST",
+    //             url: livesite + "EmployeeRegister/Iterateame",
+    //             data: {
+    //                 emp: emp,
+    //                 month: mnth
+    //             },
+    //             success: function(resp) {
+    //                 $.notify("Attendance updated successfully.", {
+    //                     type: 'success',
+    //                     allow_dismiss: false
+    //                 });
+    //                 refresheditpunchgrid();
+    //             }
+    //         });
+    //     } else {
+    //         alert("Please Select a Employee");
+    //     }
+    // }
+
+
+
+    function iteratemem() {
+    var emp = $('#employeeCombo').val();
+    var mnth = $('#monthCombo').val();
+
+    if (!emp) {
+        alert("Please select an Employee");
+        return;
+    }
+
+    // ✅ Confirmation popup before proceeding
+    if (confirm("Refreshing will reload the original attendance data from the system.\nAny manual changes you made will be lost.\n\nDo you want to continue?")) {
+        $.ajax({
+            type: "POST",
+            url: livesite + "EmployeeRegister/Iterateame",
+            data: {
+                emp: emp,
+                month: mnth
+            },
+            success: function(resp) {
+                $.notify("Attendance updated successfully.", {
+                    type: 'success',
+                    allow_dismiss: false
+                });
+                refresheditpunchgrid();
+            },
+            error: function() {
+                $.notify("Error updating attendance. Please try again.", {
+                    type: 'danger',
+                    allow_dismiss: false
+                });
+            }
+        });
+    } else {
+        // Optional: notify or log cancellation
+        console.log("❌ User canceled attendance update.");
+    }
+}
+
+
+    function syncemem() {
+        var emp = $('#employeeCombo').val();
+        var mnth = $('#monthCombo').val();
+
+        if (emp) {
+            $.ajax({
+                type: "POST",
+                url: livesite + "EmployeeRegister/Syncame",
+                data: {
+                    emp: emp,
+                    month: mnth
+                },
+                success: function(resp) {
+                    $.notify("Attendance updated successfully.", {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                    refresheditpunchgrid();
+                }
+            });
+        } else {
+            alert("Please Select a Employee");
+        }
+    }
+
+    /*function submitForm() {
+     $('#editpunchform').form('submit', {
+     onSubmit: function () {
+     return $(this).form('enableValidation').form('validate');
+     },
+     success: function (data) {
+     clearForm();
+     refreshgrid();
+     //$('#w').window('close')
+     //$.messager.show('Success', "New Attandence Saved Successfully", 'info');
+     $.notify("New Attandence Saved Successfully",{
+     type: 'success',
+     allow_dismiss: false
+     });
+     }
+     });
+     }
+     function clearForm() {
+     $('#empid').val("")
+     $('#editpunchform').form('clear');
+     
+     }*/
+</script>
+<script>
+    $(document).ready(function() {
+
+        $('#tipeditpunches').fadeOut(10000);
+
+        // $('#monthCombo').val((new Date().getFullYear()) + '-' + (new Date().getMonth() + 1));
+
+        $("#monthCombo").select2({
+            //placeholder: "Choose Month"
+        });
+        $("#employeeCombo").select2({
+            // placeholder: "Choose Employee"
+        });
+
+        /*$('#btn-new').linkbutton({
+         iconCls: 'icon-add'
+         });*/
+
+        /*$('#monthCombo').combobox({
+         mode: 'remote',
+         url: livesite + 'EmployeeRegister/getmonths',
+         panelHeight: 'auto',
+         onSelect: function (record) {
+         var emp = $('#employeeCombo').combobox("getValue");
+         var includeinactive = $('#includeinactive').is(":checked") ? "Y" : "N";
+         $('#editpunches').datagrid('load', {
+         emp: emp,
+         month: record.id,
+         includeinactive: includeinactive
+         })
+         },
+         valueField: 'id',
+         textField: 'text'
+         });
+         $('#monthCombo').combobox('setValue', (new Date().getFullYear()) + '-' + (new Date().getMonth() + 1));
+         
+         $('#employeeCombo').combobox({
+         url: 'ApiRequest/listemployees',
+         panelHeight: 'auto',
+         onSelect: function (record) {
+         //console.log(record)
+         var mnth = $('#monthCombo').combobox("getValue");
+         var includeinactive = $('#includeinactive').is(":checked") ? "Y" : "N";
+         $('#editpunches').datagrid('load', {
+         emp: record.id,
+         month: mnth,
+         includeinactive: includeinactive
+         })
+         },
+         valueField: 'id',
+         textField: 'text'
+         });*/
+
+        $('#editpunches').datagrid({
+            queryParams: {
+                emp: $('#employeeCombo').val(),
+                month: $('#monthCombo').val(),
+            },
+            height: '600px',
+            url: livesite + "EmployeeRegister/listpunches",
+            pagination: true,
+            singleSelect: true,
+            iconCls: 'icon-edit',
+            pageSize: 32,
+            fitColumns: true,
+            onLoadSuccess: function (data) {
+    
+        if (data.type === 'error') {
+            $.notify(data.message, {
+                type: 'danger',  // Bootstrap notify expects 'danger' for red
+                allow_dismiss: true
+            });
+            return; // stop further success notify
+        }
+
+    // Success message
+    else if (data.type === 'success') {
+        $.notify(data.message, {
+            type: 'success',
+            allow_dismiss: true
+        });
+    }
+},
+
+        //     onLoadSuccess: function(data) { 
+        //         console.log(data.type,'hi');
+        //         if (data.type === 'error') {
+                     
+        //     $.notify(data.message, {
+        //                 type: data.type,
+        //                 allow_dismiss: false
+        //             });
+        // }
+                           
+        //         // $(this).off('onLoadSuccess').on('onLoadSuccess', function() {
+        //             $.notify(data.message, {
+        //                 type: data.type,
+        //                 allow_dismiss: false
+        //             });
+        //         // });
+        //     },
+            pageList: [2, 5, 10, 20, 32, 50, 100],
+            rowStyler: function(index, row) {
+                // console.log(row);
+                var style = "";
+                if (row.status == 'N') {
+                    style += 'background-color:rgba(214, 110, 13, 0.92);color:#FFFFFF';
+                } else {
+
+
+                    if (row.C1 == 'out') {
+                        style += 'background-color:#A9F5A9;';
+                    } else if (row.C1 == 'in') {
+                        style += 'background-color:#FAAC58;';
+                    }
+                }
+                return style;
+            },
+            columns: [
+                [
+                              {
+            field: 'sl_no',
+            title: 'Sl No',
+            width: "3%",
+            align: 'center',
+            formatter: function(value, row, index) {
+                var options = $('#editpunches').datagrid('getPager').data("pagination").options;
+                return ((options.pageNumber - 1) * options.pageSize) + index + 1;
+            }
+        },
+
+                    {
+                        field: 'att_date',
+                        title: 'Log Date',
+                        width: "20%"
+                    },
+                    {
+                        field: 'shift_name',
+                        title: 'Shift',
+                        width: "30%",
+                    },
+                    //edited by athira on 14-07-2025
+                    // {
+                    //     field: 'att_in_time',
+                    //     title: 'Start',
+                    //     width: "20%"
+                    // },
+                    // {
+                    //     field: 'att_out_time',
+                    //     title: 'End',
+                    //     width: "20%",
+                    // },
+                    //end
+                    {
+                        field: 'duration',
+                        title: 'Duration',
+                        width: "17%",
+                    },
+                    {
+                        field: 'status',
+                        title: 'Status',
+                        width: "15%",
+                        // formatter: function(value, row, index) {
+                        //     console.log(value,'hi');
+                        //     // if(row.leave_date === row.att_date){
+
+                        //     // var e = "<div style=\"background-color: "+row.status_color+"; float: left; width: 100%; padding: 14% 0;\">"+value+"</div>";
+                        //     var e = "<strong style=\"color: " + row.status_color + ";\">" + row.leaves + "" + '  ' + "" + value + " </strong>";
+                        //     // alert(e);
+                        //     // }
+                        //     //               else{
+                        //     // var e = "<strong style=\"color: "+row.status_color+";\">"+value+"</strong>";
+                        //     //               }
+                        //     return e;
+                        //     // alert(e);
+                        // }
+
+                        formatter: function(value, row, index) {
+                        var leavesText = row.leaves || "";   // if null, make it empty
+                        var statusText = value || "";        // if null or "", make it empty
+                        var e = "<strong style='color:" + row.status_color + ";'>" + leavesText + " " + statusText + "</strong>";
+                        return e;
+                    }
+
+                    },
+                    {
+                        field: 'action',
+                        title: 'In/Out',
+                        width: "16%",
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            // if (row.joining_date <= row.att_date) {
+
+                                //var e = '<a href="#" onclick="showEditOnPopup(\'' + row.att_date + '\',\'' + row.emp_id + '\',\'' + row.att_in_time + '\',\'' + row.att_out_time + '\');">Edit</a> ';
+                                var e = '<a href="#" onclick="showEditOnPopup(\'' + window.btoa(JSON.stringify(row)) + '\');">View</a> ';
+                                return e;
+                            // }
+                            return "";
+                        }
+                    }
+                ]
+            ],
+            //Ends
+        });
+
+    });
+
+    //New List actions
+    function showEditOnPopup(str_row) {
+        var site_transactions_fkey = '';
+        var row = JSON.parse(window.atob(str_row));
+        extract(row, this);
+        if (att_date && emp_id) {
+            
+            //Add form
+            //        IF(!site_transactions_fkey){
+            //                site_transactions_fkey = 0;
+            //            }
+            showModalForm(livesite + 'EmployeeRegister/editpunch/' + att_date + '/' + emp_id + '/' + site_transactions_fkey + '/' + encodeURI(att_in_time) + '/' + encodeURI(att_out_time));
+            setTimeout(() => {
+            
+                 refreshgrid();
+            }, 500);
+           
+        } else {
+            alert("Please select a record!")
+        }
+    }
+
+    function extract(data, where) {
+        for (var key in data) {
+            where[key] = data[key];
+        }
+    }
+    //Ends
+
+    function Backto() {
+        $("#container").isLoading({
+            text: "Loading",
+            position: "overlay",
+        });
+
+        $("#container").load(livesite + "AttendanceSetup/index", function() {
+            isDashboardShown = false;
+        });
+    }
+
+    //edited by athira on 14-10-2025
+    
+     function toggleCheckbox(element) {
+        //element.checked = !element.checked;
+        var inputValue = $(this).attr("value");
+        $("#time").toggle();
+    }
+    var monthChoosen = $('#filterby_month').val();
+
+    // jQuery(document).ready(function($) {
+
+        // $('.tabset0').pwstabs({
+        //     effect: 'scale', // You can change effects of your tabs container: scale / slideleft / slideright / slidetop / slidedown / none
+        //     defaultTab: 1, // The tab we want to be opened by default
+        //     containerWidth: '100%', // Set custom container width if not set then 100% is used
+        //     tabsPosition: 'horizontal', // Tabs position: horizontal / vertical
+        //     horizontalPosition: 'top', // Tabs horizontal position: top / bottom
+        //     verticalPosition: 'left', // Tabs vertical position: left / right
+        //     responsive: true, // Make tabs container responsive: true / false - boolean
+        //     theme: '',
+        //     rtl: false // Right to left support: true/ false
+        // });
+
+
+
+    // });
+
+   //edited by athira on 16-02-2026
+//     function syncAttendance() {
+//     var emp  = $('#employeeCombo').val();
+//     var mnth = $('#monthCombo').val();
+
+//     // if (!emp) {
+//     //     alert("Please select an Employee");
+//     //     return;
+//     // }
+
+//     // ✅ Confirmation popup before syncing
+//     if (confirm(
+//         "Syncing attendance will update the data from the bio server.\n" +
+//         "Any manual corrections may be overwritten.\n\n" +
+//         "Do you want to continue?"
+//     )) {
+//         $.ajax({
+//             type: "POST",
+//             url: livesite + "EmployeeRegister/SyncAttendance",
+//             data: {
+//                 emp: emp,
+//                 month: mnth
+//             },
+//             success: function (resp) {
+//                 $.notify("Attendance synced successfully.", {
+//                     type: 'success',
+//                     allow_dismiss: false
+//                 });
+//                 refresheditpunchgrid();
+//             },
+//             error: function () {
+//                 $.notify("Error syncing attendance. Please try again.", {
+//                     type: 'danger',
+//                     allow_dismiss: false
+//                 });
+//             }
+//         });
+//     } else {
+//         console.log("❌ User canceled attendance sync.");
+//     }
+// }
+ function syncAttendance() {
+
+   
+
+
+    if (!confirm("Syncing attendance will update data from bio server.\nManual corrections may be overwritten.\n\nDo you want to continue?")) {
+        return;
+    }
+
+    $('#syncLoader').fadeIn(200);
+    $('#bulkSyncBtn').prop('disabled', true);
+
+    setTimeout(function () {
+
+        $.ajax({
+            type: "POST",
+            url: livesite + "EmployeeRegister/SyncAttendance",
+            
+
+            success: function (response) {
+
+                try {
+                    var response = $.parseJSON(response);
+
+                    if (response.status == 200) {
+
+                        $.notify(response.message, {
+                            type: 'success',
+                            allow_dismiss: false
+                        });
+
+                        refresheditpunchgrid();
+
+                    } else {
+
+                        $.notify(response.message, {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                    }
+
+                } catch (e) {
+                    $.notify("Invalid server response.", {
+                        type: 'danger'
+                    });
+                }
+
+                $('#syncLoader').fadeOut(200);
+                $('#bulkSyncBtn').prop('disabled', false);
+            },
+
+            error: function () {
+
+                $.notify("Error syncing attendance. Please try again.", {
+                    type: 'danger',
+                    allow_dismiss: false
+                });
+
+                $('#syncLoader').fadeOut(200);
+                $('#bulkSyncBtn').prop('disabled', false);
+            }
+
+        });
+
+    }, 100);
+}
+//end
+
+
+   $(".home").off("click").on("click", function (e) {
+    e.preventDefault();
+
+    $("#container").isLoading({
+        text: "Loading",
+        position: "overlay",
+    });
+
+    let url = "";
+    var userGroup = <?php echo json_encode($this->Session->read('user_group')); ?>;
+
+    if (userGroup == "1") {
+        url = livesite + "AttendanceSetup/index";
+    } 
+    else if (userGroup == "2") {
+        let menuType = sessionStorage.getItem('menu_type') || 'standard';
+        // console.log(menuType,'hello');
+        if (menuType === 'addon') {
+            url = livesite + "EmployeeMenu/addon";
+        } else {
+            url = livesite + "EmployeeMenu/index";
+        }
+}
+
+    $("#container").load(url, function () {
+        isDashboardShown = false;
+    });
+
+});
+
+	/* edited by bindu 20-02-26 */
+</script>

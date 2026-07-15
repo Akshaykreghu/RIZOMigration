@@ -1,0 +1,250 @@
+<style>
+	#leavepolicygrouptable_wrapper .DTTT.btn-group, #leavepolicytable_wrapper .DTTT.btn-group {
+		padding-left: 5px;
+	}
+
+</style>
+<section class="content-header">
+	<h1> Leave Policy </h1>
+
+</section>
+<section class="content">
+	<div class="row">
+		<div class="col-md-4">
+			<div class="box box-solid">
+				<div class="box-header with-border">
+					<h3 class="box-title">Leave Policy Group</h3>
+					<div class="box-tools"></div>
+				</div>
+				<div class="box-body no-padding">
+
+					<table id="leavepolicygrouptable" class="table table-hover table-striped" cellspacing="0" width="100%">
+						<thead>
+							<tr>
+								<th>Name</th>
+
+							</tr>
+						</thead>
+					</table>
+				</div><!-- /.box-body -->
+			</div><!-- /. box -->
+
+		</div><!-- /.col -->
+		<div class="col-md-8">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h3 class="box-title">Leave Policies</h3>
+					<div class="box-tools pull-right">
+						<!--
+						<div class="has-feedback">
+						<input type="text" class="form-control input-sm" placeholder="Search Mail" />
+						<span class="glyphicon glyphicon-search form-control-feedback"></span>
+						</div>-->
+
+					</div><!-- /.box-tools -->
+				</div><!-- /.box-header -->
+				<div class="box-body no-padding">
+					<table id="leavepolicytable"  class="table table-hover table-striped">
+						
+					</table><!-- /.table -->
+					<!--
+					<div class="table-responsive mailbox-messages">
+
+					</div>-->
+					<!-- /.mail-box-messages -->
+				</div><!-- /.box-body -->
+
+			</div><!-- /. box -->
+		</div><!-- /.col -->
+	</div><!-- /.row -->
+</section><!-- /.content -->
+
+<script>
+		jQuery(document).ready(function() {
+	$('#leavepolicygrouptable').datagrid({
+				url:livesite+'LeavePolicy/listpolicygroup',
+				pagination:true,
+				singleSelect:true,
+				onLoadSuccess:function(){
+					$('#leavepolicygrouptable').datagrid("selectRow",0)
+				},
+				onSelect:function(index,row){
+								var id = row.LEAVEPOLICY_GROUP_ID;
+								$('#leavepolicytable').datagrid('load',{
+								group:id
+								});
+				},
+				toolbar: [{
+				text:'New',
+				iconCls:'icon-add',
+				handler: function(){
+			
+				showModalForm(livesite+'LeavePolicy/groupform')
+				}
+				},{
+				iconCls: 'icon-edit',
+				text:'Edit',
+				handler: function(){
+				var row = $('#leavepolicygrouptable').datagrid('getSelected');
+				if (row){
+			
+				showModalForm(livesite+'LeavePolicy/groupform?id=' + row.LEAVEPOLICY_GROUP_ID)
+			
+				}else{
+				alert("Please select a record to edit")
+				}
+				}
+				},'-',{
+				iconCls: 'icon-remove',
+				text:'Remove',
+				handler: function(){
+			
+				var row = $('#leavepolicygrouptable').datagrid('getSelected');
+			
+				if (row){
+			
+				if (confirm("Are you sure want to delete ")) {
+				var str_ids = row.LEAVEPOLICY_GROUP_ID;
+			
+				$.ajax({
+				url : livesite+"LeavePolicy/deletegroup",
+				data : {
+				ids : str_ids
+				},
+				success : function(response) {
+				var response =  $.parseJSON(response);
+													if(response.success == 1){
+															$.notify(response.msg,{
+																	type: 'success',
+																	allow_dismiss: true
+																															
+																});
+													}
+                                                                                                        else
+                                                                                                            {
+                                                                                                               $.notify(response.msg,{
+																	type: 'danger',
+																	allow_dismiss: true
+																															
+																}); 
+                                                                                                            }
+				reloadTable('leavepolicygrouptable')
+				}
+				});
+			
+				}
+			
+				}
+			
+				}
+				}],
+				fitColumns:true,
+				pageList:[2,5,10,50,100],
+				columns:[[
+				{field:'LEAVEPOLICY_GROUP_NAME',title:'Name',width:"100%",sortable:true},
+				]]
+				});
+				
+				
+				
+	$('#leavepolicytable').datagrid({
+					url:livesite+'LeavePolicy/listpolicies',
+					pagination:true,
+
+					/*
+					onSelect:function(index,row){
+					var id = row.LEAVEPOLICY_GROUP_ID;
+					$('#leavepolicytable').DataTable().ajax.url('LeavePolicy/listpolicies?group=' + id).load();
+					},*/
+
+					toolbar: [{
+							text:'New',
+							iconCls:'icon-add',
+							handler: function(){
+								var row = $('#leavepolicygrouptable').datagrid('getSelected');
+								
+				
+							if (row) {
+								
+							var group = row.LEAVEPOLICY_GROUP_ID;
+									showSmallModalForm(livesite+'LeavePolicy/form?LEAVEPOLICY_GROUP_ID='+group);
+							}
+							else{
+									alert("Please select a group")
+							}
+						
+							}
+						},{
+							iconCls: 'icon-edit',
+							text:'Edit',
+							handler: function(){
+							var grouprow = $('#leavepolicygrouptable').datagrid('getSelected');
+							var rows = $('#leavepolicytable').datagrid('getSelections');
+							var row = $('#leavepolicytable').datagrid('getSelected');
+							console.log(rows);
+							console.log(row);
+							
+							if (grouprow && row ) {
+														// Show the salary submit form
+														var group = grouprow.LEAVEPOLICY_GROUP_ID
+														showSmallModalForm(livesite+'LeavePolicy/form?LEAVEPOLICYID=' + row.LEAVEPOLICYID+'&LEAVEPOLICY_GROUP_ID='+group)
+														}
+							
+						
+							}
+					},'-',{
+						iconCls: 'icon-remove',
+						text:'Remove',
+						handler: function(){
+					
+								var rows = $('#leavepolicytable').datagrid('getSelections');
+								if (rows){
+													 var str_ids = "";
+                    	 for(var i=0;i<rows.length;i++){
+                    	 	var data = rows[i];
+									 if(str_ids == ""){
+										 str_ids += data.LEAVEPOLICYID;
+									 }else
+									 {
+										 str_ids += ","+data.LEAVEPOLICYID;
+									 }
+                    	 }
+											if (confirm("Are you sure want to delete ")) {
+												
+													$.ajax({
+													url : livesite+"LeavePolicy/deletegroup",
+													data : {
+													ids : str_ids
+													},
+													success : function(response) {
+													var response =  $.parseJSON(response);
+													if(response.msg){
+															$.notify(response.msg,{
+																	type: 'success',
+																	allow_dismiss: true
+																															
+																});
+													}
+															reloadTable('leavepolicygrouptable')
+														}
+													});
+										
+											}
+							
+								}
+					
+						}
+	}],
+	fitColumns:true,
+	pageList:[2,5,10,50,100],
+	columns:[[
+
+			{field:'item',title:'Leave Type',width:"25%",sortable:true},
+			{field:'item',title:'Code',width:"25%",sortable:true},
+			{field:'CARRY_FORWARD_LIMIT',title:'Carry Forward',width:"25%",sortable:true},
+			{field:'alloted_leave_forthe_year',title:'Year',width:"25%",sortable:true}
+	]]
+	})
+
+
+	});</script>

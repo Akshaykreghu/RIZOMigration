@@ -1,0 +1,88 @@
+<style>
+    .form-horizontal .control-label {
+        text-align: left;
+        /*padding-left: 76px;*/
+    }
+</style>
+<div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header" style="background: #00659f;color: white">
+            <h4 class="modal-title">Bank</h4>  
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal" id="bankForm" action="<?php echo $this->webroot; ?>Bank/savebank" method="post" >
+                <div class="modal-body">
+
+                    <!-- Text input-->
+                    <input id="id" name="id" type="hidden"  value="<?php echo $data["id"]; ?>" >
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="bank_name">Bank Name<span class="star">*</span></label>  
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <input id="bank_name" name="bank_name"  value="<?php echo $data["bank_name"]; ?>" type="text" placeholder="Bank Name" class="form-control input-md" required="">
+
+                        </div>
+                    </div>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="bank_branch">Branch<span class="star">*</span></label>  
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <input id="bank_branch" name="bank_branch"  value="<?php echo $data["bank_branch"]; ?>" type="text" placeholder="Branch" class="form-control input-md" required="">
+
+                        </div>
+                    </div>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="ifsc_code">IFSC Code<span class="star">*</span></label>  
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <input id="ifsc_code" name="ifsc_code"  value="<?php echo $data["ifsc_code"]; ?>" type="text" placeholder="IFSC Code" class="form-control input-md" required="">
+
+                        </div>
+                    </div>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="acct_no">Acc. No<span class="star">*</span></label>  
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">
+                            <input id="acct_no" name="acct_no"  value="<?php echo $data["acct_no"]; ?>" type="text" placeholder="Acc. No" class="form-control input-md" required="">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#bankForm').parsley();
+        var options = {
+            success: function (responseText, statusText, xhr, $form) {
+                closeModal('banktable');
+            }
+        };
+
+        // bind to the form's submit event 
+        $('#bankForm').submit(function () {
+            // inside event callbacks 'this' is the DOM element so we first 
+            // wrap it in a jQuery object and then invoke ajaxSubmit 
+            $(this).ajaxSubmit(options);
+
+            // !!! Important !!! 
+            // always return false to prevent standard browser submit and page navigation 
+            return false;
+        });
+    });
+</script>

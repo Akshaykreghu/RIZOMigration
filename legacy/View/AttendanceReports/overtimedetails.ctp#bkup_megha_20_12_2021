@@ -1,0 +1,161 @@
+<?php if ($mode == '') { ?>
+    <div class="modal-body" style="overflow-y: auto;">
+        <legend style="text-align:center; font-weight: bold;">Employee Over Time Attendance Report - <?php echo $date; ?></legend>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box ">
+                    <?php if (count($arr_leavepolicydetails_for_template)> 0) { ?>
+                    <?php
+                    foreach($arr_leavepolicydetails_for_template as $val)
+                    {
+                        if(count($val['summary'])>0)
+                        {
+                    $i = 0;
+                    
+                        $i += 1;
+                        ?>
+                        <div class="box-body">
+                            
+                            <br>
+                            <fieldset>
+<div class="row">
+                                    <div class="col-md-6">
+                                          <legend><?php echo $val['summary']['0']['Info']['EmpName']; ?> </legend>
+                                    </div>
+<div class="col-md-6">
+                                          <legend>Branch :<?php echo $val['summary']['0']['Info']['branch']; ?> </legend>
+                                    </div>
+                                </div>
+<div class="modal-body">
+  
+     
+<?php
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+$total = 0;
+     
+?>
+    <table class="table table-bordered table-responsive" cellspacing="0" border="0">
+     <tr><th></th>
+     
+     <?php
+         foreach($val['summary'] as $value)
+            {  
+             ?>
+           <td <?php if ($value['emp_ot_timeattandance']['weekoff']) { ?> style="color:black ;font-weight:bold ;  " <?php }; ?> 
+               <?php if ($value['emp_ot_timeattandance']['holiday']) { ?> style="color:black ;font-weight:bold ;  " <?php }; ?> 
+                   <?php if ($value['emp_ot_timeattandance']['present'] == 'A/A') { ?> style="font-weight:bold ;  " <?php }; ?>
+                       <?php if ($value['emp_ot_timeattandance']['present'] == '') { ?> style="font-weight:bold ;  " <?php }; ?>
+                           <?php if ($value['emp_ot_timeattandance']['present'] == 'P/P') { ?> style="font-weight:bold ;  " <?php }; ?>
+                               <?php if ($value['emp_ot_timeattandance']['present'] == 'P/A') { ?> style="font-weight:bold ;  " <?php }; ?>
+                                   <?php if ($value['emp_ot_timeattandance']['present'] == 'A/P') { ?> <?php }; ?> >
+               <?php
+           echo date('d',strtotime($value['emp_ot_timeattandance']['att_date']));
+           ?>
+           </th>
+           <?php
+            }
+     ?>
+            </tr>
+            
+<!--     <th></th>-->
+     <tr>
+     <td style='width:110px !important;'>Att In:</td>
+            <?php
+              foreach($val['summary'] as $value)
+            {  
+           ?>
+     <td><?php echo $value['emp_ot_timeattandance']['att_in_time']; ?></td>
+   
+           <?php
+            }
+            ?>
+           </tr>
+           <tr>
+     <td style='width:110px !important;'>Att Out:</td>
+            <?php
+              foreach($val['summary'] as $value)
+            {  
+           ?>
+     <td><?php echo $value['emp_ot_timeattandance']['att_out_time']; ?></td>
+   
+           <?php
+            }
+            ?>
+           </tr>
+           <?php
+           
+           //ot attendance
+           
+            echo  '<tr>';
+        echo "<td>Min before on duty ot:</td>";
+              foreach($val['summary'] as $val3)
+            {  
+           echo '<td>';
+          echo $val3['emp_ot_timeattandance']['min_bfr_on_dutty_cal_ot'];
+           echo '</td>';
+            }
+           echo '</tr>';
+ echo  '<tr>';
+        echo "<td>Min after off duty OT:</td>";
+              foreach($val['summary'] as $val4)
+            {  
+           echo '<td>';
+          echo $val4['emp_ot_timeattandance']['min_aftr_off_dutty_cal_ot'];
+           echo '</td>';
+            }
+           echo '</tr>';
+ echo  '<tr>';
+        echo "<td>OT Duration:</td>";
+              foreach($val['summary'] as $val6)
+            { 
+                  $total = $total + $val6['emp_ot_timeattandance']['ot_duration'];
+           echo '<td>';
+          echo $val6['emp_ot_timeattandance']['ot_duration'];
+           echo '</td>';
+            }
+           echo '</tr>';
+		   echo  '<tr>';
+        echo "<td>OT Duration Hrs:</td>";
+              foreach($val['summary'] as $val6)
+            { 
+                  
+           echo '<td>';
+          echo isset($val6['emp_ot_timeattandance']['ot_duration'])?round(($val6['emp_ot_timeattandance']['ot_duration'] / 60),2):'';
+           echo '</td>';
+            }
+           echo '</tr>';
+           echo '<tr>';
+           echo '<td>Total OT Duration</td>';
+           echo '<td colspan="30">';
+           echo $total .' Min  -     '.round(($total / 60),2).' Hrs.';
+           echo '</td>';
+           echo '</tr>';
+		   echo '</tr>';
+           echo "</table>";
+           ?>
+         
+</div>
+
+  </fieldset>
+                            <br>
+                           
+                        </div>
+     <!-- /.box-body -->
+<?php
+                        }
+                        
+                    }
+                    } else { ?><div style="text-align:center; font-weight: bold;"><legend>No data found</legend></div>   
+                                        <?php } ?>
+                </div>
+            </div>
+        </div>  
+    </div>
+    </div><!-- comment -->
+    </div>
+<?php } ?>

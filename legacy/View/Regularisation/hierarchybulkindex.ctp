@@ -1,0 +1,502 @@
+<style>
+    #editpunchform table tr td {
+        padding: 5px;
+        width: 100%;
+    }
+
+    .form-horizontal .control-label {
+
+        text-align: left;
+        padding-left: 2px;
+    }
+</style>
+
+<section class="content-header">
+    <h1 class="col-md-12" style="font-size: 30px;">Attendance Regularisation</h1>
+    <!-- <div class="col-md-8" align="right">
+        <button title="if you are finished missing in/out punches of the employee then you should use the Amendments button then only it will effect in attendance records" class="btn btn-primary pull-right" type="button" onclick="updatemem();">Refresh </button>
+    </div> -->
+
+    <hr style="margin-top: 38px;margin-bottom: -2px;">
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="col-md-12">
+        <br>
+        <form class="form-horizontal" method="post" action="">
+            <!-- <div id="tb" class="row" style="padding:5px;height:auto"> -->
+
+            <div class="form-group">
+                <div class="col-md-6">
+
+                    <label for="monthCombo" class="col-md-3 control-label">Month </label>
+                    <div class="col-md-1 control-label">:</div>
+                    <div class="col-md-8">
+                        <select id="monthCombo" onchange="refresheditpunchgrid();" style="width: 250px;">
+                            <?php
+                            $start_month = strtotime(date('Y-m', strtotime("+1 month", strtotime(date('Y-m')))));
+                            for ($i = 0; $i < 24; $i++) {
+                                $month = date('Y-m', strtotime("-$i month", $start_month));
+                                if ($month == date('Y-m')) {
+                                    echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                } else {
+                                    echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+                <?php
+                if ($branches && count($branches)) {
+                    // debug($branches);
+                ?>
+                    <div class="col-md-6">
+                        <label for="empBranch" class="col-md-3 control-label">Branch </label>
+                        <div class="col-md-1 control-label">:</div>
+                        <div class="col-md-8">
+                            <select id="empBranch" onchange="refresheditpunchgrid();" style="width: 250px;">
+                                <option value="0">All</option>
+                                <?php foreach ($branches as $branch) { ?>
+                                    <option value="<?php echo $branch['branches']['branch_code']; ?>"><?php echo $branch['branches']['branch_name']; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                <?php
+                }
+                ?>
+            </div>
+
+            <div class="form-group">
+                <?php
+                if ($arr_employees && count($arr_employees)) {
+                ?>
+                    <div class="col-md-6">
+                        <label for="employeeCombo" class="col-md-3 control-label">Employee </label>
+                        <div class="col-md-1 control-label">:</div>
+                        <div class="col-md-8">
+                            <select id="employeeCombo" onchange="refresheditpunchgrid();" style="width: 250px;">
+                                <option value="0">All</option>
+                                <?php foreach ($arr_employees as $employee) { ?>
+                                    <option value="<?php echo $employee->id; ?>" <?php echo (isset($emp_id) && $emp_id == $employee->id) ? 'selected="selected"' : ''; ?>><?php echo $employee->text; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                <?php
+                }
+                ?>
+
+                <div class="col-md-6">
+
+                    <label for="regStatus" class="col-md-3 control-label">Status </label>
+                    <div class="col-md-1 control-label">:</div>
+                    <div class="col-md-8">
+                        <select id="regStatus" onchange="refresheditpunchgrid();" style="width: 250px;">
+                            <option value="0">All</option>
+                            <option value="A">Approved</option>
+                            <option value="P" selected>Pending</option>
+                            <option value="R">Rejected</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- </div> -->
+        </form>
+
+        <div>
+            <div class="box-body">
+
+                <div class="row">
+                    <!-- <div class="col-md-12" style="padding-bottom: 10px;">
+                        <input type="button" onclick="bulkApprove()" id="bulkApproveButton" class="btn btn-primary pull-right" value="Update in Bulk Approve">
+                    </div> -->
+                    <div class="col-md-12">
+                        <table class="easyui-datagrid" id="regularisation" class="table table-bordered table-hover">
+
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    function refresheditpunchgrid() {
+        var emp = $('#employeeCombo').val();
+        var mnth = $('#monthCombo').val();
+        var empBranch = $('#empBranch').val();
+        var regStatus = $('#regStatus').val();
+
+
+
+        $('#regularisation').datagrid('load', {
+            emp: emp,
+            month: mnth,
+            empBranch: empBranch,
+            regStatus: regStatus,
+            //includeinactive: includeinactive
+        });
+    }
+</script>
+<script>
+    function updatemem() {
+        var emp = $('#employeeCombo').val();
+        var mnth = $('#monthCombo').val();
+        // var empBranch = $('#empBranch').val();
+        // var regStatus = $('#regStatus').val();
+
+        if (emp) {
+            $.ajax({
+                type: "POST",
+                url: livesite + "Regularisation/Updateame",
+                data: {
+                    emp: emp,
+                    month: mnth,
+                    // empBranch: empBranch,
+                    // regStatus: regStatus,
+                },
+                success: function(resp) {
+                    // $.notify("Attandence Updates successfully", {
+                    //     type: 'success',
+                    //     allow_dismiss: false
+                    // });
+                    refresheditpunchgrid();
+                }
+            });
+        } else {
+            alert("Please Select a Employee");
+        }
+    }
+</script>
+<script>
+    $(document).ready(function() {
+
+        $("#monthCombo").select2({
+            //placeholder: "Choose Month"
+        });
+        $("#employeeCombo").select2({
+            placeholder: "Choose Employee"
+        });
+
+        $("#regStatus").select2({
+            placeholder: "Select Status"
+        });
+        $("#empBranch").select2({
+            placeholder: "Choose Branch"
+        });
+
+        $('#regularisation').datagrid({
+            queryParams: {
+                emp: '<?php echo isset($emp_id) ? $emp_id : '0'; ?>',
+                month: $('#monthCombo').val(),
+                empBranch: $('#empBranch').val(),
+                regStatus: $('#regStatus').val(),
+            },
+            height: '444px',
+            url: livesite + "Regularisation/listhierarchyregularization",
+            pagination: true,
+            singleSelect: false,
+            iconCls: 'icon-edit',
+            pageSize: 10,
+            onLoadSuccess: function(data) {
+                $.notify(data.message, {
+                    type: data.type,
+                    allow_dismiss: false
+                });
+            },
+            onBeforeSelect: function(index, row) {
+                if (row.approved != 'P') {
+                    return false;
+                }
+            },
+            onClickRow: function(index, row) {
+                console.log("Second row click");
+                if ($("#select_" + row.id).prop('checked')) {
+                    $("#select_" + row.id).prop('checked', false);
+                } else {
+                    $("#select_" + row.id).prop('checked', true);
+                }
+            },
+            toolbar: [{
+                    text: 'Details',
+                    iconCls: 'icon-remove',
+                    handler: function() {
+                        var rows = $('input[name="selectRegIds[]"]:checked').serialize();
+                        if (!rows) {
+                            alert("Select Any Record To Update");
+                            return;
+                        }
+                        var params = rows;
+                        if (rows) {
+                            showModalForm(livesite + 'Regularisation/bulkhierarchyapprove?' + params);
+                        }
+                    }
+                }, '-',
+                {
+                    iconCls: 'icon-remove',
+                    id: "icon-approve",
+                    text: 'Approve',
+                    handler: function() {
+
+                        var rows = $('input[name="selectRegIds[]"]:checked').serializeArray();
+                        if (rows.length === 0) {
+                            alert("Select Any Record To Update");
+                            return;
+                        }
+
+                        var str_ids = [];
+                        for (var i = 0; i < rows.length; i++) {
+                            str_ids.push(rows[i].value);
+                        }
+
+                        if (confirm("Are you sure want to approve selected regularisation(s)? ")) {
+                            // reloadTable('leave_table');
+                            $.ajax({
+                                type: 'POST',
+                                url: livesite + "Regularisation/bulkupdate/",
+                                data: {
+                                    id: str_ids,
+                                    approved: 'A',
+                                    remarks: 'Approved'
+                                },
+                                success: function(response) {
+                                    var response = $.parseJSON(response);
+                                    if (response.success) {
+                                        $.notify('Attandence Approved Successfully', {
+                                            type: 'success',
+                                            allow_dismiss: true
+                                        });
+                                    } else {
+                                        $.notify(response.msg, {
+                                            type: 'danger',
+                                            allow_dismiss: true
+                                        });
+                                    }
+                                    refresheditpunchgrid();
+                                }
+                            });
+                        }
+                    }
+                }, '-', {
+                    iconCls: 'icon-remove',
+                    text: 'Reject',
+                    handler: function() {
+
+                        var rows = $('input[name="selectRegIds[]"]:checked').serializeArray();
+                        if (rows.length === 0) {
+                            alert("Select Any Record To Update");
+                            return;
+                        }
+
+                        var str_ids = [];
+                        for (var i = 0; i < rows.length; i++) {
+                            str_ids.push(rows[i].value);
+                        }
+
+                        if (confirm("Are you sure want to reject selected regularisation(s)? ")) {
+                            // reloadTable('leave_table');
+                            $.ajax({
+                                type: 'POST',
+                                url: livesite + "Regularisation/bulkupdate/",
+                                data: {
+                                    id: str_ids,
+                                    approved: 'R',
+                                    remarks: 'Rejected'
+                                },
+                                success: function(response) {
+                                    var response = $.parseJSON(response);
+                                    if (response.success) {
+                                        $.notify('Attendance Rejected Successfully', {
+                                            type: 'success',
+                                            allow_dismiss: true
+                                        });
+                                    } else {
+                                        $.notify(response.msg, {
+                                            type: 'danger',
+                                            allow_dismiss: true
+                                        });
+                                    }
+                                    refresheditpunchgrid();
+                                }
+                            });
+                        }
+
+                    }
+                }
+            ],
+            fitColumns: true,
+            pageList: [2, 5, 10, 20, 32, 50, 100],
+            //New List starts
+            columns: [
+                [{
+                        field: 'select',
+                        title: 'Select',
+                        width: "5%",
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            if (row.approved == 'P') {
+                                var e = '<input type="checkbox" name="selectRegIds[]" id="select_' + row.id + '" value="' + row.id + '" onclick="this.checked = (this.checked) ? false : true;" /> ';
+                                // default check event prevented by arul. because row click will take the action. on 12-12-22
+                                return e;
+                            }
+                            return "";
+                        }
+                    },
+                    {
+                        field: 'emp_company_id',
+                        title: 'Employee ID',
+                        width: "10%"
+                    },
+                    {
+                        field: 'first_name',
+                        title: 'Employee',
+                        width: "15%",
+                        formatter: function(value, row, index) {
+                            let e = value;
+                            e += (row.middile_name) ? ' ' + row.middile_name : '';
+                            e += (row.last_name) ? ' ' + row.last_name : '';
+                            return e;
+                        }
+                    },
+                    // {
+                    //     field: 'branch_name',
+                    //     title: 'Branch',
+                    //     width: "10%"
+                    // },
+                    {
+                        field: 'att_date',
+                        title: 'Log Date',
+                        width: "10%"
+                    },
+                    {
+                        field: 'C1',
+                        title: 'Direction',
+                        width: "10%"
+                    },
+                    {
+                        field: 'LOGTIME',
+                        title: 'Time',
+                        width: "10%",
+                    },
+                    {
+                        field: 'C3',
+                        title: 'Remarks',
+                        width: "20%",
+                    },
+                    // {
+                    //     field: 'approved_person_name',
+                    //     title: 'Approved Person',
+                    //     width: "12%",
+                    // },
+                    // {
+                    //     field: 'remarks',
+                    //     title: 'Approved Person Remarks',
+                    //     width: "12%",
+                    // },
+                    {
+                        field: 'approved',
+                        title: 'Status',
+                        width: "15%",
+                        formatter: function(value, row, index) {
+                            if (value == 'A') {
+                                e = '<span>Approved</span>';
+                            } else if (value == 'P') {
+                                e = '<span>Pending</span>';
+                            } else {
+                                e = '<span>Rejected</span>';
+                            }
+                            return e;
+                        }
+                    },
+                    {
+                        field: 'action',
+                        title: 'Action',
+                        width: "8%",
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            // if (row.approved == 'P') {
+                              const encoder = new TextEncoder();
+                              const data = encoder.encode(JSON.stringify(row));
+                                //var e = '<a href="#" onclick="showEditOnPopup(\'' + row.att_date + '\',\'' + row.emp_id + '\',\'' + row.att_in_time + '\',\'' + row.att_out_time + '\');">Edit</a> ';
+                            var e = '<a href="#" onclick="showEditOnPopup(\'' + window.btoa(String.fromCharCode.apply(null, data)) + '\');">View</a> ';
+                                return e;
+                            // }
+                            // return "";
+                        }
+                    }
+                ]
+            ],
+            //Ends
+        });
+
+    });
+
+    //New List actions
+    function showEditOnPopup(str_row) {
+        var site_transactions_fkey = '';
+        var row = JSON.parse(window.atob(str_row));
+        extract(row, this);
+        if (row.att_date && row.empid) {
+            //Add form
+            //        IF(!site_transactions_fkey){
+            //                site_transactions_fkey = 0;
+            //            }
+            showModalForm(livesite + 'Regularisation/viewattendancedetails/' + row.att_date + '/' + row.empid + '/' + site_transactions_fkey);
+        } else {
+            alert("Please select a record!")
+        }
+    }
+
+    function extract(data, where) {
+        for (var key in data) {
+            where[key] = data[key];
+        }
+    }
+    //Ends
+
+
+    // Bulk edit by Arul on 10-9-22
+    function bulkEdit() {
+        var rows = $('input[name="selectDate[]"]:checked').serialize();
+        // var rows = [];
+        // $('input[name="selectDate"]:checked').each(function() {
+        //     rows.push(this.value);
+        // });
+        var emp = $('#employeeCombo').val();
+        var params = rows + '&employee=' + emp;
+        console.log(params);
+
+        if (emp && rows) {
+            showModalForm(livesite + 'Regularisation/bulkform?' + params);
+        }
+    }
+
+    // Bulk approve by Arul on 02-10-22
+    function bulkApprove() {
+
+        var rows = $('input[name="selectRegIds[]"]:checked').serialize();
+        if (!rows) {
+            alert("Select Any Record To Update");
+            return;
+        }
+        // alert("Working");
+        // console.log(rows);
+        // var rows = [];
+        // $('input[name="selectRegIds"]:checked').each(function() {
+        //     rows.push(this.value);
+        // });
+        // var emp = $('#employeeCombo').val();
+        // + '&employee=' + emp
+        var params = rows;
+
+        if (rows) {
+            showModalForm(livesite + 'Regularisation/bulkhierarchyapprove?' + params);
+        }
+    }
+</script>

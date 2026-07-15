@@ -1,0 +1,554 @@
+<!-- /* edited by bindhu 19-02-2026 */ -->
+<section class="content-header heading">
+    <h1 class="text-primary-18"> Leave Details</h1>
+  <div class="text-primary-16 home"
+    style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+    <i class="fa" style="font-size:16px;">&#xf104;</i>
+    Back
+  </div>
+</section>
+ <!-- /* edited by bindhu 19-02-2026 end */ -->
+<style>
+     /* <!-- edited by bindhu 19-02-2026 --> */
+    .heading {
+        display: flex;
+        flex-direction: row;
+        align-items: end;
+        justify-content: space-between;
+        margin-left: 20px;
+    }
+
+    .home {
+        background-color: #ffffffff;
+        border-radius: 50px;
+        padding: 2px 15px;
+        color: #1e516e !important;
+        margin-right: 15px;
+        color: white;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: #1e516e 1px solid;
+    
+    }
+    .content-header{
+        padding: 0;
+    }
+  .nav-tabs {
+    border-bottom: 1px solid darkgray;
+  }
+
+  .nav-tabs>li.active>a,
+  .nav-tabs>li.active>a:focus,
+  .nav-tabs>li.active>a:hover {
+    color: white;
+    font-weight: bold;
+    cursor: default;
+    background-color: #00659f;
+    border: 1px solid darkgray;
+    border-bottom-color: transparent;
+  }
+
+  .nav>li>a:hover,
+  .nav>li>a:active,
+  .nav>li>a:focus {
+    color: black;
+    font-weight: bold;
+    background: white;
+    border: 1px solid #00659f;
+  }
+
+  hr {
+    margin-top: 7px;
+    margin-bottom: 10px;
+    border: 0;
+    border-top: 1px solid darkgray;
+  }
+
+  .label {
+    display: inline;
+    padding: .2em .6em .3em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    color: white;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+    background: #00659f;
+  }
+
+  .clrbar {
+    background: #00659f;
+    height: 15px;
+    width: 65px;
+
+  }
+</style>
+<section class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-6 col-sm-12 col-xs-12" style="margin-top: 9px;padding-left: 0px;">
+        <div class="box box-primary" style="height: 586px;">
+          <div class="box-body no-padding">
+            <!-- THE CALENDAR -->
+            <div id="calendar"></div>
+          </div>
+          <div class=" col-md-12 col-sm-12 col-xs-12" style=" margin-top: 14px;">
+            <div class="col-md-2 col-sm-12 col-xs-12 clrbar"></div>
+            <div class="col-md-2 col-sm-12 col-xs-12" style="font-weight: bolder;">Full Day </div>
+            <div class="col-md-2 clrbar col-sm-12 col-xs-12" style="background: #008000"></div>
+            <div class="col-md-2 col-sm-12 col-xs-12" style="font-weight: bolder;"> First Half</div>
+            <div class="col-md-2 clrbar col-sm-12 col-xs-12" style="background: #dc143c;"></div>
+            <div class="col-md-3 col-sm-12 col-xs-12" style="font-weight: bolder;">Second Half</div>
+          </div>
+          <!-- /.box-body -->
+        </div>
+        <!-- /. box -->
+      </div>
+
+      <div class="col-md-6 col-sm-12 col-xs-12" style="margin-top: 3px;">
+        <div id="showleavedetails" style="margin-top: -7px;"></div>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+        <div class="box box-primary" style="margin-top: 3px;height: 284px;">
+          <div class="box-body">
+            <span style="font-size: 22px;">Leave Policy</span>
+            <ul class="nav nav-tabs" role="tablist" style="float: right;">
+              <?php $i = $arr_leave['0'];
+              //  debug($arr_leave);
+              ?>
+              <?php $i = 0; ?>
+              <?php foreach ($arr_leave as $val) { ?>
+                <li role="presentation"
+                  id="personal_<?php echo $val['salary_head_items']['occurance']; ?>"
+                  class="<?php echo ($i == 0) ? 'active' : ''; ?>">
+                  <a href="#div-<?php echo $val['salary_head_items']['occurance']; ?>"
+                    aria-controls="div-<?php echo $val['salary_head_items']['occurance']; ?>"
+                    role="tab"
+                    data-toggle="tab">
+                    <?php echo $val['salary_head_items']['occurance']; ?>
+                  </a>
+                </li>
+              <?php $i++;
+              } ?>
+            </ul>
+            <hr style="margin-top: 10px;">
+            <div class="tab-content">
+              <?php $i = 0; ?>
+              <?php foreach ($arr_leave as $val) { ?>
+                <div role="tabpanel" class="tab-pane <?php echo ($i == 0) ? 'active' : ''; ?>" id="div-<?php echo $val['salary_head_items']['occurance']; ?>">
+
+                  <!--<div class=" box box-body" style="margin-top: 23px;margin-bottom: -1px;">-->
+                  <div class="form-group">
+                    <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: -13px;">
+                      <span style="font-size: 22px;font-weight: 400;"><?php echo $val['salary_head_items']['item']; ?></span>
+                      <span style="float: right;font-size: 22px;font-weight: 400;"><?php echo $val['salary_head_items']['occurance']; ?></span>
+                      <hr style="margin-left: -16px;margin-right: -14px">
+                    </div>
+
+                  </div>
+
+
+                  <div class="row" style="padding-top: 10px;padding-left: 13px;">
+                    <div class="col-md-4 col-sm-4 col-xs-4">
+                      Leave Type
+                    </div>
+                    <div class="col-md-1 col-sm-1 col-xs-1">
+                      :
+                    </div>
+
+                    <!-- Edited by Akshay on 11-11-2025 -->
+                    <div class="col-md-1 col-sm-1 col-xs-1" style="padding-left: 0px;">
+                      <span>
+                        <b>
+                          <?php
+                          $type = isset($val['leavepolicy']['leave_policy_type']) ? $val['leavepolicy']['leave_policy_type'] : '';
+                          switch ($type) {
+                            case 'Y':
+                              echo 'Yearly';
+                              break;
+                            case 'M':
+                              echo 'Monthly';
+                              break;
+                            case 'P':
+                              echo 'Present Days';
+                              break;
+                            case 'Q':
+                              echo 'Quarterly';
+                              break;
+                            case 'D':
+                              echo 'Running Days';
+                              break;
+                            case 'H':
+                              echo 'Half-Yearly';
+                              break;
+                            default:
+                              echo '-'; // fallback
+                          }
+                          ?>
+                        </b>
+                      </span>
+                    </div>
+
+                    <div class="col-md-4 col-sm-4 col-xs-4">
+                      <?php
+                      switch ($type) {
+                        case 'Y':
+                          echo 'Yearly Limit';
+                          break;
+                        case 'M':
+                          echo 'Monthly Limit';
+                          break;
+                        case 'P':
+                          echo 'Present Days Based Limit';
+                          break;
+                        case 'Q':
+                          echo 'Quarterly Limit';
+                          break;
+                        case 'D':
+                          echo 'Running Days Based Limit';
+                          break;
+                        case 'H':
+                          echo 'Half-Yearly Limit';
+                          break;
+                        default:
+                          echo '-';
+                      }
+                      ?>
+                    </div>
+                    <!-- End -->
+
+                    <div class="col-md-1 col-sm-1 col-xs-1">
+                      :
+                    </div>
+                    <div class="col-md-1 col-sm-1 col-xs-1">
+                      <span><b><?php echo $val['leavepolicy']['alloted_leave_forthe_year']; ?></b></span>
+                    </div>
+                  </div>
+                  <?php
+                  // if ($val['leavepolicy']['leave_policy_type'] == "Y" || $val['leavepolicy']['leave_policy_type'] == "P") { // Edited by Akshay on 11-11-2025
+                  ?>
+                  <div class="row" style="padding-top: 10px;padding-left: 13px;">
+                    <div class="col-md-4 col-sm-4 col-xs-4">
+                      Leave Encash
+                    </div>
+                    <div class="col-md-1 col-sm-1 col-xs-1">
+                      :
+                    </div>
+                    <div class="col-md-1 col-sm-1 col-xs-1" style="padding-left: 0px;">
+                      <span><b> <?php echo isset($val['leavepolicy']['is_leave_encash']) && $val['leavepolicy']['is_leave_encash'] == "Y" ? 'Yes' : 'No'; ?></b></span>
+                    </div>
+
+                    <!-- Edited by Akshay on 14-11-2025 -->
+                    <div class="col-md-4 col-sm-4 col-xs-4">
+                      Carry Forward Limit
+                    </div>
+                    <div class="col-md-1 col-sm-1 col-xs-1">
+                      :
+                    </div>
+                    <div class="col-md-1 col-sm-1 col-xs-1">
+                      <span><b><?php echo $val['leavepolicy']['CARRY_FORWARD_LIMIT']; ?></b></span>
+                    </div>
+                    <!-- End -->
+
+                  </div>
+                  <?php
+                  // }
+                  ?>
+                  <div class="row" style="padding-top: 10px;padding-left: 13px;">
+                    <div class="col-md-4 col-sm-4 col-xs-4">
+                      Sandwich Leave
+                    </div>
+                    <div class="col-md-1 col-sm-1 col-xs-1">
+                      :
+                    </div>
+                    <div class="col-md-1 col-sm-1 col-xs-1" style="padding-left: 0px;">
+                      <span> <b><?php echo (isset($val['leavepolicy']['IS_SANDWICH'])) && $val['leavepolicy']['IS_SANDWICH'] == "Y" ? ' Yes' : 'No'; ?></b></span>
+
+                    </div>
+
+                    <!-- Edited by Akshay on 14-11-2025 -->
+                    <?php
+                    if ($val['leavepolicy']['leave_policy_type'] != "P") {
+                    ?>
+                      <div class="col-md-4 col-sm-4 col-xs-4">
+                        Allow Negative
+                      </div>
+                      <div class="col-md-1 col-sm-1 col-xs-1">
+                        :
+                      </div>
+                      <div class="col-md-1 col-sm-1 col-xs-1">
+                        <span><b><?php echo isset($val['leavepolicy']['ALLOW_NEGETIVE']) && $val['leavepolicy']['ALLOW_NEGETIVE'] == "Y" ? 'Yes' : 'No'; ?></b><span>
+                      </div>
+                    <?php
+                    }
+                    ?>
+                    <!-- End -->
+
+                  </div>
+                  <div class="row" style="padding-top: 10px;padding-left: 13px;">
+                    <div class="col-md-4 col-sm-4 col-xs-4">
+                      Remarks
+                    </div>
+                    <div class="col-md-1 col-sm-1 col-xs-1">
+                      :
+                    </div>
+                    <div class="col-md-7 col-sm-7 col-xs-7" style="font-size: 12px;padding-left: 0px;">
+                      <b> <?php echo $val['leavepolicy']['REMARKS']; ?></b>
+
+                    </div>
+                  </div>
+
+                  <hr>
+
+                  <div class="row" style="padding-top: 0px;">
+
+                    <div class="col-md-4 col-sm-4 col-xs-4" style="padding-right: 0px;">
+                      <?php
+                      $leavetaken = isset($val['0']['Takens_leaves']) ? $val['0']['Takens_leaves'] : 0;
+                      $takenleave = number_format($leavetaken, 1); ?>
+                      <span style="">Leave Taken (<?php echo $val['salary_head_items']['occurance']; ?>) : </span>
+                      <span class="label " style="font-size: 13px;"><b><?php echo $takenleave; ?></b></span>
+
+                    </div>
+                    <?php
+                    // Edited by Akshay on 23-10-2025
+                    $restricted_companies = [
+                    'KWMT','ABSG','MBCT','MRBS','STCL',
+                    'AGNG','ESNP','VGNN','AYRK','VGFS','VSFS'
+                ];
+               if (!in_array($company_code, $restricted_companies, true)) { ?>
+                      <div class="col-md-8 col-sm-8 col-xs-8" style="padding-right: 0px;padding-left: 0px;">
+                        <span style=""> Balance (As Per Current Date) : </span>
+                        <span class="label " style="font-size: 13px;"><b><?php echo isset($val['0']['leavebal']) ? $val['0']['leavebal'] : '0'; ?></b></span>
+                      </div>
+                    <?php } else { ?>
+                      <div class="col-md-4 col-sm-4 col-xs-4" style="padding-right: 0px;padding-left: 0px;">
+                        <span style=""> Balance For The Year : </span>
+                        <span class="label " style="font-size: 13px;"><b><?php echo isset($val['0']['leavebal']) ? $val['0']['leavebal'] : '0'; ?></b></span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 col-xs-4" style="padding-right: 0px;padding-left: 0px;">
+                        <span style=""> Balance For The Month : </span>
+                        <span class="label " style="font-size: 13px;"><b><?php echo isset($val['0']['monthlybalance']) ? $val['0']['monthlybalance'] : '0'; ?></b></span>
+                      </div>
+                    <?php }
+                    // End
+                    ?>
+                  </div>
+                  <!--</div>-->
+
+                </div>
+              <?php $i++;
+              } ?>
+            </div>
+
+          </div>
+          <!-- /.box-body -->
+        </div>
+        <!-- /. box -->
+      </div>
+
+
+    </div><!-- /.col -->
+  </div>
+  <!-- /.row -->
+
+  <!--          <div align="right" style="margin-top: 6px; ">
+                <a href="<?php echo $this->webroot; ?>Empreport/leavedetailsreport/pdf" class="btn btn-danger"><i class="icon-file"></i>Download Leave Details </a>
+                <a href="#" class="btn btn-default" onclick="downloadReport('Salaryslip','excel');"><i class="icon-file"></i>Download As Excel</a>
+          </div>-->
+</section>
+<!-- /.content -->
+<style>
+
+</style>
+
+<script>
+     // edited by bindhu 19-02-2026
+ $(".home").on("click", function() {
+        $("#container").isLoading({
+            text: "Loading",
+            position: "overlay",
+        });
+
+        $("#container").load(livesite + "EmployeeMenu/index", function() {
+            isDashboardShown = false;
+        });
+
+
+    });
+    //  edited by bindhu 19-02-2026 end
+  function events() {
+    $.ajax({
+      url: 'Grade/eventsCalender',
+      type: 'post',
+      success: function(resp) {
+        //                        $.notify($.parseJSON(resp).msg,{
+        //                            type: 'success',
+        //                            allow_dismiss: false
+        //                        });
+      }
+    });
+  }
+  $(function() {
+
+    /* initialize the external events
+     -----------------------------------------------------------------*/
+    function ini_events(ele) {
+      ele.each(function() {
+
+        // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+        // it doesn't need to have a start or end
+        var eventObject = {
+          title: $.trim($(this).text()) // use the element's text as the event title
+        };
+
+        // store the Event Object in the DOM element so we can get to it later
+        $(this).data('eventObject', eventObject);
+
+        // make the event draggable using jQuery UI
+        $(this).draggable({
+          zIndex: 1070,
+          revert: true, // will cause the event to go back to its
+          revertDuration: 0 //  original position after the drag
+        });
+
+      });
+    }
+
+    ini_events($('#external-events div.external-event'));
+
+    /* initialize the calendar
+     -----------------------------------------------------------------*/
+    //Date for the calendar events (dummy data)
+    var date = new Date();
+    var d = date.getDate(),
+      m = date.getMonth(),
+      y = date.getFullYear();
+
+    $('#calendar').fullCalendar({
+      eventStartEditable: false,
+      header: {
+        left: 'prev,next ',
+        center: 'title',
+        right: 'today'
+      },
+      buttonText: {
+        today: 'today',
+        month: 'month',
+        week: 'week',
+        day: 'day'
+      },
+
+      eventRender: function(eventObj, $el) {
+        $el.popover({
+          title: eventObj.leavetype,
+          content: 'Click to See Details',
+          trigger: 'hover',
+          placement: 'top',
+          container: 'body'
+        });
+      },
+      eventClick: function(event) {
+        if (event.HOLIDAYID) {
+          $("#showleavedetails").html('<li class="fa fa-spinner fa-spin" style="margin-left: 5em;margin-top: 2em;font-size: 50px;"></li>');
+          $("#showleavedetails").load(livesite + "Empreport/showleavedetails/" + event.HOLIDAYID);
+          $('#showleavedetails').css({
+            'height': '303px'
+          });
+          return false;
+        }
+      },
+
+
+      //Random default events
+      events: livesite + 'Empreport/Getleavedays',
+      editable: true,
+      droppable: true, // this allows things to be dropped onto the calendar !!!
+      drop: function(date, allDay) { // this function is called when something is dropped
+
+        // retrieve the dropped element's stored Event Object
+        var originalEventObject = $(this).data('eventObject');
+
+        // we need to copy it, so that multiple events don't have a reference to the same object
+        var copiedEventObject = $.extend({}, originalEventObject);
+
+        // assign it the date that was reported
+        copiedEventObject.start = date;
+        copiedEventObject.allDay = allDay;
+        copiedEventObject.backgroundColor = $(this).css("background-color");
+        copiedEventObject.borderColor = $(this).css("border-color");
+
+        // render the event on the calendar
+        // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+        $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
+        //$('#calendar').fullCalendar('removeEvents', 2); //Remove events with the id: 2
+        // is the "remove after drop" checkbox checked?
+        if ($('#drop-remove').is(':checked')) {
+          // if so, remove the element from the "Draggable Events" list
+          $(this).remove();
+        }
+        var d = new Date(date);
+        var day = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+        $.ajax({
+          url: 'Grade/insert',
+          type: 'post',
+          data: {
+            date: day,
+            Text: $(this).text(),
+            Background: copiedEventObject.backgroundColor,
+            Border: copiedEventObject.borderColor
+          },
+          success: function(resp) {
+            //                        $.notify($.parseJSON(resp).msg,{
+            //                            type: 'success',
+            //                            allow_dismiss: false
+            //                        });
+          }
+        });
+      }
+    });
+
+    /* ADDING EVENTS */
+    var currColor = "#3c8dbc"; //Red by default
+    //Color chooser button
+    var colorChooser = $("#color-chooser-btn");
+    $("#color-chooser > li > a").click(function(e) {
+      e.preventDefault();
+      //Save color
+      currColor = $(this).css("color");
+      //Add color effect to button
+      $('#add-new-event').css({
+        "background-color": currColor,
+        "border-color": currColor
+      });
+    });
+    $("#add-new-event").click(function(e) {
+      e.preventDefault();
+      //Get value and make sure it is not null
+      var val = $("#new-event").val();
+      if (val.length == 0) {
+        return;
+      }
+
+      //Create events
+      var event = $("<div />");
+      event.css({
+        "background-color": currColor,
+        "border-color": currColor,
+        "color": "#fff"
+      }).addClass("external-event");
+      event.html(val);
+      $('#external-events').prepend(event);
+
+      //Add draggable funtionality
+      ini_events(event);
+
+      //Remove event from text input
+      $("#new-event").val("");
+    });
+  });
+</script>

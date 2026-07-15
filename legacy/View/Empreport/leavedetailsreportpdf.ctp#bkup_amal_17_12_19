@@ -1,0 +1,108 @@
+<?php
+echo $this->element('reportempheader',array(
+        "emp" => $arr_emp
+    ));
+?>
+
+    <h3 style="text-align: center;padding-bottom: 10px;padding-top: 10px;">LEAVE DETAILS REPORTS </h3>
+
+
+
+
+<table style="width: 100%;border: 1px;">
+      <tr style="font-weight: bold;border: 1px">
+    <th style="border: 1px;width:5%">Applied Date</th>
+    <th style="border: 1px;width:5%">Leave Status</th>
+    <th style="border: 1px;width:5%">From Date</th>
+    <th style="border: 1px;width:5%">From Half</th>
+    <th style="border: 1px;width:5%">to Date</th>
+    <th style="border: 1px;width:5%">To Half</th>
+    <th style="border: 1px;width:5%">Is Authorized</th>
+    <th style="border: 1px;width:5%">Authorized By</th>
+    <th style="border: 1px;width:5%">Authorized Date</th>
+    <th style="border: 1px;width:5%">Is Approved</th>
+    <th style="border: 1px;width:5%">Approved By</th>
+    <th style="border: 1px;width:5%">Approved Date</th>
+     <th style="border: 1px;width:5%">Reason</th>
+    <th style="border: 1px;width:5%">Contact Number</th>
+    <th style="border: 1px;width:5%">Contact Person</th>
+    <th style="border: 1px;width:5%">Remarks</th>
+    <th style="border: 1px;width:5%">Leave Days</th>
+    <th style="border: 1px;width:5%">Message</th>
+  
+   
+</tr>
+
+    <?php
+    //debug($arr_leave_details);
+    foreach ($arr_leave_details as $val) { 
+//autharized check
+         if($val['leaveentries']['ISAutherized'] ==0)
+        {
+            $data="NO";
+        }
+        else 
+           {
+            $data="YES";
+           }
+ //from haif    
+           if($val['leaveentries']['FROMHALF']==1)
+           {
+               $fromhalf="First Half";
+           }
+           else
+           {
+               $fromhalf="Second Half";
+           }
+//to half
+           if( $val['leaveentries']['TOHALF']==1)
+              {
+               $tohalf="First Half";
+              }
+            else
+            {
+               $tohalf="Second Half"; 
+            }
+//leave approved    
+            if($val['leaveentries']['ISAPPROVED'] ==0)
+            {
+                $leaveapproved="NO";
+            }
+            else 
+                { 
+                $leaveapproved="yes";
+                }
+       ?>
+    
+     
+
+     
+        
+
+        <?php echo'<tr style="border: 1px">
+                  <td style="border: 1px;width:5%">' . $val['leaveentries']['applied_date'] . '</td>
+                  <td style="border: 1px;width:5%">' . $val['leaveentries']['LEAVESTATUS'] . '</td>
+                  <td style="border: 1px;width:5%">' . $val['leaveentries']['FROMDATE'] . '</td>
+                  <td style="border: 1px;width:5%">' . $fromhalf . '</td>
+                  <td style="border: 1px;width:5%">' . $val['leaveentries']['TODATE'] . '</td>
+                  <td style="border: 1px;width:5%">' .$tohalf. '</td>
+                  <td style="border: 1px;width:5%">' . $data . '</td>
+                  <td style="border: 1px;width:5%">' . $val[0]['Autherizedby'] . '</td>
+                  <td style="border: 1px;width:5%">' . $val['leaveentries']['Autherized_date'] . '</td>
+                  <td style="border: 1px;width:5%">' . $leaveapproved. '</td>
+                  <td style="border: 1px;width:5%">' . $val[0]['APPROVEDBY'] . '</td>
+                  <td style="border: 1px;width:5%">' . $val['leaveentries']['APPROVED_date'] . '</td>
+                  <td style="border: 1px;width:5%">' . $val['leaveentries']['Reason'] . '</td>
+                  <td style="border: 1px;width:5%">' . $val['leaveentries']['contact_No'] . '</td>
+                  <td style="border: 1px;width:5%">' . $val['leaveentries']['contact_person'] . '</td>
+                  <td style="border: 1px;width:5%">' . $val['leaveentries']['REMARKS'] . '</td>
+                  <td style="border: 1px;width:5%">' . $val['leaveentries']['leave_days'] . '</td>
+                  <td style="border: 1px;width:5%">' . $val['leaveentries']['message'] . '</td>
+                 
+                 
+               
+     </tr>'; ?>
+    <?php } ?>
+
+
+</table>

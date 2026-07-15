@@ -1,0 +1,169 @@
+<?php
+
+/* 
+* To change this license header, choose License Headers in Project Properties.
+* To change this template file, choose Tools | Templates
+* and open the template in the editor.
+*/
+?>
+<script>
+      $(document).ready(function(){
+       $('#tt').tree({
+     onCheck: function(node){
+         if(node.checked == true)
+         {
+	      // 	alert(node.id);  // alert node text property when clicked
+                
+             
+                var s = node.id;
+          
+                  var u = $('#emp_pkey').val();
+             //   alert(node.id+'not checked');
+            $.ajax({
+                                url:'userAccess/delete/' + u +'/'+s,
+                                success: function(resp){
+                                    $('#uaccess').datagrid('reload');
+                                    $.notify("Removed Access Of "+node.text,{
+                                        type: 'success',
+                                        allow_dismiss: false
+                                    });
+                                }
+                            });
+            }
+            else
+            {
+             //  	alert(node.id);  // alert node text property when clicked
+                
+                var s = node.id;
+            
+                  var u = $('#emp_pkey').val();
+            $.ajax({
+                                url:'userAccess/save/' + u +'/'+s,
+                                success: function(resp){
+                                   
+                                    $.notify("Access Allowed For "+node.text,{
+                                        type: 'success',
+                                        allow_dismiss: false
+                                    });
+                                }
+                            });
+            }
+        }
+}); 
+
+
+ $('#admin').tree({
+   onCheck: function(node){
+         if(node.checked == true)
+         {
+           //   alert(node.id+'not checked');
+           var s = 'id';
+          
+                  var u = $('#emp_pkey').val();
+             //   alert(node.id+'not checked');
+                         $.ajax({
+                                url:'useAccess/admin/' + u +'/'+s,
+                                success: function(resp){
+                                    $('#uaccess').datagrid('reload');
+                                    $.notify("Removed Admin Access",{
+                                        type: 'success',
+                                        allow_dismiss: false
+                                    });
+                                }
+                            });
+            }
+            else
+            {
+            //	alert(node.id);  // alert node text property when clicked
+                
+                 var s = 'ADMINS';
+          
+                  var u = $('#emp_pkey').val();
+             //   alert(node.id+'not checked');
+                         $.ajax({
+                                url:'userAccess/admin/' + u +'/'+s,
+                                success: function(resp){
+                                    $('#uaccess').datagrid('reload');
+                                    $.notify("Access Of Admin Granted",{
+                                        type: 'success',
+                                        allow_dismiss: false
+                                    });
+                                }
+                            });
+          
+            }
+        }
+});  
+
+    })
+</script>
+    <h2>User Menu</h2>
+    <div class="easyui-panel" style="padding:5px">
+        <ul data-toggle="tooltip" title="Shows Dashboard of the team of this selected employee's hierarchy"  id="admin" class="easyui-tree" data-options="animate:true,checkbox:true,cascadeCheck:true,dnd:true">
+            <li  <?php if($fetchUser['0']['Useraccess']['active'] == 'Y'){ echo "checked='true' " ; } ?> id="ADMINS"><span >My employee Dashboard</span>
+           <!-- <ul>
+                <li</li>
+            </ul> -->
+            </ul>
+        <ul data-toggle="tooltip" title="Your employees will not have any menus by default, choose menus for him" id="tt" class="easyui-tree" data-options="animate:true,checkbox:true,cascadeCheck:true,dnd:true">
+             <li id="All">
+                <span>All Menu</span>
+                <ul>
+                    <?php foreach($arr_parent as $val)
+                    {
+                 //  debug($val);
+                  
+                  
+                  
+                   ?>
+                    <li data-options="state:'closed'"  <?php if($val['0']['active'] == 'Y' and $val['u']['status'] == '1'){ echo "checked='true' " ; } ?>  id="<?php echo $val['EmployeeMenu']['menu_id']; ?>">
+                        <span><?php echo $val['EmployeeMenu']['menu_name'] ?></span>
+                        <ul>
+                            <?php foreach($arr_child as $value) 
+                            {
+                            if($value['EmployeeMenu']['parent_id'] == $val['EmployeeMenu']['menu_id'])
+                            {
+                          //  debug($value);
+                            ?>
+                            <li <?php if($value['0']['active'] == 'Y'){ echo "checked='true' " ; } ?>   id="<?php echo $value['EmployeeMenu']['menu_id']; ?>">
+                                <span><?php echo $value['EmployeeMenu']['menu_name']; ?></span>
+                            </li>
+                            <?php
+                            }
+                            }
+                            ?>
+                            </ul>
+                    </li>
+                    <?php
+                   
+                    }
+                    ?>
+                  <!--  <li><?php if($value['EmployeeMenu']['menu_id']) ?>
+                        <span>Program Files</span>
+                        <ul>
+                            <li>Intel</li>
+                            <li>Java</li>
+                            <li>Microsoft Office</li>
+                            <li>Games</li>
+                        </ul>
+                    </li>
+                    <li>index.html</li>
+                    <li>about.html</li>
+                    <li>welcome.html</li>
+                </ul>
+            </li> -->
+        </ul>
+  
+    </div>
+    
+    
+    
+    <!--div class="col-md-10" style="margin:20px 0;">
+           <div class="form-group">    <a href="#" class="btn btn-primary" onclick="getChecked()">GetChecked</a> 
+ 
+        <input type="button" class="btn btn-primary" value="Save Changes">
+        </div>
+        </div-->
+    
+    
+    

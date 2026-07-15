@@ -1,0 +1,51 @@
+<div class="form-group parents">
+    <div class="col-md-5">
+        <label for="in_time" class="col-md-12 control-label">Item Name<span class="star">*</span></label>
+        <div class="col-md-12">
+            <select class="form-control col-md-12 items_disable input" onchange="loadbalance(this);">
+                <option value="">Select</option>
+                <?php foreach($arr_att as $val){ ?>
+                <?php $bal = isset($val['0']['qtyuptodate'])?$val['0']['qtyuptodate']:0;
+                if($bal > 0){
+                ?>
+                    <option value="<?php echo $val['a']['item_master_pkey'].'-'.$bal; ?>"><?php echo $val['a']['item_desc'].' bal - '.$bal; ?></option>
+                <?php }
+                }
+                ?>
+            </select>
+            <input type="hidden" class="item" value="" name="item_name[]" >
+        </div> 
+    </div>
+    <div class="col-md-7">
+        
+        <div class="col-md-4">
+            <label for="in_time" class="col-sm-12 control-label">Qty<span class="star">*</span></label>
+            <div class="col-md-12">
+                <input type="number" onchange="checkqty(this);"  class="form-control item_qty input" value="" name="item_qty[]" min="1" id="item_qty" placeholder="Enter Qty's"  required="required" >
+                <input type="hidden"  class="form-control hidden" value="" id="item_qtys" placeholder="Enter item code"  required="required" >
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label for="in_time" class="col-sm-12 control-label">Rate<span class="star">*</span></label>
+            <div class="col-md-12">
+                <input type="text" readonly="true" class="form-control" value=""id="item_value" >
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label for="in_time" class="col-sm-12 control-label">Value<span class="star">*</span></label>
+            <div class="col-md-12">
+                <input type="text" class="form-control item_bal" value=""  name="item_value[]"  placeholder="Balance" disabled="disabled" >
+                
+            </div>
+        </div>
+        
+        <div class="col-md-1 pull-right">
+            <br>
+            <a class="btn btn-primary" onclick="removei(this);"><li class="fa fa-minus"></li></a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+   
+    
+</script>

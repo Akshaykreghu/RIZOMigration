@@ -1,0 +1,497 @@
+<style>
+    /* .ui-datepicker-calendar {
+        display: none;
+    }​ */
+    .salary_revision_autofill {
+        background-color: #80808047;
+    }
+</style>
+<script>
+    $.validate({
+        form: '#attendanceuploadtable'
+    });
+    var options = {
+        success: function (resp) {
+            $("#importemployeectcform").resetForm();
+            $('#modalForm').modal('hide');
+            $('#att_table').datagrid('reload');
+            $('#empctccsv').val('');
+            $("#filterby_branch").select2("val", "");
+            $("#emp_fkey").select2("val", "");
+            $.notify($.parseJSON(resp).msg, {
+                type: 'success',
+                allow_dismiss: false
+            });
+        }  // post-submit callback
+    };
+
+
+    $('#attendanceuploadtable').on('submit', function (event) {
+        event.preventDefault();
+        if (confirm(" Do You Want  To Save The Form")) {
+            $('#attendanceuploadtable').ajaxSubmit(options)
+        }
+    });
+    $('#yes').on('click', function () {
+
+        if (this.value === 'Y') {
+            $('#paymonth').css("display", "block");
+        }
+    });
+    $('#no').on('click', function () {
+
+        if (this.value === 'N') {
+            $('#paymonth').css("display", "none");
+        }
+    });
+
+</script>
+
+<div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header" style="background: #00659f;color: white">
+            <h4 class="modal-title"> Employee Gross Salary Form</h4>  
+        </div>
+        <div class="modal-body">
+            <!-- Form starts -->
+
+            <form class="form-horizontal" id="attendanceuploadtable" action="<?php echo $this->webroot; ?>Employee/employeesave" method="POST">
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-md-4 control-label">Choose Employee<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+<!--                          <select id="emp_fkey" class="form-control" name="emp_fkey" onchange="loadExistingCTCInfo();" >-->
+                                <select id="emp_fkey" class="form-control" name="emp_fkey" required="" style="width:100%;" onchange="currentctctake();">
+                                    <option value="" >Select </option>
+                                    <?php
+//                                    foreach ($arr_employees as $value) {
+//
+//                                        $selected = ($data['emp_fkey'] == $value['EmployeeDetails']['emp_pkey']) ? 'selected="selected"' : '';
+//                                        echo '<option value="' . $value['EmployeeDetails']['emp_pkey'] . '" ' . $selected . '>' . $value['EmployeeDetails']['first_name'] . ' ' . $value['EmployeeDetails']['last_name'] . '</option>';
+//                                    }
+                                    //Employee Company ID added by **ARUL P DAS on 12/12/2019
+                                    foreach ($arr_employees as $value) {
+                                        $selected = ($data['emp_fkey'] == $value['emp_details']['emp_pkey']) ? 'selected="selected"' : '';
+                                        echo '<option value="' . $value['emp_details']['emp_pkey'] . '" ' . $selected . '>' . $value['emp_details']['first_name'] . ' ' . $value['emp_details']['last_name'] . ' - ' . $value['emp_proff']['emp_company_id'] . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>    
+                        </div>
+                    </div>
+                    <!-- <?php debug($arr_employees); ?> -->
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="in_date" class="col-md-4 control-label">Annual<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <!--                                     //edited by megha on 03/08/2019 to add 0 values salary-->
+                                <!--                                 <input type="number" required="required" class="form-control" value="<?php //echo isset($data['emp_anual_ctc']) ? $data['emp_anual_ctc'] : '';   ?>" name="emp_anual_ctc" id="emp_anual_ctc"  onblur="findamount();">-->
+                                <input type="number"  class="form-control" value="<?php echo isset($data['emp_anual_ctc']) ? $data['emp_anual_ctc'] : ''; ?>" name="emp_anual_ctc" id="emp_anual_ctc"  onblur="findamount();" min="0" >
+                            </div> 
+                        </div>
+                    </div>
+                    <!-- edited by anukrishnan_21-02-2025 open -->
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="out_time" class="col-md-4 control-label">Monthly</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                            <span class="form-control salary_revision_autofill" id="ctc_month"></span>
+                                
+                            </div> 
+                           
+                        </div>
+                    </div>
+                    <!-- edited by anukrishnan_21-02-2025 close -->
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="out_time" class="col-md-4 control-label">Start Date Effective<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7"> 
+<!--                                <select id="filterby_month" name="filterby_month" class="form-control js-example-basic-single"  onchange="filterAttendanceupload(this);" >                                                 
+                                    <option value="">All</option>
+                                   // <?php
+                                //   for ($i = 0; $i <6; $i++) {
+                                //      echo '<option value="' . date('m-Y', strtotime("-$i month", strtotime(date('M-Y')))) . '">' 
+                                //             . date('M-Y', strtotime("+$i month", strtotime(date('M-Y')))) .
+                                //             '</option>';
+                                // }
+                                // 
+                                ?>
+                                </select>-->
+                                <input type="date" required="required" class="form-control " onblur="startdatecheck()" value=""name="start_date_effective" name="in_time" id="in_time" >
+                            </div> 
+                        </div>
+                    </div>
+                    <!-- edited by anukrishnan_01-02-2025 open -->
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="out_time" class="col-md-4 control-label">Next Increment Date<span class="star">*</span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <input type="date" required="required" class="form-control" value="" name="next_increment_date" name="in_time" id="in_time" >
+                            </div> 
+                        </div>
+                    </div>
+                    <!-- edited by anukrishnan_01-02-2025 close -->
+                    <div class="form-group">
+                        <div class="col-md-12" id="monthly" >
+                            <label class="col-md-4 control-label" for="arrear">Arrear Salary Process</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                                <label class="radio-inline">
+                                    <input type="radio" name="arrear_salary" value="Y" id="yes"  onclick ="filterAttendanceupload(this);"> YES
+                                </label>
+                                <label class="radio-inline">
+
+                                    <input type="radio" name="arrear_salary" value="N" id="no" checked="checked" onclick ="filterAttendanceupload(this);"> NO
+                                </label>
+                            </div>
+                        </div> 
+                    </div> 
+
+                    <div class="form-group">
+                        <div class="col-md-12" id="paymonth" style="display: none;" >
+                            <label for="out_time" class="col-md-4 control-label">Pay Out Month<span class="star"></span></label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+
+                                <input type="text" class="form-control" onblur="startdatcheck()" value="<?php echo isset($data['pay_out_month']) ? $data['pay_out_month'] : ""; ?>" name="pay_out_month" id="paytime" >
+                            </div> 
+                            <!-- <button type="submit" id="btn-submit" class="btn btn-primary" style="float: right;">Save</button> -->
+                        </div>
+                    </div>
+                    <!-- edited by anukrishnan_15-02-2025 open-->
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="out_time" class="col-md-4 control-label">Current Salary</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                            <span class="form-control salary_revision_autofill" id="emp_ctc_input"></span>
+                                
+                            </div> 
+                           
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="out_time" class="col-md-4 control-label">Increment Date</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                            <span class="form-control salary_revision_autofill" id="emp_ctc_date"></span>
+                                
+                            </div> 
+                           
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="out_time" class="col-md-4 control-label">Last Gross Updated Date</label>
+                            <div class="col-md-1">:</div>
+                            <div class="col-md-7">
+                            <span class="form-control salary_revision_autofill" id="emp_ctc_revision_date"></span>
+                                
+                            </div> 
+                           
+                        </div>
+                    </div>
+                    <!-- edited by anukrishnan_15-02-2025 close-->
+                </div>
+
+
+                <!--                    <div class="form-group">
+                                        <div class="col-md-10">
+                                            <label for="out_time" class="col-sm-5 control-label">End Date Effective<span class="star">*</span></label>
+                                            <div class="col-md-7">
+                                                <input type="text" onchange="enddatecheck()" required="required" class="form-control" value="<?php // echo isset($data['end_date_effective']) ? $data['end_date_effective'] : "";       ?>" name="end_date_effective" name="out_time" id="out_time" >
+                                            </div> 
+                                        </div>
+                                    </div>-->
+                <div class="modal-footer">
+                    <input type="hidden" required="required" class="form-control" value="<?php echo isset($data['emp_ctc_upload_pkey']) ? $data['emp_ctc_upload_pkey'] : ""; ?>" name="emp_ctc_upload_pkey" id="emp_ctc_upload_pkey" >
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    <button type="submit" id="btn-submit" class="btn btn-primary">Save</button>
+
+                </div>
+
+
+
+        </div>
+
+
+
+        </form>
+        <!-- Tax Head Detail Form -->
+
+
+
+
+
+        <!-- form ends-->
+    </div>
+
+</div>
+
+</div>
+<div id="emp-ctc-info"></div>
+<script type="text/javascript">
+// edited by anukrishnan_21-02-2025 open
+$(document).ready(function () {
+    $("#emp_anual_ctc").on("input", function () {
+        var value = $(this).val();
+        var result = Math.round(parseFloat(value) / 12);
+        if (result) {
+            $("#ctc_month").text(result);
+        } else {
+            $("#ctc_month").text("");
+        }
+        
+    });
+});
+// edited by anukrishnan_21-02-2025 close
+// edited by anukrishnan_17-02-2025 open
+    function currentctctake(){
+        var emp_fkey = $('#attendanceuploadtable #emp_fkey').val();
+        $.ajax({
+            url: livesite + "Employee/currentctctake",
+            type: 'POST',
+            data: { emp_fkey: emp_fkey },
+            dataType: 'json',
+            success: function(response) {
+                if (response.emp_anual_ctc) {
+                    $('#emp_ctc_input').text(response.emp_anual_ctc);
+                }
+                if (response.previous_increment_date) {
+                    $('#emp_ctc_date').text(response.previous_increment_date);
+                }
+                if (response.prevision_revision_date){
+                    $('#emp_ctc_revision_date').text(response.prevision_revision_date);
+                } else {
+                    $('#emp_ctc_input').text(response.error);
+                    $('#emp_ctc_date').text(response.error);
+                    $('#emp_ctc_revision_date').text(response.error);
+                }
+            },
+        });
+    }
+// edited by anukrishnan_17-02-2025 close
+//validation form amount
+    function findamount() {
+        var rate = $('#emp_anual_ctc').val();
+      
+//number format
+        ///^[1-9][0-9\.]{0,15}$/
+        ///^\d+$/
+//        if (rate.match(/^[1-9][0-9\.]{0,15}$/)) {
+//            if (rate < 1)
+        //edited by megha on 03/08/2019 to add 0 values salary
+        if (rate.match(/^[0-9][0-9\.]{0,15}$/)) {
+            if (rate < 0)
+            {
+                alert('Please Enter A Valid Amount');
+                $("#emp_anual_ctc").val('');
+            }
+        } else {
+            $("#emp_anual_ctc").val('');
+        }
+    }
+//date validation start
+    function startdatecheck()
+    {
+        var startDate = new Date($('#in_time').val());
+        var endDate = new Date($('#out_time').val());
+
+        if (startDate > endDate)
+        {
+            alert("expected starting date should be less than ending date");
+            $("#in_time").val('');
+        }
+    }
+    
+//date validation  end
+    function enddatecheck()
+    {
+        var startDate = new Date($('#in_time').val());
+        var endDate = new Date($('#out_time').val());
+
+        if (startDate > endDate) {
+            alert("expected ending date should be greater than starting date");
+            $("#out_time").val('');
+        }
+    }
+
+
+
+    $(document).ready(function () {
+//        $(".monthPicker").datepicker({
+//            dateFormat: 'mm-yy',
+//            changeMonth: true,
+//            changeYear: true,
+//            showButtonPanel: true,
+//            onClose: function (dateText, inst) {
+//                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+//                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+//                $(this).val($.datepicker.formatDate('yy-mm', new Date(year, month, 1)));
+//            }
+//        });
+
+//        $(".monthPicker").focus(function () {
+//            $(".ui-datepicker-calendar").hide();
+//            $("#ui-datepicker-div").position({
+//                my: "center top",
+//                at: "center bottom",
+//                of: $(this)
+//            });
+//        });
+
+
+        //$("#pincode").inputmask("999");
+        //$('#attendanceuploadtable').parsley();
+//        var options = {
+//            success: function (responseText, statusText, xhr, $form) {
+//                //alert("Employee Gross Salary Successfully");
+//                //closeModal('att_table');
+//            }
+//        };
+
+        // bind to the form's submit event 
+//        $('#attendanceuploadtable').submit(function () {
+//            $(this).ajaxSubmit(options);
+//            return false;
+//        });
+        // edited by anukrishnan_15-02-2025 open
+        // $('#in_time').datepicker({
+        //     format: 'yyyy-mm',
+        //     autoclose: true,
+        //     startView: "months",
+        //     minViewMode: "months"
+        // })
+        // edited by anukrishnan_15-02-2025 close
+        $('#out_time').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+//            onSelect: function (selected) {
+//                var ecdt = new Date(selected);
+//                var selectedstartdate = $("#in_date").val();
+//                var esdt = new Date(selectedstartdate);
+//                if (esdt > ecdt) {
+//                    alert('Expected Out Date Should Be Greater Than Expected In Date');
+//                    $("#out_date").val('');
+//                }
+//
+//            }
+        })
+        $("#out_date").inputmask("yyyy-mm-dd");
+        //  loadExistingCTCInfo();
+    });
+    function startdatcheck()
+    {
+        var startDat = new Date($('#paytime').val());
+        var endDat = new Date($('#out_tim').val());
+
+        if (startDat > endDat)
+        {
+            alert("expected starting date should be less than ending date");
+            $("#paytime").val('');
+        }
+    }
+//date validation  end
+    function enddatcheck()
+    {
+        var startDat = new Date($('#paytime').val());
+        var endDat = new Date($('#out_tim').val());
+
+        if (startDat > endDat) {
+            alert("expected ending date should be greater than starting date");
+            $("#out_tim").val('');
+        }
+    }
+
+
+
+    $(document).ready(function () {
+        //edited by athira on 12-06-2025
+        // $("#attendanceuploadtable #emp_fkey").select2();
+        $("#attendanceuploadtable #emp_fkey").select2({
+            dropdownParent: $('#modalForm')
+        });
+
+        //end
+//        $(".monthPicker").datepicker({
+//            dateFormat: 'mm-yy',
+//            changeMonth: true,
+//            changeYear: true,
+//            showButtonPanel: true,
+//            onClose: function (dateText, inst) {
+//                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+//                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+//                $(this).val($.datepicker.formatDate('yy-mm', new Date(year, month, 1)));
+//            }
+//        });
+
+//        $(".monthPicker").focus(function () {
+//            $(".ui-datepicker-calendar").hide();
+//            $("#ui-datepicker-div").position({
+//                my: "center top",
+//                at: "center bottom",
+//                of: $(this)
+//            });
+//        });
+
+
+        //$("#pincode").inputmask("999");
+        //$('#attendanceuploadtable').parsley();
+//        var options = {
+//            success: function (responseText, statusText, xhr, $form) {
+//                //alert("Employee Gross Salary Successfully");
+//                //closeModal('att_table');
+//            }
+//        };
+
+        // bind to the form's submit event 
+//        $('#attendanceuploadtable').submit(function () {
+//            $(this).ajaxSubmit(options);
+//            return false;
+//        });
+
+        $('#paytime').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            startView: "months",
+            minViewMode: "months"
+        })
+
+        $('#out_tim').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+//            onSelect: function (selected) {
+//                var ecdt = new Date(selected);
+//                var selectedstartdate = $("#in_date").val();
+//                var esdt = new Date(selectedstartdate);
+//                if (esdt > ecdt) {
+//                    alert('Expected Out Date Should Be Greater Than Expected In Date');
+//                    $("#out_date").val('');
+//                }
+//
+//            }
+        })
+        $("#out_dat").inputmask("yyyy-mm-dd");
+        //  loadExistingCTCInfo();
+    });
+//    function loadExistingCTCInfo() {
+//        var emp_fkey = $('#attendanceuploadtable #emp_fkey').val();
+//        $.ajax({
+//            url: livesite + 'employee/getctcinfo/' + emp_fkey,
+//            success: function (result) {
+//                $("#emp-ctc-info").html(result);
+//            }
+//        });
+//    }
+
+</script>

@@ -1,0 +1,1195 @@
+<?php
+header('Cache-control: private'); // IE 6 FIX
+// always modified 
+header('Last-Modified: ' . gmdate("D, d M Y H:i:s") . ' GMT');
+// HTTP/1.1 
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('Cache-Control: post-check=0, pre-check=0', false);
+// HTTP/1.0 
+header('Pragma: no-cache');
+/**
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
+ * @package       app.View.Layouts
+ * @since         CakePHP(tm) v 0.10.0.1076
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ */
+$cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework');
+$cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
+?>
+<!DOCTYPE html>
+<html>
+
+<head>
+ <!-- Edited by Akshay on 2-7-2025 Task #132902-->
+  <style>
+    .text-primary-18 {
+      color: #007bff;
+      font-size: 18px !important;
+    }
+    /* edited by athira */
+    .wrapper{
+    background-color:#ffffff !important;
+}
+/* end */
+  </style>
+  <!-- End -->
+  <?php echo $this->Html->charset(); ?>
+
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <script>
+    var livesite = '<?php echo $this->webroot; ?>'
+  </script>
+  <script>
+    var username = "<?php echo $this->Session->read('user_name'); ?>";
+    var usergroup = "<?php echo $this->Session->read('user_group'); ?>"
+  </script>
+  <title>
+    My Payroll Master |
+    <?php echo $this->fetch('title'); ?>
+  </title>
+  <link href="<?php echo $this->webroot; ?>css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+  <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
+  <!--    <link href="<?php echo $this->webroot; ?>css/font-awesome.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->webroot; ?>css/font-awesome.min.css" rel="stylesheet" type="text/css" />-->
+  <!-- Ionicons 2.0.0 -->
+  <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+  <!-- Theme style -->
+  <link href="<?php echo $this->webroot; ?>css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+             folder instead of downloading all of them to reduce the load. -->
+  <link href="<?php echo $this->webroot; ?>css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+  <!-- iCheck -->
+  <link href="<?php echo $this->webroot; ?>plugins/iCheck/flat/blue.css" rel="stylesheet" type="text/css" />
+  <!-- Morris chart -->
+  <link href="<?php echo $this->webroot; ?>plugins/morris/morris.css" rel="stylesheet" type="text/css" />
+  <!-- jvectormap -->
+  <link href="<?php echo $this->webroot; ?>plugins/jvectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
+  <!-- Date Picker -->
+  <link href="<?php echo $this->webroot; ?>plugins/datepicker/datepicker3.css" rel="stylesheet" type="text/css" />
+  <!-- Daterange picker -->
+
+  <link href="<?php echo $this->webroot; ?>plugins/timepicker/bootstrap-timepicker.css" rel="stylesheet" type="text/css" />
+  <link href="<?php echo $this->webroot; ?>plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+
+  <link type="text/css" rel="stylesheet" href="<?php echo $this->webroot; ?>plugins/tab/assets/jquery.pwstabs-1.2.1.css">
+  <style>
+    .pws_tabs_controll {
+      margin-bottom: 0;
+      padding-left: 0;
+    }
+
+    .pws_tab_single {
+      width: 99%;
+    }
+  </style>
+  <!--   <link type="text/css" rel="stylesheet" href="<?php echo $this->webroot; ?>plugins/editableselect/editable-select.css">
+       <script src="<?php echo $this->webroot; ?>plugins/editableselect/jquery-editable-select.js" type="text/javascript"></script>-->
+
+  <link href="<?php echo $this->webroot; ?>plugins/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
+
+  <!-- bootstrap wysihtml5 - text editor -->
+  <link href="<?php echo $this->webroot; ?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
+  <link href="<?php echo $this->webroot; ?>css/style.css" rel="stylesheet" type="text/css" />
+
+  <!-- jQuery 2.1.4 -->
+  <script src="<?php echo $this->webroot; ?>plugins/jQuery/jQuery-2.1.4.min.js"></script>
+  <!-- jQuery UI 1.11.4 -->
+  <script src="<?php echo $this->webroot; ?>plugins/jquery-ui.min.js" type="text/javascript"></script>
+
+  <script src="<?php echo $this->webroot; ?>plugins/form-validator/jquery.form-validator.js" type="text/javascript"></script>
+
+  <!-- Easy Autocomplete Plugin -->
+  <!-- JS file -->
+  <!--script src="<?php echo $this->webroot; ?>plugins/easyautocomplete/jquery.easy-autocomplete.min.js"></script-->
+  <script src="<?php echo $this->webroot; ?>plugins/easyautocomplete/jquery.easy-autocomplete-bugfix.min.js"></script>
+
+  <!-- CSS file -->
+  <link rel="stylesheet" href="<?php echo $this->webroot; ?>plugins/easyautocomplete/easy-autocomplete.min.css">
+
+  <!-- Additional CSS Themes file - not required-->
+  <link rel="stylesheet" href="<?php echo $this->webroot; ?>plugins/easyautocomplete/easy-autocomplete.themes.min.css">
+  <!-- Easy Autocomplete Plugin -->
+
+  <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+  <script type="text/javascript">
+    $.widget.bridge('uibutton', $.ui.button);
+  </script>
+  <!-- Bootstrap 3.3.2 JS -->
+  <script src="<?php echo $this->webroot; ?>js/bootstrap.min.js" type="text/javascript"></script>
+
+  <script src="<?php echo $this->webroot; ?>plugins/timepicker/bootstrap-timepicker.js" type="text/javascript"></script>
+
+  <!-- Morris.js charts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+  <script src="<?php echo $this->webroot; ?>plugins/morris/morris.min.js" type="text/javascript"></script>
+  <!-- Sparkline -->
+  <script src="<?php echo $this->webroot; ?>plugins/sparkline/jquery.sparkline.min.js" type="text/javascript"></script>
+  <!-- jvectormap -->
+  <script src="<?php echo $this->webroot; ?>plugins/jvectormap/jquery-jvectormap-1.2.2.min.js" type="text/javascript"></script>
+  <script src="<?php echo $this->webroot; ?>plugins/jvectormap/jquery-jvectormap-world-mill-en.js" type="text/javascript"></script>
+  <!-- jQuery Knob Chart -->
+  <script src="<?php echo $this->webroot; ?>plugins/knob/jquery.knob.js" type="text/javascript"></script>
+  <!-- daterangepicker -->
+  <script src="<?php echo $this->webroot; ?>plugins/moment.min.js" type="text/javascript"></script>
+
+  <script type="text/javascript" src="<?php echo $this->webroot; ?>plugins/timepicker/jquery.timepicker.js"></script>
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->webroot; ?>plugins/timepicker/jquery.timepicker.css" />
+
+  <!--link rel="stylesheet" type="text/css" href="<?php echo $this->webroot; ?>plugins/datepicker/datepicker3.css" />
+        <script src="<?php //echo $this->webroot;       
+                      ?>plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
+        <script src="<?php //echo $this->webroot;       
+                      ?>plugins/timepicker/jquery.timepicker.js" type="text/javascript"></script-->
+  <script src="<?php echo $this->webroot; ?>plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
+
+
+
+  <!-- Bootstrap WYSIHTML5 -->
+  <script src="<?php echo $this->webroot; ?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js" type="text/javascript"></script>
+  <!-- Slimscroll -->
+  <script src="<?php echo $this->webroot; ?>plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+  <!-- FastClick -->
+  <script src="<?php echo $this->webroot; ?>plugins/fastclick/fastclick.min.js" type="text/javascript"></script>
+
+  <script src="<?php echo $this->webroot; ?>plugins/datatables/jquery.dataTables.min.js" type="text/javascript"></script>
+  <script src="<?php echo $this->webroot; ?>plugins/datatables/dataTables.bootstrap.min.js" type="text/javascript"></script>
+  <script src="<?php echo $this->webroot; ?>plugins/ajaxform/jquery.form.min.js" type="text/javascript"></script>
+  <script src="<?php echo $this->webroot; ?>plugins/parsley/parsley.min.js" type="text/javascript"></script>
+
+
+  <link href="<?php echo $this->webroot; ?>plugins/uploader/css/fileinput.css" media="all" rel="stylesheet" type="text/css" />
+  <script src="<?php echo $this->webroot; ?>plugins/uploader/js/fileinput.js" type="text/javascript"></script>
+
+  <script src="<?php echo $this->webroot; ?>plugins/select2/select2.full.min.js" type="text/javascript"></script>
+  <!-- InputMask -->
+  <script src="<?php echo $this->webroot; ?>plugins/input-mask/jquery.inputmask.js" type="text/javascript"></script>
+  <script src="<?php echo $this->webroot; ?>plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
+  <script src="<?php echo $this->webroot; ?>plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
+  <!-- date-range-picker -->
+  <script src="<?php echo $this->webroot; ?>plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
+  <!-- bootstrap color picker -->
+  <script src="<?php echo $this->webroot; ?>plugins/colorpicker/bootstrap-colorpicker.min.js" type="text/javascript"></script>
+  <!-- bootstrap time picker -->
+  <!--
+          <script src="plugins/timepicker/bootstrap-timepicker.min.js" type="text/javascript"></script>
+        -->
+  <script src="<?php echo $this->webroot; ?>plugins/nestable/jquery.nestable.js"></script>
+  <!-- AdminLTE App -->
+  <script src="<?php echo $this->webroot; ?>plugins/dropzone/dropzone.js" type="text/javascript"></script>
+
+  <style>
+    .centerHederName {
+      float: left;
+      text-align: center;
+      padding: 14px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 15px;
+      position: absolute;
+      left: 30px;
+    }
+
+    /* edited by athira on 10-02-2025 */
+    #upgrade-btn {
+      color: #fff;
+      padding: 11px 43px;
+      border: none;
+      cursor: pointer;
+      border-radius: 30px;
+      position: fixed;
+      top: 4px;
+      right: 400px;
+      font-size: 18px!important;
+      font-weight: bold;
+      //edited by athira on 13-02-2025
+      background-color: #f37212;
+      box-shadow: 0 1px 2px 0 #7a869a;
+      background-color: #f37212 !important;
+      //end
+      
+    }
+
+    .upgradeForm-content {
+      padding: 40px;
+    }
+
+    /* end */
+
+    .slimScrollDiv .sidebar-menu li>a {
+      font-size: 13px;
+    }
+
+    .slimScrollDiv:hover {
+      overflow-y: auto;
+    }
+    #jsd-widget{
+    top: -7px!important;
+    right: 245px!important;
+      }  
+  </style>
+
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->webroot; ?>css/index.css">
+
+
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->webroot; ?>plugins/bootstrap-timepicker/css/bootstrap-timepicker.css" />
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->webroot; ?>plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css" />
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->webroot; ?>plugins/bootstrap-timepicker/css/timepicker.less" />
+  <script src="<?php echo $this->webroot; ?>plugins/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+  <script src="<?php echo $this->webroot; ?>plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
+
+
+
+  <script src="<?php echo $this->webroot; ?>plugins/Timer/Timer.js" type="text/javascript"></script>
+  <link href="<?php echo $this->webroot; ?>plugins/Timer/Timer.css" rel="stylesheet" type="text/css" />
+
+
+  <link href="<?php echo $this->webroot; ?>plugins/select2/select2.css" media="all" rel="stylesheet" type="text/css" />
+  <link href="<?php echo $this->webroot; ?>plugins/select2/select2.min.css" media="all" rel="stylesheet" type="text/css" />
+
+  <script src="<?php echo $this->webroot; ?>plugins/select2/select2.full.min.js" type="text/javascript"></script>
+  <script src="<?php echo $this->webroot; ?>plugins/select2/select2.full.js" type="text/javascript"></script>
+  <script src="<?php echo $this->webroot; ?>plugins/select2/select2.js" type="text/javascript"></script>
+
+
+
+
+
+  <script src="<?php echo $this->webroot; ?>plugins/datepair/datepair.js" type="text/javascript"></script>
+  <script src="<?php echo $this->webroot; ?>plugins/datepair/jquery.datepair.js" type="text/javascript"></script>
+  <script src="<?php echo $this->webroot; ?>plugins/notify/bootstrap-notify.js"></script>
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->webroot; ?>plugins/grid/css/ui.jqgrid.css" />
+  <script src="<?php echo $this->webroot; ?>plugins/grid/js/jquery.jqGrid.min.js"></script>
+  <script src="<?php echo $this->webroot; ?>plugins/chartjs/Chart.min.js" type="text/javascript"></script>
+  <!--DHTMLX -->
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->webroot; ?>plugins/dhtmlx/grid/dhtmlxgrid.css" />
+  <script src="<?php echo $this->webroot; ?>plugins/dhtmlx/grid/dhtmlxgrid.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->webroot; ?>plugins/easyui/themes/bootstrap/easyui.css" />
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->webroot; ?>plugins/easyui/themes/mobile.css">
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->webroot; ?>plugins/easyui/themes/icon.css">
+  <script src="<?php echo $this->webroot; ?>plugins/easyui/jquery.easyui.min.js"></script>
+  <script type="text/javascript" src="<?php echo $this->webroot; ?>plugins/easyui/jquery.easyui.mobile.js"></script>
+
+  <script type="text/javascript" src="<?php echo $this->webroot; ?>plugins/easyui/datagrid-scrollview.js"></script>
+
+  <link href="<?php echo $this->webroot; ?>plugins/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css" />
+  <link href="<?php echo $this->webroot; ?>plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
+
+  <link rel="<?php echo $this->webroot; ?>plugins/fullcalendar/fullcalendar.print.css" media="print">
+  <!--    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
+  <script src="<?php echo $this->webroot; ?>plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
+
+
+
+  <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js" type="text/javascript"></script>
+  <script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js" type="text/javascript"></script>
+  <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+
+
+
+
+  <script src="<?php echo $this->webroot; ?>plugins/tab/assets/jquery.pwstabs-1.2.1.js"></script>
+  <script src="<?php echo $this->webroot; ?>plugins/jquery.isloading.js" type="text/javascript"></script>
+  <script src="<?php echo $this->webroot; ?>js/fs.js" type="text/javascript"></script>
+  <script src="<?php echo $this->webroot; ?>js/app.min.js" type="text/javascript"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
+  <!--      <script>
+        $(document).ready(function () {
+        
+            var inactivityTimeout = 180000; // 3 minutes
+
+            var logoutTimer;
+
+            function resetInactivityTimeout() {
+                clearTimeout(logoutTimer);
+                logoutTimer = setTimeout(logout, inactivityTimeout);
+            }
+
+         
+            function logout() {
+            
+               $.ajax({
+                url: livesite + 'Site/logout/', 
+                type: 'POST', 
+                success: function (data) {
+                    // alert("Logging out due to inactivity!");
+                   
+                },
+                error: function (error) {
+                    console.error('Error during logout:', error);
+                }
+            });
+               
+            }
+
+         
+            $(document).on('mousemove keydown', function () {
+                resetInactivityTimeout();
+            });
+
+         
+            resetInactivityTimeout();
+        });
+    </script> -->
+
+
+
+
+  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+  <!-- <script src="js/pages/dashboard.js" type="text/javascript"></script>-->
+  <!-- AdminLTE for demo purposes -->
+  <!--   <script src="js/demo.js" type="text/javascript"></script>-->
+
+  <?php
+  echo $this->Html->meta('icon');
+
+  //	echo $this->Html->css('cake.generic');
+
+  echo $this->fetch('meta');
+  echo $this->fetch('css');
+  echo $this->fetch('script');
+  ?>
+
+  <style>
+    #activityModal .modal-dialog {
+      margin: 0;
+      width: 100%;
+    }
+
+    #activityModal .modal-activity-width {
+      width: 50%;
+      float: none;
+      height: 100vh;
+      margin: auto;
+    }
+  </style>
+</head>
+
+<body class="skin-blue sidebar-mini box sidebar-collapse">
+  <div class="wrapper">
+
+    <header class="main-header">
+      <!-- Logo -->
+      <a href="<?php echo $this->webroot . "Dashboard/index" ?>" class="logo" style="background-color:#1E516E;">
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <span class="logo-mini">MPM</span>
+        <!-- logo for regular state and mobile devices -->
+        <span class="logo-lg"><b>My Payroll Master</b></span>
+      </a>
+      <!-- Header Navbar: style can be found in header.less --><!--edited by sinsiya to change the backgroundcolor in header 10-06-2024-->
+      <nav class="navbar navbar-static-top" role="navigation" style="background-color:#1E516E;">
+        <!-- Sidebar toggle button-->
+        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+          <span class="sr-only">Toggle navigation</span>
+        </a>
+        <div class="centerHederName">
+          <?= $_SESSION['company_name']; ?>
+        </div>
+        <div class="navbar-custom-menu">
+          <ul class="nav navbar-nav">
+            <!--// For hiding the team leave notification menu -- Added By Nimisha On 01-06-2019 // -->
+
+            <?php if (isset($noti)) { ?>
+              <?php if ($showteamleavenoti == 'Y') {
+              ?>
+                <li class="dropdown notifications-menu">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-bell-o"></i>
+                    <span id="leaves" class="label label-warning"><?php echo count(isset($noti) ? $noti : 0); ?> </span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li class="header" id="leavemessage">You have <?php echo count(isset($noti) ? $noti : 0); ?> notifications</li>
+                    <li>
+                      <!-- inner menu: contains the actual data -->
+                      <ul class="menu" id="loadleaves">
+                        <?php
+                        foreach ($noti as $notifi) {
+                        ?>
+                          <li>
+                            <ul class="sidebar-menu" id="menu">
+                              <li><a href="#" data-url="<?php echo $this->webroot . "LeaveRequest/employeeleaves" ?>"><i class="fa fa-users text-aqua"></i>You have a leave request from <?php echo $notifi['empdetails']['first_name']; ?></a></li>
+                            </ul>
+
+                          </li>
+                        <?php
+                        }
+                        ?>
+                      </ul>
+                    </li>
+
+                  </ul>
+                </li>
+            <?php
+              }
+            }
+            ?>
+            <!-- Messages: style can be found in dropdown.less-->
+
+            <!--// edited by anukrishnan_03-02-2025 open // -->
+            <?php
+            $company_code = strtoupper($this->Session->read('company_code'));
+            if ($company_code == 'DEMO' || $company_code == 'GLET') {
+              if (isset($notificationCount) || isset($notify)) { ?>
+                <li class="dropdown notifications-menu">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-bell-o"></i>
+                    <span id="leaves" class="label label-warning"><?php echo $notificationCount + count($notify); ?></span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li class="header" id="leavemessage" style="display: flex;">You have <?php echo $notificationCount + count($notify); ?> notifications
+                      <a href="<?php echo $this->webroot . "Employee/incrimentdatapdf" ?>" style="color: inherit; text-decoration: none;">
+                        <i class="fa fa-file-pdf-o" style="font-size: 16px; color: red;"></i>
+                      </a>
+                    </li>
+
+                    <li>
+                      <!-- inner menu: contains the actual data -->
+                      <ul class="menu">
+                        <?php
+                        $slno = 1;
+                        foreach ($incrementdata as $incrementdatas) {
+                          $empName = $incrementdatas['ei']['EmpName'];
+                          $empId = $incrementdatas['ei']['employee_id'];
+                          $nextIncrementDate = $incrementdatas['e']['next_increment_date'];
+                          $formattedDate = date("d-m-Y", strtotime($nextIncrementDate));
+                        ?>
+                          <li>
+                            <ul class="sidebar-menu" id="menu">
+                              <li><a href="#" data-url="<?php echo $this->webroot . "Employee/showsalaryupload/"; ?>" data-toggle="tooltip" title="Increment History"><?php echo $slno++ . ". " . $empName . " (" . $empId . ") - " . $formattedDate; ?></i></a></li>
+                            </ul>
+
+                          </li>
+                        <?php
+                        }
+                        ?>
+
+                        <?php
+                        foreach ($notify as $noti) {
+                        ?>
+                          <li>
+                            <ul class="sidebar-menu" id="menu" onclick="loaddata()">
+                              <li><a href="#" data-url="<?php if ($user_group == 1) {
+                                                          echo $this->webroot . "SiteAttendance/";
+                                                        } ?>" data-toggle="tooltip" title="Site Notification"> <?php echo $slno++ . '. ' .  $noti['site']['site_id'] . ' - ' . $noti['working_day_time_procedures']['day_time_desc']; ?></a></li>
+                            </ul>
+
+                          </li>
+                        <?php
+                        }
+                        ?>
+                      </ul>
+
+                    </li>
+
+                  </ul>
+                </li>
+            <?php }
+            }
+            ?>
+            <!--// edited by anukrishnan_03-02-2025 close // -->
+
+            <!-- Notifications: style can be found in dropdown.less -->
+
+            <!-- Tasks: style can be found in dropdown.less -->
+            <?php // if(isset($empevents)){    
+            ?>
+            <!--                <li class="dropdown notifications-menu">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                          <i class="fa fa-smile-o"></i>
+                                          <span id="leaves" class="label label-info"><?php echo count(isset($empevents) ? $empevents : 0); ?> </span>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li class="header" id="leavemessage" style="background: #00659f;color: white;">Upcoming Birthdays & Work Anniversaries</li>
+                                          <li>
+                                             inner menu: contains the actual data 
+                                            <ul class="menu" id="loadleaves">
+                            <?php
+                            foreach ($empevents as $events) {
+                            ?>
+                                                                      <li>
+                                                                          <ul class="sidebar-menu" id="menu">
+                                                                                <li><a href="#" data-url=""><i class="fa fa-birthday-cake"></i></i> <?php echo $events['0']['first_name']; ?>'s <?php echo isset($events['0']['BIR']) && $events['0']['BIR'] == 'BIR' ? 'Birthday' : 'Work Anniversay'; ?> On <?php echo $events['0']['date_month']; ?></a></li>
+                                                                          </ul>
+                                                                        
+                                                                      </li>
+                                <?php
+                              }
+                                ?>
+                                            </ul>
+                                          </li>
+                                          
+                                        </ul>
+                                      </li>-->
+            <?php // }  
+            ?>
+            <?php ?>
+            <!-- User Account: style can be found in dropdown.less -->
+            <li class="dropdown user user-menu">
+              <!-- <script data-jsd-embedded data-key="88c02bfa-f19f-4fb5-8f87-8afacb875667" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script> -->
+              <!--edited by athira on 10-02-2025-->
+              <button id="upgrade-btn" style="display:none;">
+                Upgrade
+              </button>
+
+              <div id="upgradeForm" style="display:none;" class="modal">
+                <div class="modal-dialog">
+                  <div class="modal-content" style="border-radius:5px;width:88%;">
+                    <form autocomplete='off' class="upgradeForm-content" id='upgrade-form' method="post" action="<?= $this->Html->url(['controller' => 'Dashboard', 'action' => 'sendFormEmail']) ?>">
+                      <div style="margin-bottom:12px;">
+                        <label for="email" class="form-label mt-3">
+                          Your contact e-mail
+                          <span aria-hidden="true" title="required" style="color:red">
+                            *
+                          </span>
+                        </label>
+                        <input id="email" type="email" required name='mail'
+                          class="form-control">
+
+                      </div>
+                      <div style="margin-bottom:12px;">
+                        <label for="description" class="form-label mt-3">
+                          <span>
+                            Description
+                          </span>
+                        </label>
+                        <textarea rows="3" id="description" class="form-control" style="height: 57px;" name='description'></textarea>
+                      </div>
+                      <div style="margin-bottom:12px;display:flex ;justify-content:right ;align-items:center">
+                        <button class="btn btn-primary" id="submit-button" type="submit" style="padding:8px 20px;">
+                          <span>
+                            Send
+                          </span>
+                          <button class="btn btn-secondary" id="close-button" style="padding:8px 20px;margin-left:5px;">
+                            <span>
+                              Close
+                            </span>
+                          </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <!-- end -->
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <!--  <img src="<?php //echo $this->webroot . $user['avatar']; 
+                                ?>" class="user-image" alt="Company Logo"/>-->
+                <img src="<?php echo $this->webroot . $user['avatar']; ?>" class="user-image" alt="Company Logo" />
+                <span class="hidden-xs"> <?php echo $this->Session->read('user_name'); ?></span>
+              </a>
+              <ul class="dropdown-menu">
+                <!-- User image -->
+                <li class="user-header">
+                  <img src="<?php echo $this->webroot . $user['avatar']; ?>" class="img-circle" alt="Company Logo" />
+                  <p>
+                    <?php echo $this->Session->read('user_name'); ?>
+
+                  </p>
+                </li>
+                <!-- Menu Body -->
+                <!--
+                                      <li class="user-body">
+                                                        <div class="col-xs-4 text-center">
+                                                          <a href="#">Followers</a>
+                                                        </div>
+                                                        <div class="col-xs-4 text-center">
+                                                          <a href="#">Sales</a>
+                                                        </div>
+                                                        <div class="col-xs-4 text-center">
+                                                          <a href="#">Friends</a>
+                                                        </div>
+                                                      </li>-->
+
+                <!-- Menu Footer-->
+
+                <li class="user-footer">
+                  <div class="pull-left">
+                    <ul id="menu">
+                      <li class=" treeview">
+                        <a href="#" data-url="<?php echo $this->webroot . "User/profile"; ?>" class="btn btn-default btn-flat">Profile</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="pull-right">
+                    <a href="<?php echo $this->webroot; ?>Site/logout" class="btn btn-default btn-flat">Sign out</a>
+                  </div>
+                </li>
+              </ul>
+            </li>
+            <!-- Control Sidebar Toggle Button -->
+            <!--
+                            <li>
+                                            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                                          </li>-->
+
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar">
+      <!-- sidebar: style can be found in sidebar.less -->
+      <section class="sidebar">
+        <!-- Sidebar user panel -->
+
+
+        <!-- /.search form -->
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu" id="menu">
+          <!--            <li class="header">MAIN NAVIGATION</li>-->
+          <?php if ($this->Session->read('user_group') == 2) { ?>
+            <!-- Employee Menu -->
+            <li class="active treeview">
+              <a href="#" data-url="<?php echo $this->webroot . "Dashboard/index" ?>" onclick="navigateToUrl(this)"> <i class="fa fa-dashboard"></i> <span>Dashboard</span> </a>
+            </li>
+            <?php foreach ($arr_menu as $menu) { ?>
+              <?php
+              if (isset($menu['children']) && count($menu['children'])) {
+                $arr_children = $menu['children'];
+              ?>
+                <li class="treeview">
+                  <a href="#" data-url="#">
+                    <?php
+                    if ($user_group == '2' && (isset($company_code)) && ($company_code == 'GLET' || $company_code == 'ABSG')) { ?>
+                      <i class="<?php echo $menu['iconCls']; ?>"></i>
+                    <?php } else { ?>
+                      <i class="fa fa-files-o"></i>
+                    <?php }
+                    ?>
+                    <span><?php echo $menu['text']; ?></span>
+                  </a>
+                  <ul class="treeview-menu ">
+                    <?php foreach ($arr_children as $child) { ?>
+                      <li onclick="menuAudit(this.id);" id="<?php echo $child['text']; ?>"><a data-url="<?php echo isset($child['url']) ? $this->webroot . $child['url'] : '#'; ?>" href="#"><i class="<?php echo $child['iconCls']; ?>"></i><span><?php echo $child['text']; ?></span></a></li>
+                    <?php } ?>
+                  </ul>
+                </li>
+              <?php } else { ?>
+                <li onclick="menuAudit(this.id);" id="<?php echo $menu['text']; ?>">
+                  <!-- Edited by Akshay in 16-5-2025 -->
+                  <a data-url="<?php echo isset($menu['url']) ? $this->webroot . $menu['url'] : '#'; ?>" href="#" style="display: flex; align-items: flex-start;">
+                    <i class="<?php echo $menu['iconCls']; ?>" style="padding-top: 2px;"></i>
+                    <span style="display: inline-block; padding-left: 8px; line-height: 1.2;">
+                      <?php echo $menu['text']; ?>
+                    </span>
+                  </a>
+                  <!-- End -->
+                </li>
+              <?php } ?>
+            <?php } ?>
+
+          <?php } else { ?>
+            <!-- Admin Menu -->
+            <!-- <li class="active treeview">
+              <a href="#" data-url="<?php echo $this->webroot . "Dashboard" ?>" onclick="navigateToUrl(this)">
+                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+              </a>
+            </li> -->
+              <!-- edited by athira on 12-08-2025 -->
+             <?php //if ($company_code=='DEMO'){?>
+            <li class="active treeview">
+              <a href="#" data-url="<?php echo $this->webroot . "Dashboard" ?>" onclick="navigateToUrl(this)">
+                <i class="fa fa-home"></i> <span>Home</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" data-url="<?php echo $this->webroot . "Analytics" ?>" onclick="navigateToUrl(this)">
+                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+              </a>
+          </li>
+          <?php //} else{ ?>
+        <!-- <li>
+              <a href="#" data-url="<?php echo $this->webroot . "Dashboard/dashboard_old" ?>" onclick="navigateToUrl(this)">
+                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+              </a>
+          </li> -->
+         <?php //} ?>
+         <!-- end -->
+            <?php if (isset($arr_menu)) { ?>
+              <?php foreach ($arr_menu as $menu) { ?>
+                <?php
+                if (isset($menu['children']) && count($menu['children'])) {
+                  $arr_children = $menu['children'];
+                ?>
+                  <li class="treeview">
+                    <a href="#" data-url="#">
+                      <i class="<?php echo $menu['iconCls']; ?>"></i>
+                      <span><?php echo $menu['text']; ?></span>
+                    </a>
+                    <ul class="treeview-menu">
+                      <?php foreach ($arr_children as $child) { ?>
+                        <li onclick="menuAudit(this.id);" id="<?php echo $child['text']; ?>"><a data-url="<?php echo isset($child['url']) ? $this->webroot . $child['url'] : '#'; ?>" href="#"><i class="<?php echo $child['iconCls']; ?>"></i><?php echo $child['text']; ?></a></li>
+                      <?php } ?>
+                    </ul>
+                  </li>
+                <?php } else { ?>
+                  <li onclick="menuAudit(this.id);" id="<?php echo $menu['text']; ?>">
+                    <a data-url="<?php echo isset($menu['url']) ? $this->webroot . $menu['url'] : '#'; ?>" href="#">
+                      <i class="<?php echo $menu['iconCls']; ?>"></i>
+                      <span><?php echo $menu['text']; ?></span></a>
+                  </li>
+                <?php } ?>
+            <?php
+              }
+            }
+            ?>
+          <?php } ?>
+        </ul>
+      </section>
+      <!-- /.sidebar -->
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper" id="container">
+      <!-- Content Header (Page header) -->
+      <?php echo $this->fetch('content'); ?>
+
+    </div><!-- /.content-wrapper edited by sinsiya 07-06-2024 to move the footer content into center and remove the bordertop line.-->
+    <footer class="main-footer" style="text-align:center;border-top:none;">
+      <div class="pull-right hidden-xs">
+        <div class="pull-right hidden-xs">
+          <!--    <a onclick="alert('isahusd'); ">sanjun alert</a>
+                        <a target="_blank" href="https://play.google.com/store/apps/details?id=com.forsighttech.mypayrollmaster" > -->
+          <!--						<a target="_blank" href="https://play.google.com/store/apps/details?id=com.forsight.app.mypayrollmaster" >Download Mobile App  </a><b>Version</b> 2.3.21-->
+        </div>
+      </div>
+      <strong>Copyright &copy; <?php echo '2015'/* date("Y",strtotime('-1 years')) */ . ' - ' . date("Y"); ?>
+        <!--edited by sinsiya on 07-06-2024-->
+        <a href="https://mypayrollmaster.online" target="_blank">My Payroll Master</a>.</strong> All rights reserved.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a target="_blank" href="https://play.google.com/store/apps/details?id=com.forsight.app.mypayrollmaster">Download Mobile App </a>
+
+    </footer> <!-- Control Sidebar -->
+
+    <!--      <aside class="control-sidebar control-sidebar-dark">
+                     Create the tabs 
+                    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+                      <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+                      <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+                    </ul>
+                     Tab panes 
+                    <div class="tab-content">
+                       Home tab content 
+                      <div class="tab-pane" id="control-sidebar-home-tab">
+                        <h3 class="control-sidebar-heading">Recent Activity</h3>
+                        <ul class="control-sidebar-menu">
+                          <li>
+                            <a href="javascript::;">
+                              <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+                              <div class="menu-info">
+                                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+                                <p>Will be 23 on April 24th</p>
+                              </div>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="javascript::;">
+                              <i class="menu-icon fa fa-user bg-yellow"></i>
+                              <div class="menu-info">
+                                <h4 class="control-sidebar-subheading">Frodo Updated His Profile</h4>
+                                <p>New phone +1(800)555-1234</p>
+                              </div>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="javascript::;">
+                              <i class="menu-icon fa fa-envelope-o bg-light-blue"></i>
+                              <div class="menu-info">
+                                <h4 class="control-sidebar-subheading">Nora Joined Mailing List</h4>
+                                <p>nora@example.com</p>
+                              </div>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="javascript::;">
+                              <i class="menu-icon fa fa-file-code-o bg-green"></i>
+                              <div class="menu-info">
+                                <h4 class="control-sidebar-subheading">Cron Job 254 Executed</h4>
+                                <p>Execution time 5 seconds</p>
+                              </div>
+                            </a>
+                          </li>
+                        </ul> /.control-sidebar-menu 
+            
+                        <h3 class="control-sidebar-heading">Tasks Progress</h3>
+                        <ul class="control-sidebar-menu">
+                          <li>
+                            <a href="javascript::;">
+                              <h4 class="control-sidebar-subheading">
+                                Custom Template Design
+                                <span class="label label-danger pull-right">70%</span>
+                              </h4>
+                              <div class="progress progress-xxs">
+                                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+                              </div>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="javascript::;">
+                              <h4 class="control-sidebar-subheading">
+                                Update Resume
+                                <span class="label label-success pull-right">95%</span>
+                              </h4>
+                              <div class="progress progress-xxs">
+                                <div class="progress-bar progress-bar-success" style="width: 95%"></div>
+                              </div>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="javascript::;">
+                              <h4 class="control-sidebar-subheading">
+                                Laravel Integration
+                                <span class="label label-warning pull-right">50%</span>
+                              </h4>
+                              <div class="progress progress-xxs">
+                                <div class="progress-bar progress-bar-warning" style="width: 50%"></div>
+                              </div>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="javascript::;">
+                              <h4 class="control-sidebar-subheading">
+                                Back End Framework
+                                <span class="label label-primary pull-right">68%</span>
+                              </h4>
+                              <div class="progress progress-xxs">
+                                <div class="progress-bar progress-bar-primary" style="width: 68%"></div>
+                              </div>
+                            </a>
+                          </li>
+                        </ul> /.control-sidebar-menu 
+            
+                      </div> /.tab-pane 
+                       Stats tab content 
+                      <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div> /.tab-pane 
+                       Settings tab content 
+                      <div class="tab-pane" id="control-sidebar-settings-tab">
+                        <form method="post">
+                          <h3 class="control-sidebar-heading">General Settings</h3>
+                          <div class="form-group">
+                            <label class="control-sidebar-subheading">
+                              Report panel usage
+                              <input type="checkbox" class="pull-right" checked />
+                            </label>
+                            <p>
+                              Some information about this general settings option
+                            </p>
+                          </div> /.form-group 
+            
+                          <div class="form-group">
+                            <label class="control-sidebar-subheading">
+                              Allow mail redirect
+                              <input type="checkbox" class="pull-right" checked />
+                            </label>
+                            <p>
+                              Other sets of options are available
+                            </p>
+                          </div> /.form-group 
+            
+                          <div class="form-group">
+                            <label class="control-sidebar-subheading">
+                              Expose author name in posts
+                              <input type="checkbox" class="pull-right" checked />
+                            </label>
+                            <p>
+                              Allow the user to show his name in blog posts
+                            </p>
+                          </div> /.form-group 
+            
+                          <h3 class="control-sidebar-heading">Chat Settings</h3>
+            
+                          <div class="form-group">
+                            <label class="control-sidebar-subheading">
+                              Show me as online
+                              <input type="checkbox" class="pull-right" checked />
+                            </label>
+                          </div> /.form-group 
+            
+                          <div class="form-group">
+                            <label class="control-sidebar-subheading">
+                              Turn off notifications
+                              <input type="checkbox" class="pull-right" />
+                            </label>
+                          </div> /.form-group 
+            
+                          <div class="form-group">
+                            <label class="control-sidebar-subheading">
+                              Delete chat history
+                              <a href="javascript::;" class="text-red pull-right"><i class="fa fa-trash-o"></i></a>
+                            </label>
+                          </div> /.form-group 
+                        </form>
+                      </div> /.tab-pane 
+                    </div>
+                  </aside> /.control-sidebar -->
+    <!-- Add the sidebar's background. This div must be placed
+                 immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+
+  </div><!-- ./wrapper -->
+
+  <!--
+                <p>
+        <?php //echo $cakeVersion;   
+        ?>
+                                </p>-->
+
+
+  <?php // echo $this->element('sql_dump');    
+  ?>
+
+
+  <div id="modalForm" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content" id="modalForm-content">
+        <!-- Content will be loaded here from "remote.php" file -->
+      </div>
+    </div>
+  </div>
+
+  <div id="largeModalForm" class="modal fade">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content" id="largeModalForm-content">
+        <!-- Content will be loaded here from "remote.php" file -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom modal form with width : 85% -->
+  <div id="customModalForm" class="modal fade">
+    <div class="modal-dialog modal-lg" style="width: 85%;">
+      <div class="modal-content" id="customModalForm-content">
+        <!-- Content will be loaded here from "remote.php" file -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom modal form with width : 85% -->
+  <div id="activityModal" class="modal fade">
+    <div class="modal-dialog modal-activity-width modal-lg">
+      <div class="modal-content" id="activityModal-content">
+        <!-- Content will be loaded here from "remote.php" file -->
+      </div>
+    </div>
+  </div>
+
+ 
+  <!-- edited by athira on 21-09-2025 -->
+  <div id="alertsModalForm" class="modal fade alert-class">
+    <!-- end -->
+    <div class="modal-dialog modal-md">
+      <div class="modal-content" id="alertsModalForm-content">
+        <!--   Content will be loaded here from "remote.php" file -->
+
+      </div>
+    </div>
+  </div>
+
+  <div id="smallModalForm" class="modal fade">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content" id="smallModalForm-content">
+        <!-- Content will be loaded here from "remote.php" file -->
+      </div>
+    </div>
+  </div>
+  <script>
+     //edited by athira on 11-06-2025 
+    var plan = <?php echo json_encode($plan); ?>;
+    document.addEventListener('DOMContentLoaded', function() {
+      var upgradeButton = document.getElementById('upgrade-btn'); // Assuming your button has this ID
+
+      if (plan != 'basic') {
+        upgradeButton.style.display = 'none'; // Show the button if the plan is 'basic'
+      } else {
+        upgradeButton.style.display = 'block'; // Hide the button otherwise
+      }
+    });
+    document.getElementById('upgrade-btn').addEventListener('click', function() {
+      var form = document.getElementById('upgradeForm');
+      if (form.style.display === 'none') {
+        form.style.display = 'block';
+      } else {
+        form.style.display = 'none';
+      }
+    });
+    //end
+    function loadMenu(_s, url) {
+      $(_s).html('<li class="fa fa-spinner fa-spin" ></li>');
+      $("#container").load(livesite + url);
+    }
+
+    function showActivityModalForm(url, callback = '') {
+      var container = $("#activityModal #activityModal-content");
+
+
+      container.load(url, function() {
+        if (callback != "") {
+          eval(callback);
+        }
+        $("#activityModal").modal('show');
+      });
+    }
+
+    function closeActivityModal(table) {
+      if (table) {
+
+        $('#' + table).datagrid('reload');
+        //$('#'+table).DataTable().clear();
+        // $('#'+table).dataTable( )
+      }
+      $('#activityModal').modal('hide')
+      $("#activityModal #activityModal-content").html("")
+    }
+
+    $(document).ajaxError(function(event, jqxhr, settings, exception) {
+
+      if (exception == 'Unauthorized') {
+
+        // Prompt user if they'd like to be redirected to the login page
+        var redirect = confirm("You're session has expired. Would you like to be redirected to the login page?");
+
+        // If the answer is yes
+        if (redirect) {
+
+          // Redirect
+          window.location = livesite;
+        }
+      }
+    });
+
+    function menuAudit(menu) {
+      console.log(menu);
+      $.ajax({
+        url: livesite + "Dashboard/menuAudit/" + menu,
+        type: 'post',
+        success: function(response) {
+          var resp = JSON.parse(response);
+          if (resp.success) {
+            //                            console.log(resp.msg);
+          }
+        }
+      });
+    }
+  </script>
+  <script>
+    // $(document).ready(function() {
+    //$('#loaders').hide();
+    // $('#loader').hide();
+    //});
+    //edited by athira on 10-02-2025 
+    var plan = <?php echo isset($plan) ? $plan : 'standard'; ?>;
+    document.addEventListener('DOMContentLoaded', function() {
+      var upgradeButton = document.getElementById('upgrade-btn'); // Assuming your button has this ID
+
+      if (plan != 'basic') {
+        upgradeButton.style.display = 'none'; // Show the button if the plan is 'basic'
+      } else {
+        upgradeButton.style.display = 'block'; // Hide the button otherwise
+      }
+    });
+    document.getElementById('upgrade-btn').addEventListener('click', function() {
+      var form = document.getElementById('upgradeForm');
+      if (form.style.display === 'none') {
+        form.style.display = 'block';
+      } else {
+        form.style.display = 'none';
+      }
+    });
+    //end
+  </script>
+  <div id="loaders" class="overlay" style="z-index:9999 !important ; ">
+    <i class="fa"><img src="<?php echo $this->webroot; ?>img/dddd.gif"></i>
+  </div>
+  <div id="loader" class="overlay" style="z-index:9999 !important ; ">
+    <i class="fa"><img src="<?php echo $this->webroot; ?>img/updateimg.gif"></i>
+  </div>
+</body>
+<script>
+  //edited by athira on 10-02-2025
+  $(document).ready(function() {
+    $('#loaders').hide();
+    $('#loader').hide();
+    // Edited by Akshay on 7-4-2025
+    $('.slimScrollDiv').on('wheel', function(e) {
+      var delta = e.originalEvent.deltaY;
+      this.scrollTop += delta;
+
+      // Prevent the page from scrolling
+      e.preventDefault();
+    });
+    // End
+
+    $('#upgrade-form').submit(function(e) {
+      e.preventDefault(); // Prevent default form submission
+
+      $.ajax({
+        type: 'POST',
+        url: '<?= $this->Html->url(['controller' => 'Dashboard', 'action' => 'sendFormEmail']) ?>',
+        data: $(this).serialize(),
+        dataType: 'json',
+        success: function(response) {
+          if (response.status === 'success') {
+            $.notify(response.message, {
+              type: 'success',
+              allow_dismiss: false
+            });
+            $('#upgrade-form')[0].reset(); // Clear form
+            $('#upgradeForm').hide();
+          } else {
+            $.notify(response.message, {
+              type: 'danger',
+              allow_dismiss: false
+            });
+          }
+        },
+        error: function(xhr) {
+          alert('Request failed: ' + xhr.responseText);
+        }
+      });
+    });
+    $('#close-button').click(function() {
+      $('#upgradeForm').hide(); // Close the form when close button is clicked
+    });
+
+    $('[data-toggle="tooltip"]').tooltip(); // edited by anukrishnan_17-02-2025 
+  });
+
+  //end
+
+  function loaddata() {
+    <?php if ($user_group == 1) { ?>
+      $('#loader').show();
+      $('#load').load(livesite + 'SiteAttendance/');
+    <?php } ?>
+  }
+</script>
+<style>
+  ::selection {
+    background-color: #3498db;
+    /* Change to your desired color */
+    color: white;
+    /* Optional: change the text color */
+  }
+</style>
+
+</html>
+<script>
+  function navigateToUrl(element) {
+    var url = element.getAttribute('data-url');
+    window.location.href = url;
+  }
+</script>

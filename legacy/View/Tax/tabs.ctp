@@ -1,0 +1,210 @@
+<?php
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+?>
+<style>
+    /* Edited by bindu 24-10-2025 */
+    .heading {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+   .home {
+        background-color: #ffffffff;
+        border-radius: 50px;
+        padding: 2px 15px;
+        color: #1e516e !important;
+        /* margin-right: 15px; */
+        color: white;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: #1e516e 1px solid;
+    }
+    /* End */
+</style>
+<script>
+    // Edited by Akshay on 1-7-2025
+    function filterTaxDetails() {
+        $('#loaders').show();
+
+        var emp_pkey = $('#emp_pkey').val();
+
+        if (!emp_pkey) {
+            alert('Please select an employee');
+            $('#loaders').hide(); // Hide loader if validation fails
+            return;
+        }
+
+        // $('#emp_pey').val(emp_pkey); // Set hidden input if used elsewhere
+
+        $('#load').load(livesite + 'Tax/setup/' + emp_pkey, function(response, status, xhr) {
+            // Callback runs after the content is fully loaded
+            $('#loaders').hide();
+        });
+    }
+
+
+    function filterRegister(sel) {
+        var branchCode = $(sel).val();
+        $.ajax({
+            type: 'POST',
+            url: livesite + "Tax/getEmployeesByBranch",
+            data: {
+                branch_code: branchCode
+            },
+            dataType: 'json',
+            success: function(response) {
+                var empSelect = $('#emp_pkey');
+                empSelect.empty(); // Clear existing options
+
+                // Add default --Select-- option
+                empSelect.append('<option value="">-- Select --</option>');
+
+                if (response.length === 0) {
+                    empSelect.append('<option value="">No employees found</option>');
+                } else {
+                    $.each(response, function(index, emp) {
+                        empSelect.append('<option value="' + emp.emp_pkey + '">' + emp.emp_name + ' - ' + emp.employee_id + '</option>');
+                    });
+                }
+
+                empSelect.trigger('change');
+            },
+            error: function() {
+                alert('Failed to fetch employees.');
+            }
+        });
+    }
+
+    // End
+    $(document).ready(function() {
+        // Edited by Akshay on 1-7-2025
+        $('#filterby_branch').select2();
+        $('#emp_pkey').select2();
+    })
+
+
+      /* edited by bindu 20-02-26 */
+   $(".home").on("click", function () {
+
+    $("#container").isLoading({
+        text: "Loading",
+        position: "overlay",
+    });
+
+    let url = "";
+    var userGroup=<?php echo json_encode($user_group); ?>
+
+    if (userGroup == "1") {
+        url = livesite + "EmployeeManage/index";
+    } 
+    else if (userGroup == "2") {
+        url = livesite + "EmployeeMenu/addon";
+    }
+
+    $("#container").load(url, function () {
+        isDashboardShown = false;
+    });
+
+});
+
+	/* edited by bindu 20-02-26 */
+</script>
+
+<section class="content">
+    <div class="row">
+        <div>
+            <!-- Edited by Akshay on 2-7-2025 -->
+            <div class="box box-header" style="border:none;">
+                <!-- End -->
+                <div class="box-body" id="div-reportcriterias">
+                    <div>
+                        <!-- Edited by Akshay on 1-7-2025 -->
+                        <!-- <input type="hidden" id="emp_pkey"> -->
+                        <!-- End -->
+        <!-- /* edited by bindu 24-10-25 */ -->
+                         <div class="heading">
+                            <h1 class="text-primary-18">Tax Details</h1>
+                              <div class="text-primary-16 home" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+        <i class="fa" style="font-size:16px;">&#xf104;</i>
+        Back
+    </div>
+                        </div>
+                        <!-- end -->
+                        <!-- <div class="col-md-6" style="padding-top: 21px ; "> <input type="text" id="user" class="form-control" name="user" placeholder="Search Your Employee Name" /> </div> -->
+
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <!-- Edited by Akshay on 1-7-2025 -->
+            <?php
+            if ($user_group == 1) { ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- DIRECT CHAT DANGER -->
+                        <div class=" ">
+                            <div class="">
+                                <!-- Employee import form -->
+                                <form class="form-horizontal" method="post" action="" id="payrollfilter">
+                                    <div class="form-group d-flex justify-content-evenly align-items-end flex-wrap">
+                                        <div class="col-md-4">
+                                            <label class="col-md-4 control-label" for="filterby_branch"> Branch : </label>
+                                            <div class="col-md-8">
+                                                <select id="filterby_branch" name="filterby_branch" class="form-control select2-searching" onchange="filterRegister(this);">
+                                                    <option value="">All</option>
+                                                    <?php
+                                                    foreach ($arr_branches as $key => $value) {
+                                                        echo '<option value="' . $value['branches']['branch_code'] . '">' . $value['branches']['branch_name'] . '</option>';
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="col-md-4 control-label" for="emp_pkey">Employee:</label>
+                                            <div class="col-md-8">
+                                                <select id="emp_pkey" name="emp_pkey" class="form-control select2-searching">
+                                                    <option value="">--Select--</option>
+                                                    <?php
+                                                    foreach ($arr_emp_details as $emp) {
+                                                        echo '<option value="' . $emp['ei']['emp_pkey'] . '">' . $emp['ei']['EmpName'] . ' - ' . $emp['ei']['employee_id'] . '</option>';
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" style="text-align: center;">
+                                            <div class="col-md-12">
+                                                <button type="button" class="btn btn-primary" onclick="filterTaxDetails();">View</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php }
+            ?>
+            <!-- End -->
+
+            <div id="load" class="box box-body" style="margin:10px 0">
+
+            </div>
+        </div>
+
+    </div>
+</section>

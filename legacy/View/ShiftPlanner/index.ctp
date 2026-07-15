@@ -1,0 +1,582 @@
+<style>
+body { 
+    margin:0; 
+}
+
+.filters label { 
+    font-weight:600; 
+    font-size:16px; 
+}
+.filters select, .filters input[type="month"] { 
+    padding:5px; 
+    font-size:16px; 
+    line-height:18px; 
+}
+
+#load-roster { 
+    padding:6px 25px; 
+    border:none; 
+    border-radius:10px; 
+    background:#1e516e; 
+    color:#fff; 
+    cursor:pointer; }
+
+.roster-table-wrapper { 
+    border:1px solid #e0e0e0; 
+    border-radius:8px; 
+    box-shadow:0 2px 10px rgba(0,0,0,0.05); 
+    overflow-x:auto; 
+    margin:10px 0; 
+}
+#roster-table { 
+    width:100%; 
+    border-collapse:collapse; 
+    table-layout:fixed; 
+}
+#roster-table th{ 
+    border:1px solid #e0e0e0; 
+    text-align:center; 
+    padding:8px; 
+}
+#roster-table td {
+   border:1px solid #e0e0e0; 
+   text-align:left; 
+   padding:8px;  
+}
+#roster-table th { 
+    background:#f9f9f9; 
+    font-weight:700; 
+}
+#roster-table tbody tr:nth-child(even) { 
+    background:#fdfefe; 
+}
+#roster-table tbody tr:hover { 
+    background:#eef7ff; 
+}
+
+.shift-dropdown { 
+    width:100%; 
+}
+.actions { 
+    display:flex; 
+    justify-content:flex-end;  
+    margin-top: -10px;
+}
+.actions button { 
+    border-radius: 10px;
+    padding: 8px 20px;
+    border: none;
+    background-color: #1e516e;
+    color:#fff; 
+}
+
+#save-roster:hover { 
+    background:#1e516e; 
+}
+/* #reset-roster { 
+    background:#dc3545; 
+    color:#fff; 
+}
+#reset-roster:hover { 
+    background:#c82333; 
+} */
+.hidden { 
+    display:none; 
+}
+
+.timingCell{
+    display: flex;
+    justify-content: space-between;
+    border: none;
+    align-items: center;
+    border: none !important;
+    border-top: 1px solid #e0e0e0 !important;
+}
+
+#closeShiftModal{
+    margin-top: 15px;
+    padding: 8px 15px;
+    border: none;
+    background: #138146;
+    color: white;
+    border-radius: 5px;
+    display: block;
+    margin-left: auto;
+}
+.changed-row {
+    background-color: #e7eef5 !important; /* lighter shade of #1e516e */
+}
+#roster-table tbody tr.changed-row {
+    background-color: #e7eef5;
+}
+#roster-table tbody tr.changed-row:nth-child(even) {
+    background-color: #e7eef5;
+}
+/* <!-- edited by bindu 12-12-25 --> */
+.heading {
+        display: flex;
+        flex-direction: row;
+        align-items: end;
+        justify-content: space-between;
+        /* margin-left: 20px; */
+    }
+
+    .home {
+        background-color: #ffffffff;
+        border-radius: 50px;
+        padding: 2px 15px;
+        color: #1e516e !important;
+        /* margin-right: 15px; */
+        color: white;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: #1e516e 1px solid;
+    }
+    /* <!-- edited by bindu 12-12-25 end --> */
+</style>
+<!-- edited by bindu 12-12-25 -->
+<div class="container" style="padding:15px;margin:0;width:100%;">
+    <!-- <h2 style="padding:5px 0;margin:0;" class="text-primary-18">Employee Shift Planner</h2> -->
+     <div class="heading">
+                <h1 class="text-primary-18">Employee Shift Planner</h1>
+                <div class="text-primary-16 home" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                    <i class="fa" style="font-size:16px;">&#xf104;</i>
+                    Back
+                </div>
+            </div>
+    <hr style="margin-top:5px;padding:0;">
+<!-- edited by bindu 12-12-25 end -->
+
+    <div class="filters" style="display:flex; flex-wrap:wrap; gap:20px; align-items:flex-end; margin-bottom:20px;">
+
+    <div class="filter-item" style="display:flex; align-items:center; min-width:250px; max-width:300px;">
+    <label for="employee-select" style="font-weight:600; margin-right:6px; white-space:nowrap;font-size:14px;">
+        Employee
+    </label>
+    <span style="margin-right:6px;font-weight:600;">:</span>
+    <select id="employee-select" style="flex:1; padding:6px 8px; font-size:16px; box-sizing:border-box;">
+        <option value="">-- Select Employee --</option>
+        <?php foreach($employees as $emp): ?>
+            <option value="<?= $emp['emp_details']['emp_pkey'] ?>">
+                <?= htmlspecialchars($emp['0']['first_name']) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+</div>
+
+
+    <div class="filter-item" style="display:flex; align-items:center; min-width:180px; max-width:220px;">
+    <label for="month-select" style="font-weight:600; margin-right:6px; white-space:nowrap;font-size:14px;">
+        Month
+    </label>
+    <span style="margin-right:6px;font-weight:600;">:</span>
+    <select id="month-select" style="flex:1; padding:6px 8px; font-size:16px; box-sizing:border-box;">
+    </select>
+</div>
+
+
+    <div style="display:flex; align-items:flex-end;">
+        <button id="load-roster" style="padding:5px 20px; border:none; border-radius:8px; background:#1e516e; color:#fff; cursor:pointer;">
+            Load Roster
+        </button>
+    </div>
+
+</div>
+
+<div class="actions hidden" id="action-buttons">
+        <button id="save-roster">Save Roster</button>
+        <!-- <button id="reset-roster">Reset</button> -->
+    </div>
+
+
+    <div class="roster-table-wrapper hidden" id="roster-section">
+        <table id="roster-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Shift</th>
+                    <th>Shift Timings</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Shift Details Modal -->
+<div id="shiftModal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; 
+    background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:10000;">
+    <div style="background:#fff; padding:20px; border-radius:8px; width:400px; position:relative;">
+        <h3 style="margin-top:0px;">Shift Details</h3>
+        <hr style="margin-top:0px;margin-bottom:10px;border-top: 1px solid #138146;">
+        <div id="shiftModalContent"></div>
+        <button id="closeShiftModal">Close</button>
+    </div>
+</div>
+
+<script>
+jQuery(document).ready(function($) {
+
+    function showNoRosterMessage(message = "No roster found") {
+    const rosterTableBody = document.querySelector('#roster-table tbody');
+    rosterTableBody.innerHTML = `
+        <tr>
+            <td colspan="3" style="text-align:center; color:#888;">
+                ${message}
+            </td>
+        </tr>
+    `;
+    // Hide action buttons
+    document.getElementById('action-buttons').classList.add('hidden');
+}
+
+// Example: On initial page load
+showNoRosterMessage("Please select employee and month, then click Load Roster");
+
+// Example: On AJAX error or empty response
+// showNoRosterMessage("No roster found for selected employee/month");
+
+    // Initialize Employee select2
+    $('#employee-select').select2({ placeholder:"Select Employee", width:'resolve' });
+
+    // Populate Month select
+   //edited by athira on 29-12-2025
+
+const monthSelect = $('#month-select');
+const startYear = 2023;
+const today = new Date();
+
+let currentYear = today.getFullYear();
+let currentMonth = today.getMonth() + 1;
+
+// ✅ allow next month
+// ✅ allow current + 2 months
+let endYear = currentYear;
+let endMonth = currentMonth + 2;
+
+// handle year rollover (Dec → Jan → Feb)
+while (endMonth > 12) {
+    endMonth -= 12;
+    endYear += 1;
+}
+
+
+const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+let options = [];
+
+
+// store options first
+for (let year = startYear; year <= endYear; year++) {
+
+    let maxMonth = 12;
+
+    if (year === currentYear) {
+        maxMonth = currentMonth;
+    }
+
+    if (year === endYear) {
+        maxMonth = endMonth;
+    }
+
+    for (let month = 1; month <= maxMonth; month++) {
+        const monthValue = `${year}-${String(month).padStart(2, '0')}`;
+        const monthText = `${monthNames[month - 1]} ${year}`;
+        options.push(`<option value="${monthValue}">${monthText}</option>`);
+    }
+}
+
+
+// append in reverse (latest month first)
+options.reverse().forEach(opt => monthSelect.append(opt));
+
+monthSelect.select2({ placeholder:"Select Month", width:'resolve' });
+monthSelect.val(`${currentYear}-${String(currentMonth).padStart(2,'0')}`).trigger('change');
+
+//end
+});
+
+// Elements
+const employeeSelect = document.getElementById('employee-select');
+const monthSelect = document.getElementById('month-select');
+const loadRosterBtn = document.getElementById('load-roster');
+const rosterSection = document.getElementById('roster-section');
+const rosterTableBody = document.querySelector('#roster-table tbody');
+const actionButtons = document.getElementById('action-buttons');
+
+// Load roster button click
+loadRosterBtn.addEventListener('click', function() {
+    const empKey = $('#employee-select').val();
+    const month = $('#month-select').val();
+
+    if(!empKey){
+        alert("Please select employee");
+        return;
+    }
+
+    // Clear table
+    rosterTableBody.innerHTML = '';
+    rosterSection.classList.add('hidden');
+    actionButtons.classList.add('hidden');
+
+    // AJAX request
+    $.ajax({
+        url:'/ShiftPlanner/listemployees',
+        type:'POST',
+        data:{ emp_pkey: empKey, month: month },
+        dataType:'json',
+        success:function(resp){
+    if(resp.success){
+        populateRosterTable(resp.attendance, resp.primary_shift, resp.secondary_shifts);
+    }else{
+        alert(resp.message || "No data found for this employee/month");
+    }
+},
+
+        error:function(){ alert("Error fetching roster data"); }
+    });
+});
+
+
+
+
+function populateRosterTable(attendanceData, primaryShift, secondaryShifts) {
+    rosterTableBody.innerHTML = "";
+
+    if (!Array.isArray(attendanceData) || attendanceData.length === 0) {
+        rosterTableBody.innerHTML = "<tr><td colspan='3'>No attendance found</td></tr>";
+        return;
+    }
+
+    attendanceData.forEach(att => {
+    const row = rosterTableBody.insertRow();
+    row.setAttribute('data-date', att.date); // for future reference
+
+    // Date cell
+    row.insertCell().textContent = `${att.date} (${att.day})`;
+
+    // Determine primary/default shift
+    const primaryShiftId = primaryShift.length ? primaryShift[0].ec.policy_id : null;
+    const savedShiftId = att.saved_shift_id || primaryShiftId;
+
+    // Shift dropdown
+    const shiftCell = row.insertCell();
+    shiftCell.appendChild(createShiftDropdown(primaryShift, secondaryShifts, row, savedShiftId));
+
+    // Timings + view button
+    const timingCell = row.insertCell();
+    timingCell.className = 'timingCell';
+    const timingText = document.createElement('span');
+
+    const allShifts = [...primaryShift, ...secondaryShifts];
+    const selectedShift = allShifts.find(s => s.ec.policy_id == savedShiftId);
+
+    timingText.textContent = selectedShift ? `${selectedShift.wdtp.on_dutty1}-${selectedShift.wdtp.off_dutty1}` : '-';
+    timingCell.appendChild(timingText);
+
+    const viewBtn = document.createElement('span');
+    viewBtn.innerHTML = '<i class="fa fa-eye"></i>';
+    viewBtn.style.marginLeft = '10px';
+    viewBtn.style.cursor = 'pointer';
+    viewBtn.style.color = '#108950';
+    timingCell.appendChild(viewBtn);
+
+    viewBtn.addEventListener('click', () => {
+    const selectElement = row.querySelector('select');  // ✅ get select from the row
+    const selectedValue = selectElement.value;          // ✅ read its value
+    showShiftModal(allShifts, selectedValue);
+});
+
+
+
+    // ✅ Highlight row if saved shift differs from primary (on load)
+    if (savedShiftId && savedShiftId != primaryShiftId) {
+        row.classList.add('changed-row');
+    }
+});
+
+
+    rosterSection.classList.remove('hidden');
+    actionButtons.classList.remove('hidden');
+}
+
+
+// Elements
+const employeeSelectElem = $('#employee-select');
+const monthSelectElem = $('#month-select');
+
+function clearRoster() {
+    rosterTableBody.innerHTML = '';
+    rosterSection.classList.add('hidden');
+    actionButtons.classList.add('hidden');
+    changedRows = {}; // reset changes
+}
+
+// Clear roster when employee or month changes
+employeeSelectElem.on('change', clearRoster);
+monthSelectElem.on('change', clearRoster);
+
+
+ function createShiftDropdown(primaryShift, secondaryShifts, row, selectedShiftId) {
+    const container = document.createElement('div');
+    container.className = 'shift-dropdown';
+
+    const select = document.createElement('select');
+    select.className = 'form-control';
+
+    // Combine primary + secondary shifts
+    const allShifts = [...primaryShift, ...secondaryShifts];
+
+    allShifts.forEach(s => {
+        const option = document.createElement('option');
+        option.value = s.ec.policy_id;
+        option.textContent = s.wdtp.day_time_desc;
+        // Select saved shift if exists
+        if (selectedShiftId && s.ec.policy_id == selectedShiftId) {
+            option.selected = true;
+        }
+        select.appendChild(option);
+    });
+
+    container.appendChild(select);
+    $(select).select2({ placeholder: "Select Shift", width: '100%' });
+
+    // On change
+    $(select).on('change', function() {
+        const chosenId = this.value;
+        const timingCell = row.cells[2];
+        const timingText = timingCell.querySelector('span');
+
+        const info = allShifts.find(s => s.ec.policy_id == chosenId);
+        if(info) timingText.textContent = `${info.wdtp.on_dutty1}-${info.wdtp.off_dutty1}`;
+
+        const date = row.cells[0].textContent.split(" ")[0]; // YYYY-MM-DD
+        onShiftChange(date, chosenId);
+    });
+
+    return container;
+}
+
+
+let changedRows = {}; // global
+
+// When user changes a shift dropdown
+function onShiftChange(date, shiftId){
+    changedRows[date] = { shift_id: shiftId};
+}
+
+function showShiftModal(allShifts, selectedShiftId) {
+    const modal = document.getElementById('shiftModal');
+    const modalContent = document.getElementById('shiftModalContent');
+    modalContent.innerHTML = '';
+
+    const shift = allShifts.find(s => s.ec.policy_id == selectedShiftId);
+    if(shift) {
+        const detailsHtml = `
+        <table style="width:100%;">
+        <tr>
+        <th style="padding:5px;">Shift Name  </th> 
+        <td style="padding-top:5px;">${shift.wdtp.day_time_desc}</td>
+        </tr>
+         <tr>
+         <th style="padding:5px;">On Duty  </th> 
+         <td style="padding-top:5px;">${shift.wdtp.on_dutty1}</td>
+        </tr>
+         <tr>
+         <th style="padding:5px;">Off Duty</th> 
+         <td style="padding-top:5px;">${shift.wdtp.off_dutty1}</td>
+        </tr>
+         <tr>
+         <th style="padding:5px;">Duration</th> 
+         <td style="padding-top:5px;">${shift.wdtp.working_time1}</td>
+        </tr>
+         <tr>
+          <th style="padding:5px;">Full Day (Min)</th> 
+          <td style="padding-top:5px;">${shift.wdtp.minuts_calc_perday}</td>
+        </tr>
+        </table>
+        `;
+        modalContent.innerHTML = detailsHtml;
+    } else {
+        modalContent.innerHTML = "<p>No shift details found.</p>";
+    }
+
+    modal.classList.remove('hidden');
+}
+
+// Close modal
+document.getElementById('closeShiftModal').addEventListener('click', () => {
+    document.getElementById('shiftModal').classList.add('hidden');
+});
+document.getElementById('shiftModal').addEventListener('click', e => {
+    if(e.target.id === 'shiftModal') e.target.classList.add('hidden');
+});
+
+// Save & Reset
+$('#save-roster').on('click', function(){
+    if(Object.keys(changedRows).length === 0){
+        alert("No changes to save");
+        return;
+    }
+
+    const empKey = $('#employee-select').val();
+    const month = $('#month-select').val(); // get selected month
+
+    $.ajax({
+        url:'/ShiftPlanner/saveRoster',
+        type:'POST',
+        data:{
+            emp_pkey: empKey,
+            month: month,
+            shiftData: changedRows
+        },
+        dataType:'json',
+        success:function(resp){
+    if(resp.success){
+        alert(resp.message);
+
+        // ✅ highlight changed rows again after save
+        for (const date in changedRows) {
+            const row = document.querySelector(`#roster-table tbody tr[data-date='${date}']`);
+            if(row){
+                row.classList.add('changed-row');
+            }
+        }
+
+        changedRows = {}; // clear after marking highlight
+    } else {
+        alert(resp.message || "Error saving roster");
+    }
+},
+
+        error:function(){ 
+            alert("Error while saving roster"); 
+        }
+    });
+});
+   $(".home").on("click", function () {
+
+    $("#container").isLoading({
+        text: "Loading",
+        position: "overlay",
+    });
+
+    let url = "";
+    var userGroup = <?php echo json_encode($this->Session->read('user_group')); ?>;
+
+    if (userGroup == "1") {
+        url = livesite + "AttendanceSetup/index";
+    } 
+    else if (userGroup == "2") {
+        url = livesite + "EmployeeMenu/addon";
+    }
+
+    $("#container").load(url, function () {
+        isDashboardShown = false;
+    });
+
+});
+</script>

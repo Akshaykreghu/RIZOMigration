@@ -1,0 +1,184 @@
+
+   <form  id="leaveuploadtable" action="<?php echo $this->webroot; ?>EmployeeLeaveUpload/leavesave" method="POST">
+                        <div class="modal-body">
+                             <h4 class="modal-title">Upload Leave</h4>    
+                               
+                             <div class="form-group">
+
+                                
+                                     <label class="col-sm-5" for="employee">Choose Employee</label>                        
+                                     <!--<input type="radio" id="employeeview" name="employeeview" value="y">  -->                  
+                                     <div class="col-md-7">
+                                         <select id="emp_fkey1" class="form-control" name="emp_fkey1" >
+                                             
+                                                <?php
+                                     foreach ($arr_employees as $value) {
+                                            $selected = ($data['emp_fkey'] == $value['EmployeeDetails']['emp_pkey']) ? 'selected="selected"' : '';
+                                            
+                                            echo '<option value="' . $value['EmployeeDetails']['emp_pkey'] . '" ' . $selected . '>' . $value['EmployeeDetails']['first_name'] . ' '  .$value['EmployeeDetails']['last_name'] .'</option>';
+                                        }
+                                                                            ?>
+                                         </select>
+                                     </div>    
+
+                                
+                             </div>
+                    <div class="form-group">
+                        <input type="hidden" id="emp_leave_upload_pkey" name="emp_leave_upload_pkey" value="<?php echo $data['emp_leave_upload_pkey']; ?>" >
+                         <!--input type="hidden" id="emp_fkey" name="emp_fkey" value="<?php echo $data['emp_fkey']; ?>" -->
+                       <label for="leave_type" class="col-sm-4 control-label">Leave Type<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                            <select id="leave_type" name="leave_type" class="form-control">                                    
+                                    <option value="">[--Select--]</option>                                   
+                                    <?php foreach ($arr_leavetypes as $key => $value) { ?> 
+                                        <?php
+                                        if ($value['SalaryHeadItems']['salary_head_item_pkey'] === $data['leave_type']) {
+                                            $selected = 'selected="selected"';
+                                        } else {
+                                            $selected = '';
+                                        }
+                                        ?>
+                                        <option <?php echo $selected; ?> value="<?php echo $value['SalaryHeadItems']['salary_head_item_pkey']; ?>"><?php echo $value['SalaryHeadItems']['item']; ?> </option>
+                                    <?php }?>                                      
+                                </select>
+                             </div>
+                      </div>
+                           <div id="bal_leave" style="display:none"> 
+                              <div class="form-group">   
+                                  <label for="balancE_leave" class="col-sm-4 control-label">Balance Leave </label>
+                               <div class="col-sm-8">
+                                   <input id="leave_bal" value="" disabled>
+                                 <input id="leave_balance" name="leave_balance" value="<?php echo $leavebalance;?>" type="hidden">
+                               </div>  
+                              </div>
+                              </div>
+                  
+                         <div class="form-group">
+                         <label for="leave_start_date" class="col-sm-4 control-label">Leave Start Date<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                          <input type="text" required="required" class="form-control  " value="<?php echo $data['leave_start_date'] ?>  " name="leave_start_date" id="leave_start_date" >
+                         </div>
+                      </div>
+                         <div class="form-group">
+                         <label for="leave_start_session" class="col-sm-4 control-label">Leave Start Session<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                           <select class="form-control input-md" id="leave_start_session" name="leave_start_session"  > 
+                         <option value="">[--Select--]</option>   
+                        <option value="1" <?php echo($data['leave_start_session'] == '1') ? 'selected="selected"' : ''; ?>>First Half</option>
+                         <option value="2" <?php echo($data['leave_start_session'] == '2') ? 'selected="selected"' : ''; ?>>Second Half</option>                       
+                          </select>
+                         </div>
+                      </div>
+                         <div class="form-group">
+                         <label for="leave_end_date" class="col-sm-4 control-label ">Leave End Date<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                          <input type="text" required="required" class="form-control" value="<?php echo $data['leave_end_date'] ?>  " name="leave_end_date" id="leave_end_date" >
+                         </div>
+                      </div>
+                         <div class="form-group">
+                         <label for="leave_end_session" class="col-sm-4 control-label">Leave End Session<span class="star">*</span></label>
+                         <div class="col-sm-8">
+                         <select class="form-control input-md" id="leave_end_session" name="leave_end_session"  >
+                             <option value="">[--Select--]</option>
+                            <option value="1" <?php echo($data['leave_end_session'] == '1') ? 'selected="selected"' : ''; ?>>First Half</option>
+                         <option value="2" <?php echo($data['leave_end_session'] == '2') ? 'selected="selected"' : ''; ?>>Second Half</option>              
+                             </select>
+                         </div>
+                      </div>                      
+                        </div>
+                     <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+                     </div>
+                       
+                    </form>
+<script type="text/javascript">
+
+$(document).ready(function() { 
+	    $('#leaveuploadtable').parsley();
+    var options = { 
+      success:function(responseText, statusText, xhr, $form){
+        alert("Leave Uploaded Successfully");
+	closeModal('leave_table');
+}
+    }; 
+ 
+    // bind to the form's submit event 
+    
+
+    
+    $('#leaveuploadtable').submit(function() { 
+        
+           var val= $("#leave_bal").val();//alert(val)
+    var value= $("#leave_balance").val();
+           //alert(value);
+           if(value !='' && value !='null')
+           { // alert(value);
+        $(this).ajaxSubmit(options); 
+    }
+    else if(val !='' && val !='null')
+    { // alert(val);
+      $(this).ajaxSubmit(options);   
+    }
+    else {
+        alert('Employee not eligible for leave')
+    }
+        
+        return false;
+    });
+    $('#emp_fkey1').change( function() {  $("#bal_leave").hide();});        
+   $('#leave_type').change( function() {
+       
+            var employee = $('#emp_fkey1').val(); 
+            var type = $('#leave_type').val(); 
+          	$.ajax({
+								url : livesite+'EmployeeLeaveUpload/getleave',
+								data : {
+								employee:employee,
+                                                                type:type
+								},
+							success : function(response) {
+					 				console.log(response);
+                                                                        $("#bal_leave").show();
+                                                                        $("#leave_bal").val(response)
+							}
+							});  
+           // empleaverequeststable.search( this.value ).draw();
+        });      
+    $('#leave_start_date').datepicker({
+     format: 'yyyy-mm-dd',
+     onSelect: function (selected) {
+            var esdt = new Date(selected);
+            var selectedenddate = $("#leave_end_date").val();
+            var ecdt = new Date(selectedenddate);
+            if(esdt > ecdt){
+                alert('Expected start Date Should Be Less Than Expected End Date');
+                $("#leave_start_date").val('');
+            }
+            
+        }
+    })
+    $("#leave_start_date").inputmask("yyyy-mm-dd");
+    $('#leave_end_date').datepicker({
+        format: 'yyyy-mm-dd',
+        onSelect: function (selected) {
+            var ecdt = new Date(selected);
+            var selectedstartdate = $("#leave_start_date").val();
+            var esdt = new Date(selectedstartdate);
+             if(esdt > ecdt){
+                alert('Expected End Date Should Be Greater Than Expected Start Date');
+                $("#leave_end_date").val('');
+            }
+           
+        }
+    })
+    $("#leave_end_date").inputmask("yyyy-mm-dd");
+        $('#in_time').timepicker({'timeFormat': 'H:i:s' });
+        $('#out_time').timepicker({ 'timeFormat': 'H:i:s' });
+    }); 
+   
+</script>
+                       
+                      
+              
+          

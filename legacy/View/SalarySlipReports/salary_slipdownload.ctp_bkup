@@ -1,0 +1,142 @@
+<style type="text/css">
+    body {
+        line-height: 2em;
+    }
+    .block-container {
+        width: 95%;
+        padding: 20px;  
+        border: #000000 solid thin;
+    }
+    .sub-head {
+        border-bottom: #000000 solid thin;
+    }
+    .row {
+        height: 32px;
+    }
+    .col-md-4 {
+        width: 33.33%;
+        float: left;
+    }
+    table { 
+        border: 1px solid #f4f4f4 ;
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+        background-color: transparent;
+        border-spacing: 0;
+        border-collapse: collapse;
+
+    }
+    td, th {
+        text-align: left;
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border: 1px solid #B2B2B2;
+    }
+
+</style>
+<?php
+echo $this->element('reportempheader', array(
+    "emp" => $arr_emp
+));
+?>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box ">
+            <?php
+            $i = 0;
+            foreach ($arr_salary_for_template as $value) {
+			
+
+                if (count($value['summary']) !== 0 || count($value['withoutcomponent']) !== 0) {
+                    $i += 1;
+                    ?>
+                    <br>
+                    <br>
+
+
+                    <div class="box-body">
+                        <h4 style="text-align: center;padding-bottom: 5px;padding-top: 5px;">Salary Slip Of <?php echo isset($value['summary']['0']['ectc']['month_year']) ? $value['summary']['0']['ectc']['month_year'] : ''; ?>  </h4>
+
+
+
+
+
+                        <table class="table table-bordered" align="center">
+                            <thead>
+                                <tr>
+                                    <td style="width:50%">Salary</td>
+                                    <td style="width:25%">Rate</td>
+                                    <td style="width:25%">Amount</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $arr_data = $value['summary']; ?>
+                                <?php
+                                if (count($arr_data) >= 0) {
+                                    $sum = 0;
+                                    $tot = 0;
+                                    $dd = 0;
+                                    $net = 0;
+                                    ?>
+                                    <?php foreach ($arr_data as $val) {
+                                        ?>
+                                        <tr> <?php
+                                            $sum = $sum + $val['ectc']['structure_det_value'];
+                                            $dd = $dd + $val['ectc']['salary_amount'];
+                                            ?>
+                                            <td><?php echo $val['ectc']['salary_head_item_desc']; ?></td>
+                                            <td><?php echo $val['ectc']['salary_rate']; ?></td>
+                                            <td><?php echo $val['ectc']['salary_amount']; ?></td>
+
+                                        </tr>
+                                    <?php } ?>
+                                    <tr>
+                                        <th style="text-align :center ; ">Gross Salary Total</th><th><?php echo $sum; ?></th><th><?php echo $dd; ?></th>
+                                    </tr>
+                                    <?php $arr_withoutComponents = $value['withoutcomponent']; ?>
+
+                                    <?php if (count($arr_withoutComponents) > 0) { ?>
+                                        <tr><th colspan="3">Deductions</th></tr>
+                                        <?php foreach ($arr_withoutComponents as $vals) {
+                                            ?>
+                                            <tr> 
+                                                <?php $tot = $tot + $vals['ectc']['salary_rate'];
+                                                   $net = $net + $vals['ectc']['salary_amount'];  ?>
+                                                <td><?php echo $vals['ectc']['salary_head_item_desc']; ?></td>
+                                                <td><?php echo $vals['ectc']['salary_rate']; ?></td>
+                                                <td><?php echo $vals['ectc']['salary_amount']; ?></td>
+
+                                            </tr>
+                                        <?php } ?>
+                                        <tr>
+                                            <td style="text-align :center ; ">Deductions Total</td>
+                                            <th><?php echo $tot; ?></th>
+                                            <th><?php echo $net; ?></th>
+                                        </tr> 
+                                    <?php } ?>
+                                <?php } else {
+                                    ?>
+                                    <tr>
+                                        <td colspan="4">No Components found under this data</td>
+                                    </tr>  
+                                <?php } ?>
+                                <tr>
+                                    <th style="text-align :center ; ">Net Salary</th>
+                                    <th></th>
+        <!--<th colspan="2"><?php echo $tot + $sum; ?></th>--><th colpsan="2"   "><?php echo $dd + $net; ?></th>
+                                </tr>     
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                <?php
+                }
+            }
+            ?> <!-- /.box-body -->
+        </div>
+    </div>
+</div>    

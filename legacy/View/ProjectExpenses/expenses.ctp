@@ -1,0 +1,420 @@
+<style>
+    .form-horizontal .control-label{
+
+        text-align: left;
+
+    }
+    .pws_tabs_list{
+       height:550px!important;
+    }
+</style>
+
+<section class="content-header">
+    <h1 style="text-align:left; font-size: 3em;"> Project Expenses</h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box ">
+<!--                <br>
+                <div class="form-group pull-right" style="margin-right:10px;">
+                                <button type="reset" id="btn-submit" onclick="newmode();" class="btn btn-primary">Create New <li class="fa fa-hand"></li></button>
+                </div>-->
+                <div class="box-body">
+                    <!-- Employee import form -->
+                    <form class="form-horizontal" method="post" action="" id="importemployeectcform">
+                        <div class="row">
+                             
+                            <div class="form-group">
+<!--                                <div class="col-sm-4">
+                                    <label class="col-sm-5 control-label" for="filterby_branch">Choose Branch</label>
+                                    <div class="col-md-7">
+                                        <select id="filterby_branch" name="filterby_branch" class="form-control js-example-basic-single" onchange="filterAttendanceupload(this);" >
+                                            <option value="">All</option>
+                                            <?php foreach ($arr_branches as $key => $value) { ?>                              
+                                                <option  value="<?php echo $value['Units']['branch_code']; ?>"><?php echo $value['Units']['branch_name']; ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="col-sm-5 control-label" for="employee">Choose Employee</label>                        
+                                    <div class="col-md-7">
+                                        <select id="emp_fkey" class="form-control js-example-basic-single" name="emp_fkey" onchange="filterAttendanceupload(this);"  >
+
+                                        </select>
+
+                                    </div>    
+                                </div>-->
+                               
+                            </div>
+                        </div>
+                    </form>
+                    <div id="newreqeuest" >
+                        
+                    </div>
+                    <div style="clear: both;"></div>
+                    <div class="box-body" id="maintabtest" style="padding:0;margin-top:20px;">
+                        <!--<input type="button" onclick="checktab();" id="checktab" value="Check">-->
+                        <div class="tabset-attendanceregister">
+                            <!--                        <div id="tab0" data-pws-tab="tab0" data-pws-tab-name="To be Verify">
+                                                        <h3>Leave Requests</h3>
+                                                    </div>-->
+                            <div id="tab1" data-pws-tab="tab1" data-pws-tab-name="To be Verify">
+                                <div style="text-align: right" class="row form-inline">
+                                    <label class="col-md-6 col-form-label"><b>Choose Project :</b></label>
+                                    <select class="col-md-2 form-control" style="width: 200px;" id="project" name="project" class="form-control js-example-basic-single" onchange="filterfunction_pro();">
+                                            <option value="">All</option>
+                                            <?php foreach ($vendor_list as $list) {
+                                             foreach ($list as $l) {
+                                            ?>
+                                            <option value="<?php echo $l["site_pkey"] ?>"><?php echo $l["site_name"].'-'.$l["site_id"] ?></option>
+                                            <?php
+                                        }
+                                    }?>
+                                    </select>
+                                    <label class="col-md-2 col-form-label"><b>Choose Payment Status :</b></label>
+                                    <select class="col-md-2 form-control" style="width: 200px;" id="payment_status1" name="payment_status1" onchange="filterfunction_pro(this);">
+                                        <option value="'Completed','Pending'">All</option>
+                                        <option value="'Completed'">Completed</option>
+                                        <option value="'Pending'">Pending</option>
+                                    </select>
+                                </div>
+                                <br>
+                                <table id="att_table" class="table table-bordered table-hover">
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="tab2" data-pws-tab="tab2" data-pws-tab-name="Verified" data-pws-tab-icon="fa-video-camera">
+                                <div style="text-align: right" class="row form-inline">
+                                    <label class="col-md-2 col-form-label"><b>Choose Project :</b></label>
+                                    <select class="col-md-2 form-control" style="width: 200px;" id="project1" name="project1" class="form-control js-example-basic-single" onchange="filterfunction();">
+                                            <option value="">All</option>
+                                            <?php foreach ($vendor_list as $list) {
+                                             foreach ($list as $l) {
+                                            ?>
+                                            <option value="<?php echo $l["site_pkey"] ?>"><?php echo $l["site_name"].'-'.$l["site_id"] ?></option>
+                                            <?php
+                                        }
+                                    }?>
+                                        </select>
+                                    <label class="col-md-2 col-form-label"><b>Choose Expense Status :</b></label>
+                                    <select class="col-md-2 form-control" style="width: 200px;" id="expense_status" name="expense_status" onchange="filterfunction(this);">
+                                        <option value="'Approved','Rejected'">All</option>
+                                        <option value="'Approved'">Approved</option>
+                                        <option value="'Rejected'">Rejected</option>
+                                    </select>
+                                    <label class="col-md-2 col-form-label"><b>Choose Payment Status :</b></label>
+                                    <select class="col-md-2 form-control" style="width: 200px;" id="payment_status2" name="payment_status" onchange="filterfunction(this);">
+                                        <option value="'Completed','Pending'">All</option>
+                                        <option value="'Completed'">Completed</option>
+                                        <option value="'Pending'">Pending</option>
+                                    </select>
+                                </div>
+                                <br>
+                                <table id="att_table_verified" class="table table-bordered table-hover">
+
+                                </table>
+                            </div>
+                        </div>
+                    </div><!-- /.box-body -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+     function newmode()
+    {
+//        if($('#mr_code').length){
+//            var r = confirm("Do You Want  To Proceed with new ?")
+//            if (r == true) {
+                $('#newreqeuest').html('<div class="col-md-12" style="text-align:center; "><li class="fa fa-spinner fa-spin" style="font-size:30px;text-align: center;"></li></div>');
+                $('#newreqeuest').load(livesite+'ProjectExpenses/loadnew');
+//            }
+//        }else{
+//            $('#newreqeuest').html('<div class="col-md-12" style="text-align:center; "><li class="fa fa-spinner fa-spin" style="font-size:30px;text-align: center;"></li></div>');
+//            $('#newreqeuest').load(livesite+'MaterialRequest/loadnew');
+//        }
+    }
+    //filtter using branch 
+    function filterEmployees(branch)
+    {
+        var branch = $('#filterby_branch').val();
+        $("#emp_fkey").select2(
+                {
+                    //closeOnSelect:false,
+                    placeholder: "All",
+                    allowClear: true,
+                    ajax: {
+                        url: livesite + "Employee/jsons/" + branch,
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        }
+                    },
+                    escapeMarkup: function (markup) {
+                        return markup;
+                    }
+                });
+    }
+
+    function filterfunction(obj) {//This is the approved/rejected filtering
+        $('#att_table_verified').datagrid('load', {
+            emp: $('#expense_status').val(),
+            project: $('#project1').val(),
+            payment: $('#payment_status2').val()
+        });
+    }
+    function filterfunction_pro(obj) {//This is the approved/rejected filtering
+        $('#att_table').datagrid('load', {
+            project: $('#project').val(),
+            payment: $('#payment_status1').val()
+        });
+    }
+    function filterAttendanceupload(obj) {//This is the branch/emp filtering
+       // var branch = $('#importemployeectcform #filterby_branch').val();
+       // var employee = $('#importemployeectcform #emp_fkey').val()
+
+        var current_tab = $('.pws_tab_active').attr('data-tab-id');
+        if (current_tab == "tab1") {
+
+            $('#att_table').datagrid('load', {
+                project: $('#project').val(),
+                payment: $('#payment_status1').val()
+            });
+        } else {
+            $('#att_table_verified').datagrid('load', {
+                emp: $('#expense_status').val(),
+                project: $('#project1').val(),
+                payment: $('#payment_status2').val()
+            });
+        }
+        filterEmployees();
+
+    }
+
+    jQuery(document).ready(function () {
+        $('.tabset-attendanceregister').pwstabs({
+            effect: 'scale', // You can change effects of your tabs container: scale / slideleft / slideright / slidetop / slidedown / none
+            defaultTab: 1, // The tab we want to be opened by default
+            containerWidth: '100%', // Set custom container width if not set then 100% is used
+            tabsPosition: 'horizontal', // Tabs position: horizontal / vertical
+            horizontalPosition: 'top', // Tabs horizontal position: top / bottom
+            verticalPosition: 'left', // Tabs vertical position: left / right
+            responsive: true, // Make tabs container responsive: true / false - boolean
+            theme: '',
+            rtl: false                    // Right to left support: true/ false
+        });
+
+
+        $('.pws_tabs_controll>li').click(function () {
+            $('#filterby_branch').val('').children("option:selected");
+            $('#emp_fkey').val('').children("option:selected");
+            $('#project').val('').children("option:selected");
+            $('#project1').val('').children("option:selected");
+            $("#expense_status").val("'Approved','Rejected'").children("option:selected");
+            filterAttendanceupload();
+            filterEmployees();
+        });
+
+        filterEmployees();
+//        $("#filterby_branch").select2();
+//        $("#filterby_month").select2();
+
+        var employee = $('#attendanceuploadfilter #emp_fkey').val();
+
+        $('#att_table').datagrid({
+            url: livesite + "ProjectExpenses/employeelist",
+            pagination: true,
+            singleSelect: true,
+            rownumbers: true,
+            onLoadSuccess: function (data) {
+                loadtabs();
+            },
+            queryParams: {
+                employee: employee
+            },
+            rowStyler: function (index, row) {
+            var style = "";
+            if (row.payment_status == 'Completed') {
+                style += 'background-color:#aaa;color:#fff;';//Loan completed employee background color.
+         
+                
+                         
+            }
+            return style;
+        },
+            toolbar: [{
+                    text: 'New',
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        //showModalForm(livesite + 'ProjectExpenses/form')
+                       $('#newreqeuest').html('<div class="col-md-12" style="text-align:center; "><li class="fa fa-spinner fa-spin" style="font-size:30px;text-align: center;"></li></div>');
+                                                
+                             $('#newreqeuest').load(livesite+'ProjectExpenses/loadnew');
+                             
+                    }
+                },'-', {
+                    iconCls: 'icon-remove',
+                    text: 'Remove',
+                    handler: function () {
+
+                        var rows = $('#att_table').datagrid('getSelections');
+                        if (rows.length > 0) {
+                            var str_ids = "";
+                            for (var i = 0; i < rows.length; i++) {
+                                var data = rows[i];
+                                if (str_ids == "") {
+                                    str_ids += data.emp_expenses_pkey;
+                                } else
+                                {
+                                    str_ids += "," + data.emp_expenses_pkey;
+                                }
+                            }
+                            if (confirm("Do you want to delete the selected Record(s)?")) {
+
+                                $.ajax({
+                                    url: livesite + "ProjectExpenses/deleteEmployee",
+                                    data: {
+                                        ids: str_ids
+                                    },
+                                    success: function (response) {
+                                        //var text = response.responseText;
+                                        // process server response here
+                                        reloadTable('att_table')
+                                    }
+                                });
+
+                            }
+
+                        } else {
+                            alert("Please select any data");
+                        }
+                    }
+                },'-', {
+                    iconCls: 'icon-edit',
+                    text: 'Manage Expense',
+                    handler: function () {
+                        var row = $('#att_table').datagrid('getSelected');
+                        if (row == null) {
+                            alert('Please select any data');
+                            return false;
+                        }
+                        var $expenseId = row.emp_expenses_pkey;
+                        showLargeModalForm(livesite + 'ProjectExpenses/manageexpense/' + row.emp_expenses_pkey);
+                    }
+                 },'-', { 
+                    iconCls: 'icon-edit',
+                    text: 'View Details',
+                    handler: function () {
+                        var row = $('#att_table').datagrid('getSelected');
+                        if (row == null) {
+                            alert('Please select any data');
+                            return false;
+                        } 
+                        var $expenseId = row.emp_expenses_pkey;
+                        showLargeModalForm(livesite + 'ProjectExpenses/view_expense/' + row.emp_expenses_pkey);
+                    }
+                }
+            ],
+            fitColumns: true,
+            pageList: [2, 5, 10],
+            columns: [[
+                    {field: 'expense_id', title: 'Request ID', width: "8%"},
+                    {field: 'expense_date', title: 'Expense Date', width: '8%'},
+                    {field: 'expense_type', title: 'Expense Type', width: '15%'},
+                    {field: 'project', title: 'Project Name/ID', width: "16%"},
+		    {field: 'beneficiary', title: 'Beneficiary Name', width: '14%'},
+                    {field: 'empname', title: 'Employee Name', width: '14%'}, 
+		    {field: 'amount', title: 'Amount', width: "10%"},
+                    {field: 'remarks', title: 'Remarks', width: '18%'},
+		]],
+            onSearch: function (s) {
+                $('#att_table').datagrid('load', {
+                    project: $('#project').val(),
+                    payment: $('#payment_status1').val()
+                });
+            },
+            onSelect:function (){
+                var row = $('#att_table').datagrid('getSelected');
+                var style = "";
+                        if (row != null) {
+                          style += 'background-color:#0081c2!important;color:#fff;';//Loan completed employee background color.   
+                        }
+            }
+        });
+        $('#att_table_verified').datagrid({
+            url: livesite + "ProjectExpenses/employeeverifiedlist",
+            pagination: true,
+            singleSelect: true,
+            rownumbers: true,
+            queryParams: {
+                employee: employee
+            },
+            rowStyler: function (index, row) {
+            var style = "";
+            if (row.payment_status == 'Completed') {
+                style += 'background-color:#aaa;color:#fff;';//Loan completed employee background color.
+            }
+            return style;
+        },
+            toolbar: [{ 
+                    iconCls: 'icon-edit',
+                    text: 'View Details',
+                    handler: function () {
+                        var row = $('#att_table_verified').datagrid('getSelected');
+                        if (row == null) {
+                            alert('Please select any data');
+                            return false;
+                        } 
+                        var $expenseId = row.emp_expenses_pkey;
+                        showLargeModalForm(livesite + 'ProjectExpenses/view_expense/' + row.emp_expenses_pkey);
+                    }
+                }
+            ],
+            fitColumns: true,
+            pageList: [2, 5, 10],
+            columns: [[
+                    {field: 'expense_id', title: 'Request ID', width: "8%"},
+                    {field: 'expense_date', title: 'Expense Date', width: '8%'},
+                    {field: 'expense_type', title: 'Expense Type', width: '15%'},
+                    {field: 'project', title: 'Project Name/ID', width: "16%"},
+		    {field: 'beneficiary', title: 'Beneficiary Name', width: '14%'},
+                    {field: 'empname', title: 'Employee Name', width: '14%'}, 
+                    {field: 'amount', title: 'Amount', width: "10%"},
+                    {field: 'remarks', title: 'Remarks', width: '18%'},
+					
+                    
+                ]],
+            onSearch: function (s) {
+                $('#att_table_verified').datagrid('load', {
+                    status: $('#expense_status').val(),
+                    project: $('#project1').val(),
+                    payment: $('#payment_status2').val()
+                });
+            }
+        });
+        function loadtabs() {
+            loadtabs=function(){};
+            $('[data-tab-id="tab1"]').trigger('click');
+        }
+    });
+</script>

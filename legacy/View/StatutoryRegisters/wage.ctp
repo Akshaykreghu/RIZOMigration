@@ -1,0 +1,752 @@
+<style>
+    .table,
+    td,
+    th ,tr{
+        border-style: solid;
+        border-color: #f4f4f4;
+    }
+</style>
+
+<?php
+$mode = '';
+// $gross = '';
+if ($mode == '') {
+?>
+    <div class="modal-body" style="overflow-y:auto; ">
+
+        <div class="row">
+            <div class="col-md-12">
+                <?php
+                if (count($gross) <= 0) {
+                ?>
+                    <div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+                        There is no data available with respect to your report</div>
+                <?php
+                } else {
+                ?>
+                    <h2 align="center">Wage Sheet <?php echo $month; ?></h2>
+                    <h4 align="center" style="font-weight:bold;">(<?php echo isset($user_id) ? "Report run by " . ($user_id) . " - " . $date_time : ''; ?>)</h4>
+                    <!--  <h3>Month - <?php // echo $month;
+                                        ?></h3>-->
+                    <?php $coun1 = isset($array_key['Addition']) ? count($array_key['Addition']) : 0;
+                    $coun2 = isset($array_key['Deduction']) ? count($array_key['Deduction']) : 0;
+                    $cont = $coun1 + 1 + $coun2;
+                    $cont2 = $cont + 3;
+
+                    ?>
+                    <!--belongs to branch section added by megha ... view section-->
+                    <?php
+                    if (isset($needBranchWiseReport) && $needBranchWiseReport == 1) { //do branchwise listing 
+                    ?>
+                        <?php
+                        foreach ($gross as $branch => $brnch) {
+                      
+                            $branches = current($brnch);  ?>
+                            <div class="box-body " style="overflow-y:auto; ">
+                                <fieldset>
+                                    <legend><?php echo $branches['emp_info']['branch']; ?></legend>
+                                </fieldset>
+                                <br>
+                                <fieldset>
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="21" style="text-align: center;">FORM XI </th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="21"style="text-align: center;">Register of Wages </th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="21"style="text-align: center;">See Rule 29(1)</th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="6"></th>
+                                                <th colspan="1"></th>
+                                                <th colspan="4" style="text-align: center;">Name of Establishment : </th>
+                                               <th colspan="10" style="text-align: center;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];?></th>
+                                            </tr>
+
+                                            <tr>
+                                                <th colspan="1">Wage Period:</th>
+                                                 <th colspan="5"style="text-align: center;"><?php echo $month;?></th>
+                                                 <th colspan="1" ></th>
+                                                <th colspan="" >Place</th>
+                                                <th colspan="13" style="text-align: center;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['city'];?></th>
+                                            </tr>
+
+                                            <tr style="background-color:#f0f0ff;">
+                                                <th  rowspan="2">Sl No</th>
+                                                <th  rowspan="2">Name of the Employee</th>
+                                                <th  rowspan="2">Father's/Husband's Name</th>
+                                                <th  rowspan="2">Designation</th>
+                                                <th colspan="3"  style="text-align: center;">Minimum Rates of Wages Payable</th>
+                                                <th colspan="3" style="text-align: center;">Rates of Wages Actually Paid</th>
+                                                 <th rowspan="2">Total Attendance Units of Work Done</th>
+                                                <th rowspan="2">Overtime worked/Performance Incentives</th>
+                                               
+                                                <th rowspan="2" rowspan="2">Gross Wages Payable</th>
+                                                <th rowspan="2">Employee's Contribution to P.F</th>
+                                                <th rowspan="2">Employee's Contribution to ESI</th>
+                                                <th rowspan="2">HR</th>
+                                                <th rowspan="2">Other Deductions</th>
+                                                <th rowspan="2">Total Deductions</th>
+                                                <th rowspan="2">Wages Paid</th>
+                                                <th rowspan="2">Date of Payment</th>
+                                                <th rowspan="2">Signature/Thumb impression of employee</th>
+                                                <!-- <th colspan="11" ></th> -->
+                                            </tr>
+
+                                            <tr style="background-color:#f0f0ff;" >
+                                                
+
+                                                <th  rowspan="2">Basic</th>
+                                                <th  rowspan="2">D.A</th>
+                                               
+                                                <th rowspan="2">Conv/Washing/Other Allowances</th>
+                                                <th  rowspan="2">Basic</th>
+                                                <th  rowspan="2">D.A</th>
+                                               
+                                                <th rowspan="2">Conv/Washing/Other Allowances</th>
+                                               
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $i = 1;
+                                            //                         debug($gross);
+                                            foreach ($brnch as $val) {
+                                                //debug($val);
+                                              //  if ($val['emp_info']['branch'] == $val['emp_info']['branch']) { ?>
+
+                                                    <tr>
+                                                        <td><?php echo $i; ?></td>
+                                                        <td><?php echo ucwords(strtolower($val['emp_info']['EmpName'])); ?><?php echo (isset($val['emp_details']['status'])) && $val['emp_details']['status'] == "2" ? '  (Resigned)' : ''; ?></td>
+
+                                                        <td><?php echo ucwords(strtolower($val['emp_details']['guradian'])); ?></td>
+                                                        <td><?php echo ucwords(strtolower($val['emp_info']['designation'])); ?></td>
+
+                                                        <?php 
+                                                       $count_addition = count($val['Addition']['keys']);
+                     $grss_amt = 0;
+                     $stdbasic = 0;
+                     $actualbasic=0;
+                     $stdda=0;
+                     $actualda=0;
+                     $stda=0;
+                     $actualhra=0;
+                     $stdca=0;
+                     $actuala=0;
+                     $ot=0;
+                     $pi=0;  
+                     $totalot=0;
+                     $sothers=0;
+                     $sgross=0;
+                     $aothers= 0;
+                     $agross=0;
+                     $number1=0;
+                                                        for ($m = 0; $m < $count_addition; $m++) {
+
+                                                    $number = round($val['Addition']['actual'][$m], 2); //acutal=std
+                                                    $sgross = $number + $sgross;
+
+                                                    $number1 = round($val['Addition']['value'][$m], 2); //value=actual
+                                                    $agross = $number1 + $agross;
+
+                                                            if ($val['Addition']['keys'][$m] == 'Basic') {
+                                                                $stdbasic = round($val['Addition']['actual'][$m], 2);
+                                                                $actualbasic = round($val['Addition']['value'][$m], 2);
+                                                            }
+                                                            if ($val['Addition']['keys'][$m] == 'Dearness Allowance (DA)') {
+                                                                $stdda = round($val['Addition']['actual'][$m], 2);
+                                                                $actualda = round($val['Addition']['value'][$m], 2);
+                                                            }
+                                                           if ($val['Addition']['keys'][$m] == 'Performance Incentives' || $val['Addition']['keys'][$m] == 'Performance Incentive') {
+                                                            
+                                                          $pi = round($val['Addition']['value'][$m], 2);
+                                                                }
+                                                            if ($val['Addition']['keys'][$m] == 'Overtime (OT)' || $val['Addition']['keys'][$m] =='Overtime Allowance(OT)') {
+                                                                $ot = round($val['Addition']['value'][$m], 2);
+                                                            }
+                                                             ?>
+                                                        <?php } 
+                            $totalot=$pi+$ot;
+                            $sothers= round($sgross - ($stdbasic+$stdda));
+                            $aothers= round($agross- ($actualbasic+$actualda+$totalot)) + $val['settle'];
+                            $agross = $agross + $val['settle'];  
+$at=0;
+                     if ($val['prorate_code'] == '1') {
+                    $at =$val['ar']['presant_total'] + $val['ar']['leave_total'] + $val['ar']['weekoff_total'] + $val['ar']['holiday_total'];
+                     }else if ($val['prorate_code'] == '2'){
+                         $at =$val['ar']['presant_total'] + $val['ar']['leave_total'];
+                     }else{
+                         $at =$val['ar']['presant_total'] + $val['ar']['leave_total'];
+                     }
+                                                         ?>
+                                                        <td><?php echo round( $stdbasic); ?></td>
+                                                            <td><?php echo round( $stdda); ?></td>
+                                                           
+                                                            <td><?php echo round($sothers); ?></td>
+                                                            <td><?php echo round($actualbasic); ?></td>
+                                                            <td><?php echo round($actualda); ?></td>
+                                                          
+                                                            <td><?php echo round($aothers); ?></td>
+
+                                                         <td><?php echo $at;  ?></td>
+                                                         <td><?php echo $totalot; ?></td>
+                                                         <td><?php echo round($agross); ?></td>
+
+                                                       <?php
+                                                        $hr=0;
+                                                        $dd_amt=0;
+                                                        $esi=0;
+                                                        $pf=0;
+                                                        $d='';
+                                                        $s='';
+                                                                     
+                                                        if (isset($array_key['Deduction'])) { ?>
+                                                        <?php $count_addition = count($val['Deduction']['keys']);
+
+                                                            for ($m = 0; $m < $count_addition; $m++) {
+                                                         $number = round($val['Deduction']['value'][$m],2);
+                                                         $dd_amt=$number+$dd_amt;
+                                                         $val1 = round($number,2);
+                                                                  if ($val['Deduction']['keys'][$m] == 'PF' || $val['Deduction']['keys'][$m] == 'employee PF' || $val['Deduction']['keys'][$m] == 'EPF - Employee Contribution' || $val['Deduction']['keys'][$m] == 'Employee EPF') {
+                        $pf = abs((round($val['Deduction']['value'][$m], 2)));
+                                                                }
+                         if ($val['Deduction']['keys'][$m] == 'ESI' || $val['Deduction']['keys'][$m] == 'ESI - Employee Contribution' || $val['Deduction']['keys'][$m] == 'Employee ESI') {
+                         $esi = abs((round($val['Deduction']['value'][$m], 2)));
+                                                                }
+                                                                ?>
+                                                              
+                                                        <?php }
+
+                    $dd_amt =abs(round($dd_amt,2));
+                    $otherdeduction=($dd_amt)-($pf+$esi);
+                    $wp=($agross )-($dd_amt);    
+
+
+                                                        } ?>  <td><?php echo $pf; ?></td>
+                                                                <td><?php echo $esi; ?></td>
+                                                                <td><?php echo $hr; ?></td>
+                                                                <td><?php echo $otherdeduction; ?></td>
+                                                                <td><?php echo round($dd_amt); ?></td>
+                                                                <td><?php echo round($wp); ?></td>
+                                                                <td></td>
+                                                                <td></td> 
+                                                    </tr>
+
+
+                                                <?php
+                                                    $i++;
+                                               // }
+                                                ?>
+                                            <?php
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+                            </div>
+
+                        <?php
+                        }
+                    } else { ?>
+                        <!--belongs to branch section added by megha end...-->
+
+                        <div class="box-body">
+<!--                            <fieldset>
+                                    <legend><?php echo $gross['0']['emp_info']['EmpName']; ?></legend>
+                                </fieldset>
+                                <br>-->
+                                <fieldset>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th colspan="21" style="text-align: center;">FORM XI </th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="21" style="text-align: center;">Register of Wages </th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="21" style="text-align: center;">See Rule 29(1)</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="6"></th>
+                                        <th colspan="1"></th>
+                                        <th colspan="4" style="text-align: center;">Name of Establishment : </th>
+                                        <th colspan="10" style="text-align: center;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];?></th>
+                                    </tr>
+
+                                    <tr>
+                                        <th colspan="1">Wage Period:</th>
+                                        <th colspan="5"style="text-align: center;"><?php echo $month;?></th>
+                                        <th colspan="1"></th>
+                                        <th colspan="1">Place</th>
+                                        <th colspan="13" style="text-align: center;"><?php echo $arr_comp_contact_info['CompanyContactInfo']['city'];?></th>
+                                    </tr>
+
+                                     <tr style="background-color:#f0f0ff;">
+                                                <th  rowspan="2">Sl No</th>
+                                                <th  rowspan="2">Name of the Employee</th>
+                                                <th  rowspan="2">Father's/Husband's Name</th>
+                                                <th  rowspan="2">Designation</th>
+                                                <th colspan="3"  style="text-align: center;">Minimum Rates of Wages Payable</th>
+                                                <th colspan="3" style="text-align: center;">Rates of Wages Actually Paid</th>
+                                                 <th rowspan="2">Total Attendance Units of Work Done</th>
+                                                <th rowspan="2">Overtime Worked/Performance Incentives</th>
+                                               
+                                                <th rowspan="2" rowspan="2">Gross Wages Payable</th>
+                                                <th rowspan="2">Employee's Contribution to P.F</th>
+                                                <th rowspan="2">Employee's Contribution to ESI</th>
+                                                <th rowspan="2">HR</th>
+                                                <th rowspan="2">Other Deductions</th>
+                                                <th rowspan="2">Total Deductions</th>
+                                                <th rowspan="2">Wages Paid</th>
+                                                <th rowspan="2">Date of Payment</th>
+                                                <th rowspan="2">Signature/Thumb Impression of Employee</th>
+                                                <!-- <th colspan="11" ></th> -->
+                                            </tr>
+
+                                            <tr style="background-color:#f0f0ff;" >
+                                                
+
+                                                <th  rowspan="2">Basic</th>
+                                                <th  rowspan="2">D.A</th>
+                                               
+                                                <th rowspan="2">Conv/Washing/Other Allowances</th>
+                                                <th  rowspan="2">Basic</th>
+                                                <th  rowspan="2">D.A</th>
+                                               
+                                                <th rowspan="2">Conv/Washing/Other Allowances</th>
+                                               
+                                            </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $i = 1;
+                                    //debug($gross);
+                                    foreach ($gross as $val) { ?>
+                                         <tr>
+                                            <td><?php echo $i; ?></td>
+                                            <td><?php echo ucwords(strtolower($val['emp_info']['EmpName'])); ?><?php echo (isset($val['emp_details']['status'])) && $val['emp_details']['status'] == "2" ? '  (Resigned)' : ''; ?></td>
+
+                                            <td><?php echo ucwords(strtolower($val['emp_details']['guradian'])); ?></td>
+                                            <td><?php echo ucwords(strtolower($val['emp_info']['designation'])); ?></td>
+
+                                            <?php $count_addition = count($val['Addition']['keys']);
+                     
+                     $grss_amt = 0;
+                     $stdbasic = 0;
+                     $actualbasic=0;
+                     $stdda=0;
+                     $actualda=0;
+                     $stdhra=0;
+                     $actualhra=0;
+                     $stdca=0;
+                     $actualca=0;
+                     $ot=0;
+                     $pi=0;  
+                     $totalot=0;
+                     $sothers=0;
+                     $sgross=0;
+                     $aothers= 0;
+                     $agross=0;
+                     $number1=0;
+
+                    for ($m = 0; $m < $count_addition; $m++) {
+
+                         $number = round($val['Addition']['actual'][$m], 2); //acutal=std
+                        $sgross = $number + $sgross;
+
+                        $number1 = round($val['Addition']['value'][$m], 2); //value=actual
+                        $agross = $number1 + $agross;
+
+                         if ($val['Addition']['keys'][$m] == 'Basic') {
+                                                                $stdbasic = round($val['Addition']['actual'][$m], 2);
+                                                                $actualbasic = round($val['Addition']['value'][$m], 2);
+                                                            }
+
+                                                            if ($val['Addition']['keys'][$m] == 'Dearness Allowance (DA)') {
+                                                                $stdda = round($val['Addition']['actual'][$m], 2);
+                                                                $actualda = round($val['Addition']['value'][$m], 2);
+                                                            }
+                                                            
+                                                            if ($val['Addition']['keys'][$m] == 'Performance Incentives' || $val['Addition']['keys'][$m] == 'Performance Incentive') {
+                                                                
+                                                                $pi = round($val['Addition']['value'][$m], 2);
+                                                            }
+                                                          
+                                                            if ($val['Addition']['keys'][$m] == 'Overtime (OT)' || $val['Addition']['keys'][$m] == 'Overtime Allowance(OT)') {
+                                                                $ot = round($val['Addition']['value'][$m], 2);
+                                                            }
+                    } 
+                   
+                            $totalot=$pi+$ot;
+                            $sothers= $sgross - ($stdbasic+$stdda);
+                            $aothers= $agross- ($actualbasic+$actualda+$totalot);
+                            $aothers= round($agross- ($actualbasic+$actualda+$totalot)) + $val['settle'];
+                            $agross = $agross + $val['settle']; 
+                            $at=0;
+                     if ($val['prorate_code'] == '1') {
+                    $at =$val['ar']['presant_total'] + $val['ar']['leave_total'] + $val['ar']['weekoff_total'] + $val['ar']['holiday_total'];
+                     }else if ($val['prorate_code'] == '2'){
+                         $at =$val['ar']['presant_total'] + $val['ar']['leave_total'];
+                     }else{
+                         $at =$val['ar']['presant_total'] + $val['ar']['leave_total'];
+                     }
+                    ?>
+                                                           <td><?php echo round( $stdbasic); ?></td>
+                                                            <td><?php echo round($stdda); ?></td>
+                                                           
+                                                            <td><?php echo round($sothers); ?></td>
+                                                            <td><?php echo round($actualbasic); ?></td>
+                                                            <td><?php echo round($actualda); ?></td>
+                                                          
+                                                            <td><?php echo round($aothers); ?></td>
+                                            <td><?php echo $at;  ?></td>
+                                            <td><?php echo $totalot; ?></td>
+                                            <td><?php echo round($agross); ?></td>
+
+                                            <?php 
+                                                        $hr=0;
+                                                        $dd_amt=0;
+                                                        $esi=0;
+                                                        $pf=0;
+                                                        $d=0;
+                                                        $s=0;
+                                            if (isset($array_key['Deduction'])) { ?>
+                                                <?php $count_addition = count($val['Deduction']['keys']);
+                                                for ($m = 0; $m < $count_addition; $m++) {
+                                                     $number = round($val['Deduction']['value'][$m],2);
+                                                         $dd_amt=$number+$dd_amt;
+                                                         $val1 = round($number,2);
+                        if ($val['Deduction']['keys'][$m] == 'PF' || $val['Deduction']['keys'][$m] == 'employee PF' || $val['Deduction']['keys'][$m] == 'EPF - Employee Contribution' || $val['Deduction']['keys'][$m] == 'Employee EPF') {
+                        $pf = abs((round($val['Deduction']['value'][$m], 2)));
+                                                                }
+                         if ($val['Deduction']['keys'][$m] == 'ESI' || $val['Deduction']['keys'][$m] == 'ESI - Employee Contribution' || $val['Deduction']['keys'][$m] == 'Employee ESI') {
+                         $esi = abs((round($val['Deduction']['value'][$m], 2)));
+                                                                }
+                                                    ?>
+                                                    
+
+                                            <?php }
+                                             $dd_amt = abs(round($dd_amt,2));
+                                            $otherdeduction=($dd_amt)-($pf+$esi);
+                                            $wp=($agross )-($dd_amt);    
+
+                                            } ?>
+                                                               <td><?php echo $pf; ?></td>
+                                                                <td><?php echo $esi; ?></td>
+                                                                <td><?php echo $hr; ?></td>
+                                                                <td><?php echo ($otherdeduction); ?></td>
+                                                                <td><?php echo round($dd_amt); ?></td>
+                                                                <td><?php echo round($wp); ?></td>
+                                                                <td></td>
+                                                                <td></td> 
+
+                                          
+                                        </tr>
+
+                                    <?php $i++;
+                                    }
+
+
+                                    ?>
+
+                                </tbody>
+                            </table>
+</fieldset>
+                        </div>
+
+                    <?php   } ?>
+
+            </div>
+        </div>
+        <!--div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel </button>  
+    </div-->
+        <!----<div class="row">
+        <div class="form-group">
+            <div class="col-md-12" align="right">
+                <a href="#" class="btn btn-default" onclick="downloadReport('Grosssalary', 'pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                <a href="#" class="btn btn-default" onclick="downloadReport('Grosssalary', 'excel');"><i class="icon-file"></i>Download As Excel</a>
+            </div>
+        </div>
+    </div> --->
+    </div>
+<?php }
+?>
+<?php } else { ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>'; 
+    ?>
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+
+        .row {
+            height: 32px;
+        }
+
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+
+        table {
+            border: 1px solid #f4f4f4;
+            width: 80%;
+            max-width: 80%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+
+        }
+
+        td,
+        th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border: 1px solid #B2B2B2;
+            width: 55px;
+        }
+    </style>
+
+    <?php
+    echo $this->element('reportadminheader', array(
+        'title' => 'Gross Salary Detailed Report - ' . $month
+    ));
+    ?>
+    <?php if (count($gross) <= 0) { ?>
+        <div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+            There is no data available with respect to your report</div>
+    <?php } else { ?>
+        <br><br>
+        <!--<h3><?php //echo $month;
+                ?></h3>-->
+
+        <?php $coun1 = isset($array_key['Addition']) ? count($array_key['Addition']) : 0;
+        $coun2 = isset($array_key['Deduction']) ? count($array_key['Deduction']) : 0;
+        $cont = $coun1 + $coun2 + 1;
+        $cont2 = $cont + 3;
+
+        ?>
+        <!--                belongs to branch section added by megha start... pdf view section-->
+        <?php if (isset($needBranchWiseReport) && $needBranchWiseReport == 1) { //do branchwise listing 
+        ?>
+            <?php foreach ($gross as $branch => $brnch) {
+                $branches = current($brnch);  ?>
+                <div class="box-body " style="overflow-y:auto; ">
+                    <br>
+                    <h2> <?php echo $branches['emp_info']['branch']; ?></h2>
+                    <br>
+                    <!--                    <fieldset>-->
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="3">Employee Details</th>
+                                <th colspan="<?php echo $cont2; ?>">Actual Salary</th>
+
+                            </tr>
+                            <tr style="background-color:#f0f0ff;">
+                                <th>Sl No</th>
+                                <th>Employee ID</th>
+                                <th>Name</th>
+                                <!--                            <th>Designation</th>
+                            <th>Department</th>
+                            <th>Branch</th>
+                            <th>Total Days</th>
+                            <th>Days Type</th>
+                            <th>Present Days</th>
+                            <th>Overtime (In Hrs.)</th>
+                            <th>LOP Days</th>-->
+
+                                <?php
+
+                                $addition = $array_key['Addition'];
+                                //debug($addition);
+                                foreach ($addition as $value) { ?>
+                                    <th><?php echo $value; ?></th>
+                                <?php } ?>
+                                <th>Gross Salary</th>
+                                <?php if (isset($array_key['Deduction'])) { ?>
+                                    <?php $deduction = $array_key['Deduction'];
+                                    foreach ($deduction as $value) {
+                                    ?>
+                                        <th><?php echo $value; ?></th>
+                                <?php }
+                                }
+                                ?>
+                                <th>Total Deduction</th>
+                                <th>Net Salary</th>
+
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $i = 1;
+                            //                         debug($gross);
+                            foreach ($brnch as $val) {
+                                //debug($val);
+                                if ($val['emp_info']['branch'] == $val['emp_info']['branch']) { ?>
+
+                                    <tr>
+                                        <td><?php echo $i; ?></td>
+                                        <td><?php echo $val['emp_info']['employee_id']; ?></td>
+                                        <td><?php echo $val['emp_info']['EmpName']; ?><?php echo (isset($val['emp_details']['status'])) && $val['emp_details']['status'] == "2" ? '  (Resigned)' : ''; ?></td>
+
+                                        <?php $count_addition = count($val['Addition']['keys']);
+                                        $grss_amt = 0;
+                                        for ($m = 0; $m < $count_addition; $m++) {
+                                            $number = round($val['Addition']['value'][$m], 2);
+                                            $grss_amt = $number + $grss_amt; ?>
+                                            <td><?php echo round($number); ?></td>
+                                        <?php } ?>
+                                        <td><?php echo round($grss_amt); ?></td>
+                                        <?php $dd_amt = 0;
+                                        if (isset($array_key['Deduction'])) { ?>
+                                            <?php $count_addition = count($val['Deduction']['keys']);
+
+                                            for ($m = 0; $m < $count_addition; $m++) {
+                                                $number = round($val['Deduction']['value'][$m], 2);
+                                                $dd_amt = $number + $dd_amt;
+                                            ?>
+                                                <td><?php echo round($number); ?></td>
+                                        <?php }
+                                        }
+                                        $netamt = $grss_amt + $dd_amt; ?>
+                                        <td><?php echo round($dd_amt); ?></td>
+                                        <td><?php echo round($netamt); ?></td>
+                                    </tr>
+
+
+                                <?php $i++;
+                                }
+
+
+                                ?>
+
+
+
+                            <?php  } ?>
+                        </tbody>
+                    </table>
+                    <!--                    </fieldset>-->
+                </div>
+
+            <?php }
+        } else { ?>
+            <!--                belongs to branch section added by megha end...-->
+            <div class="box-body">
+                <table class="table table-bordered">
+
+                    <tr>
+                        <th colspan="3">Employee Details</th>
+                        <th colspan="<?php echo $cont2; ?>">Actual Salary</th>
+
+                    </tr>
+                    <tr style="background-color:#f0f0ff;">
+                        <th style="width:20px;">Sl No</th>
+                        <th style="width:70px;">Employee ID</th>
+                        <th style="width:100px;">Name</th>
+
+
+                        <?php
+
+                        $addition = $array_key['Addition'];
+                        //debug($addition);
+                        foreach ($addition as $value) { ?>
+                            <th><?php echo $value; ?></th>
+                        <?php } ?>
+                        <th>Gross <br>Salary</th>
+                        <?php if (isset($array_key['Deduction'])) { ?>
+                            <?php $deduction = $array_key['Deduction'];
+                            foreach ($deduction as $value) {
+                            ?>
+                                <th><?php echo $value; ?></th>
+                        <?php }
+                        }
+                        ?>
+                        <th>Total <br> Deduction</th>
+                        <th>Net <br>Salary</th>
+
+
+
+                    </tr>
+
+                    <tbody>
+                        <?php
+                        $i = 1;
+                        // debug($gross);
+                        foreach ($gross as $val) { ?>
+
+                            <tr>
+                                <td><?php echo $i; ?></td>
+                                <td><?php echo $val['emp_info']['employee_id']; ?></td>
+                                <td><?php echo $val['emp_info']['EmpName']; ?> </td>
+
+                                <?php $count_addition = count($val['Addition']['keys']);
+                                $grss_amt = 0;
+                                for ($m = 0; $m < $count_addition; $m++) {
+                                    $number = round($val['Addition']['value'][$m], 2);
+                                    $grss_amt = $number + $grss_amt;
+
+
+                                ?>
+                                    <td><?php echo round($number); ?></td>
+
+
+                                <?php } ?>
+                                <td><?php echo round($grss_amt); ?></td>
+                                <?php $dd_amt = 0;
+                                if (isset($array_key['Deduction'])) { ?>
+                                    <?php $count_addition = count($val['Deduction']['keys']);
+
+                                    for ($m = 0; $m < $count_addition; $m++) {
+                                        $number = round($val['Deduction']['value'][$m], 2);
+                                        $dd_amt = $number + $dd_amt;
+
+
+                                    ?>
+                                        <td><?php echo round($number); ?></td>
+                                <?php }
+                                }
+                                $netamt = $grss_amt + $dd_amt;
+                                ?>
+
+
+                                <td><?php echo $dd_amt; ?></td>
+                                <td><?php echo round($netamt); ?></td>
+
+
+                            </tr>
+
+
+                        <?php $i++;
+                        }
+
+
+                        ?>
+
+                    </tbody>
+                </table>
+            </div>
+
+<?php }
+    }
+} ?>

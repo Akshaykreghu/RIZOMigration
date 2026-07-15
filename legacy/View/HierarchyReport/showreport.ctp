@@ -1,0 +1,237 @@
+<?php if (isset($arr_reportcriterias)) { ?>
+    <script>
+    //jQuery(document).ready(function() {
+        //  $('#reportfrom').datepicker({
+        //       format: 'yyyy-mm-dd HH:MM:ss'
+        //  })
+        // $("#reportfrom").inputmask("yyyy-mm-dd");
+        // $('#reportto').datepicker({
+        //      format: 'yyyy-mm-dd HH:MM:ss'
+    //    })
+        // $("#reportto").inputmask("yyyy-mm-dd");
+    //});
+    </script>
+    <form class="form-horizontal" method="post" action="" id="form-showreport">
+        <input type="hidden" id="hidden-report-type" name="hidden-report-type" value="<?php echo $type; ?>" />
+
+        <input type="hidden" id="hidden-criterias-count" name="hidden-criterias-count" value="1" />
+        <input type="hidden" id="hidden-reportfields" name="hidden-reportfields" value="" />
+        <div class="form-group" id="div-criteria1">
+           
+
+
+            <input type="hidden" class="hidden-criterias" id="hidden-criteria1" name="hidden-criteria1" value="" />
+            <div class="col-md-1"><b>Criteria &nbsp;:</b></div>
+            <div class="col-md-3">
+                <select id="select-criteria1" name="select-criteria1" style="width: 240px;" class="form-control" onchange="loadCriteriaItems(1);" >
+                    <option value="">--Choose criteria--</option>
+                    <?php
+                    foreach ($arr_reportcriterias as $key => $value) {
+                        echo '<option value="' . $value['reportcriteria'] . '">' . $value['reportcriteria_desc'] . '</option>';
+                    }
+                    ?>
+                </select>
+            </div>
+            <div class="col-md-3" id="div-items-criteria1">
+
+            </div>
+            <!--        <div class="col-md-1">
+                        <a onclick="addOneReportCriteria(1);"><i class="fa fa-plus-circle"></i></a>
+                        a onclick="removeThisCriteria(1);"><i class="fa fa-minus-circle"></i></a
+                    </div>-->
+            <div class="col-md-2" align="right">
+                <button type="button" onclick="viewReport();" id="btn-submit" class="btn btn-primary" ><li class="fa fa-eye"></li></button>
+                <!--edited by megha on 6/12/2019-->
+                 <?php if($type != "LeaveSummary"){?>
+                  <!-- <button type="button" onclick="downloadReport('pdf');" id="btn-submit1" class="btn btn-danger"><li class="fa fa-file-pdf-o"></li></button> -->
+               <?php }?>
+                <button type="button" onclick="downloadReport('excel');" id="btn-submit2" class="btn btn-success"><li class="fa fa-file-excel-o"></li></button>
+            </div>
+        </div> 
+        <?php if ($type == 'employee') { ?>
+            <div class="row">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-4">	<div id="allempfields" style="width:100%; height:270px; background-color:white;"></div>
+                </div>
+                <div class="col-sm-4">	<div id="reportfields" style="width:100%; height:270px; background-color:white;"></div>
+                </div>
+                <div class="col-sm-2">
+                </div>
+            </div>
+        <?php } ?><div class="form-group">
+
+        </div>
+        <div id="reportCon" class="box box-body">
+
+        </div>
+
+
+    </form>
+    <script>
+          function loadCriteriaItems(index) {
+            var criteria = $('#select-criteria' + index).val();
+            $('#hidden-criteria' + index).val(criteria);
+            $('#div-items-criteria' + index).load(livesite + 'HierarchyReport/loadcriteriaitems/' + index + '/' + criteria);
+        }
+        function downloadReport(mode) {
+            var type = $('#hidden-report-type').val();
+            var criteria = $('#select-criteria1').val();
+            var selectany = false;
+            $('.checkw').each(function () {
+                if ($(this).prop('checked') == true) {
+                    selectany = true;
+                }
+            });
+    //        return false;
+            if (selectany) {
+
+            } else {
+                alert("Please Choose "+criteria+" Values First ");
+                return false;
+            }
+            if (criteria) {
+                $('#form-showreport').attr('action', livesite + 'hierarchyReport/generatereport/' + type + '/' + mode);
+                $('#form-showreport').submit();
+                loadCriteriaItems(1);
+            } else
+            {
+                alert("Please select a criteria first");
+            }
+        }
+    <?php if ($type == 'employee') { ?>
+            var allempfields;
+            allempfields = new dhtmlXGridObject('allempfields');
+            allempfields.selMultiRows = true;
+            allempfields.setHeader("Fields");
+            allempfields.setInitWidths("*");
+            allempfields.setColAlign("left");
+            allempfields.setColSorting("str");
+            allempfields.attachEvent("onDrag", function (sId, tId, sObj, tObj, sInd, tInd) {
+                /*var currentReportFields = $('#hidden-reportfields').val().split(',').filter(function(v){return v!==''});
+                 var arrSelectedFields = sId.split(',');
+                 var difference = [];
+                 $.grep(arrSelectedFields, function(el) {
+                 console.log(el);
+                 if ($.inArray(el, currentReportFields) == -1) difference.push(el);
+                 })
+                 var newReportFields = $.unique(difference);
+                 console.log(newReportFields);
+                 //$('#hidden-reportfields').val(newReportFields.join(','));*/
+                return true;
+            });
+            allempfields.setMultiLine(false);
+            allempfields.enableDragAndDrop(true);
+            allempfields.init();
+            allempfields.clearAndLoad("<?php echo $this->webroot; ?>HierarchyReport/listemployeefields", "json");
+
+            var reportfields;
+            reportfields = new dhtmlXGridObject('reportfields');
+            reportfields.selMultiRows = true;
+            reportfields.setHeader("Report Fields");
+            reportfields.setInitWidths("*");
+            reportfields.setColAlign("left");
+            reportfields.setColSorting("str");
+            reportfields.setMultiLine(false);
+            reportfields.enableDragAndDrop(true);
+            reportfields.init();
+            reportfields.attachEvent("onDrag", function (sId, tId, sObj, tObj, sInd, tInd) {
+                /*var currentReportFields = $('#hidden-reportfields').val().split(',').filter(function(v){return v!==''});
+                 var arrSelectedFields = sId.split(',');
+                 var newReportFields = $.unique($.merge(arrSelectedFields, currentReportFields));
+                 $('#hidden-reportfields').val(newReportFields.join(','));*/
+                return true;
+            });
+    <?php } ?>
+        jQuery(document).ready(function () {
+
+
+            $('#form-showreport').parsley();
+
+            $('#reporstfrom').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+            });
+
+            $('#reporstto').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+            });
+
+
+            $('#reporstto').on("change", function () {
+                var date_start = new Date($('#reporstfrom').val());
+                var date_to = new Date($(this).val());
+                if (date_to < date_start) {
+                    alert("Date Should be Valid ");
+                }
+                return false;
+            });
+
+
+
+        });
+        function viewReport() {
+            var criteria = $('#select-criteria1').val();
+            var selectany = false;
+            $('.checkw').each(function () {
+                if ($(this).prop('checked') == true) {
+                    selectany = true;
+                }
+            });
+    //        return false;
+            if (selectany) {
+
+            } else {
+                alert("Please choose a criteria first ");
+                return false;
+            }
+            if (criteria) {
+            $('#loaders').show();
+            var type = $('#hidden-report-type').val();
+            //var container = $("#largeModalForm #largeModalForm-content");
+            var container = $("#reportCon");
+            var url = livesite + 'HierarchyReport/generatereport/' + type;
+
+            var arrReportFieldsChosen = [];
+            //  reportfields.forEachRow(function(id){
+            //     arrReportFieldsChosen.push(id);
+            //  });
+            $('#hidden-reportfields').val(arrReportFieldsChosen.join(','));
+            toggleItemsDisplay(1);
+            $('body').addClass('sidebar-collapse');
+            container.load(url, $('#form-showreport').serialize(), function () {
+                  $('#loaders').hide();
+                //$("#largeModalForm").modal('show')
+            });
+             $('#loaders').hide();
+             } else
+            {
+                alert("Please select a criteria first");
+            }
+        }
+      
+        function addOneReportCriteria(index) {
+            var type = $('#hidden-report-type').val();
+
+            var currentcriteriaschosen = '';
+            $('#form-showreport .hidden-criterias').each(function () {
+                currentcriteriaschosen += (currentcriteriaschosen == '') ? this.value : ',' + this.value;
+            });
+            $('#form-showreport .link-removecriterias').remove();
+            var newIndex = index + 1;
+            $('<div class="form-group" id="div-criteria' + newIndex + '"></div>').insertAfter($('#div-criteria' + index));
+            $('#div-criteria' + newIndex).load(livesite + 'HierarchyReport/hrreports/' + type + '/' + newIndex + '/' + currentcriteriaschosen);
+
+            var count = $('#hidden-criterias-count').val();
+            if (count >= 1) {
+                $('#hidden-criterias-count').val(parseInt(count) + 1);
+            }
+        }
+        function removeThisCriteria(index) {
+            var count = $('#hidden-criterias-count').val();
+            $('#hidden-criterias-count').val(parseInt(count) - 1);
+            $('#div-criteria' + index).remove();
+        }
+    </script>
+<?php } ?>

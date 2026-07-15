@@ -1,0 +1,89 @@
+<!-- Upload Modal Content -->
+<div class="modal-content">
+    <!-- Blue Header -->
+    <div class="modal-header bg-primary text-white">
+        <h3 class="modal-title">Upload Employee CTC File</h3>
+        <!-- <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button> -->
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+        <form id="ctcUploadModalForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="modalFileInput"><strong>Select Excel File</strong> <span class="text-danger">*</span></label>
+                <input type="file" name="empctc[]" id="modalFileInput" class="form-control" accept=".xls,.xlsx" required>
+                <small class="form-text text-muted">Accepted formats: .xls, .xlsx only</small>
+            </div>
+
+            <div class="form-group mt-3">
+                <label for="uploadRemark"><strong>Remarks <span style="color: red">*</span></strong></label>
+                <input type="text" name="upload_remark" id="uploadRemark" class="form-control" placeholder="Enter  remarks" required>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-sm" id="btnSaveUpload">
+            <i class="fa fa-upload"></i> Upload
+        </button>
+        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">
+            <i class="fa fa-times"></i> Cancel
+        </button>
+    </div>
+</div>
+
+<script>
+    // Prevent multiple bindings
+    $(document).off('click', '#btnSaveUpload').on('click', '#btnSaveUpload', function () {
+        const fileInput = document.getElementById('modalFileInput');
+        const files = fileInput.files;
+
+        if (files.length === 0) {
+            $.notify("Please select a file", { type: 'danger', z_index: 10000 });
+            return;
+        }
+
+        const remark = $('#uploadRemark').val().trim();
+        if (remark === '') {
+            $.notify("Please enter remarks", { type: 'danger', z_index: 10000 });
+            return;
+        }
+
+        const approvedBy = $('#approved_bys').val(); // From external input
+        const uploadType = $('input[name="monthly"]:checked').val(); // From external radio
+        // const ctcuploadtype = $('#ctc_upload_type').val() || 2; // From external input
+        const ctcuploadtype = 1;
+
+        const formData = new FormData();
+        formData.append('empctc[]', files[0]);
+        formData.append('remark', remark);
+        formData.append('approvedBy', approvedBy);
+        formData.append('upload_type', uploadType);
+        formData.append('ctcuploadtype', ctcuploadtype);
+
+        const endpoint = (uploadType !== 'gross') ? 'uploadandsaveempctcitem' : 'uploadandsaveempctc';
+
+        $.ajax({
+            url: livesite + 'SalaryIncrement/' + endpoint + '/' + ctcuploadtype + '/' + approvedBy,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                $('#smallModalForm').modal('hide'); // Adjust modal ID if needed
+                const res = JSON.parse(response);
+                $.notify(res.msg || 'Upload complete', {
+                    type: res.success ? 'success' : 'danger',
+                    z_index: 10000
+                });
+                $('#att_table').datagrid('reload');
+            },
+            error: function () {
+                $.notify("Upload failed", { type: 'danger', z_index: 10000 });
+            }
+        });
+    });
+</script>

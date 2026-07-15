@@ -1,0 +1,451 @@
+<style>
+    .lud-ohdo {
+    clear: both;
+    display: flex;
+    margin-bottom: 8px;
+    max-width: 371px;
+    width: 100%;
+    }
+    .lud-ohday {
+    background-color: #f5f5f5;
+    display: inline-block;
+    flex-grow: 1;
+    flex-grow: 1;
+    height: 45px;
+    margin: 1px 6px 1px 0px;
+    min-width: 38px;
+    position: relative;
+}
+label {
+    cursor: default;
+}
+.lud-ohdt {
+    display: none;
+}
+.g, body, html, input, .std, h1 {
+    font-size: small;
+    font-family: arial,sans-serif;
+}
+input[type="radio" i], input[type="checkbox" i] {
+    background-color: initial;
+    margin: 3px 0.5ex;
+    padding: initial;
+    border: initial;
+}
+input, textarea, keygen, select, button {
+    text-rendering: auto;
+    color: initial;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: start;
+    margin: 0em 0em 0em 0em;
+    font: 13.3333px Arial;
+}
+.fAwjXaCTMo5__content {
+    border-radius: 2px;
+    border-radius: 2px;
+    position: relative;
+    display: inline-block;
+    z-index: 1060;
+    background-color: #fff;
+    opacity: 0;
+    text-align: left;
+    vertical-align: middle;
+    white-space: normal;
+    overflow: hidden;
+    transform: translateZ(0);
+    -webkit-box-shadow: 0px 5px 26px 0px rgba(0,0,0,0.22),0px 20px 28px 0px rgba(0,0,0,0.30);
+    box-shadow: 0px 5px 26px 0px rgba(0,0,0,0.22),0px 20px 28px 0px rgba(0,0,0,0.30);
+}
+.lud-ohdt:checked~.lud-ohdf {
+    color: #fff;
+    background-color: #4285f4;
+}
+.lud-ohdf {
+    color: rgba(0,0,0,.54);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 45px;
+    pointer-events: none;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    -webkit-user-select: none;
+    user-select: none;
+    width: 100%;
+}
+label {
+    cursor: default;
+}
+
+
+    .lud-ohdo2 {
+    clear: both;
+    display: flex;
+    margin-bottom: 8px;
+    max-width: 371px;
+    width: 100%;
+    }
+    .lud-ohday2 {
+    background-color: #f5f5f5;
+    display: inline-block;
+    flex-grow: 1;
+    flex-grow: 1;
+    height: 25px;
+    margin: 1px 6px 1px 0px;
+    min-width: 38px;
+    position: relative;
+}
+label {
+    cursor: default;
+}
+.lud-ohdt2 {
+    display: none;
+}
+.g, body, html, input, .std, h1 {
+    font-size: small;
+    font-family: arial,sans-serif;
+}
+input[type="radio" i], input[type="checkbox" i] {
+    background-color: initial;
+    margin: 3px 0.5ex;
+    padding: initial;
+    border: initial;
+}
+input, textarea, keygen, select, button {
+    text-rendering: auto;
+    color: initial;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: start;
+    margin: 0em 0em 0em 0em;
+    font: 13.3333px Arial;
+}
+.fAwjXaCTMo5__content {
+    border-radius: 2px;
+    border-radius: 2px;
+    position: relative;
+    display: inline-block;
+    z-index: 1060;
+    background-color: #fff;
+    opacity: 0;
+    text-align: left;
+    vertical-align: middle;
+    white-space: normal;
+    overflow: hidden;
+    transform: translateZ(0);
+    -webkit-box-shadow: 0px 5px 26px 0px rgba(0,0,0,0.22),0px 20px 28px 0px rgba(0,0,0,0.30);
+    box-shadow: 0px 5px 26px 0px rgba(0,0,0,0.22),0px 20px 28px 0px rgba(0,0,0,0.30);
+}
+
+.lud-ohdf2 {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 25px;
+    pointer-events: none;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    -webkit-user-select: none;
+    user-select: none;
+    width: 100%;
+}
+.material-switch > input[type="checkbox"] {
+    display: none;   
+}
+
+.material-switch > label {
+    cursor: pointer;
+    height: 0px;
+    position: relative; 
+    width: 40px;  
+}
+
+.material-switch > label::before {
+    background: rgb(0, 0, 0);
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    content: '';
+    height: 16px;
+    margin-top: -8px;
+    position:absolute;
+    opacity: 0.3;
+    transition: all 0.4s ease-in-out;
+    width: 40px;
+}
+.count
+{
+  line-height: 100px;
+  color:#4285f4;
+  
+
+  font-size:84px;
+}
+.count1
+{
+  color:#4285f4;
+  
+
+  font-size:20px;
+}
+.material-switch > label::after {
+    background: rgb(255, 255, 255);
+    border-radius: 16px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    content: '';
+    height: 24px;
+    left: -4px;
+    margin-top: -8px;
+    position: absolute;
+    top: -4px;
+    transition: all 0.3s ease-in-out;
+    width: 24px;
+}
+.material-switch > input[type="checkbox"]:checked + label::before {
+    background: inherit;
+    opacity: 0.5;
+}
+.material-switch > input[type="checkbox"]:checked + label::after {
+    background: inherit;
+    left: 20px;
+}
+.form-control
+{
+    height:24px;
+}
+
+</style>
+<?php if( $mode == '' ){ ?>
+
+<section class="content-header">
+    <h1 style="text-align:center" class="page-header">SHIFT POLICY REPORTS </h1>
+</section>
+<section class="content">
+    <div class="box box-body">
+    <form role="form" id="form-shiftreport-master" method="POST" style="border-bottom: #C7BEBE 1px solid;">
+        <!--div class="box box-header">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">   Policy Title: <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["day_time_desc"]) ? $arr_shiftreport[0]['working_day_time_procedures']["day_time_desc"]: ''; ?>  </div>
+        </div-->
+        <div style="margin-bottom: 0!important; padding: 19px 7px 8px 34px;
+    background: #4285f4;
+    margin-bottom: -37px;
+    margin-bottom: 0!important;
+    box-shadow: 0 3px 12px rgba(0,0,0,.23),0 3px 12px rgba(0,0,0,.16);
+    color: white;height: 59px;">
+        <h4><i class="fa fa-calendar"></i> Policy Title: <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["day_time_desc"]) ? $arr_shiftreport[0]['working_day_time_procedures']["day_time_desc"]: ''; ?></h4>
+        
+      </div>
+        
+        <div class="box box-body">
+            <div class="box box-header">
+        <h2> Working Days</h2>
+            </div>
+            
+			<div class="col-sm-5 col-md-5">
+                            
+				<fieldset data-parsley-multiple="workdays" >
+					
+						
+
+					<div class="lud-ohdo">
+                                            <label class="lud-ohday"><input class="lud-ohdt" data-parsley-multiple="workdays" data-parsley-ui-enabled="false" name="Sunday" <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']['Sunday']) && $arr_shiftreport[0]['working_day_time_procedures']['Sunday'] =="Y"?'checked="checked"':'' ?> type="checkbox" value="Y"><span class="lud-ohdf">Sun</span></label>
+                                            <label class="lud-ohday"><input class="lud-ohdt" data-parsley-multiple="workdays" name="Monday" <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']['Monday']) && $arr_shiftreport[0]['working_day_time_procedures']['Monday'] =="Y"?'checked="checked"':'' ?>  type="checkbox" value="Y"><span class="lud-ohdf">Mon</span></label>
+                                            <label class="lud-ohday"><input class="lud-ohdt" data-parsley-multiple="workdays" name="Tuesday" <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']['Tuesday']) && $arr_shiftreport[0]['working_day_time_procedures']['Tuesday'] =="Y"?'checked="checked"':'' ?> type="checkbox" value="Y"><span class="lud-ohdf">Tue</span></label>
+                                            <label class="lud-ohday"><input class="lud-ohdt" data-parsley-multiple="workdays" name="Wednesday" <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']['Wednesday']) && $arr_shiftreport[0]['working_day_time_procedures']['Wednesday'] =="Y"?'checked="checked"':'' ?> type="checkbox" value="Y"><span class="lud-ohdf">Wed</span></label>
+                                            <label class="lud-ohday"><input class="lud-ohdt" data-parsley-multiple="workdays" name="Thursday" <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']['Thursday']) && $arr_shiftreport[0]['working_day_time_procedures']['Thursday'] =="Y"?'checked="checked"':'' ?> type="checkbox" value="Y"><span class="lud-ohdf">Thu</span></label>
+                                            <label class="lud-ohday"><input class="lud-ohdt" data-parsley-multiple="workdays" name="Friday" <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']['Friday']) && $arr_shiftreport[0]['working_day_time_procedures']['Friday'] =="Y"?'checked="checked"':'' ?> type="checkbox" value="Y"><span class="lud-ohdf">Fri</span></label>
+                                            <label class="lud-ohday"><input class="lud-ohdt" data-parsley-multiple="workdays" name="Saturday" <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']['Saturday']) && $arr_shiftreport[0]['working_day_time_procedures']['Saturday'] =="Y"?'checked="checked"':'' ?> type="checkbox" value="Y"><span class="lud-ohdf">Sat</span></label>
+                                        </div>
+                                    <div class="lud-ohdo2">
+                                            <label class="lud-ohday2"><input class="lud-ohdt2" data-parsley-multiple="workdays" data-parsley-ui-enabled="false" name="Sunday_F" <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']['Sunday_F']) && $arr_shiftreport[0]['working_day_time_procedures']['Sunday_F'] =="Y"?'checked="checked"':'' ?> type="checkbox" value="Y"><span class="lud-ohdf2">H</span></label>
+                                            <label class="lud-ohday2"><input class="lud-ohdt2" data-parsley-multiple="workdays" name="Monday_F" <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']['Monday_F']) && $arr_shiftreport[0]['working_day_time_procedures']['Monday_F'] =="Y"?'checked="checked"':'' ?>  type="checkbox" value="Y"><span class="lud-ohdf2">H</span></label>
+                                            <label class="lud-ohday2"><input class="lud-ohdt2" data-parsley-multiple="workdays" name="Tuesday_F" <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']['Tuesday_F']) && $arr_shiftreport[0]['working_day_time_procedures']['Tuesday_F'] =="Y"?'checked="checked"':'' ?> type="checkbox" value="Y"><span class="lud-ohdf2">H</span></label>
+                                            <label class="lud-ohday2"><input class="lud-ohdt2" data-parsley-multiple="workdays" name="Wednesday_F" <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']['Wednesday_F']) && $arr_shiftreport[0]['working_day_time_procedures']['Wednesday_F'] =="Y"?'checked="checked"':'' ?> type="checkbox" value="Y"><span class="lud-ohdf2">H</span></label>
+                                            <label class="lud-ohday2"><input class="lud-ohdt2" data-parsley-multiple="workdays" name="Thursday_F" <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']['Thursday_F']) && $arr_shiftreport[0]['working_day_time_procedures']['Thursday_F'] =="Y"?'checked="checked"':'' ?> type="checkbox" value="Y"><span class="lud-ohdf2">H</span></label>
+                                            <label class="lud-ohday2"><input class="lud-ohdt2" data-parsley-multiple="workdays" name="Friday_F" <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']['Friday_F']) && $arr_shiftreport[0]['working_day_time_procedures']['Friday_F'] =="Y"?'checked="checked"':'' ?> type="checkbox" value="Y"><span class="lud-ohdf2">H</span></label>
+                                            <label class="lud-ohday2"><input class="lud-ohdt2" data-parsley-multiple="workdays" name="Saturday_F" <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']['Saturday_F']) && $arr_shiftreport[0]['working_day_time_procedures']['Saturday_F'] =="Y"?'checked="checked"':'' ?> type="checkbox" value="Y"><span class="lud-ohdf2">H</span></label>
+                                        </div>
+                                                                            <div class="pull-left"><span class="label" style="background: red;">Half Day</span>&nbsp;&nbsp;<span class="label" style="background: #f5f5f5;">Full Day</span></div>
+
+				</fieldset>
+			</div>
+            <div class="col-sm-7 col-md-7">
+                <div class="col-md-12">
+               <div id=""><span class="count"><?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["on_dutty1"]) ? $arr_shiftreport[0]['working_day_time_procedures']["on_dutty1"] : '' ; ?> - <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["off_dutty1"]) ? $arr_shiftreport[0]['working_day_time_procedures']["off_dutty1"] : ''; ?></span></div>
+            </div>
+            </div>
+		
+        
+        </div>
+        <div class="box-body">
+            <div class="box box-header">
+        <h2> Working Times</h2>
+            </div>
+        <div class="col-md-12">
+            <div id=""><span class="count1"><?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["on_dutty1"]) ? $arr_shiftreport[0]['working_day_time_procedures']["on_dutty1"] : '' ; ?> - <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["off_dutty1"]) ? $arr_shiftreport[0]['working_day_time_procedures']["off_dutty1"] : ''; ?></span><span class="pull-right">Working time: <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["working_time1"]) ? $arr_shiftreport[0]['working_day_time_procedures']["working_time1"] : '' ; ?></span></div>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="box box-header">
+        <h2> Start Rules</h2>
+            </div>
+        <div class="col-md-12">
+            <div class="col-sm-10 col-md-6">  Minutes after On duty calculated as late: <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["minuts_aftr_on_dutty_cal_late"]) ? $arr_shiftreport[0]['working_day_time_procedures']["minuts_aftr_on_dutty_cal_late"]:''; ?>  </div>
+
+                    <div class="col-sm-10 col-md-6 col-lg-6">  Minutes before Off duty calculated as early: <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["minuts_bfr_off_dutty_cal_early"]) ? $arr_shiftreport[0]['working_day_time_procedures']["minuts_bfr_off_dutty_cal_early"] :''; ?>  </div>
+
+                    <div class="col-sm-10 col-md-6 col-lg-6">  Minutes calculated as late if no clock-in: <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["min_cal_late_ifnoclockin"]) ? $arr_shiftreport[0]['working_day_time_procedures']["min_cal_late_ifnoclockin"] :''; ?>  </div>
+
+                <div class="col-sm-10 col-md-6 col-lg-6">   Minutes calculated as leave early if no clock-out: <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["min_cal_leave_early_ifnoclockout"]) ? $arr_shiftreport[0]['working_day_time_procedures']["min_cal_leave_early_ifnoclockout"]:''; ?>  </div>
+                <legend>Over Time</legend>
+                <div class="col-sm-10 col-md-6 col-lg-6">   Minutes after Off duty calculated as overtime: <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["min_aftr_off_dutty_cal_ot"]) ? $arr_shiftreport[0]['working_day_time_procedures']["min_aftr_off_dutty_cal_ot"]:''; ?>  </div>
+
+                <div class="col-sm-10 col-md-6 col-lg-6">   Minutes before On duty calculated as overtime:<?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["min_bfr_on_dutty_cal_ot"]) ? $arr_shiftreport[0]['working_day_time_procedures']["min_bfr_on_dutty_cal_ot"]:''; ?>  </div>
+
+
+                <div class="col-sm-10 col-md-6 col-lg-6">   Working time in day off calculated as overtime:<?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["work_time_day_off_cal_ot"]) ? $arr_shiftreport[0]['working_day_time_procedures']["work_time_day_off_cal_ot"]:''; ?>  </div>
+            
+            </div>
+        </div>
+        
+       <div class="row">
+        <div class="form-group">
+            <div class="col-md-12" align="right">
+                <a href="<?php echo $this->webroot; ?>Empreport/shiftpolicyreport/pdf" class="btn btn-default" ><i class="icon-file"></i>Download As PDF</a>
+                <!--<a href="#" class="btn btn-default" onclick="downloadReport('Salaryslip','excel');"><i class="icon-file"></i>Download As Excel</a>-->
+            </div>
+        </div>
+    </div>
+    </form>
+    </div>
+</section>
+<?php } else {
+echo $this->element('reportempheader',array(
+        "emp" => $arr_emp
+    ));
+?>
+
+
+
+
+    <h3 style="text-align: center;padding-bottom: 10px;padding-top: 10px;">SHIFT POLICY REPORTS </h3>
+
+     <div class="box box-header">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <h4>  Policy Title: <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["day_time_desc"]) ? $arr_shiftreport[0]['working_day_time_procedures']["day_time_desc"]: ''; ?>  </h4>
+            </div>
+        </div>
+        <div class="box box-body">
+        <div class="form-group" >
+        <table>
+            <tr>
+     <td class="col-md-1"><b>Working Days</b></td></tr>
+            <tr>
+             <td class="col-md-1">
+                 <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']['Monday']) && $arr_shiftreport[0]['working_day_time_procedures']['Monday'] == "Y" ? 'Monday' : '' ; ?>
+             </td>
+    <td class="col-md-1"><?php
+        echo isset($arr_shiftreport[0]['working_day_time_procedures']['Tuesday']) && $arr_shiftreport[0]['working_day_time_procedures']['Tuesday'] == "Y" ? 'Tuesday': '';   ?>
+             </td>
+      <td class="col-md-1"><?php
+        echo isset($arr_shiftreport[0]['working_day_time_procedures']['Wednesday']) && $arr_shiftreport[0]['working_day_time_procedures']['Wednesday'] == "Y" ? 'Wednesday' : '' ;  ?>
+             </td>
+      <td class="col-md-1"><?php
+         echo isset($arr_shiftreport[0]['working_day_time_procedures']['Thursday']) && $arr_shiftreport[0]['working_day_time_procedures']['Thursday'] == "Y" ? 'Thursday' : '';  ?>
+             </td> 
+      <td class="col-md-1"><?php
+        echo isset($arr_shiftreport[0]['working_day_time_procedures']['Friday']) && $arr_shiftreport[0]['working_day_time_procedures']['Friday'] == "Y" ? 'Friday' : ''; ?>
+        </td>
+        <td class="col-md-1"><?php
+        echo isset($arr_shiftreport[0]['working_day_time_procedures']['Saturday']) && $arr_shiftreport[0]['working_day_time_procedures']['Saturday'] == "Y" ? 'Saturday' : '' ;  ?>
+      </td>
+      <td class="col-md-1"><?php
+         echo isset($arr_shiftreport[0]['working_day_time_procedures']['Sunday']) && $arr_shiftreport[0]['working_day_time_procedures']['Sunday'] == "Y" ? 'Sunday' : '' ;  ?>
+             </td>
+      
+      </tr>
+       </table>  <hr>
+      <table>
+       <tr>
+     <td class="col-md-1"><b>Working Times</b></td></tr>
+       <tr>
+           <td class="col-md-1" style="font-weight: bold;">
+         
+               Duty Start At: </td><td style="color: red">
+                <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["on_dutty1"]) ? $arr_shiftreport[0]['working_day_time_procedures']["on_dutty1"] : '' ; ?>
+           </td>
+           <td class="col-md-1" style="font-weight: bold;">
+           Duty End At:</td><td style="color: red">
+           <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["off_dutty1"]) ? $arr_shiftreport[0]['working_day_time_procedures']["off_dutty1"] : ''; ?>
+       </td>
+        <td class="col-md-1" style="font-weight: bold;">
+      Working time:</td><td style="color: red">
+      <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["working_time1"]) ? $arr_shiftreport[0]['working_day_time_procedures']["working_time1"] : '' ; ?>
+           </td>
+</tr>
+     </table>  <hr>
+        <table>
+        
+         <tr>
+     <td class="col-md-1"><b>Start Rule</b></td></tr>
+    
+             <tr class="col-md-1"> <td>
+                     Minutes calculated as per day:</td>
+                <td> <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["minuts_calc_perday"]) ? $arr_shiftreport[0]['working_day_time_procedures']["minuts_calc_perday"]:''; ?> 
+                </td>   </tr>
+
+                   <tr class="col-md-1"> 
+                       <td>Minutes after On duty calculated as late:</td>
+                       <td>
+                       <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["minuts_aftr_on_dutty_cal_late"]) ? $arr_shiftreport[0]['working_day_time_procedures']["minuts_aftr_on_dutty_cal_late"]:''; ?> 
+                   </td></tr>
+                <tr class="col-md-1">
+                     <td> Minutes before Off duty calculated as early:</td>
+                       <td>
+                      <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["minuts_bfr_off_dutty_cal_early"]) ? $arr_shiftreport[0]['working_day_time_procedures']["minuts_bfr_off_dutty_cal_early"] :''; ?>  
+                    </td>  </tr>
+
+                 <tr class="col-md-1"> <td>
+                     Minutes calculated as late if no clock-in  </td>
+
+                  <td>   <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["min_cal_late_ifnoclockin"]) ? $arr_shiftreport[0]['working_day_time_procedures']["min_cal_late_ifnoclockin"] :''; ?> 
+              </td>   </tr>
+
+              <tr class="col-md-1"><td>  
+                  Minutes calculated as leave early if no clock-out: </td><td>
+
+                  <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["min_cal_leave_early_ifnoclockout"]) ? $arr_shiftreport[0]['working_day_time_procedures']["min_cal_leave_early_ifnoclockout"]:''; ?>
+            </td>  </tr>
+
+              <tr class="col-md-1"> <td>
+                  Minutes after Off duty calculated as overtime:   </td>  <td>
+
+                  <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["min_aftr_off_dutty_cal_ot"]) ? $arr_shiftreport[0]['working_day_time_procedures']["min_aftr_off_dutty_cal_ot"]:''; ?> 
+            </td>  </tr>
+
+          <tr class="col-md-1">  <td>
+                  Minutes before On duty calculated as overtime:</td><td>
+              <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["min_bfr_on_dutty_cal_ot"]) ? $arr_shiftreport[0]['working_day_time_procedures']["min_bfr_on_dutty_cal_ot"]:''; ?>
+              </td></tr>
+
+
+           <tr class="col-md-1">    <td> 
+                   Working time in day off calculated as overtime:</td><td>
+                    <?php echo isset($arr_shiftreport[0]['working_day_time_procedures']["work_time_day_off_cal_ot"]) ? $arr_shiftreport[0]['working_day_time_procedures']["work_time_day_off_cal_ot"]:''; ?> 
+             </td>   </tr>
+      
+        </table>
+
+</div>
+  
+</div>
+<?php } ?>

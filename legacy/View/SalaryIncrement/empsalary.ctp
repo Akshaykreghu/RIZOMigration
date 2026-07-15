@@ -1,0 +1,180 @@
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+
+        .row {
+            height: 32px;
+        }
+
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+
+        table {
+            border: 2px solid #f4f4f4;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border: 1px solid #B2B2B2;
+        }
+    </style>
+    <?php
+
+    echo $this->element('reportadminheader', array(
+        'title' => 'Cost To Company Detailed Report'
+    ));
+    ?>
+    <?php $i = 0;
+
+    if (count($arr_salary_for_template) == 0) {
+        echo '<div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+        There is no data available</div>';
+        die();
+    }
+
+    ?>
+
+
+    <?php $i = 0; 
+    foreach ($arr_salary_for_template as $value) {
+
+        if (count($value['0']['summary']['0']) !== 0) {
+            $i += 1;
+    ?>
+
+            <?php foreach ($value as $key => $values) {
+            ?>
+
+                <h3> <?php echo isset($values['summary']['0']['0']['0']['first_name']) ? $values['summary']['0']['0']['0']['first_name'] : '';
+                        echo ' ';
+                        echo  isset($values['summary']['0']['0']['0']['last_name']) ? $values['summary']['0']['0']['0']['last_name'] : '';
+                        echo (isset($values['summary']['0']['0']['0']['status'])) && $values['summary']['0']['0']['0']['status'] == "2" ? '  (Resigned)' : ''; ?>
+                </h3>
+                <div class="col-md-4">EMP ID : <?php echo  isset($values['summary']['0']['0']['0']['emp_company_id']) ? $values['summary']['0']['0']['0']['emp_company_id'] : ''; ?> </div>
+                <div class="col-md-4">Branch : <?php echo  isset($values['summary']['0']['0']['0']['branch_name']) ? $values['summary']['0']['0']['0']['branch_name'] : ''; ?> </div>
+                <div class="col-md-4">Designation : <?php echo  isset($values['summary']['0']['0']['0']['desig_name']) ? $values['summary']['0']['0']['0']['desig_name'] : ''; ?> </div>
+                <div class="col-md-4">Department : <?php echo  isset($values['summary']['0']['0']['0']['dept_name']) ? $values['summary']['0']['0']['0']['dept_name'] : ''; ?> </div>
+
+
+
+
+                <br>
+
+
+
+                <table class="table">
+                    <thead>
+                        <tr>
+
+                            <!--    <th>LEAVEPOLICY_GROUP_NAME</th> -->
+
+
+                            <th style="width:40%">Salary</th>
+                            <th style="width:40%">Amount</th>
+
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <?php $arr_data  = $values['summary']['0'];  ?>
+                        <!-- edited by anukrishnan_07-02-1015_open -->
+                        <?php if (count($values['summary']['0']) >= 0) {
+                            $sum = 0;
+                            $gross_total = 0 ?>
+                            <?php foreach ($values['summary']['0'] as $val) {
+                                if ($val['0']['item_part'] != 'Indirect') {
+                                    if ($val['0']['structure_det_value'] != '0') {
+                                        $desc = $val['0']['salary_head_item_desc'];
+                                        if ($val['0']['head_type'] == 'fixed' || $val['0']['head_type'] == 'manually' || $val['0']['head_type'] == 'limit') {
+                                            $det = $val['0']['structure_det_value'];
+                                        } else {
+                                            $det = round($val['0']['structure_det_value']);
+                                        }
+                                        // $det = floatval($val[0]['structure_det_value']);
+                                        $gross_total += $det;
+                            ?>
+
+                                        <tr>
+                                            <td><?php echo $val['0']['salary_head_item_desc']; ?></td>
+                                            <td><?php echo $det; ?></td>
+                                        </tr>
+                            <?php
+                                    } // Edited by Akshay on 25-3-2025
+                                }
+                            } ?>
+
+
+                            <!-- Edited by Akshay on 20-3-2025 -->
+                            <tr>
+                                <th>Gross Total</th>
+                                <th><?php echo round($gross_total); ?></th>
+                            </tr>
+                            <?php
+                            $sum += $gross_total;
+                            foreach ($values['summary']['0'] as $val) {
+
+                                // edited by anukrishnan_07-02-1015_close
+                                if ($val['0']['item_part'] == 'Indirect') {
+                                    if ($val['0']['structure_det_value'] != '0') {
+                                        if ($val['0']['head_type'] == 'fixed' || $val['0']['head_type'] == 'manually' || $val['0']['head_type'] == 'limit') {
+                                            $det = $val['0']['structure_det_value'];
+                                        } else {
+                                            $det = round($val['0']['structure_det_value']);
+                                        }
+                                        $sum = $sum + $det;
+                            ?>
+                                        <tr>
+                                            <td><?php echo $val['0']['salary_head_item_desc']; ?></td>
+                                            <td><?php echo $det; ?></td>
+                                        </tr>
+
+                            <?php
+                                    }
+                                }
+                            } ?>
+                            <!-- End -->
+
+
+                            <tr>
+                                <th>Grand Total</th>
+                                <th><?php echo round($sum); ?></th>
+                            </tr>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4">No employees found under this data</td>
+                            </tr>
+                        <?php } ?>
+
+
+                    </tbody>
+                </table>
+                <br>
+            <?php } ?>
+    <?php  }
+    } exit; ?>
+
+

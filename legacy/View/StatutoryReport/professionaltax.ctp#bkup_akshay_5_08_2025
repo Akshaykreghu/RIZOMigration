@@ -1,0 +1,428 @@
+<?php if ($mode == '') { ?>
+    <div class="modal-body" style="overflow-y:initial; padding-left:3%; padding-right:3%; padding-bottom:3%;">
+        <h3 align="center">Professional Tax Summary Report</h3>
+        <div class="row">
+            <div class="col-md-12">
+
+                <?php
+                if (count($arr_salary_for_template) !== 0) {
+                    if ($criteria == 'EmployeeDetails') {
+                        // $i += 1;
+                ?>
+
+                        <fieldset>
+                            <table class="table table-bordered ">
+                                <thead>
+                                    <tr>
+                                        <th colspan="7" style="text-align: center;">Employee Details</th>
+                                        <th colspan="7" style="text-align: center;">Professional Tax Details</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Sl No</th>
+                                        <th>Employee Name</th>
+                                        <th>Employee ID</th>
+                                        <th>Joining Date</th>
+                                        <th>Branch</th>
+                                        <th>Department</th>
+                                        <th>Designation</th>
+                                        <?php foreach ($months as $month) { ?>
+                                            <th><?php echo $month; ?></th>
+                                        <?php } ?>
+                                        <th>Total Amount Paid</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <?php $i = 0;
+                                    $sum = 0;
+                                    foreach ($arr_salary_for_template as $values) {
+                                        $pt = 0;
+                                        // Edited by Akshay on 22-3-2025
+                                        if ($user == 'GLET' || $user == 'KWMT') {
+                                            $emp = isset($values['0']['0']['0']['emp_pkey']) ? $values['0']['0']['0']['emp_pkey'] : '';
+                                        } else {
+                                            $emp = $values['0']['0']['employee_info']['emp_pkey'];
+                                        }
+
+                                        // End
+                                        foreach ($values as $value) {
+                                            // Edited by Akshay on 22-3-2025
+                                            if ($user == 'GLET' || $user == 'KWMT') {
+                                                $condition = $value['0']['0']['emp_pkey'] == $emp;
+                                            } else {
+                                                $condition = $value['0']['employee_info']['emp_pkey'] == $emp;
+                                            }
+                                            // End
+                                            if ($condition) {
+
+                                                $settle_pt = isset($value['0']['0']['Settle_PT']) ? $value['0']['0']['Settle_PT'] * -1 : 0;
+                                                if ($settle_pt == 0) {
+                                                    $pro_tax = isset($value['0']['0']['Professional_Tax']) ? round($value['0']['0']['Professional_Tax']) : 0;
+                                                    $pt += isset($value['0']['0']['Professional_Tax']) ? round($value['0']['0']['Professional_Tax'], 2) : 0;
+                                                } else {
+                                                    $pro_tax = round($settle_pt);
+                                                    $pt += round($settle_pt, 2);
+                                                }
+                                            }
+                                        }
+                                        $sum += $pt;
+                                        if ($pt >= 0) {
+                                    ?>
+
+                                            <?php
+
+                                            //foreach ($arr_salary_for_template as $values) { 
+                                            ?>
+                                            <?php $arr_data = $values; ?>
+                                            <?php if (count($arr_data) > 0) {
+                                                $pt = 0;
+
+
+                                            ?>
+                                                <tr>
+                                                    <?php
+                                                    $i = $i + 1;
+                                                    if ($user == 'GLET' || $user == 'KWMT') {
+                                                        $emp = $values['0']['0']['0']['emp_pkey']; ?>
+                                                        <td><?php echo $i; ?></td>
+                                                        <td><?php echo $values['0']['0']['0']['EmpName']; ?><?php echo isset($values['0']['0']['emp_details']['status']) && $values['0']['0']['emp_details']['status'] == "2" ? '(Resigned)' : ''; ?></td>
+                                                        <td><?php echo $values['0']['0']['0']['employee_id']; ?></td>
+                                                        <td><?php echo $values['0']['0']['0']['joining_date']; ?></td>
+                                                        <td><?php echo $values['0']['0']['0']['branch']; ?></td>
+                                                        <td><?php echo $values['0']['0']['0']['department']; ?></td>
+                                                        <td><?php echo $values['0']['0']['0']['designation']; ?></td>
+                                                    <?php
+                                                    } else {
+                                                        $emp = $values['0']['0']['employee_info']['emp_pkey']; ?>
+                                                        <td><?php echo $i; ?></td>
+                                                        <td><?php echo $values['0']['0']['employee_info']['EmpName']; ?><?php echo isset($values['0']['0']['emp_details']['status']) && $values['0']['0']['emp_details']['status'] == "2" ? '(Resigned)' : ''; ?></td>
+                                                        <td><?php echo $values['0']['0']['employee_info']['employee_id']; ?></td>
+                                                        <td><?php echo $values['0']['0']['employee_info']['joining_date']; ?></td>
+                                                        <td><?php echo $values['0']['0']['employee_info']['branch']; ?></td>
+                                                        <td><?php echo $values['0']['0']['employee_info']['department']; ?></td>
+                                                        <td><?php echo $values['0']['0']['employee_info']['designation']; ?></td>
+                                                        <?php
+                                                    }
+
+
+
+                                                    foreach ($arr_salary_for_template as $values) {
+                                                        foreach ($values as $value) {
+                                                            // Edited by Akshay on 22-3-2025
+                                                            if ($user == 'GLET' || $user == 'KWMT') {
+                                                                $condition = $value['0']['0']['emp_pkey'] == $emp;
+                                                            } else {
+                                                                $condition = $value['0']['employee_info']['emp_pkey'] == $emp;
+                                                            }
+                                                            // End
+                                                            if ($condition) {
+
+                                                                $settle_pt = isset($value['0']['0']['Settle_PT']) ? $value['0']['0']['Settle_PT'] * -1 : 0;
+                                                                if ($settle_pt == 0) {
+                                                                    $pro_tax = isset($value['0']['0']['Professional_Tax']) ? round($value['0']['0']['Professional_Tax']) : 0;
+                                                                    $pt += isset($value['0']['0']['Professional_Tax']) ? round($value['0']['0']['Professional_Tax'], 2) : 0;
+                                                                } else {
+                                                                    $pro_tax = round($settle_pt);
+                                                                    $pt += round($settle_pt, 2);
+                                                                }
+                                                        ?>
+                                                                <th><?php echo $pro_tax; ?></th>
+
+                                                    <?php  }
+                                                        }
+                                                    } ?>
+                                                    <th><?php echo $pt;?></th>
+
+
+                                                </tr>
+
+
+                                            <?php } else { ?>
+                                                <tr>
+                                                    <td colspan="14" style="text-align:center;">No Records found under this Criteria</td>
+                                                </tr>
+                                            <?php } //}
+                                            ?>
+                                        <?php }
+                                    }
+                                    if ($sum == 0) { ?>
+                                        <tr>
+                                            <td colspan="14" style="text-align:center;">No Records Found</th>
+                                        </tr>
+                                    <?php  } else { ?>
+                                        <tr>
+                                            <th colspan="13" style="text-align:center;">Total</th>
+                                            <th style="text-align:center;"><?php echo $sum; ?></th>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+
+                        </fieldset>
+                        <br>
+
+
+                    <?php } else { ?> <!-- /.box-body -->
+
+                        <?php
+                        foreach ($arr_salary_for_template as $value) {
+                        ?>
+                            <legend>
+                                <?php
+                                echo isset($value['0']['0']['employee_info']['branch']) ? "Professional Tax Report of - " . $value['0']['0']['employee_info']['branch'] : '';
+                                echo ' ';
+
+                                ?>
+                            </legend>
+                            <fieldset>
+                                <table class="table table-bordered ">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="7" style="text-align: center;">Employee Details</th>
+                                            <th colspan="7" style="text-align: center;">Professional Tax Details</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Sl No</th>
+                                            <th>Employee Name</th>
+                                            <th>Employee ID</th>
+                                            <th>Joining Date</th>
+                                            <th>Branch</th>
+                                            <th>Department</th>
+                                            <th>Designation</th>
+                                            <?php foreach ($months as $month) { ?>
+                                                <th><?php echo $month; ?></th>
+                                            <?php } ?>
+                                            <th>Total Amount Paid</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $i = 0;
+                                        //debug($value);     
+                                        //   foreach ($value as $data) {  debug($value);
+                                        ?>
+                                        <?php //$arr_data = $data; 
+                                        $data = $value['0'];
+                                        // debug($arr);
+                                        ?>
+                                        <?php if (count($data) > 0) {
+                                            $pt = 0;
+
+
+                                        ?>
+                                            <?php //debug($data);
+                                            foreach ($data as $arr) {
+                                                $emp = isset($arr['employee_info']) ? $arr['employee_info'] : '';
+                                                if ($emp != "") {
+
+
+                                                    $i = $i + 1;
+                                                    //   $emp = $arr['employee_info']['emp_pkey']; 
+                                            ?>
+                                                    <tr>
+
+                                                        <td><?php echo $i; ?></td>
+                                                        <td><?php echo $arr['employee_info']['EmpName']; ?><?php echo isset($arr['emp_details']['status']) && $arr['emp_details']['status'] == "2" ? '(Resigned)' : ''; ?></td>
+                                                        <td><?php echo $arr['employee_info']['employee_id']; ?></td>
+                                                        <td><?php echo $arr['employee_info']['joining_date']; ?></td>
+                                                        <td><?php echo $arr['employee_info']['branch']; ?></td>
+                                                        <td><?php echo $arr['employee_info']['department']; ?></td>
+                                                        <td><?php echo $arr['employee_info']['designation']; ?></td>
+
+
+
+
+                                                    </tr>
+                                            <?php }
+                                            } ?>
+
+                                        <?php } else { ?>
+                                            <tr>
+                                                <td colspan="4">No Records found under this data</td>
+                                            </tr>
+                                        <?php } //}
+                                        ?>
+
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                <?php }
+                    }
+                } ?>
+            </div>
+        </div>
+    </div>
+
+<?php } else { ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';  
+    ?>
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+
+        .row {
+            height: 32px;
+        }
+
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+
+        table {
+            border: 2px solid #f4f4f4;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            font-size: 9px;
+            border: 1px solid #B2B2B2;
+        }
+    </style>
+    <?php
+    echo $this->element('reportadminheader', array(
+        'title' => 'Professional Tax Summary Report'
+    ));
+    ?>
+    <!-- <div class="">
+            <div class="">-->
+    <?php
+    if (count($arr_salary_for_template) !== 0) {
+    ?>
+        <table class="table ">
+            <thead>
+                <tr>
+                    <th colspan="7" style="text-align: center;">Employee Details</th>
+                    <th colspan="7" style="text-align: center;">Professional Tax Details</th>
+                </tr>
+                <tr>
+                    <th>Sl. No</th>
+                    <th style="width:50px;">Employee Name</th>
+                    <th>Employee ID</th>
+                    <th>Joining Date</th>
+                    <th style="width:50px;">Branch</th>
+                    <th style="width:50px;">Department</th>
+                    <th style="width:50px;">Designation</th>
+                    <?php foreach ($months as $month) { ?>
+                        <th><?php echo $month; ?></th>
+                    <?php } ?>
+                    <th>Total Amount Paid</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php $i = 0;
+                $sum = 0;
+                foreach ($arr_salary_for_template as $values) {
+                    $pt = 0;
+
+                    $emp = $values['0']['0']['employee_info']['emp_pkey'];
+                    foreach ($values as $value) {
+                        if ($value['0']['employee_info']['emp_pkey'] == $emp) {
+
+                            $settle_pt = isset($value['0']['0']['Settle_PT']) ? $value['0']['0']['Settle_PT'] * -1 : 0;
+                            if ($settle_pt == 0) {
+                                $pro_tax = isset($value['0']['0']['Professional_Tax']) ? round($value['0']['0']['Professional_Tax']) : 0;
+                                $pt += isset($value['0']['0']['Professional_Tax']) ? round($value['0']['0']['Professional_Tax'], 2) : 0;
+                            } else {
+                                $pro_tax = round($settle_pt);
+                                $pt += round($settle_pt, 2);
+                            }
+                        }
+                    }
+                    $sum += $pt;
+                    if ($pt >= 0) {
+                ?>
+
+                        <?php
+
+                        //foreach ($arr_salary_for_template as $values) { 
+                        ?>
+                        <?php $arr_data = $values; ?>
+                        <?php if (count($arr_data) > 0) {
+                            $pt = 0;
+
+
+                        ?>
+                            <tr>
+                                <?php $i = $i + 1;
+                                $emp = $values['0']['0']['employee_info']['emp_pkey']; ?>
+                                <td><?php echo $i; ?></td>
+                                <td style="width:50px;"><?php echo $values['0']['0']['employee_info']['EmpName']; ?><?php echo isset($values['0']['0']['emp_details']['status']) && $values['0']['0']['emp_details']['status'] == "2" ? '(Resigned)' : ''; ?></td>
+                                <td><?php echo $values['0']['0']['employee_info']['employee_id']; ?></td>
+                                <td><?php echo $values['0']['0']['employee_info']['joining_date']; ?></td>
+                                <td style="width:50px;"><?php echo $values['0']['0']['employee_info']['branch']; ?></td>
+                                <td style="width:50px;"><?php echo $values['0']['0']['employee_info']['department']; ?></td>
+                                <td style="width:50px;"><?php echo $values['0']['0']['employee_info']['designation']; ?></td>
+
+                                <?php foreach ($arr_salary_for_template as $values) {
+                                    foreach ($values as $value) {
+                                        if ($value['0']['employee_info']['emp_pkey'] == $emp) {
+
+                                            $settle_pt = isset($value['0']['0']['Settle_PT']) ? $value['0']['0']['Settle_PT'] * -1 : 0;
+                                            if ($settle_pt == 0) {
+                                                $pro_tax = isset($value['0']['0']['Professional_Tax']) ? round($value['0']['0']['Professional_Tax']) : 0;
+                                                $pt += isset($value['0']['0']['Professional_Tax']) ? round($value['0']['0']['Professional_Tax'], 2) : 0;
+                                            } else {
+                                                $pro_tax = round($settle_pt);
+                                                $pt += round($settle_pt, 2);
+                                            }
+                                ?>
+                                            <th><?php echo $pro_tax; ?></th>
+
+                                <?php  }
+                                    }
+                                } ?>
+                                <th><?php echo $pt; ?></th>
+
+
+                            </tr>
+
+
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="14">No Records found under this Criteria</td>
+                            </tr>
+                        <?php } //}
+                        ?>
+                    <?php }
+                }
+                if ($sum == 0) { ?>
+                    <tr>
+                        <td colspan="14" style="text-align:center;">No Records Found</th>
+                    </tr>
+                <?php  } else { ?>
+                    <tr>
+                        <th colspan="13" style="text-align:center;">Total</th>
+                        <th style="text-align:center;"><?php echo $sum; ?></th>
+                    </tr>
+                <?php } ?>
+
+            </tbody>
+        </table>
+    <?php } ?> <!-- /.box-body -->
+
+    <!--            </div>
+        </div>  -->
+
+<?php }?>

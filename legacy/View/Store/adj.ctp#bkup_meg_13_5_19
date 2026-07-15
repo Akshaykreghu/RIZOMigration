@@ -1,0 +1,422 @@
+<style>
+    .searchb{
+        background-color: #cccccc;
+    }
+
+</style>
+<script>
+    function newmode()
+    {
+        $('#div-criteria1').load('Store/adj');
+    }
+
+</script>
+<div id="div-criteria1">
+<section class="content" >
+    <div class="row" >
+        <div class="col-md-12" >
+            <!-- DIRECT CHAT DANGER -->
+            <div class="box ">
+
+                <div class="box-body" >
+                    <form class="form-horizontal" id="" action="" method="" >
+                        <div class="modal-body">
+                            <div class="form-group">
+<!--                                <div class="col-md-3">
+                                    <label style="text-align:left;" class="col-md-4 control-label">Search</label>
+                                    <div class="col-md-8">
+                                        <input id="bill" name="bill"   class="form-control">
+                                    </div>
+                                </div>-->
+                                <button type="reset" id="btn-submit" onclick="newmode();" class="btn btn-primary">New</button>
+                                <button type="button" id="btn-refresh" value="Refresh" onclick="refresh();" accesskey=""class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+                            </div>
+                        </div>
+
+
+
+                    </form>
+
+
+                    <h1 class="page-header"> Stock Adjustment</h1>
+
+
+                    <form class="form-horizontal" style="padding-left:1px; padding-right:8px ; border:1px;" id="form-user-master" method="post" action="<?php echo $this->webroot; ?>Store/save_stock_transfer" >
+                        <div class="row bg-success" style="height:auto;" > 
+                            <h4 style="padding-left:20px;">Add Basic Details</h4>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        <label style="text-align:left;" class="col-md-5 control-label" >Transaction Code<label style="color:red;">*</label></label>
+                                        <div class="col-md-7">
+                                            <input id="adjustment_code" name="adjustment_code" value="<?php echo isset($arr_att['0']['stock']['adjustment_code']) ? $arr_att['0']['stock']['adjustment_code'] : mt_rand(); ?>" type="text"  class="form-control input-md" required="required" readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label style="text-align:left;" class="col-md-5 control-label" >Transaction Date<label style="color:red;">*</label></label>
+                                        <div class="col-md-7">
+                                            <input id="adjustment_date" placeholder="select date" name="adjustment_date" value="<?php echo isset($arr_att['0']['stock']['adjustment_date']) ? $arr_att['0']['stock']['adjustment_date'] : ''; ?>" type="text"  class="form-control input-md" required="required">
+                                        </div> 
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label style="text-align:left;" class="col-md-5 control-label" >Select Store <label style="color:red;">*</label></label>
+                                        <div class="col-md-7">
+                                            <input id="store_code"    name="from_stores" value="<?php echo isset($arr_att['0']['stock']['from_store']) ? $arr_att['0']['stock']['from_store'] : ''; ?>" type="text"  class="form-control input-md" onchange="clear();" required="required">
+                                            <input type="hidden" name="from_store" id="from_store" value="" onchange="clear();">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+<!--                                    <div class="col-md-4">
+                                        <label style="text-align:left;" class="col-md-5 control-label" >To Store <label style="color:red;">*</label></label>
+                                        <div class="col-md-7">
+                                            <input id="tostore_code"  name="to_stores" value="<?php echo isset($arr_att['0']['stock']['to_store']) ? $arr_att['0']['stock']['to_store'] : ''; ?>" type="text"  class="form-control input-md" required="required" onchange="listitem();" >
+                                            <input type="hidden" name="to_store" id="to_store" value="">
+                                        </div>
+                                    </div>-->
+                                    <div class="col-md-4">
+                                        <label style="text-align:left;" class="col-md-5 control-label" >Remark<label style="color:red;">*</label></label>
+                                        <div class="col-md-7">
+                                            <select name="remarks" id="remarks" class="form-control input-md" >
+                                                <option value="Adjustment">Adjustment</option>
+                                                <option value="Damaged">Damage</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-body">
+                            <h4 style="padding-left:20px;">ADD ITEM</h4>
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label style="text-align:left;" class="col-md-5 control-label" >Item Name<label style="color:red;">*</label></label>
+                                    <div class="col-md-7">
+                                        <input type="text" id="item_desc" class="form-control" name="item_desc"  style="width:190px;" onkeyup="checkitem();" onchange="finditem();" required="required">   
+                                    </div> 
+                                </div>
+                                <div class="col-md-4" style="display : none ; ">
+                                    <label style="text-align:left;" class="col-md-5 control-label"  >Item Code<label style="color:red;"  >*</label></label>
+                                    <div class="col-md-6">
+                                        <input type="text" id="item_code" class="form-control" name="item_code"  style="width:190px;"   onkeyup="checkitemcode();" required="required">   
+                                    </div> 
+                                </div>
+                                <div class="col-md-4">
+                                    <label style="text-align:left;" class="col-md-5 control-label" >Available Qty<label style="color:red;">*</label></label>
+                                    <div class="col-md-7">
+                                        <input type="number" id="sumdata" class="form-control" name="available_qty" required="required"  readonly="readonly">   
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label style="text-align:left;" class="col-md-5 control-label" >Adjusted Qty<label style="color:red;">*</label></label>
+                                    <div class="col-md-7">
+                                        <input type="number" id="required_qty" min="1" class="form-control"  name="required_qty"  onchange="valuecheck();" required="required ">   
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <input type="hidden" name="stock_tranfer_pkey" id="stock_tranfer_pkey" value="<?php echo isset($arr_att['0']['stock']['stock_tranfer_pkey']) ? $arr_att['0']['stock']['stock_tranfer_pkey'] : ''; ?>">
+                                <button type="submit" id="btn-submit" class="btn btn-primary">Add</button>
+                            </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="col-xs-12">
+                        <div>
+                            <h1>Stock Adjustment Details </h1>
+                            <table id="att_table" class="table table-bordered table-hover">
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div >
+
+                    <div id="table_appnd" class="">
+
+                    </div>
+
+                    <div id="dispatch" style="display: none;">
+                    <!-- <input type="button" id="reload" value="Dispatch Order" class="btn btn-primary">-->
+                        <!--<input type="button" id="btn-remove" value="Remove order" class="btn btn-primary">-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section> 
+</div>
+<script>
+//value check 
+    function  valuecheck()
+    {
+        var avil = parseInt($('#sumdata').val());
+        var req = parseInt($('#required_qty').val());
+        if (avil < req)
+        {
+            alert("Please Check Available Qty ");
+            $("#required_qty").val('');
+        }
+    }
+//itemname check
+    function checkitem()
+    {
+        var item = $('#item_desc').val();
+        if (item != '')
+        {
+            $("#item_code").val('');
+        }
+    }
+//itemcode check
+    function checkitemcode()
+    {
+        var itemcode = $('#item_code').val();
+        if (itemcode != '')
+        {
+            $("#item_desc").val('');
+        }
+    }
+
+
+    function clear(){
+//        alert("change clicked");
+        $('#item_desc').val('');
+        $('#item_code').val('');
+        $('#sumdata').val('');
+        $("#required_qty").val('');
+        
+    }
+
+    $(document).ready(function () {
+        var currentDate = new Date();
+        $('#adjustment_date').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            startDate: '-15d',
+            endDate: '0d'
+        });
+        
+        $('#att_table').datagrid({
+            url: livesite + "Store/stockadjlist",
+            pagination: true,
+            singleSelect: true,
+            rownumbers: true,
+            
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            columns: [[
+                    //{field: 'emp_expenses_pkey', title: '', width: "%"},
+                    {field: 'store', title: 'Store Name', width: "20%"},
+                    {field: 'item', title: 'Item Name', width: "20%"},
+                    {field: 'qty', title: 'Qty', width: "20%"},
+                    {field: 'dates', title: 'Date Transfered', width: "20%"},
+                      {field: 'remarks', title: 'Remarks', width: '20%'},
+                ]]
+        });
+        
+//form save time load table        
+        $('#form-user-master').on('submit', function (event) {
+            
+            event.preventDefault();
+            $('#form-user-master').ajaxSubmit({
+                success: function (resp) {
+                    var pid = $.parseJSON(resp).pk;
+                    $("#stock_tranfer_pkey").val(pid);
+                    //loadtable(pid, 1);
+                    $("#item_code").focus();
+                    $('#item_desc').val('');
+                    $("#item_code").val('');
+                    $("#sumdata").val('');
+                    $("#tranfer_stock").val('');
+                    $("#required_qty").val('');
+                    $('#att_table').datagrid('load');
+                    $.notify($.parseJSON(resp).msg, {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                }
+            });
+        });
+//find itemcode
+        var item_desc = {
+            url: function (phrase) {
+                return "StockTranfer/getautocompletionsitem_desc?item_desc=" + phrase + "&store="+$('#from_store').val();
+            },
+            getValue: "item_desc",
+            list: {
+                onSelectItemEvent: function () {
+                    var selectedItem = $('#item_desc').getSelectedItemData();
+                    $('#item_code').val(selectedItem.item_code);
+                    $('#sumdata').val(selectedItem.qty);
+                }
+            }
+        };
+        $('#item_desc').easyAutocomplete(item_desc);
+//find itemcode
+        var item_code = {
+            url: function (phrase) {
+                return "StockTranfer/getautocompletionsitem_code?item_code=" + phrase;
+            },
+            getValue: "item_code",
+            list: {
+                onSelectItemEvent: function () {
+                    var selectedItem = $('#item_code').getSelectedItemData();
+                    $('#item_desc').val(selectedItem.item_desc);
+                    $('#sumdata').val(selectedItem.qty);
+                }
+            }
+        };
+        
+        $('#item_code').easyAutocomplete(item_code);
+// search from   store    
+        var store_code = {
+            url: function (phrase) {
+                return "StockTranfer/getautocompletionsstore_code?store_code=" + phrase;
+            },
+            getValue: "store_location",
+            list: {
+                onSelectItemEvent: function () {
+                    var selectedItem = $('#store_code').getSelectedItemData();
+                    var store_master_pkey = selectedItem.store_master_pkey;
+                    
+                    $('#from_store').val(store_master_pkey);
+                    clear();
+                }
+            }
+        };
+        $('#store_code').easyAutocomplete(store_code);
+//search to  store       
+        
+        
+
+//search main stocktranfer
+        var billno = {
+            url: function (phrase) {
+                return "StockTranfer/getautocompletionsadjustment_code?adjustment_code=" + phrase;
+            },
+            getValue: "adjustment_code",
+            list: {
+                onSelectItemEvent: function () {
+                    var selectedItem = $('#bill').getSelectedItemData();
+                    var id = selectedItem.stock_tranfer_pkey; //alert(id)
+
+
+                    loadtable(id, 1);
+                    //value pass 
+                    $('#stock_tranfer_pkey').val(id);
+                    //list in all field
+                    $('#adjustment_date').val(selectedItem.adjustment_date);
+                    $('#adjustment_code').val(selectedItem.adjustment_code);
+                    $('#store_code').val(selectedItem.from_store);
+//                    $('#tostore_code').val(selectedItem.to_store);
+                    $('#remarks').val(selectedItem.remarks);
+
+                    $('#dispatch').show();
+                }
+            }
+        };
+        $('#bill').easyAutocomplete(billno);
+
+    });
+// item conunt find
+    function  finditem() {
+        var tostore_name = $("#tostore_code").val();
+        var item_pkey = $("#item_desc").val();
+        var adjustment_date = $("#adjustment_date").val();
+        //alert(tostore_name);
+        // alert (item_pkey);
+        $.ajax({
+             url: 'StockTranfer/finditem/' + item_pkey + '/' + tostore_name+'/'+adjustment_date,
+            success: function (response) {
+                //alert(response);
+                var data = response;
+                //alert(data);
+                //    alert(data);
+//                $('#sumdata').val(data);
+
+
+            }
+        });
+    }
+//load table
+    function  loadtable(pid, rowindex) {
+        
+    }
+
+    //remove storeitem   
+    function removedaata(index, id) {
+        if (id) {
+            var r = confirm("Do You Want  To Remove The Selected Item")
+            if (r == true) {
+                var pid = $("#stock_tranfer_pkey").val();
+                $.ajax({
+                    url: 'StockTranfer/deletestoreitem/' + id,
+                    success: function (resp) {
+                        loadtable(pid, 1);
+                        $.notify($.parseJSON(resp).msg, {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                    }
+                });
+            } else
+            {
+                alert("canceled");
+            }
+        }
+    }
+
+//edit data
+    function editdaata(index, id) {
+        var pid = $("#stock_tranfer_pkey").val();
+
+        var url = 'StockTranfer/editstoreitem/' + id;
+        $('#modalDiv').load(url, function () {
+            $('#modalDiv').modal('show');
+        });
+        //alert (pid);
+        loadtable(pid, 1);
+        //alert(loadtable);
+    }
+
+// remove main store
+    $("#btn-remove").click(function () {
+        var id = $("#stock_tranfer_pkey").val();
+        if (id) {
+            var r = confirm("Do You Want  To Remove The Selected Item")
+            if (r == true) {
+
+
+                var pid = $("#stock_tranfer_pkey").val();
+                $.ajax({
+                    url: 'StockTranfer/deletestoremaster/' + id,
+                    success: function (resp) {
+                        refresh();
+                        $.notify($.parseJSON(resp).msg, {
+                            type: 'danger',
+                            allow_dismiss: false
+                        });
+                    }
+                });
+            } else
+            {
+                alert("canceled");
+            }
+        }
+
+    });
+//all refresh 
+    function refresh() {
+        $("#bill").val('');
+        $("#contact_name").val('');
+        $("#required_qty").val('');
+        $("#stock_tranfer_pkey").val('');
+        $("#form-user-master").find('input:text, input:password, input:file, select, textarea,hidden,search').val('');
+        $("#form-user-master").find('input:radio, input:checkbox').removeAttr('checked').removeAttr('selected');
+        $("#table_appnd").html('');
+        $('#dispatch').hide();
+    }
+    //    
+</script>
+

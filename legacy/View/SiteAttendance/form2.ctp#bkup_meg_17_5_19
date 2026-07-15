@@ -1,0 +1,165 @@
+<div class="form-group form-group-sm">
+    <div class="col-sm-6">
+        <label class="col-sm-4 control-label" for="item_desc">Select Shift<label style="color:red">*</label></label>
+        <div class="col-sm-7">
+            <select id="item_specification" name="item_specification" class="form-control">
+                <option value="">---select---</option>
+                <?php foreach ($arr_shifts as $val) { ?>
+                    <option value="<?php echo $val['working_day_time_procedures']['day_time_seq']; ?>"><?php echo isset($val['working_day_time_procedures']['day_time_desc']) ? $val['working_day_time_procedures']['day_time_desc'] : ''; ?></option>
+                <?php } ?>
+            </select>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <label class="col-sm-4 control-label" for="item_desc">Designation<label style="color:red">*</label></label>
+        <div class="col-sm-7">
+            <select id="desig" name="item_specification" class="form-control">
+                <option value="">---select---</option>
+                <?php foreach ($arr_designations as $val) { ?>
+                    <option value="<?php echo $val['designation']['id'] ?>"><?php echo $val['designation']['desig_name']; ?></option>
+                <?php } ?>
+            </select>
+        </div>
+    </div>
+
+</div>
+<div class="form-group form-group-sm">
+    <div class="col-sm-6">
+        <label class="col-sm-4 control-label" for="item_desc">Number <label style="color:red">*</label></label>
+        <div class="col-sm-7">
+            <input class="form-control" placeholder="Number of Employees" type="number" value='<?php echo isset($arr_att["0"]["itemmaster"]["item_desc"]) ? $arr_att["0"]["itemmaster"]["item_desc"] : ""; ?>' name="item_desc" id="count" >
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <label class="col-sm-4 control-label" for="item_desc">Sales Rate<label style="color:red">*</label></label>
+        <div class="col-sm-7">
+            <input class="form-control" placeholder="Sales Rate" type="number" value='<?php echo isset($arr_att["0"]["itemmaster"]["item_desc"]) ? $arr_att["0"]["itemmaster"]["item_desc"] : ""; ?>' name="item_desc" id="sales_price" >
+        </div>
+    </div>
+    
+</div>
+    
+<div class="form-group form-group-sm">
+    
+        <div class="col-sm-6">
+            <label class="col-sm-4 control-label" for="item_desc">Expense Rate<label style="color:red">*</label></label>
+            <div class="col-sm-7">
+                <input class="form-control" placeholder="Expense Rate" type="number" value='<?php echo isset($arr_att["0"]["itemmaster"]["item_desc"]) ? $arr_att["0"]["itemmaster"]["item_desc"] : ""; ?>' name="item_desc" id="expense_rate" >
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <label class="col-sm-4 control-label" for="item_desc">Start Date</label>
+            <div class="col-sm-7">
+                <input class="form-control" placeholder="Start date" type="text" value='<?php echo isset($arr_att["0"]["itemmaster"]["item_desc"]) ? $arr_att["0"]["itemmaster"]["item_desc"] : ""; ?>' name="item_desc" id="STDE" >
+            </div>
+        </div>     
+</div>
+
+<div class="form-group form-group-sm">
+    
+        <div class="col-sm-6">
+            <label class="col-sm-4 control-label" for="item_desc">End Date</label>
+            <div class="col-sm-7">
+                <input class="form-control" placeholder="End date" type="text" value='<?php echo isset($arr_att["0"]["itemmaster"]["item_desc"]) ? $arr_att["0"]["itemmaster"]["item_desc"] : ""; ?>' name="item_desc" id="ENDE" >
+            </div>
+        </div>
+        <div class="col-sm-6">
+<button style="    margin-right: 3px;
+                margin-bottom: 14px;    margin-right: 50px;  " type="button" class="btn btn-success pull-right" onclick="addtolist();" >Add To Site </button>
+    
+             </div>
+        </div>
+        
+    
+</div>
+
+<script>
+   $(document).ready(function(){
+       
+    $('#STDE').datepicker({
+         format: 'yyyy-mm-dd',
+         autoclose: true
+    
+    });
+    
+    $('#ENDE').datepicker({
+         format: 'yyyy-mm-dd',
+         autoclose: true
+    
+    });
+    
+   }); 
+    
+   
+    
+    function addtolist(){
+       var policy = $('#item_specification option:selected').text();
+       if(policy == '---select---'){
+           alert("Please Select any Shift Policy ");
+           return false;
+       }
+       
+       var policy_fkey = $('#item_specification').val();
+       
+       var desig = $('#desig option:selected').text();
+       
+       if(desig == '---select---'){
+           alert("Please Select any Designation ");
+           return false;
+       }
+       
+       var desig_pkey = $('#desig').val();
+       
+       var sales_price = parseInt($('#sales_price').val());
+       
+       if($('#sales_price').val() == ''){
+           alert("Please Enter Sales Rate ");
+           return false;
+       }
+       
+       var expense_rate = parseInt($('#expense_rate').val());
+       
+       if($('#expense_rate').val() == ''){
+           alert("Please Enter Expense Rate ");
+           return false;
+       }
+       
+       if(expense_rate > sales_price){
+           alert("Sales Rate is Lesser than Expense Rate ");
+           return false;
+       }
+       
+       var stdE = $('#STDE').val();
+       var start_date = new Date(stdE);
+       var endse = $('#ENDE').val();
+       var todate = new Date(endse);
+       
+       
+       if(stdE > endse){
+           alert("Please Choose Correct Date Range ");
+           $('#ENDE').val('');
+           return false;
+       }
+       
+       var count = $('#count').val();
+       
+       if(count == ''){
+           alert("Please Enter Number of Employees ");
+           return false;
+       }
+       
+       $('#form2').find('input').val('');
+       
+       var append = '<tr style="background:#541545;"><input type="hidden" value="1" name="status[]" ><td id="TdDayTime"><input name="TdDayTime[]" type="hidden" value="'+policy_fkey+'" >'+policy+'</td><td id="TdDesg"><input name="TdDesg[]" type="hidden" value="'+desig_pkey+'" >'+desig+'</td><td id="TdCount"><input name="TdCount[]" type="hidden" value="'+count+'" >'+count+'</td><td id="TdSRate"><input name="TdSRate[]" type="hidden" value="'+sales_price+'" >'+sales_price+'</td><td id="Rate"><input name="Rate[]" type="hidden" value="'+expense_rate+'" >'+expense_rate+'</td><td id="StDE"><input name="StDE[]" type="hidden" value="'+stdE+'" >'+stdE+'</td><td id="EtDE"><input name="EtDE[]" type="hidden" value="'+endse+'" >'+endse+'</td><td><li onclick="deletetable(this);" class="btn btn-danger">Delete </li></td></tr>';
+       
+       $('#tables').find('tbody').append(append);
+       
+//       a
+    }
+    
+    function deletetable(s){
+//        alert($(s).parent().parent().attr('class'));
+        $(s).parent().parent().remove();
+//            $(s).parent()
+    }
+</script>

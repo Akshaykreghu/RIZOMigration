@@ -1,0 +1,306 @@
+<style>
+    .searchb{
+        background-color: #cccccc;
+    }
+
+</style>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- DIRECT CHAT DANGER -->
+            <div class="box ">
+
+                <div class="box-body">
+
+
+                    <h1 class="page-header">PO Return Item</h1>
+
+
+                    <form class="form-horizontal" style="padding-left:1px; padding-right:8px ; border:1px;" id="form-po-return" method="post" action="<?php echo $this->webroot; ?>Store/save_po_return" >
+                        <div class="row bg-success" style="height:auto;"> 
+                            <h4 style="padding-left:20px;">Add Basic Details</h4>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        <label style="text-align:left;" class="col-md-6 control-label" >Transaction Code<label style="color:red;">*</label></label>
+                                        <div class="col-md-6">
+                                            <input id="return_number" name="return_number" value="<?php echo mt_rand(); ?>" type="text"  class="form-control input-md" required="required" >
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label style="text-align:left;" class="col-md-6 control-label" >Transaction Date<label style="color:red;">*</label></label>
+                                        <div class="col-md-6">
+                                            <input id="return_date" placeholder="select date" name="return_date" value="<?php echo date("Y-m-d"); ?> " type="text"  class="form-control input-md" required="required">
+                                        </div> 
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label style="text-align:left;" class="col-md-5 control-label" >Select Store <label style="color:red;">*</label></label>
+                                        <div class="col-md-7">
+                                            <select id="store_code" name="store_fkey" class="form-control" onchange="findstoreitems(this);" style="width:170px;">
+                                            <option value="">--Select--</option>
+                                            <?php
+                                             foreach ($arr_stores as $key => $value) {
+                                                echo '<option value="' . $value['store_master_pkey'] . '">' . $value['store_location'] . '</option>';
+                                             }
+                                            ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label style="text-align:left;" class="col-md-5 control-label" >Remarks<label style="color:red;">*</label></label>
+                                        <div class="col-md-7">
+                                            <select name="remark" id="remarks" class="form-control input-md" style="width:170px;">
+                                                <option value="Damaged">Damage</option>
+                                                <option value="Lowquality">Low Quality</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="modal-body">
+                            <h4 style="padding-left:20px;">ADD ITEM</h4>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <label style="text-align:left;" class="col-md-5 control-label" >Item Name<label style="color:red;">*</label></label>
+                                    <div class="col-md-7">
+                                        <select id="item_name" name="item_fkey" class="form-control js-example-basic-single" style="width:170px;" onchange="findgritems();">
+                                          
+                                        </select>
+                                    </div> 
+                                </div>
+                                <div class="col-md-3">
+                                    <label style="text-align:left;" class="col-md-5 control-label" >GR Number<label style="color:red;">*</label></label>
+                                    <div class="col-md-7">
+                                        <select id="gr_name" name="grn_fkey" class="form-control js-example-basic-single" style="width:170px;" onchange="loadqty(this);">
+                                          
+                                        </select>
+                                    </div> 
+                                </div>
+                                <div class="col-md-3">
+                                    <label style="text-align:left;" class="col-md-5 control-label" >Available Qty<label style="color:red;">*</label></label>
+                                    <div class="col-md-7">
+                                        <input type="number" id="sumdata" class="form-control" name="available_qty" required="required"  readonly="readonly" style="width:170px;">   
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label style="text-align:left;" class="col-md-5 control-label" >Return Qty<label style="color:red;">*</label></label>
+                                    <div class="col-md-7">
+                                        <input type="number" id="return_qty" class="form-control"  name="return_qty" onchange="valuecheck();" required="required" style="width:170px;">   
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" id="btn-submit" class="btn btn-primary"> Return Items</button>
+                            </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="col-xs-12">
+                        <div>
+                            <h1>PO Returned Product Details </h1>
+                            <table id="att_table" class="table table-bordered table-hover">
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div >
+
+                    <div id="table_appnd" class="">
+
+                    </div>
+
+                    <div id="dispatch" style="display: none;">
+                </div>
+            </div>
+        </div>
+    </div>
+</section> 
+<script>
+//value check 
+    function  valuecheck()
+    {
+        var avil = parseInt($('#sumdata').val());
+        var req = parseInt($('#return_qty').val());
+        if (avil < req || isNaN(avil))
+        {
+            alert("Please Check Available Qty ");
+            $("#return_qty").val('');
+        }
+    }
+
+    function clear(){
+        //alert("change clicked");
+        $('#item_name').val('');
+        $('#gr_name').val('');
+        $('#sumdata').val('');
+        $("#return_qty").val('');
+        
+    }
+
+    $(document).ready(function () {
+        var currentDate = new Date();
+       // $("#return_date").val(currentDate);
+        $('#return_date').datepicker({format: 'yyyy-mm-dd',
+            autoclose: true});
+     
+       $('#att_table').datagrid({
+            url: livesite + "Store/poreturn",
+            pagination: true,
+            singleSelect: true,
+            title : "PO Return List",
+            rownumbers: true,
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            pageSize:10,
+//            toolbar: [{
+//                    text: 'Return',
+//                    iconCls: 'icon-remove',
+//                    handler: function () {
+//                        showLargeModalForm(livesite + 'Store/allocate_form')
+//                    }
+//                }],
+            
+            columns: [[
+                    {field: 'return_number', title: 'PO Return Number', width: "15%"},
+                    {field: 'return_date', title: 'Return Date', width: "15%"},
+                    {field: 'store_fkey', title: 'Store', width: "15%"},
+                    {field: 'gr_number', title: 'GR Number', width: "15%"},
+                    {field: 'item_fkey', title: 'Item', width: "15%"},
+                    {field: 'return_qty', title: 'Quantity', width: "10%"},
+                    {field: 'remark', title: 'Remarks', width: '15%'},
+                ]]
+        });
+        
+//form save time load table        
+        $('#form-po-return').on('submit', function (event) { 
+            event.preventDefault();
+            $('#form-po-return').ajaxSubmit({
+                success: function (resp) {    
+                    var pid = $.parseJSON(resp).pk;
+                    $("#sumdata").val('');
+                    $("#item_name").val('');
+                    $('#gr_name').val('');
+                    $("#item_name").val('');
+                    $('#store_code').val('');
+                    $("#return_qty").val('');
+                    $("#return_date").val('');
+                    $("#return_number").val(<?php echo mt_rand(); ?>);
+                    $("#gr_name").select2({ allowClear: true }); 
+                    $("#item_name").select2({ allowClear: true }); 
+                    $('#att_table').datagrid('load');
+                    $.notify($.parseJSON(resp).msg, {
+                        type: 'success',
+                        allow_dismiss: true
+                        
+                    });
+                    
+                }
+            });
+        });
+
+
+
+    });
+
+    //load item names from selected store
+    function  findstoreitems() {
+        var from_store_name = $("#store_code").val();
+      
+          $("#item_name").select2(
+                {
+                    //closeOnSelect:false,
+                    placeholder: "Select Item",
+                    allowClear: true,
+                    ajax: {
+                        url: livesite + "Store/findstoreitems/" + from_store_name,
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                             
+                            return {
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+                            $("#gr_name").val('');
+                            $("#sumdata").val('');
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        }
+                    },
+                    escapeMarkup: function (markup) {
+                        return markup;
+                    }
+                });
+    }
+     //load gr list from selected item
+    function  findgritems() {
+        var from_item_name = $("#item_name").val();
+        //alert(from_item_name);
+          $("#gr_name").select2(
+                {
+                    //closeOnSelect:false,
+                    placeholder: "Select GRN",
+                    allowClear: true,
+                    ajax: {
+                        url: livesite + "Store/findgritems/" + from_item_name,
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                qu: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        }
+                    },
+                    escapeMarkup: function (markup) {
+                        return markup;
+                    }
+                });
+    }
+    //load available qty
+    function  loadqty() {
+       var gr_no = $("#gr_name").val();
+      // alert(gr_no);
+      $.ajax({
+            url: 'Store/getavailqty/' + gr_no,
+            success: function (response) {
+                //alert(response);
+                var data = response;
+                //alert(data);
+                $('#sumdata').val(data);
+
+
+            }
+        });
+   }
+  
+</script>
+

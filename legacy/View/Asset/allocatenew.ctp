@@ -1,0 +1,358 @@
+<script type="text/javascript">
+    $(document).ready(function() {
+        var asset = $('#asset_fkey').val();
+        if (asset == '') {
+            findextingsalary();
+        }
+        /*
+         * Tax Head save
+         */
+
+        var usersoptions = {
+            url: function(phrase) {
+                return livesite + "Asset/getassets?asset=" + phrase;
+            },
+            getValue: "name",
+            list: {
+                onClickEvent: function() {
+                    var selectedItem = $("#assetname").getSelectedItemData();
+                    var site_fkey = selectedItem.asset_pkey;
+                    $('#asset_fkey').val(selectedItem.asset_pkey);
+
+
+                }
+            }
+        };
+
+
+        if ($('#status').val() == 'Returned') {
+            $('#returned').css("display", "block");
+            $('#retreived_date').prop("required", "required");
+
+        } else {
+            $('#returned').css("display", "none");
+            $('#retreived_date').prop("required", false);
+        }
+        // $('#assets_name')({
+        //     placeholder: "Select a Assets",
+        //     allowClear: true,
+
+
+        // });
+        $('#assetname').easyAutocomplete(usersoptions);
+
+        $('#allocated_date').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
+        $("#allocated_date").inputmask("yyyy-mm-dd");
+
+
+        $('#retreived_date').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            startDate: $("#allocated_date").datepicker("getDate"),
+        });
+        $("#retreived_date").inputmask("yyyy-mm-dd");
+
+
+
+        if ($('#allocated_status').val() == 'Allocated') {
+            $('#Assetsform').parsley();
+            var options = {
+                success: function(responseText, statusText, xhr, $form) {
+                    //alert("success");
+                    $('#modalDetailForm').modal('hide');
+                    $("#AssetsTable").DataTable().ajax.reload();
+                    $("#Assets").DataTable().ajax.reload();
+                    $.notify("Asset Allocated Successfully", {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                }
+            };
+        }
+        if ($('#allocated_status').val() == 'Returned') {
+            $('#Assetsform').parsley();
+            var options = {
+                success: function(responseText, statusText, xhr, $form) {
+                    //alert("success");
+                    $('#modalDetailForm').modal('hide');
+                    $("#AssetsTable").DataTable().ajax.reload();
+                    $("#Assets").DataTable().ajax.reload();
+                    $.notify("Asset Returned Successfully", {
+                        type: 'success',
+                        allow_dismiss: false
+                    });
+                }
+            };
+        }
+        if ($('#allocated_status').val() == '') {
+            $('#Assetsform').parsley();
+            var options = {
+                success: function(responseText, statusText, xhr, $form) {
+                    //alert("success");
+                    $('#modalDetailForm').modal('hide');
+                    $("#AssetsTable").DataTable().ajax.reload();
+                    $("#Assets").DataTable().ajax.reload();
+
+                }
+            };
+        }
+
+        // bind to the form's submit event
+        $('#Assetsform').submit(function() {
+            $('#btn-submit').html('<li class="fa fa-spinner fa-spin"></li> saving...').attr('disabled', 'disabled');
+            $("#AssetTable").DataTable().ajax.reload();
+            $("#Assets").DataTable().ajax.reload();
+            $(this).ajaxSubmit(options);
+
+            return false;
+        });
+
+    });
+
+    function viewdate(s) {
+
+        if ($(s).val() == 'Returned') {
+            $('#returned').css("display", "block");
+            $('#retreived_date').prop("required", "required");
+            document.getElementById("allocated_date").disabled = true;
+        } else {
+            $('#returned').css("display", "none");
+            $('#retreived_date').prop("required", false);
+            document.getElementById("allocated_date").disabled = false;
+        }
+    }
+
+    function showdanamt(s) {
+
+        if ($(s).val() != '1' && $('#allocated_status').val() == 'Returned') {
+            $('#danamt').css("display", "block");
+            $('#retreived_date').prop("required", "required");
+        } else {
+            $('#danamt').css("display", "none");
+            $('#retreived_date').prop("required", false);
+        }
+    }
+
+    // function findextingsalary() {
+    //     var type = $('#assets_type').val();
+    //     // alert(type);
+    //     // var emp_fkey = $('#emp_fkey1').val();
+    //     var url = livesite + 'Asset/getEmi';
+    //     // $('.form-control').attr("disabled",true);
+    //     //value passiing ajax   
+    //     $.ajax({
+    //         url: url,
+    //         type: 'post',
+    //         data: {
+    //             type: type,
+
+    //         },
+    //         success: function(resp) {
+    //             var json_obj = $.parseJSON(resp);
+    //             // alert(resp);
+    //             if (json_obj.success == 1) {
+
+    //                 $('#assets_name').html(json_obj.data);
+    //                 // $('#loan_emi').val(json_obj.sum);
+    //                 // $('.form-control').attr("disabled",false)
+    //             }
+    //             // else {
+    //             //     $('.form-control').attr("disabled",false);
+    //             // }
+    //         }
+    //     });
+    // }
+    
+function findextingsalary() {
+    var type = $('#assets_type').val();
+    var url = livesite+'Asset/getEmi';
+
+    $.ajax({
+        url: url,
+        type: 'post',
+        data: { type: type },
+        success: function (resp) {
+
+            var json_obj = $.parseJSON(resp);
+
+           if (json_obj.success == 1) {
+    $('#assets_name')
+        .html(json_obj.data)
+        .trigger('change');
+}
+        }
+    });
+}
+</script>
+<style type="text/css">
+    #asset_name:focus option:first-of-type {
+        display: none;
+    }
+</style>
+<div class="modal-body">
+    <!-- Form Name -->
+    <legend>Allocate New Asset</legend>
+    <form class="form-horizontal" method="post" action="<?php echo $this->webroot; ?>Asset/AllocatenewAsset" id="Assetsform">
+        <div class="modal-body">
+            <div class="form-group">
+                <input type="hidden" name="emp_fkey" id="" value="<?php echo isset($pkey) ? $pkey : $assets['0']['allocate']['emp_fkey']; ?>">
+                <input type="hidden" name="asset" id="asset_fkey" value="<?php echo isset($assets['0']['allocate']['allocate_pkey']) ? $assets['0']['allocate']['allocate_pkey'] : ''; ?>">
+                <input type="hidden" name="allocate_pkey" id="allocate_pkey" value="<?php echo isset($edit_pkey) ? $edit_pkey : ''; ?>">
+                <label for="in_date" class="col-sm-4 control-label">Asset Type<span class="star">*</span></label>
+                <div class="col-sm-8">
+                    <!-- // edited by bindu 03-01-2026 -->
+                    <select id="assets_type"
+                        name="type"
+                        required
+                        class="form-control select2-searching js-example-basic-multiple"
+                        style="width:350px;"
+                        onchange="findextingsalary();">
+
+                        <option value="">Select</option>
+
+                       <!-- // edited by bindu 08-01-2025 -->
+                        <!-- <?php foreach ($arr_users as $asset) { ?>
+                            <option value="<?php echo $asset['asset_types']['asset_type_pkey']; ?>">
+                                <?php echo $asset['asset_types']['asset_type_name']; ?>
+                            </option>
+                        <?php } ?> -->
+                        <?php 
+                    $selectedType = isset($assets[0]['Assets']['Type']) ? $assets[0]['Assets']['Type'] : null;
+                    foreach ($arr_users as $asset) { 
+                        $isSelected = ($asset['asset_types']['asset_type_pkey'] == $selectedType) ? 'selected' : '';
+                    ?>
+                        <option value="<?php echo $asset['asset_types']['asset_type_pkey']; ?>" <?php echo $isSelected; ?>>
+                            <?php echo $asset['asset_types']['asset_type_name']; ?>
+                        </option>
+                    <?php } ?>
+
+                    <!-- // edited by bindu 08-01-2025 end -->
+
+                    </select>
+                    <!-- // edited by bindu 03-01-2026 end -->
+
+                </div>
+            </div>
+
+            <div class="form-group" id="assets_show">
+
+                <label for="in_date" class="col-sm-4 control-label">Asset Name<span class="star">*</span></label>
+                <div class="col-sm-8">
+                    <select id="assets_name" required="required" name="asset" style="width: 350px; " placeholder="select" class="form-control select2-searching js-example-basic-multiple">
+                        <!-- <option value="">Select</option> -->
+
+                        <?php if (isset($assets['0']['allocate']['asset'])) { ?>
+                            <!-- <option value="">Select</option> -->
+                            <option value="<?php echo $assets['0']['allocate']['asset']; ?>" selected="selected"><?php echo $assets['0']['Assets']['name']; ?></option>
+                        <?php } ?>
+                    </select>
+
+                    <!--<input type="text" required="required" class="form-control" value="<?php echo isset($assets['0']['Assets']['name']) ? $assets['0']['Assets']['name'] : ''; ?>" name="name" id="assetname" style="width:300px;">-->
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="in_date" class="col-sm-4 control-label">Transaction<span class="star">*</span></label>
+                <div class="col-sm-8">
+                    <select onchange="viewdate(this);" class="form-control" name="status" id="allocated_status" required>
+
+                        <?php if ($asset['0']['status'] == 'Not Allocated' || $asset['0']['status'] == 'Returned') { ?>
+                            <option value="">select</option>
+                            <option <?php if (isset($assets['0']['allocate']['status']) && $assets['0']['allocate']['status'] == 'Allocated') {
+                                        echo 'selected="selected"';
+                                    }; ?> value="Allocated">Allocation</option>
+                        <?php } else { ?>
+                            <option value="Allocated">Allocated</option>
+                            <option <?php if (isset($assets['0']['allocate']['status']) && $assets['0']['allocate']['status'] == 'Returned') {
+                                        echo 'selected="selected"';
+                                    }; ?> value="Returned">Return</option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" id="returned">
+                <label for="in_date" class="col-sm-4 control-label">Returned Date<span class="star"></span></label>
+                <div class="col-sm-8">
+                    <input type="text" placeholder="Leave Empty if asset is still on his hand" class="form-control" value="<?php echo isset($assets['0']['allocate']['retreived_date']) ? $assets['0']['allocate']['retreived_date'] : ''; ?>" name="retreived_date" id="retreived_date">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="in_date" class="col-sm-4 control-label">Allocated Date<span class="star">*</span></label>
+                <div class="col-sm-8">
+                    <input type="text" required="required" class="form-control" value="<?php echo isset($assets['0']['allocate']['allocated_date']) ? $assets['0']['allocate']['allocated_date'] : ''; ?>" name="allocated_date" id="allocated_date">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="in_date" class="col-sm-4 control-label">Asset Condition<span class="star"></span></label>
+                <div class="col-sm-8">
+                    <select class="form-control" id="asset_state" name="asset_state" onchange="showdanamt(this);">
+                        <option <?php if (isset($assets['0']['allocate']['asset_state']) && $assets['0']['allocate']['asset_state'] == '1') {
+                                    echo 'selected="selected"';
+                                }; ?> value="1">Good</option>
+                        <!-- <option <?php if (isset($assets['0']['allocate']['asset_state']) && $assets['0']['allocate']['asset_state'] == '0') {
+                                            echo 'selected="selected"';
+                                        }; ?> value="0">With Minor Damages</option> -->
+                        <option <?php if (isset($assets['0']['allocate']['asset_state']) && $assets['0']['allocate']['asset_state'] == '2') {
+                                    echo 'selected="selected"';
+                                }; ?> value="2">Damaged But Working</option>
+                        <option <?php if (isset($assets['0']['allocate']['asset_state']) && $assets['0']['allocate']['asset_state'] == '3') {
+                                    echo 'selected="selected"';
+                                }; ?> value="3">Not Working</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="in_date" class="col-sm-4 control-label">Description<span class="star">*</span></label>
+                <div class="col-sm-8">
+                    <input type="text" required="required" class="form-control" value="<?php echo isset($assets['0']['allocate']['description']) ? $assets['0']['allocate']['description'] : ''; ?>" name="description" id="description">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="in_date" class="col-sm-4 control-label">Official Mail ID</label>
+                <div class="col-sm-8">
+                    <input type="email" class="form-control" value="<?php echo isset($assets['0']['allocate']['official_mail']) ? $assets['0']['allocate']['official_mail'] : ''; ?>" name="official_mail" id="official_mail">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="in_date" class="col-sm-4 control-label">Official Contact Number</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" value="<?php echo isset($assets['0']['allocate']['official_contact']) ? $assets['0']['allocate']['official_contact'] : ''; ?>" name="official_contact" id="official_contact">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="in_date" class="col-sm-4 control-label">CRM ID</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" value="<?php echo isset($assets['0']['allocate']['crm_id']) ? $assets['0']['allocate']['crm_id'] : ''; ?>" name="crm_id" id="crm_id">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="in_date" class="col-sm-4 control-label">Allocated Office Space</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" value="<?php echo isset($assets['0']['allocate']['allocated_ofc_space']) ? $assets['0']['allocate']['allocated_ofc_space'] : ''; ?>" name="allocated_ofc_space" id="allocated_ofc_space">
+                </div>
+            </div>
+            <div class="form-group" id="danamt" style="display:none; ">
+                <label for="in_date" class="col-sm-4 control-label">Damaged Amount<span class="star"></span></label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" value="<?php echo isset($assets['0']['allocate']['damaged_amout']) ? $assets['0']['allocate']['damaged_amout'] : ''; ?>" name="damaged_amout" id="damaged_amout">
+                </div>
+            </div>
+
+            <!--        <div class="form-group">
+                         <label for="in_date" class="col-sm-4 control-label">Value<span class="star"></span></label>
+                         <div class="col-sm-8">
+                          <input type="text" class="form-control" value="<?php echo isset($assets['0']['allocate']['allocated_date']) ? $assets['0']['allocate']['allocated_date'] : ''; ?>" name="value" id="warranty" >
+                         </div>
+                      </div>-->
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" onclick="$('#modalDetailForm').modal('hide');">Cancel</button>
+            <button type="submit" id="btn-submit" class="btn btn-primary">Save</button>
+        </div>
+
+    </form>
+</div>

@@ -1,0 +1,187 @@
+<div class="box box-default collapsed-box box-solid">
+    <div class="box-header with-border">
+        <h3 class="box-title">Complete</h3>
+
+        <div class="box-tools pull-right">
+            <button onclick="toggleExpandable(this, 'contain3')" type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+            </button>
+        </div>
+        <!-- /.box-tools -->
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body" id="contain3" >
+<legend>Full And Final Settlement Of <?php echo $details['0']['EmployeeInfo']['EmpName']; ?></legend>
+<div class="row">
+    <div class="col-md-12">
+        <!-- DIRECT CHAT DANGER -->
+        <div class="box box-body" style="display:block; ">
+            <!-- /.box-header -->
+            <div class="box-body" style="display:block; ">
+                <div class="col-md-12">
+				
+                    <h2 style="text-align:center; "><?php echo $arr_comp_contact_info['CompanyContactInfo']['business_name'];//$this->session->read('company_code'); ?></h2>
+                    <h4 style="text-align:center; ">Full and Final Settlement Slip</h4>
+                    <br>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-6 control-label">Employee Name </label>
+                                <div class="col-md-6">
+                                    <label class="col-md-12 control-label">:<?php echo $details['0']['EmployeeInfo']['EmpName']; ?></label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-6 control-label">Joining Date </label>
+                                <div class="col-md-6">
+                                    <label class="col-md-12 control-label">:<?php echo $details['0']['EmployeeInfo']['joining_date']; ?></label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-6 control-label">Department </label>
+                                <div class="col-md-6">
+                                    <label class="col-md-12 control-label">:<?php echo $details['0']['EmployeeInfo']['department']; ?></label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-6 control-label">Relieving Date </label>
+                                <div class="col-md-6">
+                                    <label class="col-md-12 control-label">:<?php echo $details['0']['Termination']['act_last_working_day']; ?></label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-6 control-label">Notice Period </label>
+                                <div class="col-md-6">
+                                    <label class="col-md-12 control-label" >:<?php echo $details['0']['Termination']['notice_period']; ?></label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-6 control-label">Resignation Period Present Days </label>
+                                <div class="col-md-6">
+                                    <label class="col-md-12 control-label">:<?php echo ($diff != 0) ?$diff - ($days_after_resignation_att+$offs) : 0 ; ?></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-6 control-label">Employee ID </label>
+                                <div class="col-md-6">
+                                    <label class="col-md-12 control-label">:<?php echo $details['0']['EmployeeInfo']['employee_id']; ?></label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-6 control-label">Branch </label>
+                                <div class="col-md-6">
+                                    <label class="col-md-12 control-label">:<?php echo $details['0']['EmployeeInfo']['branch']; ?></label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-6 control-label">Designation </label>
+                                <div class="col-md-6">
+                                    <label class="col-md-12 control-label">:<?php echo $details['0']['EmployeeInfo']['designation']; ?></label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-6 control-label">Encashed Leaves </label>
+                                <div class="col-md-6">
+                                    <label class="col-md-12 control-label">:<?php echo $details['0']['Termination']['encashed_days']; ?></label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-6 control-label">Resignation Period Working Days </label>
+                                <div class="col-md-6">
+                                    <label class="col-md-12 control-label">:<?php echo ($diff != 0)? $diff - $offs : 0; ?></label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="col-md-6 control-label">Balance Working Days </label>
+                                <div class="col-md-6">
+                                    <label class="col-md-12 control-label">:<?php echo ($diff != 0)? ($diff - $offs) - ($diff - ($days_after_resignation_att+$offs)): 0; ?></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.box-body -->
+            <div class="col-md-12">
+                
+                <table class="table" >
+                    <thead>
+                    <th>Month</th>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    </thead>
+                    <tbody>
+                        <?php $sum = 0; ?>    
+                        <?php foreach ($arr_emp_settle as $val) { ?>
+                            <tr>
+                                <td><?php echo $val['emp_settle_slip']['month_year']; ?></td>
+                                <td><?php echo $val['emp_settle_slip']['salary_head_item_desc']; ?></td>
+                                <td><?php echo $val['emp_settle_slip']['salary_amount']; ?></td>
+                                <?php $sum = $sum + $val['emp_settle_slip']['salary_amount']; ?>
+                            </tr>
+                        <?php } ?>
+                        <tr><td colspan="2" >Total</td><td><?php echo '<b>' . $sum . '</b>'; ?></td></tr>
+
+                    </tbody>
+                </table>
+                
+                <div class="col-md-12">
+                    <button class="btn btn-warning pull-right" onclick="printslip(); " style="    margin-left: 12px; " >Print Slip</button> 
+                    <button class="btn btn-danger pull-right" onclick="Removeemps(); ">Submit Termination </button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--    <button class="btn btn-primary pull-right">Approve Payroll</button>
+    <button class="btn btn-warning" onclick="next(2)">I Need to Re-Work</button>-->
+</div>
+<form id="form-showreport" method="post" action="" ></form>
+    </div>
+</div>
+
+<script>
+    
+    function printslip(){
+        var employee = $('#employee').val();
+        var dayss = $('#present_days_after_resg').html();
+        var leaves = $('#encashable_leavebal').html();
+        var grativity = 0;
+        $('#form-showreport').attr('action',livesite+'EmployeeResignation/downloads/'+employee+'/'+dayss+'/'+leaves+'/'+grativity);
+        $('#form-showreport').submit();
+    
+
+    }
+
+</script>

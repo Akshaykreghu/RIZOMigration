@@ -1,0 +1,155 @@
+<style>
+    .form-horizontal .control-label{
+
+        text-align: left;
+
+    }
+</style>
+
+<section class="content-header">
+    <h1 style="text-align:left; font-size: 3em;"> Site Master   </h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box ">
+                <br>
+                <div class="box-body">
+                    <!-- Employee import form -->
+                    <form class="form-horizontal" method="post" action="" id="importemployeectcform">
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                   <div class="col-sm-2 control-label" for="employee" style="text-align: left;">Search Site  <span style="padding-left: 60px;">:</span> </div>                        
+                                                    
+                                    <div class="col-md-4">
+                                        <select id="site" class="form-control js-example-basic-single" name="site" onchange="filterAttendanceupload(this);"  >
+
+                                        </select>
+
+                                    </div>    
+                                </div>
+                                                                      
+                            </div>
+                        </div>
+                    </form>
+                    <div class="box-body">
+                        <table id="att_table" class="table table-bordered table-hover">
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div><!-- /.box-body -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    //filtter using branch 
+    function filterEmployees(branch)
+    {
+         $("#site").select2(
+                {
+                    //closeOnSelect:false,
+                    placeholder: "All",
+                    allowClear: true,
+                    ajax: {
+                        url: livesite + "SiteAttendance/filtersite" ,
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+                        processResults: function (data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        }
+                    },
+                    escapeMarkup: function (markup) {
+                        return markup;
+                    }
+                });
+    }
+
+ function filterAttendanceupload(obj) {
+       //var branch = $('#importemployeectcform #filterby_branch').val();
+        var site = $('#importemployeectcform #site').val();
+
+        $('#att_table').datagrid('load', {
+           // branch: branch,
+            site: site
+        });
+          filterEmployees();
+
+    }
+
+
+    jQuery(document).ready(function () {
+        
+        filterEmployees();
+//        $("#filterby_branch").select2();
+//        $("#filterby_month").select2();
+        
+         var site = $('#importemployeectcform #site').val();
+
+        $('#att_table').datagrid({
+            url: livesite + "SiteAttendance/lists",
+            pagination: true,
+            singleSelect: true,
+            rownumbers: true,
+            queryParams: {
+                    site: site
+            },
+            toolbar: [{
+                    text: 'New',
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        showLargeModalForm(livesite + 'SiteAttendance/form')
+                    }
+                },
+                {
+                    iconCls: 'icon-edit',
+                    text: 'Edit',
+                    handler: function () {
+                        var row = $('#att_table').datagrid('getSelected');
+                        if (row) {
+
+                            showLargeModalForm(livesite + 'SiteAttendance/form/' + row.site_pkey)  
+                        } else
+                            $.notify('Please Select A record to Edit ', {
+                                type: 'danger',
+                                allow_dismiss: false
+                            });
+                    }
+                }
+                
+                                ],
+            fitColumns: true,
+            pageList: [2, 5, 10, 50, 100],
+            columns: [[
+                    //{field: 'emp_expenses_pkey', title: '', width: "%"},
+                    {field: 'site_name', title: 'Site Name', width: "25%"},
+                    {field: 'site_id', title: 'Site Code', width: "25%"},
+                    {field: 'counts', title: 'Total Allocated', width: "25%"},
+                    {field: 'customer_name', title: 'Contact Name', width: "25%"},
+                    //  {field: 'is_credited', title: 'Credited Rate', width: '10%'},
+                ]]
+        });
+    });
+</script>

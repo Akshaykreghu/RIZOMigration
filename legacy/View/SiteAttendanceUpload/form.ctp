@@ -1,0 +1,466 @@
+<style>
+    .select2-container--default .select2-selection--single {
+        background-color: #fff;
+        border: 1px solid #d2d6de !important;
+        border-radius: 0px !important;
+        color: #d2d6de !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-color: #ccc transparent transparent transparent;
+    }
+</style>
+
+<form class="form-horizontal" method="post" action="<?php echo $this->webroot; ?>SiteAttendanceUpload/submitform" id="updateform" style="overflow-y: scroll;height:500px;">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Add Site Punch Upload</h4>
+    </div>
+    <div class="modal-body" id="siteuploadformfilter">
+        <div class="form-group">
+            <div class="col-md-6">
+                <label for="month" class="col-sm-4">Month <span style="color:red;">*</span></label>
+                <!-- <div class="col-md-1">:</div> -->
+                <div class="col-md-8">
+                    <select id="form_month_filter" name="form_month_filter" class="form-control" onchange="showDates(); filterShift();" style="width: 100%">
+                        <option value="">Select</option>
+                        <?php
+                        for ($i = 0; $i < 5; $i++) {
+                            echo '<option value="' . date('Y-m', strtotime("-$i month", strtotime(date('M-Y')))) . '">' . date('M-Y', strtotime("-$i month", strtotime(date('M-Y')))) . '</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-sm-4" for="form_site_filter">Site <span style="color:red;">*</span></label>
+                <!-- <div class="col-md-1">:</div> -->
+                <div class="col-md-8">
+                    <select id="form_site_filter" name="form_site_filter" class="form-control" onchange="filterDesignation();filterShift();" style="width: 100%">
+                        <option value="">Select</option>
+                        <?php
+                        if ($arr_sites) {
+                            foreach ($arr_sites as $key => $value) { ?>
+                                <option value="<?php echo $value['id']; ?>"><?php echo $value['text']; ?></option>
+                        <?php }
+                        } ?>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+        <div class="form-group">
+
+            <div class="col-md-6">
+                <label class="col-sm-4" for="form_branch_filter">Branch <span style="color:red;">*</span></label>
+                <!-- <div class="col-md-1">:</div> -->
+                <div class="col-md-8">
+                    <select id="form_branch_filter" name="form_branch_filter" class="form-control" onchange="filterFormEmployee();" style="width: 100%">
+                        <option value="">Select</option>
+                        <?php foreach ($arr_branches as $key => $value) { ?>
+                            <option value="<?php echo $value['Units']['branch_code']; ?>"><?php echo $value['Units']['branch_name']; ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <label class="col-sm-4" for="form_emp_filter">Employee<span style="color:red;">*</span></label>
+                <!-- <div class="col-md-1">:</div> -->
+                <div class="col-md-8">
+                    <select id="form_emp_filter" name="form_emp_filter" class="form-control js-example-basic-single1" style="width: 100% !important;" value="0">
+                        <option value="">Select</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <div class="col-md-6">
+                <label class="col-sm-4" for="form_designation">Designation<span style="color:red;">*</span></label>
+                <!-- <div class="col-md-1">:</div> -->
+                <div class="col-md-8">
+                    <select id="form_designation" name="form_designation" class="form-control js-example-basic-single1" style="width: 100% !important;" value="0" onchange="filterShift()">
+                        <option value="">Select</option>
+                        <?php foreach ($arr_designations as $key => $value) { ?>
+                            <option value="<?php echo $value['designation']['id']; ?>"><?php echo $value['designation']['desig_name']; ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-sm-4" for="form_shift_filter">Shift <span style="color:red;">*</span></label>
+                <!-- <div class="col-md-1">:</div> -->
+                <div class="col-md-8">
+                    <select id="form_shift_filter" name="form_shift_filter" class="form-control js-example-basic-single2 shift_select" value="0" style="width: 100% !important;" onchange="">
+                        <option value="">Select</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+      <div id="attendance">
+     </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
+<script>
+    $(document).ready(function() {
+        // filterFormEmployee();
+        $("#form_site_filter").select2();
+        $("#form_month_filter").select2();
+        $("#form_branch_filter").select2();
+        $("#form_emp_filter").select2();
+        $("#form_designation").select2();
+        $("#form_shift_filter").select2();
+    });
+    function filterDates(){
+      //  $('#modalForm').modal('refresh');
+       // var month =  $('#updateform #form_month_filter').val();
+        
+     //   showModalForm(livesite + 'SiteAttendanceUpload/form/'+month );
+ //$('#updateform #form_month_filter').val(month);
+    }
+function showDates(){
+      $('#attendance').empty();
+      $month =  $('#form_month_filter').val();
+      $('#attendance').load(livesite+'SiteAttendanceUpload/attendance/'+$month);
+    }
+    function filterFormEmployee() {
+        var branch = $('#siteuploadformfilter #form_branch_filter').val();
+        $.ajax({
+            url: livesite + "SiteAttendanceUpload/employeefilter/" + branch + "/" + true,
+            dataType: 'json',
+            delay: 250,
+            success: function(data) {
+                if (data.items) {
+                    let string = '<option value="">Select</option>';
+                    data.items.forEach(function(val) {
+                        string += '<option value="' + val.id + '">' + val.text + '</option>';
+                    });
+                    $("#siteuploadformfilter #form_emp_filter").html(string);
+                }
+            }
+        });
+
+        // $("#siteuploadformfilter #form_emp_filter").select2({
+        //     //closeOnSelect:false,
+        //     dropdownParent: $('body #modalForm'),
+        //     placeholder: "All",
+        //     allowClear: true,
+        //     ajax: {
+        //         url: livesite + "SiteAttendanceUpload/employeefilter/" + branch,
+        //         dataType: 'json',
+        //         delay: 250,
+        //         data: function(params) {
+        //             return {
+        //                 q: params.term, // search term
+        //                 page: params.page
+        //             };
+        //         },
+        //         processResults: function(data, params) {
+        //             params.page = params.page || 1;
+        //             return {
+        //                 results: data.items,
+        //                 pagination: {
+        //                     more: (params.page * 30) < data.total_count
+        //                 }
+        //             };
+        //         }
+        //     },
+        //     escapeMarkup: function(markup) {
+        //         return markup;
+        //     }
+        // });
+    }
+
+    function filterShift() {
+        // This is to clear already loaded items
+        // $(".each_shift_select").html("");
+        // $(".shift_select").select2();
+        // This is to load all shift select filters
+
+        var filterby_site = $('#siteuploadformfilter #form_site_filter').val();
+        var filterby_month = $('#siteuploadformfilter #form_month_filter').val();
+        var form_designation = $('#siteuploadformfilter #form_designation').val();
+        if (filterby_month != "" && filterby_site != "" && form_designation != "") {
+
+            $.ajax({
+                url: livesite + "SiteAttendanceUpload/get_shift/" + filterby_month + "/" + filterby_site + "/" + form_designation,
+                dataType: 'json',
+                success: function(data, params) {
+                    if (data.items) {
+                        let string = '';
+                        string += "<option value=\"\">Select</option>";
+                        data.items.forEach((val) => {
+                            string += "<option value=\"" + val.id + "\">" + val.text + "</option>";
+                        });
+                        $("#form_shift_filter").html(string);
+                        $(".each_shift_select").html(string);
+                    } else {
+                        $("#form_shift_filter").html("");
+                        $(".each_shift_select").html("");
+                    }
+                }
+            });
+
+            // $("#form_shift_filter").select2({
+            //     //closeOnSelect:false,
+            //     placeholder: "All",
+            //     allowClear: true,
+            //     dropdownParent: $('#modalForm'),
+            //     ajax: {
+            //         url: livesite + "SiteAttendanceUpload/get_shift/" + filterby_month + "/" + filterby_site,
+            //         dataType: 'json',
+            //         delay: 250,
+            //         data: function(params) {
+            //             return {
+            //                 q: params.term, // search term
+            //                 page: params.page
+            //             };
+            //         },
+            //         processResults: function(data, params) {
+            //             // parse the results into the format expected by Select2
+            //             // since we are using custom formatting functions we do not need to
+            //             // alter the remote JSON data, except to indicate that infinite
+            //             // scrolling can be used
+            //             params.page = params.page || 1;
+
+            //             return {
+            //                 results: data.items,
+            //                 pagination: {
+            //                     more: (params.page * 30) < data.total_count
+            //                 }
+            //             };
+            //         }
+            //     },
+            //     escapeMarkup: function(markup) {
+            //         return markup;
+            //     }
+            // });
+
+            // filterDesignation();
+        } else {
+            $("#form_shift_filter").html("");
+            $(".each_shift_select").html("");
+        }
+
+
+        // loadAllShifts();
+
+    }
+
+    // This is to filter designation by changing site and month
+    function filterDesignation() {
+        var filterby_site = $('#siteuploadformfilter #form_site_filter').val();
+        // var filterby_month = $('#siteuploadformfilter #form_month_filter').val();
+        if (filterby_site) {
+            $.ajax({
+                url: livesite + "SiteAttendanceUpload/designationFilter/" + filterby_site,
+                dataType: 'json',
+                success: function(data, params) {
+                    // console.log(data);
+                    if (data.items) {
+                        let string = '';
+                        string += "<option value=\"\">Select</option>";
+                        data.items.forEach((val) => {
+                            string += "<option value=\"" + val.id + "\">" + val.text + "</option>";
+                        });
+                        $("#form_designation").html(string);
+                    } else {
+                        $("#form_designation").html("");
+                    }
+                }
+            });
+        } else {
+            $("#form_designation").html("");
+        }
+    }
+
+    // This is to filter branch by changing site and month
+    function filterBranch() {
+        var filterby_site = $('#siteuploadformfilter #form_site_filter').val();
+        // var filterby_month = $('#siteuploadformfilter #form_month_filter').val();
+        if (filterby_site) {
+            $.ajax({
+                url: livesite + "SiteAttendanceUpload/branchFilter/" + filterby_site,
+                dataType: 'json',
+                success: function(data, params) {
+                     console.log(data);
+                    if (data.items) {
+                        let string = '';
+                        string += "<option value=\"\">Select</option>";
+                        data.items.forEach((val) => {
+                            string += "<option value=\"" + val.id + "\">" + val.text + "</option>";
+                        });
+                        $("#form_branch_filter").html(string);
+                    } else {
+                        $("#form_branch_filter").html("");
+                    }
+                }
+            });
+        } else {
+            $("#form_branch_filter").html("");
+        }
+    }
+
+    // This function is to load shift to every select boxes
+    // function loadAllShifts() {
+    //     var filterby_site = $('#siteuploadformfilter #form_site_filter').val();
+    //     var filterby_month = $('#siteuploadformfilter #form_month_filter').val();
+    //     if (filterby_site && filterby_month) {
+    //         $.ajax({
+    //             url: livesite + "SiteAttendanceUpload/get_shift/" + filterby_month + "/" + filterby_site,
+    //             dataType: 'json',
+    //             success: function(data, params) {
+    //                 if (data.items) {
+    //                     let string = '';
+    //                     string += "<option value=\"\">Select</option>";
+    //                     data.items.forEach((val) => {
+    //                         string += "<option value=\"" + val.id + "\">" + val.text + "</option>";
+    //                     });
+    //                     $(".each_shift_select").html(string);
+    //                 }
+    //             }
+    //         });
+    //     }
+    // }
+
+
+    $('#updateform').parsley();
+    var options = {
+        success: function(responseText, statusText, xhr, $form) {
+            var response = JSON.parse(responseText);
+            if (response.error == 1) { // If the flag 1, error exits
+                // $.notify("Something wrong happened!", {
+                //     type: 'danger',
+                //     allow_dismiss: false
+                // });
+                if (response.message) {
+                    let msg = '<table class="table">';
+                    msg += "<tr><td>Date</td><td>Result</td></tr>";
+                    response.message.forEach(function(data) {
+                        msg += "<tr><td>" + data.date + "</td><td>" + data.error + "</td></tr>";
+                    });
+                    msg += '</table>';
+                   // alert(msg);
+                    $.notify("Site punch cannot update.", {
+                    type: 'danger',
+                    allow_dismiss: false
+                });
+                    $('#modalForm').modal('hide');
+                    return false;
+                } 
+            } else {
+                $.notify("Site punch updated successfully", {
+                    type: 'success',
+                    allow_dismiss: false
+                });
+            }
+ 
+            $('#modalForm').modal('hide');
+
+            var branch = $('#attendanceuploadfilter #filterby_branch').val();
+            var month = $('#attendanceuploadfilter #filterby_month').val();
+            var filterby_site = $('#attendanceuploadfilter #filterby_site').val();
+            var filterby_shift = $('#attendanceuploadfilter #filterby_shift').val();
+            var filterby_designation = $('#attendanceuploadfilter #filterby_designation').val();
+            var filterby_employee = $('#attendanceuploadfilter #filterby_employee').val();
+
+            $('#att_table').datagrid('load', {
+                branch: branch,
+                month: month,
+                filterby_site: filterby_site,
+                filterby_shift: filterby_shift,
+                filterby_designation: filterby_designation,
+                filterby_employee: filterby_employee,
+            });
+        }
+    };
+
+    $('#updateform').submit(function() {
+        let form_site_filter = $("#form_site_filter").val();
+        let form_month_filter = $("#form_month_filter").val();
+        let form_branch_filter = $("#form_branch_filter").val();
+        let form_emp_filter = $("#form_emp_filter").val();
+        let form_designation = $("#form_designation").val();
+
+        if (form_site_filter == "") {
+
+            // z-index is 1051 for the modal. so here used 1052. by Arul on 25-04-23
+            $.notify("Please select a site!", {
+                type: 'danger',
+                allow_dismiss: true,
+                z_index: 1052,
+            });
+            return false;
+        }
+        if (form_month_filter == "") {
+            $.notify("Please select a month!", {
+                type: 'danger',
+                allow_dismiss: true,
+                z_index: 1052,
+            });
+            return false;
+        }
+        if (form_branch_filter == "") {
+            $.notify("Please choose a branch!", {
+                type: 'danger',
+                allow_dismiss: true,
+                z_index: 1052,
+            });
+            return false;
+        }
+        if (form_emp_filter == "") {
+            $.notify("Please select an employee!", {
+                type: 'danger',
+                allow_dismiss: true,
+                z_index: 1052,
+            });
+            return false;
+        }
+        if (form_designation == "") {
+            $.notify("Please select a designation!", {
+                type: 'danger',
+                allow_dismiss: true,
+                z_index: 1052,
+            });
+            return false;
+        }
+
+        var i = 0;
+        var selectedValue = $('#form_shift_filter').val();
+        if (selectedValue) {
+            i++;
+        }
+        $('select[id^=reg-date-]').each(function() {
+            var setval = $(this).val();
+            if (setval) {
+                i++;
+            }
+        });
+        if (i > 0) {
+            $(this).ajaxSubmit(options);
+            return false;
+        } else {
+            // alert("No changes available for update.");
+            $.notify("No changes available for update.", {
+                type: 'danger',
+                allow_dismiss: true,
+                z_index: 1052,
+            });
+            return false;
+        }
+    });
+
+    function setToAll() {
+        var selectedValue = $('#form_shift_filter').val();
+        $('select[id^=reg-date-]').each(function() {
+            $(this).val(selectedValue);
+        });
+    }
+</script>

@@ -1,0 +1,117 @@
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- DIRECT CHAT DANGER -->
+            <div class="box ">
+
+                <div class="box-body">
+				<legend>Category Master</legend>
+<div >
+<table id="categorytable">
+    
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<script>
+ $(document).ready(function () {
+     
+     $("#categorytable").datagrid(
+             {
+                   title: "Category Master",
+             rownumbers: true,
+             itColumns: true,
+             url: 'CategoryMaster/listmaster',
+            singleSelect: true,
+            autoRowHeight: false,
+            pagination: true,
+            width: '100%',
+            pageSize: 10,
+            toolbar : [
+                {
+                     iconCls: 'icon-add',
+                    text: "New",
+                    handler: function () {
+                        
+                        var url = 'CategoryMaster/category';
+						showModalForm(url);
+                        //$('#modalDiv').load(url,function(){
+                        //    $('#modalDiv').modal('show');
+                        //});
+                    }  
+                }, '-',
+                {
+                      iconCls: 'icon-edit',
+                    text: "Edit",
+                    handler: function () {
+                        var row = $('#categorytable').datagrid('getSelected');
+                        if (row) {
+                            var category_pkey = row.category_pkey;
+                  
+                            var url = 'CategoryMaster/category/' + category_pkey;
+                            showModalForm(url);
+							//$('#modalDiv').load(url,function(){
+							//    $('#modalDiv').modal('show');
+							//});
+                        }
+                        else
+                        {
+                            alert("select a row first");
+                        }
+                    }
+                    
+                }, '-',
+                {
+                    iconCls:'icon-cancel',
+                    text: "remove",
+                           handler: function () {
+                     var row = $('#categorytable').datagrid('getSelected');
+                        if (row) {
+                                  var r=confirm("Do You Want  To Remove The Selected Item")
+                                    if(r==true){
+                               //  alert("you pressed ok");
+                              
+                                                                 var category_pkey = row.category_pkey;
+                                                                 $.ajax({
+                                                                     url: 'CategoryMaster/delete/' + category_pkey,
+                                                                     success: function (resp) {
+                                                                               $('#categorytable').datagrid('reload');
+                                                        
+                                                                     }
+                                                                 });
+                                                             }
+                        else
+                        {
+                            $.notify("Canceled");
+                        }
+                        }
+                    }
+                }
+            ],
+            columns: [[
+                    {field: 'code', title: 'Code', width: "20%",sortable:true,order:'asc'},
+                    {field: 'description', title:'Description', width: "20%",sortable:true,order:'asc'},
+                     {field: 'created_by', title:'Created By', width: "20%",sortable:true,order:'asc'},
+                      {field: 'created_date', title:'Created Date', width: "19%",sortable:true,order:'asc'},
+                       {field: 'modified_by', title:'Modified By', width: "10%",sortable:true,order:'asc'},
+                        {field: 'modified_date', title:'Modified Date', width:"10%",sortable:true,order:'asc'},
+                            
+                        
+            ]]
+                 
+                 
+             });     
+     
+     
+     
+     
+ })
+
+
+
+
+
+</script>

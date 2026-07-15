@@ -1,0 +1,264 @@
+<style>
+    .modal-content {
+        width: 124% !important ;
+    }    
+    </style>
+<?php //debug($gross);         ?>
+<?php if ($mode == '') { ?>
+    <div class="modal-body" style="overflow-y: auto;">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box ">
+                    <?php if (count($arr_salary_for_template) <= 0) { ?>
+                        <div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+                            There is no data available with respect to your report</div>
+                    <?php } else { ?>
+                        <h3>Statutory  Report</h3>
+                        <h3>Month:<?php echo $month; ?></h3>
+                        <?php
+                        ?>
+                        <table class="table table-bordered">
+                            <thead>
+
+                                <tr style="background-color:#f0f0ff;">
+                                    <th>Sl NO</th>
+                                    <th>Employee Name</th>
+                                    <th>Employee ID</th>
+                                    <th>Designation</th>
+                                    <th>Department</th>
+                                    <th>Branch</th>
+                                    <th>Gross Salary</th>
+                                    <th>EPF Salary</th>
+                                    <th>ESI Salary</th>
+                                    <th>EPF</th>
+                                    <th>ESI</th>
+                                    <th>WWF</th>
+                                    <?php
+//                                        foreach($keys as $val){
+//                                            echo '<th>'.$val['0']['sal_head'].'</th>';
+//                                        }
+                                    ?>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $i = 1;
+                                foreach ($arr_salary_for_template as $val) {
+								//debug($val);
+                                    $empPF = abs($val['epf']);
+                                    $finaPF = round(($empPF * 100) / 12);
+                                    $wwf = abs($val['wwf']);
+                                    $gross = abs($val['gros']);
+                                    $empESI = abs($val['esi']);
+                                    $finaESI = round(($empESI * 100) / 1.75);
+                                    //debug($calPF);
+                                    ?>
+                                    <tr>
+                                        <td><?php echo $i; ?></td>
+                                        <td><?php echo $val['data']['0']['employee_info']['EmpName']; ?></td>
+                                        <td><?php echo $val['data']['0']['employee_info']['employee_id']; ?></td>
+                                        <td><?php echo $val['data']['0']['employee_info']['designation']; ?></td>
+                                        <td><?php echo $val['data']['0']['employee_info']['department']; ?></td>
+                                        <td><?php echo $val['data']['0']['employee_info']['branch']; ?></td>
+                                        <td><?php echo $gross; ?></td>
+                                        <td><?php echo $finaPF; ?></td>
+                                        <td><?php echo $finaESI; ?></td>
+                                        <td><?php echo round($empPF); ?></td>
+                                        <td><?php echo round($empESI); ?></td>
+                                        <td><?php echo round($wwf); ?></td> 
+
+
+
+                                        <?php
+                                        
+//                                        $salary = $val['salary'];
+//                                        //debug($keys);
+//                                        //debug($salary);
+//                                        $ds = 0;
+//                                        foreach ($keys as $val){
+//                                            //debug($salary);
+//                                            
+//                                            foreach ($salary as $data){
+//                                                if($data['ectc']['salary_head_item_fkey'] == $val['ectc']['salary_head_item_fkey']){
+//                                                    $ds = $data['ectc']['salary_amount'];
+//                                                }else{
+//                                                    $ds = 0;
+//                                                }
+//                                            }
+//                                            //debug($item);
+//                                            echo '<td>'.$ds.'</td>';
+//                                            
+//                                        }
+                                        ?>
+
+
+
+
+                                    </tr>
+
+
+                                    <?php
+                                    $i++;
+                                }
+                                ?>
+
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>    
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-12" align="right">
+                        <a href="#" class="btn btn-default" onclick="downloadReport('Labour', 'pdf');" ><i class="icon-file"></i>Download As PDF</a>
+                        <a href="#" class="btn btn-default" onclick="downloadReport('Labour', 'excel');"><i class="icon-file"></i>Download As Excel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php }
+    ?>
+<?php } else { ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>';   ?>
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+        .row {
+            height: 32px;
+        }
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+        table {
+            border: 1px solid #f4f4f4;
+            width: 80%;
+            max-width: 80%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        td, th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border: 1px solid #B2B2B2;
+        }
+    </style>
+
+    <?php
+    echo $this->element('reportadminheader', array(
+        'title' => 'Statutory Report'));
+    ?>
+    <?php if (count($gross) <= 0) { ?>
+        <div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+            There is no data available with respect to your report</div>
+    <?php } else { ?>
+        <br><br>
+        <br><br>
+        <h3>Month: <?php echo $month; ?></h3>
+
+        <?php
+        $coun1 = count($array_key['Addition']);
+        $coun2 = count($array_key['Deduction']);
+        $cont = $coun1 + $coun2;
+        $cont2 = $cont + 3;
+        ?>
+        <table class="table table-bordered">
+
+
+            <tr style="background-color:#f0f0ff;">
+                <th>SL NO</th>
+                <th>Employee Name</th>
+                <th>Employee ID</th>
+                <th>Designation</th>
+                <th>Department</th>
+                <th>Branch</th>
+                
+                <th>EPF Salary</th>
+                <th>ESI Salary</th>
+
+                <?php
+                $deduction = $array_key['Deduction'];
+                foreach ($deduction as $value) {
+                    ?>
+                    <th><?php echo $value; ?></th>
+                <?php }
+                ?>   
+
+
+
+            </tr>
+
+            <tbody>
+                <?php
+                $i = 1;
+                foreach ($gross as $val) {
+                    $empPF = abs($val['Deduction']['value'][0]);
+                    $finaPF = round(($empPF * 100) / 12);
+                    $empESI = abs($val['Deduction']['value'][2]);
+                    $finaESI = round(($empESI * 100) / 4.5);
+                    //debug($calPF);
+                    ?>
+                    <tr>
+                        <td ><?php echo $i; ?></td>
+                        <td><?php echo $val['emp_info']['EmpName']; ?></td>
+                        <td><?php echo $val['emp_info']['employee_id']; ?></td>
+                        <td><?php echo $val['emp_info']['designation']; ?></td>
+                        <td><?php echo $val['emp_info']['department']; ?></td>
+                        <td><?php echo $val['emp_info']['branch']; ?></td>
+                        <td><?php echo $finaPF; ?></td>
+                        <td><?php echo $finaESI; ?></td>
+
+
+
+                        <?php
+                        $count_addition = count($val['Deduction']['keys']);
+
+                        $dd_amt = 0;
+                        for ($m = 0; $m < $count_addition; $m++) {
+                            $number = round($val['Deduction']['value'][$m]);
+                            $dd_amt = $number + $dd_amt;
+                            ?>
+                            <td><?php echo $number; ?></td>
+
+
+                        <?php }
+                        ?>
+
+
+
+
+                    </tr>
+
+
+                    <?php
+                    $i++;
+                }
+                ?>
+
+
+            </tbody>
+        </table>
+
+
+        <?php
+       // die();
+    }
+}?>

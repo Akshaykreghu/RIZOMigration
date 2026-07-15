@@ -1,0 +1,991 @@
+<style>
+
+.zoom_img{
+display:block;
+opacity:2;
+font-size:0px;
+-moz-transition:-moz-transform 0.5s ease-in; 
+-webkit-transition:-webkit-transform 0.5s ease-in; 
+-o-transition:-o-transform 0.5s ease-in;
+}
+
+#present:hover .zoom_img{
+font-size:10px;
+overflow:hidden;
+-moz-transform:scale(1.3); 
+-webkit-transform:scale(1.3);
+-o-transform:scale(1.3);
+}
+#absent:hover .zoom_img{
+font-size:10px;
+overflow:hidden;
+-moz-transform:scale(1.3); 
+-webkit-transform:scale(1.3);
+-o-transform:scale(1.3);
+}
+#presentall:hover .zoom_img{
+font-size:10px;
+overflow:hidden;
+-moz-transform:scale(1.3); 
+-webkit-transform:scale(1.3);
+-o-transform:scale(1.3);
+}
+.dashboard{
+    width:25%;
+}
+</style>
+<section class="content-header">
+    <h1 style="text-align:center;font-size:32px;">
+        <i class="fa fa-dashboard"></i> Dashboard
+        <!--<small>Control panel</small>-->
+    </h1>
+    <ol class="breadcrumb">
+<!--        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>-->
+        <li class="active"><?php echo date("d-m-Y"); ?></li> 
+    </ol>
+</section>
+
+<!-- Main content -->
+
+<section class="content">
+<!--    <marquee style="background-color: lightblue;"><h2 style="color:#a01515;font-size:25px;">Year End Process should be completed for all, whose Leave Year is 01-01-2019 to 31-12-2019.</h2></marquee>-->
+<!--    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-success">
+    <div class="box-header with-border">
+        <div class="pull-right">
+                  <h3 style="color:#3c8dbc;font-weight: bold;"><?php echo date('jS F Y'); ?></h3>
+        </div>
+                  <div class="box-tools pull-right">
+                    <span class="label label-danger"></span>
+                    
+                  </div>
+                </div>
+            </div>
+    </div>
+        </div>-->
+    <!-- Info boxes -->
+    <div class="row">
+        <div class="dashboard col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-aqua"><i class="ion ion-ios-people-outline"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Total Employees</span>
+                    <span class="info-box-number"><?php echo $total_emps; ?></span>
+                </div><!-- /.info-box-content -->
+            </div><!-- /.info-box -->
+        </div>
+         <div  id="presentall" class="dashboard col-sm-6 col-xs-12 ">
+            <div class="info-box">
+                <span class="info-box-icon bg-navy">
+                    <span class="fa-stack fa-md">
+                        <i class="fa fa-users fa-stack-1x"></i>
+                    </span>
+                </span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Present Today</span>
+                    <span class="info-box-number cnt-presentall"><?php echo $presentall; ?></span>
+                 <span class="info-box-text zoom_img pull-right">Click To Details</span>
+                </div><!-- /.info-box-content -->
+            </div><!-- /.info-box -->
+        </div>
+        <div  id="present" class="dashboard col-sm-6 col-xs-12 ">
+            <div class="info-box">
+                <span class="info-box-icon bg-green">
+                    <span class="fa-stack fa-md">
+                        <i class="fa fa-users fa-stack-1x"></i>
+                    </span>
+                </span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Active Now</span>
+                    <span class="info-box-number cnt-present"><?php echo $present; ?></span>
+                    <span class="info-box-text zoom_img pull-right">Click To Details</span>
+                </div><!-- /.info-box-content -->
+            </div><!-- /.info-box -->
+        </div>
+        <div class="clearfix visible-sm-block"></div>
+
+        <div id="absent" class="dashboard col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-red">	<span class="fa-stack fa-md">
+
+                        <i class="fa fa-users fa-stack-1x"></i>
+                    </span>
+                </span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Absent Now</span>
+                    <span class="info-box-number cnt-absent"><?php echo $total_emps - $present; ?></span>
+                    <span class="info-box-text zoom_img pull-right">Click To Details</span>
+                </div><!-- /.info-box-content -->
+            </div><!-- /.info-box -->
+        </div><!-- /.col -->
+<!--        <div class="dashboard col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-yellow"><i class="fa fa-clock-o "></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Total Leaves</span>
+                    <span class="info-box-number"><?php echo $arr_empleaverequests; ?></span>
+                </div>
+            </div>
+        </div>-->
+    </div><!-- /.row -->
+    <div style="height:20px;" class="row"></div>
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="tabset0">
+                <div data-pws-tab="tab1" id="tab1" data-pws-tab-name="Today Attendance" data-pws-tab-icon="fa-refresh fa-spin" style="height:1300px; ">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Employee In/Out </h3>
+                                    <div class="box-tools pull-right">
+                                        <button style="background: rgb(221, 75, 57); " type="button" onclick="Modal('Latein','Daily')" name="latein" id="latein" class="btn btn-linkedin">Late In</button>
+                                        <button style="background: #00a65a; " type="button" onclick="Modal('Earlyin','Daily')" class="btn btn-linkedin">Early In</button>
+                                        <button style="background: #00a65a; " type="button" onclick="Modal('Lateout','Daily')" class="btn btn-linkedin">Late Out</button>
+                                        <button style="background: rgb(221, 75, 57); " type="button" onclick="Modal('Earlyout','Daily')" class="btn btn-linkedin">Early Out</button>
+                                        <!--button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                        <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button-->
+                                    </div>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table no-margin" id="todayattandence">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Branch</th>
+                                                    <th>Date</th>
+                                                    <th>Time</th>
+                                                    <th>Check-In/Out</th>
+                                                    <th>Location</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div><!-- /.table-responsive -->
+                                </div><!-- /.box-body -->
+
+                            </div>
+                            <hr>
+    <div id="load_data">
+        <div> <li class="fa fa-spinner fa-spin"></li> Loading ..... Please Wait </div>
+    </div>
+                        </div>
+                        <!--  <div class="col-md-4">
+                          <div class="box box-primary">
+            <div class="box-header ui-sortable-handle" style="cursor: move;">
+              <i class="ion ion-clipboard"></i>
+
+              <h3 class="box-title">Remaining Tasks</h3>
+
+              <div class="box-tools pull-right">
+                <ul class="pagination pagination-sm inline">
+                  <li><a href="#">«</a></li>
+                  <li><a href="#">1</a></li>
+                  <li><a href="#">2</a></li>
+                  <li><a href="#">3</a></li>
+                  <li><a href="#">»</a></li>
+                </ul>
+              </div>
+            </div>-->
+                
+                
+            <!-- /.box-header -->
+        <!--     <div class="box-body" id="scrolls" style="height:315px;overflow-x:auto;">
+              <ul class="todo-list ui-sortable">
+                <?php // foreach($reminders as $rem){ ?>  
+                 <li><a>
+                    <?php
+//                    $todo_text;
+//                    $name;
+//                    if($rem['emp_proff']['day_time_seq'] == null){
+//                       $todo_text = "Apply Shift Policy To";
+//                       $name = $rem['emp_details']['first_name'].' '.$rem['emp_details']['last_name'];
+//                    }elseif($rem['emp_proff']['HOLIDAY_GROUP_ID'] == null){
+//                       $todo_text = "Apply Holiday Policy To";
+//                       $name = $rem['emp_details']['first_name'].' '.$rem['emp_details']['last_name'];
+//                    }elseif($rem['emp_proff']['LEAVEPOLICY_GROUP_ID'] == null){
+//                       $todo_text = "Apply Leave Policy To";
+//                       $name = $rem['emp_details']['first_name'].' '.$rem['emp_details']['last_name'];
+//                    }elseif($rem['emp_proff']['structure_id'] == null){
+//                       $todo_text = "Apply Salary Structure To";
+//                       $name = $rem['emp_details']['first_name'].' '.$rem['emp_details']['last_name'];
+//                    }
+                    ?>
+                      <span class="handle ui-sortable-handle">
+                        <i class="fa fa-ellipsis-v"></i>
+                        <i class="fa fa-ellipsis-v"></i>
+                      </span>
+                  <input type="checkbox" value="">
+                    <span onclick="openconfig();" class="text"><?php // echo $todo_text.' '.$name; ?></span>
+                  <small class="label label-danger"><i class="fa fa-clock-o"></i> 2 mins</small>
+                  <div class="tools">
+                    <i class="fa fa-edit"></i>
+                    <i class="fa fa-trash-o"></i>
+                  </div>
+                      </a></li>-->
+                <?php 
+//                }
+//                foreach ($salary_missed as $val){
+//                    ?>
+<!--                      <li>
+                          <a>
+                            <span class="handle ui-sortable-handle">
+                                        <i class="fa fa-ellipsis-v"></i>
+                                        <i class="fa fa-ellipsis-v"></i>
+                                      </span>
+                                  <input type="checkbox" value="">
+                                    <span onclick="" class="text">//<?php echo "Upload CTC for ".$val['0']['name']; ?></span>
+                          </a>
+                      </li>
+                      <?php
+//                }
+                ?>
+              </ul>
+            </div>-->
+            <!-- /.box-body -->
+           <!--  <div class="box-footer clearfix no-border">
+             <button type="button" class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add item</button>
+            </div>
+          </div>
+                        </div>-->
+                    </div>
+                </div>
+                <div data-pws-tab="tab2" id="tab2" data-pws-tab-name="This Month Attendance" data-pws-tab-icon="fa-refresh fa-spin" >
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Employee In/Out </h3>
+                                    <div class="box-tools pull-right">
+                                        <button style="background: rgb(221, 75, 57); " type="button" onclick="Modal('Latein','Month')"  class="btn btn-linkedin">Late In</button>
+                                        <button style="background: #00a65a; " type="button" onclick="Modal('Earlyin','Month')" class="btn btn-linkedin">Early In</button>
+                                        <button style="background: #00a65a; " type="button" onclick="Modal('Lateout','Month')" class="btn btn-linkedin">Late Out</button>
+                                        <button style="background: rgb(221, 75, 57); " type="button" onclick="Modal('Earlyout','Month')" class="btn btn-linkedin">Early Out</button>
+                                        <!--button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                        <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button-->
+                                    </div>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table no-margin" id="thismonthattandence">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Branch</th>
+                                                    <th>Date</th>
+                                                    <th>Time</th>
+                                                    <th>Check-In/Out</th>
+                                                    <th>Location</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div><!-- /.table-responsive -->
+                                </div><!-- /.box-body -->
+
+                            </div>
+                        </div>
+<!--                        <div class="col-md-4">
+                            <div class="box box-danger">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Statistics</h3>
+
+                                </div>
+                                <div class="box-body chart-responsive">
+                                    <canvas id="punchChart" height="180"></canvas>
+                                </div> /.box-body 
+                            </div>
+                        </div>-->
+                    </div>
+                    
+                </div>
+                <div data-pws-tab="tab3" data-pws-tab-name="Last Month Attendance" id="tab3" data-pws-tab-icon="fa-refresh fa-spin">
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Employee In/Out </h3>
+                                    <div class="box-tools pull-right">
+                                        <button style="background: rgb(221, 75, 57); " type="button" onclick="Modal('Latein','LastMonth')" name="latein" id="latein" class="btn btn-linkedin">Late In</button>
+                                        <button style="background: #00a65a; " type="button" onclick="Modal('Earlyin','LastMonth')"  class="btn btn-linkedin">Early In</button>
+                                        <button style="background: #00a65a; " type="button"  onclick="Modal('Lateout','LastMonth')" class="btn btn-linkedin">Late Out</button>
+                                        <button style="background: rgb(221, 75, 57); " type="button" onclick="Modal('Earlyout','LastMonth')"  class="btn btn-linkedin">Early Out</button>
+                                        <!--button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                        <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button-->
+                                    </div>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table no-margin" id="lastmonthattandence">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Branch</th>
+                                                    <th>Date</th>
+                                                    <th>Time</th>
+                                                    <th>Check-In/Out</th>
+                                                    <th>Location</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div><!-- /.table-responsive -->
+                                </div><!-- /.box-body -->
+
+                            </div>
+                        </div>
+<!--                        <div class="col-md-4">
+                            <div class="box box-danger">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Statistics</h3>
+
+                                </div>
+                                <div class="box-body chart-responsive">
+                                    <canvas id="punchChart" height="180"></canvas>
+                                </div> /.box-body 
+                            </div>
+                        </div>-->
+                    </div>
+                </div>
+
+                <div data-pws-tab="tab4" id="tab4" data-pws-tab-name="Leave Requests" data-pws-tab-icon="fa-refresh fa-spin">
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Employee Leave Requests</h3>
+                                    <div class="box-tools pull-right">
+                                        <div class="row">
+<!--                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <select id="leaverequests-month-filter" name="leaverequests-month-filter" class="form-control">
+                                                    <?php
+                                                    $start_month = strtotime(date('Y-m', strtotime("+1 month", strtotime(date('Y-m')))));
+                                                    for ($i = 0; $i < 10; $i++) {
+                                                        $month = date('Y-m', strtotime("-$i month", $start_month));
+                                                        if ($month == date('Y-m')) {
+                                                            echo '<option selected="selected" value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                                        } else {
+                                                            echo '<option value="' . $month . '">' . date('M-Y', strtotime("-$i month", $start_month)) . '</option>';
+                                                        }
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>-->
+<!--                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <select id="leaverequests-emp-filter" name="leaverequests-emp-filter" class="form-control col-md-3 col-sm-6 col-xs-12">
+                                                    <option value="">--All--</option>
+                                                    <?php
+//                                                    foreach ($arr_employees as $key => $value) {
+                                                        //echo '<option value="' . $value['emp_pkey'] . '">' . $value['emp_name'] . '</option>';
+//                                                        echo '<option value="' . $value['emp_name'] . '">' . $value['emp_name'] . '</option>';
+//                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>-->
+                                        </div>
+                                        <!--button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                        <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button-->
+                                    </div>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                    <div class="table-responsive" id="loadlists">
+                                        
+                                    </div><!-- /.table-responsive -->
+                                </div><!-- /.box-body -->
+
+                            </div>
+                        </div>
+<!--                        <div class="col-md-4">
+                            <div class="box box-danger">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Analysis</h3>
+
+                                </div>
+                                <div class="box-body chart-responsive">
+                                    <canvas id="punchChart" height="180"></canvas>
+                                </div> /.box-body 
+                            </div>
+                        </div>-->
+                    </div>
+                    
+                </div>
+
+				<!-- Employee Miss punches -->
+                <div data-pws-tab="tab5" id="tab5" data-pws-tab-name="Missed Punches" data-pws-tab-icon="fa-refresh fa-spin">
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Missed Punch</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body" id="misspunch">
+                                    
+                                </div><!-- /.box-body -->
+
+                            </div>
+                        </div>
+<!--                        <div class="col-md-4">
+                            <div class="box box-danger">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Analysis</h3>
+
+                                </div>
+                                <div class="box-body chart-responsive">
+                                    <canvas id="punchChart" height="180"></canvas>
+                                </div> /.box-body 
+                            </div>
+                        </div>-->
+                    </div>
+                    
+                </div>
+				<!-- Employee Miss punches -->
+		   <div data-pws-tab="tab6" data-pws-tab-name="Reported Problems" id="tab6" data-pws-tab-icon="fa-refresh fa-spin">
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Reported Problems</h3>
+                                     <!--<label class="col-md-2 control-label">Choose Date<span class="star">*</span></label>-->
+                                    <input id="reportdate"  name="reportdate" class="col-md-4 control-label dateget " style="width: 160px; float: right;" value="" type="text"  class="form-control input-md" required="" placeholder="Select date">
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table no-margin" id="reportproblem">
+                                             
+                                            <thead>
+                                                <tr>
+                                                    <th>Sl No</th>
+                                                    <th>Date & Time</th>
+                                                    <th>Issue Type</th>
+                                                    <th>User ID</th>
+                                                    <th>Problem</th>
+                                                    <th>Location</th>
+
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div><!-- /.table-responsive -->
+                                </div><!-- /.box-body -->
+
+                            </div>
+                        </div>
+<!--                        <div class="col-md-4">
+                            <div class="box box-danger">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Statistics</h3>
+
+                                </div>
+                                <div class="box-body chart-responsive">
+                                    <canvas id="punchChart" height="180"></canvas>
+                                </div> /.box-body 
+                            </div>
+                        </div>-->
+                    </div>
+                </div>	
+                <!--div data-pws-tab="tab6" data-pws-tab-name="To Do" data-pws-tab-icon="fa-refresh fa-spin">
+
+
+                </div>
+                <div data-pws-tab="tab7" data-pws-tab-name="Reminders" data-pws-tab-icon="fa-refresh fa-spin">
+
+
+                </div>
+                <div data-pws-tab="tab8" data-pws-tab-name="Mail Box" data-pws-tab-icon="fa-refresh fa-spin">
+
+
+                </div-->
+                
+            </div>
+
+        </div>
+    </div>
+    
+</section>
+
+<script type="text/javascript" charset="utf-8">
+    function Modal(name,job)
+{
+  //  alert(name);
+    var url = 'dashboard/form/'+name+'/'+job;
+   showModalForm(url)    
+}
+function openconfig(){
+        $('#loaders').show();
+        $('#container').load(livesite+'EmployeeConfig',function(){
+            $('#loaders').hide();
+        });
+    }
+function viewEmployeeMissPunches(){
+	if(!arguments.length){
+		return false;
+	}
+	var emp_id = arguments[0];
+	if(emp_id){	
+		$("#container").isLoading({
+			text: "Loading",
+			position: "overlay"
+		});
+		var url = "/EditPunches/index/" + emp_id;
+		$("#container").load(url, function () {
+			isDashboardShown = false;
+		});
+	}
+}			
+
+//    $.fn.dataTable.ext.search.push(
+//        function( settings, data, dataIndex ) {
+//            if(settings.sTableId == 'empleaverequests'){
+//                var filteredByEmployee = false;
+//                var filteredByMonth = false;
+//
+//                var emp_name = $('#leaverequests-emp-filter').val();
+//                if(emp_name == '' || emp_name == data[0]){
+//                    filteredByEmployee = true;
+//                }
+//
+//                var month = $('#leaverequests-month-filter').val();
+//                var fromdate = data[3];
+//                var arr_fromdate = fromdate.split('-');
+//                if(month == (arr_fromdate[0]+'-'+arr_fromdate[1])){
+//                    filteredByMonth = true;
+//                }
+//
+//                if(filteredByEmployee && filteredByMonth){
+//                    return true;
+//                }
+//                return false;
+//            }else{
+//                return true;
+//            }
+//        }
+//    );
+    
+    var punchChartCanvas = $("#punchChart").get(0).getContext("2d");
+    var punchChart = new Chart(punchChartCanvas);
+    
+    var cntpresent = $('.cnt-present').html();
+    var cntabsent = $('.cnt-absent').html();
+    var cntpresentall = $('.cnt-presentall').html();
+    
+    var punchData = [
+        {
+            value: cntpresent,
+            color: "#00a65a",
+            highlight: "#00a65a",
+            label: "Present"
+        },
+        {
+            value: cntabsent,
+            color: "#F75050",
+            highlight: "#F75050",
+            label: "Absent"
+        },
+         {
+            value: cntpresentall,
+            color: "#F75050",
+            highlight: "#F75050",
+            label: "Present All"
+        }
+
+    ];
+    var pieOptions = {
+//Boolean - Whether we should show a stroke on each segment
+        segmentShowStroke: true,
+//String - The colour of each segment stroke
+        segmentStrokeColor: "#fff",
+//Number - The width of each segment stroke
+        segmentStrokeWidth: 1,
+//Number - The percentage of the chart that we cut out of the middle
+        percentageInnerCutout: 50, // This is 0 for Pie charts
+//Number - Amount of animation steps
+        animationSteps: 100,
+//String - Animation easing effect
+        animationEasing: "easeOutBounce",
+//Boolean - Whether we animate the rotation of the Doughnut
+        animateRotate: true,
+//Boolean - Whether we animate scaling the Doughnut from the centre
+        animateScale: false,
+//Boolean - whether to make the chart responsive to window resizing
+        responsive: true,
+// Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+        maintainAspectRatio: false,
+//String - A legend template
+        legendTemplate: "<ul class=\"<%= name . toLowerCase() %>-legend\"><% for (var i = 0;i < segments . length;i++) { %><li><span style=\"background-color:<%= segments[i] . fillColor %>\"></span><% if (segments[i] . label) { %><%= segments[i] . label %><% } %></li><% } %></ul>",
+//String - A tooltip template
+        tooltipTemplate: "<%= value %> <%= label %> employees"
+    };
+//Create pie or douhnut chart
+// You can switch between pie and douhnut using the method below.  
+    punchChart.Doughnut(punchData, pieOptions);
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        
+            $('#presentall').on('click',function(){
+               var url = 'dashboard/presenttodayall';
+               showModalForm(url)    
+    
+            })
+            $('#present').on('click',function(){
+            //    alert("done");
+               var url = 'dashboard/presenttoday';
+   showModalForm(url)    
+    
+    })
+      $('#absent').on('click',function(){
+            //    alert("done");
+               var url = 'dashboard/absenttoday';
+   showModalForm(url)    
+    
+    });     
+        
+        
+        $('.tabset0').pwstabs({
+            effect: 'slideleft', // You can change effects of your tabs container: scale / slideleft / slideright / slidetop / slidedown / none
+            defaultTab: 1, // The tab we want to be opened by default
+            containerWidth: '100%', // Set custom container width if not set then 100% is used
+            containerHeight:'100%',
+            tabsPosition: 'horizontal', // Tabs position: horizontal / vertical
+            horizontalPosition: 'top', // Tabs horizontal position: top / bottom
+            verticalPosition: 'left', // Tabs vertical position: left / right
+            responsive: true, // Make tabs container responsive: true / false - boolean
+            theme: '',
+            rtl: false                    // Right to left support: true/ false
+        });
+        /*$('#togglechartweek').on('click', function () {
+            $("weekChartRow").show();
+            $("monthChartRow").hide();
+
+        })
+        $('#togglechartmonth').on('click', function () {
+            $("weekChartRow").hide();
+            $("monthChartRow").show();
+        })*/
+        $('#todayattandence').DataTable({
+            "paging": true,
+            "destroy": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                     extend: 'print',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'pdf',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'excel',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                }
+            ],
+            "info": true,
+            "autoWidth": false,
+            "order": [[ 2, "desc" ]],
+            "scrollY": 200,
+            "initComplete": function () {
+                $('.pws_tabs_container').find('a[data-tab-id="tab1"]').find('.fa').removeClass("fa-spin");
+            },
+//             "createdRow": function ( row, data, index ) {
+//                if ( data[5].replace(/[\$,]/g, '') * 1 > 150000 ) {
+//                    $('td', row).eq(5).addClass('highlight');
+//                }
+//            },
+            "scrollCollapse": true,
+            "ajax": livesite + "dashboard/listtodayattendance",
+        });
+        
+        $('.buttons-print').ready(function(){
+            $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');;
+        });
+        $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');;
+        $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+        
+        
+        
+        
+        var interval = setInterval( function () {
+            
+        $('#thismonthattandence').DataTable({
+            "paging": true,
+             "destroy": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                     extend: 'print',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'pdf',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'excel',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                }
+            ],
+            "info": true,
+            "autoWidth": false,
+            "order": [[ 1, "desc" ]],
+            "initComplete": function () {
+                $('.pws_tabs_container').find('a[data-tab-id="tab2"]').find('.fa').removeClass("fa-spin");
+            },
+            "ajax": livesite + "dashboard/listthismonthattendance",
+        });
+        
+        $('#load_data').load(livesite+ 'Dashboard/load_birthdays');
+        $('#misspunch').load(livesite+ 'Dashboard/misspunch');
+            //startTimer();
+            $('#lastmonthattandence').DataTable({
+            "paging": true,
+             "destroy": true,
+            "lengthChange": false,
+            "searching": true,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                     extend: 'print',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'pdf',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'excel',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                }
+            ],
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "initComplete": function () {
+                $('.pws_tabs_container').find('a[data-tab-id="tab3"]').find('.fa').removeClass("fa-spin");
+            },
+            "order": [[ 1, "desc" ]],
+            "ajax": livesite + "dashboard/listlastmonthattendance",
+        });
+        
+        $('#loadlists').load(livesite + 'Dashboard/listleaverequests' );
+        
+        
+        
+        // Event listener to the two range filtering inputs to redraw on input
+//        $('#leaverequests-emp-filter, #leaverequests-month-filter').change( function() {
+//            empleaverequeststable.search( this.value ).draw();
+//        });
+//		
+		
+        var empmisspunchestable = $('#empmisspunches').DataTable({
+            "paging": true,
+             "destroy": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "order": [[ 1, "desc" ]],
+            "autoWidth": false
+        });
+        
+        
+        $('.buttons-print').ready(function(){
+            $('.buttons-print').html('<li class="fa fa-print"></li>').addClass('btn-primary').addClass('btn');;
+        });
+        $('.buttons-pdf').html('<li class="fa fa-file-pdf-o"></li>').addClass('btn-danger').addClass('btn');;
+        $('.buttons-excel').html('<li class="fa fa-file-excel-o"></li>').addClass('btn-success').addClass('btn');
+        
+        
+            var weekdata = {
+                labels: ["January", "February", "March", "April", "May", "June", "July"],
+                datasets: [
+                    {
+                        label: "My First dataset",
+                        fillColor: "rgba(220,220,220,0.5)",
+                        strokeColor: "rgba(220,220,220,0.8)",
+                        highlightFill: "rgba(220,220,220,0.75)",
+                        highlightStroke: "rgba(220,220,220,1)",
+                        data: [65, 59, 80, 81, 56, 55, 40]
+                    },
+                    {
+                        label: "My Second dataset",
+                        fillColor: "rgba(151,187,205,0.5)",
+                        strokeColor: "rgba(151,187,205,0.8)",
+                        highlightFill: "rgba(151,187,205,0.75)",
+                        highlightStroke: "rgba(151,187,205,1)",
+                        data: [28, 48, 40, 19, 86, 27, 90]
+                    }
+                ]
+            };
+
+
+            /*var weekChartCanvas = $("#weekchart").get(0).getContext("2d");
+            var weekoptions = {
+                //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+                scaleBeginAtZero: true,
+                //Boolean - Whether grid lines are shown across the chart
+                scaleShowGridLines: true,
+                //String - Colour of the grid lines
+                scaleGridLineColor: "rgba(0,0,0,.05)",
+                //Number - Width of the grid lines
+                scaleGridLineWidth: 1,
+                //Boolean - Whether to show horizontal lines (except X axis)
+                scaleShowHorizontalLines: true,
+                //Boolean - Whether to show vertical lines (except Y axis)
+                scaleShowVerticalLines: true,
+                //Boolean - If there is a stroke on each bar
+                barShowStroke: true,
+                //Number - Pixel width of the bar stroke
+                barStrokeWidth: 2,
+                //Number - Spacing between each of the X value sets
+                barValueSpacing: 5,
+                //Number - Spacing between data sets within X values
+                barDatasetSpacing: 1,
+                //String - A legend template
+                legendTemplate: "<ul class=\"<%= name . toLowerCase() %>-legend\"><% for (var i = 0;
+            i < datasets . length;
+            i++) { %><li><span style=\"background-color:<%= datasets[i] . fillColor %>\"></span><% if (datasets[i] . label) { %><%= datasets[i] . label %><% } %></li><% } %></ul>"
+
+            };
+            var weekChart = new Chart(weekChartCanvas).Bar(weekdata, weekoptions);*/
+
+
+
+            var monthdata = {
+                labels: ["January", "February", "March", "April", "May", "June", "July"],
+                datasets: [
+                    {
+                        label: "My First dataset",
+                        fillColor: "rgba(220,220,220,0.5)",
+                        strokeColor: "rgba(220,220,220,0.8)",
+                        highlightFill: "rgba(220,220,220,0.75)",
+                        highlightStroke: "rgba(220,220,220,1)",
+                        data: [65, 59, 80, 81, 56, 55, 40]
+                    },
+                    {
+                        label: "My Second dataset",
+                        fillColor: "rgba(151,187,205,0.5)",
+                        strokeColor: "rgba(151,187,205,0.8)",
+                        highlightFill: "rgba(151,187,205,0.75)",
+                        highlightStroke: "rgba(151,187,205,1)",
+                        data: [28, 48, 40, 19, 86, 27, 90]
+                    }
+                ]
+            };
+
+            
+        var tablereport = $('#reportproblem').DataTable({
+            "paging": true,
+             "destroy": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                     extend: 'print',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'pdf',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                },
+                {
+                     extend: 'excel',
+                     messageTop: 'My Payroll Master Employees Attendance Report.',
+                     messageBottom: null,
+                     title: 'My Payroll Master - Attendance Export'
+                }
+            ],
+            "info": true,
+            "autoWidth": false,
+            "order": [[ 1, "desc" ]],
+            "initComplete": function () {
+                $('.pws_tabs_container').find('a[data-tab-id="tab2"]').find('.fa').removeClass("fa-spin");
+            },
+            "ajax": livesite + "dashboard/issuereport",
+//             data: {
+//                issuedate: issuedate
+//            }
+                });
+            clearInterval(interval);
+        }, 6000 );
+        });
+
+        $(".dateget").change(function(){
+          var issuedate = $('#reportdate').val();
+         tablereport.ajax.url( livesite + "dashboard/issuereport/"+issuedate ).load();
+        });
+     $('.dateget').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+	});
+
+    /*var monthChartCanvas = $("#monthchart").get(0).getContext("2d");
+    var monthoptions = {
+        //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+        scaleBeginAtZero: true,
+        //Boolean - Whether grid lines are shown across the chart
+        scaleShowGridLines: true,
+        //String - Colour of the grid lines
+        scaleGridLineColor: "rgba(0,0,0,.05)",
+        //Number - Width of the grid lines
+        scaleGridLineWidth: 1,
+        //Boolean - Whether to show horizontal lines (except X axis)
+        scaleShowHorizontalLines: true,
+        //Boolean - Whether to show vertical lines (except Y axis)
+        scaleShowVerticalLines: true,
+        //Boolean - If there is a stroke on each bar
+        barShowStroke: true,
+        //Number - Pixel width of the bar stroke
+        barStrokeWidth: 2,
+        //Number - Spacing between each of the X value sets
+        barValueSpacing: 5,
+        //Number - Spacing between data sets within X values
+        barDatasetSpacing: 1,
+        //String - A legend template
+        legendTemplate: "<ul class=\"<%= name . toLowerCase() %>-legend\"><% for (var i = 0;i < datasets . length;i++) { %><li><span style=\"background-color:<%= datasets[i] . fillColor %>\"></span><% if (datasets[i] . label) { %><%= datasets[i] . label %><% } %></li><% } %></ul>"
+
+    };
+    var monthChart = new Chart(monthChartCanvas).Bar(monthdata, monthoptions);*/
+
+
+
+</script>

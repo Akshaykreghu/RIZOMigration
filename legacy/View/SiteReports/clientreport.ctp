@@ -1,0 +1,1282 @@
+ <?php if( $mode == '' ){ ?>
+    <style type="text/css">
+        .dtBase , td, th,tr {
+            border-style: solid;
+            border-color: #d4d4de;
+
+
+        }
+
+        .page{
+            display: none;
+        }
+        #page1, #page2{
+            display: block;
+        }
+        #list_new{
+            background-color: #007CB7;
+            color: white;
+        }
+        .pagination {
+            display: inline-block;
+        }
+
+		
+        .pagination a {
+            color: black;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color .3s;
+        }
+
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+
+    </style>
+     <script type="text/javascript">
+        $(document).ready(function () {
+            $('#hidden_pointer').val(1);
+            var totalNumberOfPages = <?php echo count($arr_site_for_template); ?>;
+    <?php
+    $start = (count($arr_site_for_template) / 2);
+    ?>
+            var start =<?php echo ceil($start); ?>;
+            $('#current_id').val(1);
+            if (start > 4) {
+                for (var i = 2; i <= 4; i++) {
+                    $('#current_id' + i).val(i);
+                }
+            } else {
+                if (start <= 2) {
+                    $('#current_id2').val(2);
+                    $('#current_id3').css("display", "none");
+                    $('#current_id4').css("display", "none");
+                    $('#list_new3').css("display", "none");
+                    $('#list_new4').css("display", "none");
+                }
+                if (start == 3) {
+                    $('#current_id2').val(2);
+                    $('#current_id3').val(3);
+                    $('#list_new4').css("display", "none");
+                    $('#current_id4').css("display", "none");
+                }
+                if (start == 4) {
+                    $('#current_id2').val(2);
+                    $('#current_id3').val(3);
+                    $('#current_id4').val(4);
+                }
+                if (start < 2) {
+                    $('#current_id2').css("display", "none");
+                    $('#current_id3').css("display", "none");
+                    $('#current_id4').css("display", "none");
+                    $('#list_new2').css("display", "none");
+                    $('#list_new3').css("display", "none");
+                    $('#list_new4').css("display", "none");
+                }
+            }
+            // alert(totalNumberOfPages+' '+start);
+        });
+        function showPages(id) {
+            // alert(id);
+            if (id != 'prev' && id != 'next') {
+                // alert(id);
+                var totalNumberOfPages = <?php echo count($arr_site_for_template); ?>;
+                var end = id * 2;
+                var start = (id * 2) - 1;
+                for (var i = 1; i <= totalNumberOfPages; i++) {
+                    if ($('#page' + i)) {
+                        $('#page' + i).css("display", "none");
+                        // $('#list'+i).css("background-color","white");
+                        // $('#list'+i).css("color","black");
+                    }
+                }
+                for (var i = start; i <= end; i++) {
+                    if ($('#page' + i)) {
+                        $('#page' + i).css("display", "block");
+                    }
+                }
+               $('#hidden_pointer').val(id);
+                // alert(h);
+                // $('#list'+id).css("background-color","#007CB7");
+                // $('#list'+id).css("color","white");
+
+                if ((totalNumberOfPages / 2) > 4) {
+                    if ($('#current_id').val() == $('#hidden_pointer').val() && parseInt($('#current_id').val()) >= 2) {
+                        $('#current_id').val(parseInt($('#current_id').val()) - 1);
+                        $('#current_id2').val(parseInt($('#current_id2').val()) - 1);
+                        $('#current_id3').val(parseInt($('#current_id3').val()) - 1);
+                        $('#current_id4').val(parseInt($('#current_id4').val()) - 1);
+                    } else if ($('#current_id4').val() == $('#hidden_pointer').val() && parseInt($('#current_id4').val()) < (<?php echo count($arr_site_for_template) / 2; ?>)) {
+                        // alert($('#current_id4').val()+' '+$('#hidden_pointer').val());
+                        $('#current_id').val(parseInt($('#current_id').val()) + 1);
+                        $('#current_id2').val(parseInt($('#current_id2').val()) + 1);
+                        $('#current_id3').val(parseInt($('#current_id3').val()) + 1);
+                        $('#current_id4').val(parseInt($('#current_id4').val()) + 1);
+                    }
+                }
+
+
+                if (id == $('#current_id').val()) {
+                    $('#list_new').css("background-color", "#007CB7");
+                    $('#list_new').css("color", "white");
+                    $('#list_new2').css("background-color", "white");
+                    $('#list_new2').css("color", "black");
+                    $('#list_new3').css("background-color", "white");
+                    $('#list_new3').css("color", "black");
+                    $('#list_new4').css("background-color", "white");
+                    $('#list_new4').css("color", "black");
+                } else if (id == $('#current_id2').val()) {
+                    $('#list_new').css("background-color", "white");
+                    $('#list_new').css("color", "black");
+                    $('#list_new2').css("background-color", "#007CB7");
+                    $('#list_new2').css("color", "white");
+                    $('#list_new3').css("background-color", "white");
+                    $('#list_new3').css("color", "black");
+                    $('#list_new4').css("background-color", "white");
+                    $('#list_new4').css("color", "black");
+                } else if (id == $('#current_id3').val()) {
+                    $('#list_new').css("background-color", "white");
+                    $('#list_new').css("color", "black");
+                    $('#list_new2').css("background-color", "white");
+                    $('#list_new2').css("color", "black");
+                    $('#list_new3').css("background-color", "#007CB7");
+                    $('#list_new3').css("color", "white");
+                    $('#list_new4').css("background-color", "white");
+                    $('#list_new4').css("color", "black");
+                } else if (id == $('#current_id4').val()) {
+                    $('#list_new').css("background-color", "white");
+                    $('#list_new').css("color", "black");
+                    $('#list_new2').css("background-color", "white");
+                    $('#list_new2').css("color", "black");
+                    $('#list_new3').css("background-color", "white");
+                    $('#list_new3').css("color", "black");
+                    $('#list_new4').css("background-color", "#007CB7");
+                    $('#list_new4').css("color", "white");
+                }
+
+
+            } else {
+                var totalNumberOfPages = <?php echo count($arr_site_for_template); ?>;
+                var start = parseInt($('#hidden_pointer').val());
+                var temp = start;
+                // alert(start);
+                if (id == 'prev') {
+                    if (start >= 2) {
+                        id = start - 1;
+                        var end = id * 2;
+                        var start = (id * 2) - 1;
+                        for (var i = 1; i <= totalNumberOfPages; i++) {
+                            if ($('#page' + i)) {
+                                $('#page' + i).css("display", "none");
+                                $('#list' + i).css("background-color", "white");
+                                $('#list' + i).css("color", "black");
+                            }
+                        }
+                        for (var i = start; i <= end; i++) {
+                            if ($('#page' + i)) {
+                                $('#page' + i).css("display", "block");
+                            }
+                        }
+                        temp = parseInt(temp - 1);
+                        $('#hidden_pointer').val(temp);
+                        $('#list' + temp).css("background-color", "#007CB7");
+                        $('#list' + temp).css("color", "white");
+                        if ($('#current_id').val() >= 2) {
+                            $('#current_id').val(parseInt($('#current_id').val()) - 1);
+                            $('#current_id2').val(parseInt($('#current_id2').val()) - 1);
+                            $('#current_id3').val(parseInt($('#current_id3').val()) - 1);
+                            $('#current_id4').val(parseInt($('#current_id4').val()) - 1);
+                        }
+                        if (id == $('#current_id').val()) {
+                            $('#list_new').css("background-color", "#007CB7");
+                            $('#list_new').css("color", "white");
+                            $('#list_new2').css("background-color", "white");
+                            $('#list_new2').css("color", "black");
+                            $('#list_new3').css("background-color", "white");
+                            $('#list_new3').css("color", "black");
+                            $('#list_new4').css("background-color", "white");
+                            $('#list_new4').css("color", "black");
+                        } else if (id == $('#current_id2').val()) {
+                            $('#list_new').css("background-color", "white");
+                            $('#list_new').css("color", "black");
+                            $('#list_new2').css("background-color", "#007CB7");
+                            $('#list_new2').css("color", "white");
+                            $('#list_new3').css("background-color", "white");
+                            $('#list_new3').css("color", "black");
+                            $('#list_new4').css("background-color", "white");
+                            $('#list_new4').css("color", "black");
+                        } else if (id == $('#current_id3').val()) {
+                            $('#list_new').css("background-color", "white");
+                            $('#list_new').css("color", "black");
+                            $('#list_new2').css("background-color", "white");
+                            $('#list_new2').css("color", "black");
+                            $('#list_new3').css("background-color", "#007CB7");
+                            $('#list_new3').css("color", "white");
+                            $('#list_new4').css("background-color", "white");
+                            $('#list_new4').css("color", "black");
+                        } else if (id == $('#current_id4').val()) {
+                            $('#list_new').css("background-color", "white");
+                            $('#list_new').css("color", "black");
+                            $('#list_new2').css("background-color", "white");
+                            $('#list_new2').css("color", "black");
+                            $('#list_new3').css("background-color", "white");
+                            $('#list_new3').css("color", "black");
+                            $('#list_new4').css("background-color", "#007CB7");
+                            $('#list_new4').css("color", "white");
+                        }
+                        // alert($('#hidden_pointer').val());
+                    }
+                } else {
+                  
+                    last =<?php echo ceil(count($arr_site_for_template) / 2); ?>;
+                    // alert(last);
+                    if (start <= last - 1) {
+                        // alert(start);
+                        id = start + 1;
+                        var end = id * 2;
+                        var start = (id * 2) - 1;
+                        for (var i = 1; i <= totalNumberOfPages; i++) {
+                            if ($('#page' + i)) {
+                                $('#page' + i).css("display", "none");
+                                $('#list' + i).css("background-color", "white");
+                                $('#list' + i).css("color", "black");
+                            }
+                        }
+                        for (var i = start; i <= end; i++) {
+                            if ($('#page' + i)) {
+                                $('#page' + i).css("display", "block");
+                            }
+                        }
+                        temp = parseInt(temp) + 1;
+                        $('#hidden_pointer').val(temp);
+                        $('#list' + temp).css("background-color", "#007CB7");
+                        $('#list' + temp).css("color", "white");
+                        if (parseInt($('#current_id4').val()) <= last - 1) {
+                            $('#current_id').val(parseInt($('#current_id').val()) + 1);
+                            $('#current_id2').val(parseInt($('#current_id2').val()) + 1);
+                            $('#current_id3').val(parseInt($('#current_id3').val()) + 1);
+                            $('#current_id4').val(parseInt($('#current_id4').val()) + 1);
+                        }
+                        if (id == $('#current_id').val()) {
+                            $('#list_new').css("background-color", "#007CB7");
+                            $('#list_new').css("color", "white");
+                            $('#list_new2').css("background-color", "white");
+                            $('#list_new2').css("color", "black");
+                            $('#list_new3').css("background-color", "white");
+                            $('#list_new3').css("color", "black");
+                            $('#list_new4').css("background-color", "white");
+                            $('#list_new4').css("color", "black");
+                        } else if (id == $('#current_id2').val()) {
+                            $('#list_new').css("background-color", "white");
+                            $('#list_new').css("color", "black");
+                            $('#list_new2').css("background-color", "#007CB7");
+                            $('#list_new2').css("color", "white");
+                            $('#list_new3').css("background-color", "white");
+                            $('#list_new3').css("color", "black");
+                            $('#list_new4').css("background-color", "white");
+                            $('#list_new4').css("color", "black");
+                        } else if (id == $('#current_id3').val()) {
+                            $('#list_new').css("background-color", "white");
+                            $('#list_new').css("color", "black");
+                            $('#list_new2').css("background-color", "white");
+                            $('#list_new2').css("color", "black");
+                            $('#list_new3').css("background-color", "#007CB7");
+                            $('#list_new3').css("color", "white");
+                            $('#list_new4').css("background-color", "white");
+                            $('#list_new4').css("color", "black");
+                        } else if (id == $('#current_id4').val()) {
+                            $('#list_new').css("background-color", "white");
+                            $('#list_new').css("color", "black");
+                            $('#list_new2').css("background-color", "white");
+                            $('#list_new2').css("color", "black");
+                            $('#list_new3').css("background-color", "white");
+                            $('#list_new3').css("color", "black");
+                            $('#list_new4').css("background-color", "#007CB7");
+                            $('#list_new4').css("color", "white");
+                        }
+                    }
+                    // alert($('#hidden_pointer').val());
+                }
+            }
+            // window.location = "#page"+start;
+        }
+    </script>
+    <?php $i = 0;
+// debug($arr_site_for_template);
+    // $count=0;
+    // $temp_var='';
+    // foreach ($arr_site_for_template as $loop1) {
+    //     foreach ($loop1 as $loop2) {
+    //         foreach ($loop2 as $loop3) {
+    //             foreach ($loop3 as $loop4) {
+    //                 foreach ($loop4 as $loop5) {
+    //                     // debug($loop5);
+    //                     if($temp_var!=$loop5['contacts']['company_name']){
+    //                         $count++;
+    //                     }
+    //                     $temp_var=$loop5['contacts']['company_name'];
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // debug($count);
+    if(count($arr_site_for_template) == 0){ 
+      echo '<div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+      There is no data available under the selected criteria.</div>';
+      die();
+  } 
+
+  ?>
+
+<?php $client_or_employee = '';
+ if($needEmployeeWiseReport) {
+    $client_or_employee = 'Employee';
+ } else if($needBranchWiseReport){
+    $client_or_employee = 'Branch';
+ } else {
+    $client_or_employee = 'Client';
+ } ?>
+
+<?php if($needEmployeeWiseReport) { // Here employee wise is starts ?>
+    
+    <h2 style="text-align:center;">Site Detailed Report (Actual Rate) : <?php echo $month; ?></h2>
+    <h3 style="text-align:center;">(<?php echo "belonging to a ".$client_or_employee; ?> Report run by <?php echo $user_name; ?> - <?php echo $arr_date; ?>)</h3>
+
+    <div class="row">
+        <?php $j = 1;
+        $i = 0;
+        foreach ($arr_site_for_template as $value) { ?>
+            <div class="page" id="page<?php echo $j; ?>">
+                <?php $j++;
+                if (count($value['0']['summary']['0']) !== 0) {
+                    $i += 1;
+                ?>
+                    <?php
+                    foreach ($value as $key => $values) {
+                    ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <?php if ($cr != 'Contacts') { ?>
+
+                                <?php } ?>
+                            </div>
+                        </div>
+
+                        <table class="table table-striped table-bordered table-sm dtBase" style="border-top: none;">
+                            <tr>
+                                <th colspan="4" style="font-size: 20px; text-align: center;"><b>Details of <?php echo $values['summary']['0']['0']['contacts']['company_name']; ?></b></th>
+                            </tr>
+                            <tr>
+                                <td colspan="4" style="font-size: 15px;"><b>Client Address</b> : <?php echo $values['summary']['0']['0']['contacts']['address']; ?></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 15px;"><b>Contact Person </b>: <?php echo $values['summary']['0']['0']['contacts']['first_name'] . ' ' . $values['summary']['0']['0']['contacts']['last_name']; ?></td>
+                                <td style="font-size: 15px;"><b>Designation </b>: <?php echo $values['summary']['0']['0']['contacts']['c_designation']; ?></td>
+                                <td style="font-size: 15px;"><b>Mobile Number </b> : <?php echo $values['summary']['0']['0']['contacts']['phone']; ?></td>
+                                <td style="font-size: 15px;"><b>Mail ID</b> : <?php echo $values['summary']['0']['0']['contacts']['email']; ?></td>
+                            </tr>
+                        </table>
+
+
+                        <div style="overflow-y: auto;">
+
+                            <table class="table  dtBasic" id="dtBase">
+                                <thead>
+                                    <tr>
+                                        <th>Sl No</th>
+                                        <th>Site Code</th>
+                                        <th>Site Name</th>
+                                        <th>Site Address</th>
+
+                                        <th>Employee Name</th>
+                                        <!-- <th>Shift Policy</th> -->
+                                        <th>Designation</th>
+                                        <th>Shift Hour</th>
+
+                                        <th>Days</th>
+                                        <th>Working Hours</th>
+
+                                        <th>Sales Rate </th>
+                                        <th>Expense Rate</th>
+                                        <th>Value</th>
+                                        <!-- <th>Wages</th> -->
+                                        <!-- <th>Mark Up</th> -->
+                                        <!-- <th>Mark Up %</th> -->
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <?php $arr_data  = $values['summary']['0'];  ?>
+
+                                    <?php if (count($values['summary']['0']) >= 0) {
+                                        $grant_total_wages = 0;
+                                        $total_value = 0;
+                                        $total_w_p = 0;
+                                        $total_mark_up = 0;
+                                        $t_markup_pr = 0;
+                                        $i = 1; ?>
+                                        <?php foreach ($values['summary']['0'] as $val) {; ?>
+
+                                            <?php
+
+                                            $number = $val['0']['actual_empcount'];
+                                            $shift_hours = ($val[0]['duration']);
+                                            $shift_days = $val[0]['days'];
+                                            $erate = $val['site_attendance']['emp_rate'];
+                                            $sales_rate = $val['site_attendance']['sales_rate'];
+                                            $rate_per_head = $erate * $shift_hours * $shift_days;
+                                            if ($rate_per_head != 0 && $shift_days != 0 && $shift_hours != 0) {
+                                                $rate_per_hour = $erate * $shift_hours * $shift_days;
+                                            } else {
+                                                $rate_per_hour = "0";
+                                            }
+                                            $res_value = $erate */*$shift_days*/ $shift_hours /*$number*/;
+                                            $erate = $val['site_attendance']['emp_rate'];
+                                            $wages = ($erate * $shift_hours) / $number;
+                                            $total_wages = $wages * $number;
+                                            $markup = $res_value - $total_wages;
+                                            if ($res_value || $total_wages != 0) {
+                                                $markup_percentage = (($res_value - $total_wages) / $total_wages) * 100;
+                                            } else {
+                                                $markup_percentage = "0";
+                                            }
+                                            $grant_total_wages = round($grant_total_wages) + round($total_wages);
+                                            $total_value = round($total_value) + round($res_value);
+                                            $total_w_p = round($total_w_p) + round($wages);
+                                            $total_mark_up = round($total_mark_up) + round($markup);
+
+                                            if ($total_value && $grant_total_wages != 0) {
+                                                $t_markup_pr  = round((($total_value - $grant_total_wages) / $grant_total_wages) * 100, 2);
+                                            } else {
+                                                $t_markup_pr = "0";
+                                            }
+                                            $end_date = $val['site_t']['end_date_effective'];
+                                            $today = date('Y-m-d');
+                                            $closed_site = '';
+                                            if ($end_date < $today) {
+                                                $closed_site = ' (Closed Site)';
+                                            }
+                                            ?>
+
+                                            <tr>
+                                                <td><?php echo $i; ?></td>
+                                                <td><?php echo $val['site']['site_id']; ?></td>
+                                                <td><?php echo $val['site']['site_name'] . $closed_site;  ?></td>
+                                                <td><?php echo $val['site']['address']; ?></td>
+
+                                                <td><?php echo $val['0']['EmpName']; ?></td>
+
+                                                <!-- <td><?php echo $val['working_day_time_procedures']['day_time_desc']; ?></td> -->
+                                                <td><?php echo $val['designation']['desig_name']; ?></td>
+                                                <td><?php echo round($val['0']['shift_hours'], 2); ?></td>
+                                                <td><?php echo $val['0']['days']; ?></td>
+                                                <td><?php echo round($val['0']['duration'], 2); ?></td>
+                                                <td><?php echo round($val['site_attendance']['sales_rate'], 2); ?></td>
+                                                <td><?php echo round($val['site_attendance']['emp_rate'], 2); ?></td>
+
+                                                <td><?php echo round($res_value); ?></td>
+                                                <!-- <td><?php echo round($wages); ?></td> -->
+                                                <!-- <td><?php echo round($markup); ?></td> -->
+                                                <!-- <td><?php echo round($markup_percentage); ?></td> -->
+                                            </tr>
+                                        <?php
+                                            $i++;
+                                        }
+                                        ?>
+                                    <?php } else { ?>
+                                        <tr>
+                                            <td colspan="4">No employees found under this data</td>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="11" style="text-align: right;"><b>Grand Total</b></td>
+                                        <td><b><?php echo round($total_value); ?></b></td>
+                                        <!-- <td><b><?php echo round($total_w_p); ?></b></td> -->
+                                        <!-- <td><b><?php echo round($total_mark_up); ?></b></td> -->
+                                        <!-- <td><b><?php echo round($t_markup_pr); ?></b></td> -->
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+                        </div>
+            </div><?php
+                    }
+                }
+            } ?>
+        <input type="hidden" name="hidden_pointer" id="hidden_pointer">
+        <ul id="navigation_menu" class="pagination pull-right" style="padding: 0px;">
+            <?php
+            if (count($arr_site_for_template) > 2) {
+                $count_val = (float)(count($arr_site_for_template) / 2);
+                $start = (count($arr_site_for_template) / 2);
+                if ($count_val > (int)(count($arr_site_for_template) / 2)) {
+                    $start = (count($arr_site_for_template) / 2) + 1;
+                } else {
+                    $start = (count($arr_site_for_template) / 2);
+                }
+            ?>
+                <li><a href="#" onclick="showPages('prev')">Previous</a></li>
+                <li><a href="#" style="/*background-color: white;*/" id="list_new" onclick="showPages($('#current_id').val())"><input type="text" id="current_id" disabled style="display: inline; width: 15px;background-color: transparent;height: 10px;border: 0px;"></a></li>
+                <li><a href="#" style="/*background-color: white;*/" id="list_new2" onclick="showPages($('#current_id2').val())"><input type="text" id="current_id2" disabled style="display: inline; width: 15px;background-color: transparent;height: 10px;border: 0px;"></a></li>
+                <li><a href="#" style="/*background-color: white;*/" id="list_new3" onclick="showPages($('#current_id3').val())"><input type="text" id="current_id3" disabled style="display: inline; width: 15px;background-color: transparent;height: 10px;border: 0px;"></a></li>
+                <li><a href="#" style="/*background-color: white;*/" id="list_new4" onclick="showPages($('#current_id4').val())"><input type="text" id="current_id4" disabled style="display: inline; width: 15px;background-color: transparent;height: 10px;border: 0px;"></a></li>
+                <li><a href="#" onclick="showPages('next')">Next</a></li>
+            <?php
+            }
+            ?>
+        </ul>
+    </div>
+
+
+
+
+
+
+
+
+
+
+<?php } else { // This is the branch wise or client wise starts ?>
+  <!-- <div class="modal-body" style="overflow-y:initial; padding-left:3%; padding-right:3%; padding-bottom:3%;" > -->
+    <h2 style="text-align:center;">Site Detailed Report (Actual Rate) : <?php echo $month; ?></h2>
+    <h3 style="text-align:center;">(<?php echo "belonging to a Client";?> Report run by <?php echo $user_name; ?> - <?php echo $arr_date; ?>)</h3>
+    <div class="row">
+        
+
+           <?php $j=1; $i=0; 
+           foreach ($arr_site_for_template as $value) {?>
+            <div class="page" id="page<?php echo $j;?>">
+
+
+             <?php  $j++;   if(count($value['0']['summary']['0']) !== 0){
+               $i += 1; 
+               ?>
+
+
+               <?php
+
+
+               foreach ($value as $key => $values) {
+                            // debug($values);
+                ?>
+                <div class="row">
+                    <div class="col-md-12">
+                      <?php if($cr != 'Contacts')
+                      { ?>
+
+                      <?php } ?>
+                  </div>
+              </div>
+
+              <table class="table table-striped table-bordered table-sm dtBase" style="border-top: none;">
+                <tr>
+                    <th colspan="4" style="font-size: 20px; text-align: center;"><b>Details of <?php echo $values['summary']['0']['0']['contacts']['company_name']; ?></b></th>
+                </tr>
+                <tr>
+                    <td colspan="4" style="font-size: 15px;"><b>Client Address</b> : <?php echo $values['summary']['0']['0']['contacts']['address']; ?></td>
+                </tr>
+                <tr>
+                    <td style="font-size: 15px;"><b>Contact Person </b>: <?php echo $values['summary']['0']['0']['contacts']['first_name'].' '.$values['summary']['0']['0']['contacts']['last_name']; ?></td>
+                    <td style="font-size: 15px;"><b>Designation </b>: <?php echo $values['summary']['0']['0']['contacts']['c_designation']; ?></td>
+                    <td style="font-size: 15px;"><b>Mobile Number </b> : <?php echo $values['summary']['0']['0']['contacts']['phone']; ?></td>
+                    <td style="font-size: 15px;"><b>Mail ID</b> : <?php echo $values['summary']['0']['0']['contacts']['email']; ?></td>
+                </tr>
+            </table>
+
+
+            <div style="overflow-y: auto;">
+
+              <table class="table  dtBasic" id="dtBase">
+                <thead>
+                  <tr>
+
+                      <!--    <th>LEAVEPOLICY_GROUP_NAME</th> -->
+
+                      <th>Sl No</th>
+                      <th>Site Code</th>
+                      <th>Site Name</th>
+                      <th>Site Address</th>
+                      <th>Segment</th>
+                      <th>Contact Person</th>
+                      <th>Contact Number</th>
+
+                      <th>Contract Start Date</th>
+                      <th>Contract End Date</th>
+                      <th>Last Modified Date</th>
+                      <th>Shift Policy</th>
+                      <th>Designation</th>
+                      <th>Number Of Employees</th>
+                      <th>Shift Hour</th>
+					  
+                      <th>Days</th>
+                      <th>Actual Number Of Employees</th>
+                      <th>Actual Working Hours</th>
+
+                      <th>Sales Rate </th>
+<!--                      <th>Sales Rate Per Head</th>-->
+                      <th>Expense Rate</th>
+                      <th>Value</th>
+                      <th>Wages Per Person</th>
+                      <th>Total Wages</th>
+                      <th>Mark Up</th>
+                      <th>Mark Up %</th>
+
+                      <!--  <th>Amount</th> -->
+                      <!--                                  <th>Head Operator</th>-->
+
+                      <!--                                  <th>Item Part</th>-->
+<!--                                  <th>Leave days</th>
+  <th>Holidays</th>-->
+
+</tr>
+</thead>
+
+<tbody>
+ <?php $arr_data  = $values['summary']['0'];  ?>
+
+ <?php if(count($values['summary']['0'])>=0){ 
+    $grant_total_wages=0;
+    $total_value =0;
+    $total_w_p = 0;
+    $total_mark_up = 0;
+    $t_markup_pr = 0;
+    $i =1;?>
+    <?php foreach($values['summary']['0'] as $val){ ;?>
+
+      <?php
+
+      $number = $val['0']['actual_empcount'];
+      $shift_hours = ($val[0]['duration']);
+      $shift_days = $val[0]['days'];
+
+      $sales_rate= $val['site_attendance']['sales_rate'];
+                        // debug($rate_per_head);
+      $rate_per_head=$sales_rate*$shift_hours*$shift_days;
+      if ($rate_per_head != 0 && $shift_days !=0 && $shift_hours != 0) {
+        $rate_per_hour = $sales_rate * $shift_hours * $shift_days;
+    } else {
+        $rate_per_hour = "0";
+    }
+                        // debug($rate_per_hour);
+    $res_value = $sales_rate */*$shift_days*/ $shift_hours /*$number*/;
+    $erate = $val['site_attendance']['emp_rate'];
+    $wages = ($erate * $shift_hours)/$number;
+    $total_wages = $wages * $number;
+    $markup = $res_value - $total_wages;
+    if ($res_value || $total_wages != 0) {
+        $markup_percentage = (($res_value - $total_wages) / $total_wages) * 100; 
+    } else {
+        $markup_percentage = "0";
+    }
+    $grant_total_wages = round($grant_total_wages) + round($total_wages);
+    $total_value = round($total_value) + round($res_value);
+    $total_w_p = round($total_w_p) + round($wages);
+    $total_mark_up = round($total_mark_up) + round($markup);
+        // $total_value = round($total_value) + round($res_value);
+                            // $total_wages_per_person = round($total_wages_per_person) + round($wages);
+                            // $total_wages_total = round($total_wages_total) + round($total_wages);
+    if ($total_value && $grant_total_wages !=0){
+        $t_markup_pr  =round((($total_value - $grant_total_wages) / $grant_total_wages) * 100,2);
+    } else {
+        $t_markup_pr = "0";
+    }
+	 $end_date = $val['site_t']['end_date_effective'];
+                                $today = date('Y-m-d');
+                                $closed_site = '';
+                                if ($end_date < $today) {
+                                    $closed_site = ' (Closed Site)';
+                                }		
+    ?>
+
+    <tr> 
+     <td><?php echo $i;?></td>
+     <td><?php echo $val['site']['site_id']; ?></td>
+     <td><?php echo $val['site']['site_name'] . $closed_site;  ?></td>
+     <td><?php echo $val['site']['address']; ?></td>
+     <td><?php echo $val['site']['special_remarks']; ?></td>
+     <td><?php echo $val['site']['customer_name']; ?></td>
+     <td><?php echo $val['site']['customer_contact']; ?></td>
+
+     <td><?php echo $val['site_t']['start_date_effective']; ?></td>
+     <td><?php echo $val['site_t']['end_date_effective']; ?></td>
+     <td><?php echo $val['site_t']['modified_date']; ?></td>
+     <td><?php echo $val['working_day_time_procedures']['day_time_desc']; ?></td>
+     <td><?php echo $val['designation']['desig_name'];?></td>
+     <td><?php echo $val['site_t']['emp_count']; ?></td>
+	 
+     <td><?php echo round($val['0']['shift_hours'],2); ?></td>
+     <td><?php echo $val['0']['days']; ?></td>
+     <td><?php echo $val['0']['actual_empcount']; ?></td>
+     <td><?php echo round($val['0']['duration'],2); ?></td>
+
+     <td><?php echo round($val['site_attendance']['sales_rate'],2); ?></td>
+<!--     <td><?php echo $rate_per_hour; ?></td>-->
+
+     <td><?php echo round($val['site_attendance']['emp_rate'],2); ?></td>
+     <td><?php echo round($res_value); ?></td>
+
+     <td><?php echo round($wages); ?></td>
+     <td><?php echo round($total_wages); ?></td>
+     <td><?php echo round($markup); ?></td>
+     <td><?php echo round($markup_percentage); ?></td>
+
+
+
+
+
+ </tr>
+
+ <?php
+ $i++;
+} 
+?>
+
+<!-- <div class="modal-body" style="overflow-y: auto;"> -->
+<?php }else{ ?>
+    <tr>
+        <td colspan="4">No employees found under this data</td>
+    </tr>  
+<?php } ?>
+
+
+</tbody>
+<tfoot>
+    <tr>
+       <td colspan="19" style="text-align: right;"><b>Grand Total</b></td>
+       <td><b><?php echo round($total_value); ?></b></td>
+       <td><b><?php echo round($total_w_p); ?></b></td>
+       <td><b><?php echo round($grant_total_wages);?></b></td>
+       <td><b><?php echo round($total_mark_up);?></b></td>
+       <td><b><?php echo round($t_markup_pr); ?></b></td>
+   </tr>
+</tfoot>
+</table>
+
+</div>
+<br><br>
+</div>
+
+
+
+
+
+<?php } }  } ?> <!-- /.box-body -->
+
+
+<input type="hidden" name="hidden_pointer" id="hidden_pointer">
+<ul id="navigation_menu" class="pagination pull-right" style="padding: 0px;">
+    <?php
+    if(count($arr_site_for_template)>2){
+        $count_val=(float)(count($arr_site_for_template)/2);
+        $start=(count($arr_site_for_template)/2);
+        if($count_val>(int)(count($arr_site_for_template)/2)){
+            $start=(count($arr_site_for_template)/2)+1;
+        }else{
+            $start=(count($arr_site_for_template)/2);
+        }
+        ?>
+        <!-- &laquo; &raquo;-->
+        <!-- <li><a href="#" id="list1" onclick="showPages(1)">First</a></li> -->
+        <li><a href="#" onclick="showPages('prev')">Previous</a></li>
+        <!-- <li><a href="#">...</a></li> -->
+                <!-- <?php
+                for($j=1;$j<=$start;$j++){
+                    ?>
+                    <li><a href="#" id="list<?php echo $j; ?>" onclick="showPages('<?php echo $j; ?>')"><?php echo $j; ?></a></li>
+                    <?php
+                }
+                ?> -->
+                <li><a href="#" style="/*background-color: white;*/" id="list_new" onclick="showPages($('#current_id').val())"><input type="text" id="current_id" disabled style="display: inline; width: 15px;background-color: transparent;height: 10px;border: 0px;"></a></li>
+                <li><a href="#" style="/*background-color: white;*/" id="list_new2" onclick="showPages($('#current_id2').val())"><input type="text" id="current_id2" disabled style="display: inline; width: 15px;background-color: transparent;height: 10px;border: 0px;"></a></li>
+                <li><a href="#" style="/*background-color: white;*/" id="list_new3" onclick="showPages($('#current_id3').val())"><input type="text" id="current_id3" disabled style="display: inline; width: 15px;background-color: transparent;height: 10px;border: 0px;"></a></li>
+                <li><a href="#" style="/*background-color: white;*/" id="list_new4" onclick="showPages($('#current_id4').val())"><input type="text" id="current_id4" disabled style="display: inline; width: 15px;background-color: transparent;height: 10px;border: 0px;"></a></li>
+                <!-- <li><a href="#">...</a></li> -->
+                <li><a href="#" onclick="showPages('next')">Next</a></li>
+                <?php
+            }
+            ?>
+        </ul>
+    </div>
+
+<?php } // This is the end of else case of employee wise ?>
+
+<?php  }else{ ?>
+    <?php //echo '<style>'.file_get_contents("css/pdfbootstrap.css").'</style>'; ?>
+    <style type="text/css">
+        body {
+            line-height: 2em;
+        }
+        .block-container {
+            width: 95%;
+            padding: 20px;
+            border: #000000 solid thin;
+        }
+        .sub-head {
+            border-bottom: #000000 solid thin;
+        }
+        .row {
+            height: 32px;
+        }
+        .col-md-4 {
+            width: 33.33%;
+            float: left;
+        }
+        table {
+            border: 2px solid #f4f4f4;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        td, th {
+            text-align: left;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border: 1px solid #B2B2B2;
+        }
+    </style>
+    <?php 
+    //$i = 0;
+
+//    if(count($arr_site_for_template1) == 0){ 
+//      echo '<div style="font-size: 25px;text-align:center; background-color:#F7D3D2;">
+//      There is no data available</div>';
+//      die();
+//  } 
+
+
+
+
+// The below code is hided of pdf image issue
+
+
+//   echo $this->element('reportadminheader',array(
+//   'title'=>'Site Detailed Report (Actual Rate) : '.$month));
+
+
+
+
+
+
+
+  ?>
+  <!-- <div class="modal-body" style="overflow-y:initial; padding-left:3%; padding-right:3%; padding-bottom:3%;" /> -->
+  <!--    <h3 align="center" >Cost To Company Detailed Report</h3>-->
+<!--  <h2 style="text-align:center;">Site Detailed Report (Actual Rate) : <?php echo $month; ?></h2>-->
+<?php $client_or_employee = '';
+ if($needEmployeeWiseReport) {
+    $client_or_employee = 'Employee';
+ } else if($needBranchWiseReport){
+    $client_or_employee = 'Branch';
+ } else {
+    $client_or_employee = 'Client';
+ } ?>
+  <h3 style="text-align:center;">(<?php echo "belonging to a ".$client_or_employee;?> Report run by <?php echo $user_name; ?> - <?php echo $arr_date; ?>)</h3>
+  <!-- <div class="row"> -->
+    <!-- <div class="col-md-12"> -->
+
+       <?php 
+       if(!empty($arr_site_for_template1)){
+
+
+        if($needEmployeeWiseReport) { // Here employee wise is starts
+
+            $i = 0;
+            foreach ($arr_site_for_template1 as $value) {
+            
+                if (count($value['0']['summary']['0']) !== 0) {
+                    $i += 1;
+            
+                    if ($cr == 'Contacts') {
+                    }
+            
+                    foreach ($value as $key => $values) {
+            ?>
+                        <h2 style="text-align: center;">Details of <?php echo $values['summary']['0']['0']['contacts']['company_name']; ?> </h2>
+            
+                        <table>
+                            <tr>
+                                <td colspan="4" style="font-size: 15px; border: 0px; width: 500px;"><b>Client Address</b> : <?php echo $values['summary']['0']['0']['contacts']['address']; ?></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 15px; border: 0px; width: 400px;"><b>Contact Person </b>: <?php echo $values['summary']['0']['0']['contacts']['first_name'] . ' ' . $values['summary']['0']['0']['contacts']['last_name']; ?></td>
+                                <td style="font-size: 15px; border: 0px; width: 350px;"><b>Designation </b>: <?php echo $values['summary']['0']['0']['contacts']['c_designation']; ?></td>
+                                <td style="font-size: 15px; border: 0px; width: 250px;"><b>Mobile Number </b> : <?php echo $values['summary']['0']['0']['contacts']['phone']; ?></td>
+                                <td style="font-size: 15px; border: 0px; width: 400px;"><b>Mail ID</b> : <?php echo $values['summary']['0']['0']['contacts']['email']; ?></td>
+                            </tr>
+                        </table>
+                        <table>
+                            <tr>
+                                <th style="width: 70px;">Site Code</th>
+                                <th style="width: 400px;">Site Details</th>
+                                <th style="width: 100px;">Employee Name</th>
+            
+            
+                                <!-- <th style="width: 30px;">Contract Start Date</th> -->
+                                <!-- <th style="width: 20px;">Contract End Date</th> -->
+                                <th style="width: 100px;">Designation</th>
+            
+                                <!-- <th style="width: 10px;">No of Emp.</th> -->
+                                <th style="width: 30px;">Days</th>
+                                <th style="width: 60px;">Shift Hours</th>
+                                <th style="width: 50px;">Sales Rate</th>
+            
+                                <th style="width: 70px;">Expense Rate </th>
+                                <th style="width: 100px;">Value</th>
+                                <!-- <th style="width: 50px;">Wages Per Person</th> -->
+                                <!-- <th>Total Wages</th> -->
+                                <!-- <th>Mark Up</th> -->
+                                <!-- <th>Mark Up %</th> -->
+            
+                            </tr>
+            
+                            <?php $arr_data  = $values['summary']['0'];  ?>
+            
+                            <?php if (count($values['summary']['0']) >= 0) {
+                                $grant_total_wages = 0;
+                                $total_value = 0;
+                                $total_w_p = 0;
+                                $total_mark_up = 0;
+                                $t_markup_pr = 0;
+                                $i = 1;
+                            ?>
+            
+                                <?php foreach ($values['summary']['0'] as $val) { ?>
+            
+                                    <?php
+            
+                                    $number = $val['0']['actual_empcount'];
+                                    $shift_hours = ($val[0]['duration']);
+                                    $shift_days = $val[0]['days'];
+            
+                                    $sales_rate = $val['site_attendance']['sales_rate'];
+            
+                                    $rate_per_head = $sales_rate * $shift_hours * $shift_days;
+                                    if ($rate_per_head != 0 && $shift_days != 0 && $shift_hours != 0) {
+                                        $rate_per_hour = $sales_rate * $shift_hours * $shift_days;
+                                    } else {
+                                        $rate_per_hour = "0";
+                                    }
+            
+                                    $res_value = $sales_rate */*$shift_days*/ $shift_hours /*$number*/;
+                                    $erate = $val['site_attendance']['emp_rate'];
+                                    $wages = ($erate * $shift_hours) / $number;
+                                    $total_wages = $wages * $number;
+                                    $markup = $res_value - $total_wages;
+                                    if ($res_value || $total_wages != 0) {
+                                        $markup_percentage = (($res_value - $total_wages) / $total_wages) * 100;
+                                    } else {
+                                        $markup_percentage = "0";
+                                    }
+                                    $grant_total_wages = round($grant_total_wages) + round($total_wages);
+                                    $total_value = round($total_value) + round($res_value);
+                                    $total_w_p = round($total_w_p) + round($wages);
+                                    $total_mark_up = round($total_mark_up) + round($markup);
+            
+                                    if ($total_value && $grant_total_wages != 0) {
+                                        $t_markup_pr  = round((($total_value - $grant_total_wages) / $grant_total_wages) * 100, 2);
+                                    } else {
+                                        $t_markup_pr = "0";
+                                    }
+                                    $end_date = $val['site_t']['end_date_effective'];
+                                    $today = date('Y-m-d');
+                                    $closed_site = '';
+                                    if ($end_date < $today) {
+                                        $closed_site = ' (Closed Site)';
+                                    }
+                                    ?>
+            
+                                    <tr>
+            
+                                        <td style="width: 40px;"><?php echo $val['site']['site_id']; ?></td>
+                                        <td style="width: 250px;"><?php echo $val['site']['site_name'] . '-- ' . $val['site']['address'] .  $closed_site; ?></td>
+                                        <td style="width: 250px;"><?php echo $val['0']['EmpName']; ?></td>
+            
+                                        <!-- <td style="width: 100px;"><?php echo $val['site']['customer_name'] . '-- ' . $val['site']['customer_contact']; ?></td> -->
+            
+                                        <!-- <td><?php echo $val['site_t']['start_date_effective']; ?></td> -->
+                                        <!-- <td><?php echo $val['site_t']['end_date_effective']; ?></td> -->
+                                        <td style="width: 60px;"><?php echo $val['designation']['desig_name']; ?></td>
+            
+                                        <!-- <td><?php echo $val['0']['actual_empcount']; ?></td> -->
+                                        <td><?php echo $val['0']['days']; ?></td>
+                                        <td><?php echo round($val['0']['duration'], 2); ?></td>
+                                        <td style="width: 50px;"><?php echo round($val['site_attendance']['sales_rate'], 2); ?></td>
+            
+                                        <td style="width: 50px;"><?php echo round($val['site_attendance']['emp_rate'], 2); ?></td>
+                                        <td style="width: 50px;"><?php echo round($res_value); ?></td>
+            
+                                        <!-- <td style="width: 50px;"><?php echo round($wages); ?></td> -->
+                                        <!-- <td><?php echo round($total_wages); ?></td> -->
+                                        <!-- <td><?php echo round($markup); ?></td> -->
+                                        <!-- <td><?php echo round($markup_percentage); ?></td> -->
+            
+                                    </tr>
+            
+                                <?php
+                                    $i++;
+                                }
+            
+                                ?>
+                                <tr>
+                                    <td colspan="8" style="text-align: right;"><b>Grand Total</b></td>
+                                    <td><b><?php echo round($total_value); ?></b></td>
+                                    <!-- <td><b><?php echo round($total_w_p); ?></b></td> -->
+                                    <!-- <td><b><?php echo round($grant_total_wages); ?></b></td> -->
+                                    <!-- <td><b><?php echo round($total_mark_up); ?></b></td> -->
+                                    <!-- <td><b><?php echo round($t_markup_pr); ?></b></td> -->
+                                </tr>
+            
+                            <?php } else { ?>
+                                <tr>
+                                    <td colspan="4">No employees found under this data</td>
+                                </tr>
+                            <?php } ?>
+            
+                        </table>
+            
+            <?php }
+                }
+            } 
+
+
+
+
+
+        } else { // Branch or client wise start here.
+
+
+
+
+
+
+
+       $i=0; foreach ($arr_site_for_template1 as $value) {
+                    // debug($value);
+                    // $parSed = $value['0']['summary'];
+          if(count($value['0']['summary']['0']) !== 0){
+           $i += 1; 
+           ?>
+
+
+           <?php
+           if($cr == 'Contacts')
+           {
+            ?>
+            <!-- <legend><?php  echo isset($value['0']['summary']['0']['0']['contacts']['company_name']) ?$value['0']['summary']['0']['0']['contacts']['company_name'] : '' ; ?>  </legend> -->
+            <?php
+        }
+
+
+        foreach ($value as $key => $values) {
+                            // debug($values);
+            ?>
+   
+          <h2 style="text-align: center;">Details of <?php  echo $values['summary']['0']['0']['contacts']['company_name']; ?> </h2>
+
+      <table >
+                <!-- <tr>
+                    <th colspan="4" style="font-size: 20px; text-align: center; border: 0px;"><b>Details of <?php echo $values['summary']['0']['0']['contacts']['company_name']; ?></b></th>
+                </tr> -->
+                <tr>
+                    <td colspan="4" style="font-size: 15px; border: 0px; width: 500px;"><b>Client Address</b> : <?php echo $values['summary']['0']['0']['contacts']['address']; ?></td>
+                </tr>
+                <tr>
+                    <td style="font-size: 15px; border: 0px; width: 400px;"><b>Contact Person </b>: <?php echo $values['summary']['0']['0']['contacts']['first_name'].' '.$values['summary']['0']['0']['contacts']['last_name']; ?></td>
+                    <td style="font-size: 15px; border: 0px; width: 350px;"><b>Designation </b>: <?php echo $values['summary']['0']['0']['contacts']['c_designation']; ?></td>
+                    <td style="font-size: 15px; border: 0px; width: 250px;"><b>Mobile Number </b> : <?php echo $values['summary']['0']['0']['contacts']['phone']; ?></td>
+                    <td style="font-size: 15px; border: 0px; width: 400px;"><b>Mail ID</b> : <?php echo $values['summary']['0']['0']['contacts']['email']; ?></td>
+                </tr>
+            </table>
+
+
+
+
+<!--      <br>-->
+
+
+
+
+      <table >
+<!--        <thead>-->
+          <tr>
+
+              <!--    <th>LEAVEPOLICY_GROUP_NAME</th> -->
+<!--              <th>Sl No</th>-->
+              <th style="width: 40px;">Site Code</th>
+              <th style="width: 250px;">Site Details</th>
+              <th style="width: 100px;">Customer Details</th>
+
+              <!-- <th>Designation</th> -->
+              <th style="width: 30px;">Contract Start Date</th>
+              <th style="width: 20px;">Contract End Date</th>
+              <th style="width: 60px;">Designation</th>
+              <!-- <th>Shift Policy</th> -->
+              <th style="width: 10px;">No of Emp.</th>
+              <th style="width: 10px;">Days</th>
+              <th style="width: 20px;">Shift Hours</th>
+              <th style="width: 50px;">Sales Rate</th>
+<!--              <th style="width: 50px;">Sales Rate Per Head</th>-->
+              <th style="width: 50px;">Expense Rate </th>
+              <th style="width: 50px;">Value</th>
+              <th style="width: 50px;">Wages Per Person</th>
+              <th>Total Wages</th>
+              <th>Mark Up</th>
+              <th>Mark Up %</th>
+
+
+          </tr>
+<!--      </thead>
+
+      <tbody>-->
+         <?php $arr_data  = $values['summary']['0'];  ?>
+
+         <?php if(count($values['summary']['0'])>=0){ 
+            $grant_total_wages=0;
+            $total_value =0;
+            $total_w_p = 0;
+            $total_mark_up = 0;
+            $t_markup_pr = 0;
+            $i = 1;
+            ?>
+            
+            <?php foreach($values['summary']['0'] as $val){ ?>
+
+              <?php
+
+ $number = $val['0']['actual_empcount'];
+      $shift_hours = ($val[0]['duration']);
+      $shift_days = $val[0]['days'];
+
+      $sales_rate= $val['site_attendance']['sales_rate'];
+                        // debug($rate_per_head);
+      $rate_per_head=$sales_rate*$shift_hours*$shift_days;
+      if ($rate_per_head != 0 && $shift_days !=0 && $shift_hours != 0) {
+        $rate_per_hour = $sales_rate * $shift_hours * $shift_days;
+    } else {
+        $rate_per_hour = "0";
+    }
+                        // debug($rate_per_hour);
+    $res_value = $sales_rate */*$shift_days*/ $shift_hours /*$number*/;
+    $erate = $val['site_attendance']['emp_rate'];
+    $wages = ($erate * $shift_hours)/$number;
+    $total_wages = $wages * $number;
+    $markup = $res_value - $total_wages;
+    if ($res_value || $total_wages != 0) {
+        $markup_percentage = (($res_value - $total_wages) / $total_wages) * 100; 
+    } else {
+        $markup_percentage = "0";
+    }
+    $grant_total_wages = round($grant_total_wages) + round($total_wages);
+    $total_value = round($total_value) + round($res_value);
+    $total_w_p = round($total_w_p) + round($wages);
+    $total_mark_up = round($total_mark_up) + round($markup);
+        // $total_value = round($total_value) + round($res_value);
+                            // $total_wages_per_person = round($total_wages_per_person) + round($wages);
+                            // $total_wages_total = round($total_wages_total) + round($total_wages);
+    if ($total_value && $grant_total_wages !=0){
+        $t_markup_pr  =round((($total_value - $grant_total_wages) / $grant_total_wages) * 100,2);
+    } else {
+        $t_markup_pr = "0";
+    }
+	$end_date = $val['site_t']['end_date_effective'];
+                                $today = date('Y-m-d');
+                                $closed_site = '';
+                                if ($end_date < $today) {
+                                    $closed_site = ' (Closed Site)';
+                                }						 
+    ?>
+
+
+            <tr> 
+<!--            <td> <?php echo $i; ?></td>-->
+            <td style="width: 40px;"><?php echo $val['site']['site_id']; ?></td>
+             <td style="width: 250px;"><?php echo $val['site']['site_name'].'-- '.$val['site']['address'] .  $closed_site; ?></td>
+
+             <td style="width: 100px;"><?php echo $val['site']['customer_name'].'-- '.$val['site']['customer_contact']; ?></td>
+
+             <td><?php echo $val['site_t']['start_date_effective']; ?></td>
+             <td><?php echo $val['site_t']['end_date_effective']; ?></td>
+             <td style="width: 60px;"><?php echo $val['designation']['desig_name']; ?></td>
+             <!-- <td><?php echo $val['working_day_time_procedures']['day_time_desc']; ?></td> -->
+             <td><?php echo $val['0']['actual_empcount']; ?></td>
+             <td><?php echo $val['0']['days']; ?></td>
+             <td><?php echo round($val['0']['duration'],2); ?></td>
+             <td style="width: 50px;"><?php echo round($val['site_attendance']['sales_rate'],2); ?></td>
+<!--             <td style="width: 50px;"><?php echo $rate_per_hour; ?></td>-->
+
+             <td style="width: 50px;"><?php echo round($val['site_attendance']['emp_rate'],2); ?></td>
+             <td style="width: 50px;"><?php echo round($res_value); ?></td>
+
+             <td style="width: 50px;"><?php echo round($wages); ?></td>
+             <td><?php echo round($total_wages); ?></td>
+             <td><?php echo round($markup); ?></td>
+             <td><?php echo round($markup_percentage); ?></td>
+
+
+
+
+
+         </tr>
+
+         <?php
+         $i++; 
+     } 
+
+     ?>
+     <tr>
+       <td colspan="11" style="text-align: right;"><b>Grand Total</b></td>
+       <td><b><?php echo round($total_value); ?></b></td>
+       <td><b><?php echo round($total_w_p); ?></b></td>
+       <td><b><?php echo round($grant_total_wages);?></b></td>
+       <td><b><?php echo round($total_mark_up);?></b></td>
+       <td><b><?php echo round($t_markup_pr); ?></b></td>
+   </tr>
+   <!-- <div class="modal-body" style="overflow-y: auto;"> -->
+   <?php } else{ ?>
+    <tr>
+        <td colspan="4">No employees found under this data</td>
+    </tr>  
+<?php } ?>
+
+
+<!--</tbody>-->
+</table>
+
+<!-- </fieldset> -->
+
+
+
+<?php } }  } ?> <!-- /.box-body -->
+ <?php
+    
+
+   } // End of branch / client wise
+
+
+
+
+
+
+
+
+
+
+
+}else{
+        echo isset($no_criteria)?"<h2>".$no_criteria."</h2>":'<div style="font-size: 25px;margin-top:30px;text-align:center; background-color:#F7D3D2;">
+    There is no data available under the selected criteria.</div>';
+    }
+    ?>
+    <?php } ?>
+
