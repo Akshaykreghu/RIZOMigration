@@ -2423,7 +2423,7 @@ set perr_msg = 'OK';
 end;;
 
 DROP FUNCTION IF EXISTS `check_fn`;;
-CREATE FUNCTION `check_fn` (`pcompany_code ` varchar(20), `PBranch_code` varchar(20), `Puserid` varchar(20), `Pmonth` date) RETURNS varchar(100) CHARACTER SET 'latin1' LANGUAGE SQL
+CREATE FUNCTION `check_fn` (`pcompany_code` varchar(20), `PBranch_code` varchar(20), `Puserid` varchar(20), `Pmonth` date) RETURNS varchar(100) CHARACTER SET 'latin1' LANGUAGE SQL
 begin
 
 declare vemp_pkey int;

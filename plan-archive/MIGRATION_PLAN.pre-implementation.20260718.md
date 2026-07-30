@@ -1175,114 +1175,95 @@ Used by specific companies. Plan-gated.
 
 ## 10. Implementation Phases & Timeline
 
-> **Progress sync (2026-07-18, corrected):** an earlier pass at this table (2026-07-18, same day) was based on `reports/current-state-report.md`, a static-analysis audit built by research agents that — cross-checked just now against `PROGRESS.md` (this project's curl-verified, line-by-line build log) and the real filesystem — turned out to have significantly under-counted Phase 2 and Phase 3: it missed that Import Employee, Promotion Approval, Document Generation, a full Full & Final settlement engine (Remove Employee), and nearly all of Attendance were already built and working. The table below is corrected against `PROGRESS.md` + a direct filesystem check, which is the authoritative source going forward — see `PROGRESS.md` for full detail on every item, including exact bug fixes and curl-verification notes. `reports/current-state-report.md` and `reports/migration-plan.md` are now known to be materially wrong about Phase 2/3 scope and should not be trusted for those two phases without re-verification; their Fix-First bug list may also need re-checking against `PROGRESS.md` item by item before acting on it.
+> **Progress sync (2026-07-18):** the checkboxes below have been updated against the actual state of `rizo/` as verified in `reports/current-state-report.md` (a file-and-line-cited coverage/fidelity audit against the three legacy-analysis reports). `[x]` = built and functionally present; unchecked with a 🟡/⚠️ note = started but incomplete or deviated from this plan's original approach; unchecked with no note = not started. Where a "DONE" item has a known correctness gap, the gap is noted inline — being checked off means the feature exists and is reachable, not that it's bug-free (see `reports/migration-plan.md` §1 Fix-First List for the bug list).
 >
 > | Phase | Status | Rough completion |
 > |---|---|---|
-> | 0 — Pre-Work | Docs done via the 3 legacy reports; local MySQL is in fact up and reachable (confirmed 2026-07-18) with real seeded data (`mypayrol_mpm121`, `mypayrol_trial`, `mypayrol_control_db`) | ~90% |
-> | 1 — Infrastructure | Done; route protection uses `src/proxy.ts` (Next.js 16's renamed `middleware.ts` convention, not a deviation — see `PROGRESS.md` Phase 1 note) | 100% |
-> | 2 — Company Setup + Employee Core | **Complete**, including all 12 legacy Employee-menu items, deep Full & Final settlement engine, bulk-policy allocation (10 tabs), menu allocation, asset allocation | 100% |
-> | 3 — Attendance | **Complete** except `/setup/devices` (no legacy screen was ever found to port — not a gap, a confirmed non-item) | ~95% |
-> | 4 — Leave Management | Core apply/authorize/approve/reject workflow complete (2026-07-18, admin-only); Cancellation sub-workflow and Encashment deferred | ~65% |
-> | 5 — Payroll Engine | Not started (`PROGRESS.md` Phase 5 has zero items checked — the earlier "salary structure setup done" claim needs re-verification, see note below) | 0–15% (unverified) |
-> | 6 — Reports | Not started | 0% |
-> | 7 — Loans, Advances, Assets | Asset management was actually completed under Phase 2 (§2.7 Allocate Assets), not Phase 7 — `PROGRESS.md`'s own Phase 7 checklist is stale and should be corrected to reflect this. Loans/Advances themselves are not started | ~33% |
-> | 8 — Plan-Gated / Company-Specific | Not started (Performance management specifically; Site/Field, Procurement, Mobile tracking also not started) | 0% |
+> | 0 — Pre-Work | Research/documentation done via the 3 legacy-analysis reports; local test-DB/SP-verification steps unconfirmed | ~65% |
+> | 1 — Infrastructure | Done, except route protection is a centralized layout gate instead of `middleware.ts` (functionally equivalent, architecturally different) | ~75% |
+> | 2 — Company Setup + Employee Core | Core CRUD built; several sub-features and fidelity gaps remain | ~45% |
+> | 3 — Attendance | Core register/punch/OT/shift flow built and correctly delegates to legacy stored procedures; upload + ESS/manager approval paths missing | ~70% |
+> | 4 — Leave Management | Setup only (policy groups); the entire apply/authorize/approve workflow is unbuilt | ~12% |
+> | 5 — Payroll Engine | Setup only (salary structures, financial year, per-employee tax declarations); the run/calculation engine is unbuilt | ~20% |
+> | 6 — Reports | Not started (all ~30 report controllers) | 0% |
+> | 7 — Loans, Advances, Assets | Asset allocation built (with an improved transactional model); loans/advances/full procurement unbuilt | ~30% |
+> | 8 — Plan-Gated / Company-Specific | Not started | 0% |
 > | 9 — Polish & Cutover | Not started | 0% |
+> | **Overall (76 checklist items)** | **~26 fully done, ~10 partial, ~40 not started** | **~34%** |
 >
-> **Net effect of this correction: overall completion is meaningfully higher than the earlier ~34% estimate** — Phases 0-3 are essentially done. The real remaining work is concentrated in Phases 4-9, with **Leave Management as the correct, unambiguous next phase** (confirmed not-started by every source checked). Before touching Phase 5 (Payroll), re-verify its "Salary structure setup"/"Employee salary structure assignment" checkmarks below directly against `PROGRESS.md`, since those came from the same now-suspect audit.
+> Note: this phase list does not have a line item for **Promotions & Resignations**, which the new app has in fact already built (correctly delegating Full & Final settlement math to the legacy stored procedures) — see `reports/current-state-report.md` §2.7. Treat that as a bonus-completed, unlisted item.
 
 ### Phase 0: Pre-Work (3–5 days)
 
 - [x] Read complete `mypayrol_trial.sql` to extract ALL table definitions (47,975 lines) — done via `reports/code-logic-report.md`, which used `schema/` as the authoritative source
 - [x] Map every CakePHP Model's `$useTable` to its real table name — done, including cross-checking Model associations against real schema for mismatches (`code-logic-report.md`)
-- [x] Document all stored procedure parameters by reading their definitions in the SQL — 91 stored functions/procedures cataloged with behavior in `code-logic-report.md`
+- [x] Document all stored procedure parameters by reading their definitions in the SQL — 91 stored functions/procedures cataloged with behavior in `code-logic-report.md`; 🟡 not verified as an exhaustive parameter-by-parameter reference
 - [x] Map all active (non-backup) controllers to their corresponding feature — done via `reports/backend-report.md`'s full Controller inventory (`#backup` files excluded)
-- [x] Create a test MySQL instance locally with `mypayrol_control_db` and `mypayrol_trial` — confirmed live and reachable 2026-07-18 (`mysql -uroot -h localhost`), with real seeded data across multiple company DBs
-- [x] Verify stored procedures work by calling them from a test script — confirmed via `PROGRESS.md`'s extensive curl-verification log (dozens of live stored-procedure calls against real data, e.g. `final_settle_pay_prc`, `leave_encash_prc`, `insert_update_att_reg`, `calculate_ot_allowance_prc`)
+- [ ] Create a test MySQL instance locally with `mypayrol_control_db` and `mypayrol_trial` — not confirmed this session
+- [ ] Verify stored procedures work by calling them from a test script — not confirmed this session
 
 ### Phase 1: Infrastructure (5–7 days)
 
-- [x] Initialize Next.js project with TypeScript, Tailwind, App Router — done (`rizo/` runs Next.js 16.2.9, not 14; TS, Tailwind 4)
+- [x] Initialize Next.js project with TypeScript, Tailwind, App Router — done (`rizo/` runs Next.js 16 rather than 14, TS, Tailwind 4)
 - [x] Install all dependencies
 - [x] Implement `src/lib/db.ts` — dual-pool connection manager
 - [x] Implement `src/lib/auth.ts` — NextAuth with CredentialsProvider + SHA1→bcrypt upgrade
-- [x] Implement route protection — as `src/proxy.ts`, not `src/middleware.ts` (Next.js 16 renamed the convention; see `PROGRESS.md` Phase 1 note — not an architectural deviation, just a framework rename)
+- [ ] Implement `src/middleware.ts` — route protection — ⚠️ DEVIATED: no `middleware.ts` exists; auth is instead a single `getServerSession`+`redirect` gate centralized in `(dashboard)/layout.tsx`, plus a per-route `getServerSession` re-check in each API route. Functionally equivalent, architecturally different from this plan — worth an explicit decision on whether to adopt `middleware.ts` going forward or keep the current pattern (it's already proven across ~96 API routes)
 - [x] Implement `src/types/next-auth.d.ts` — session type extensions
-- [x] Create `/login` page with username + password form (no separate Company Code field — company is derived server-side from the username; see `PROGRESS.md` "Login Rework")
+- [x] Create `/login` page with company code + username + password form
 - [x] Create base layout with sidebar and header
 - [x] Create `src/components/data-table/DataTable.tsx` — reusable TanStack Table
-- [x] Set up `.env.local` with local dev credentials — confirmed present and pointed at the live local MySQL instance
-- [x] Verify: login → session → logout works end-to-end — confirmed via `PROGRESS.md`'s extensive curl-verification log across every subsequent phase (every verification pass required a live session)
+- [ ] Set up `.env.local` with local dev credentials — not confirmed this session
+- [ ] Verify: login → session → logout works end-to-end — not directly verified this session (functionally implied by the rest of the app working, but not tested)
 
 **Milestone: Can log in and see a dashboard page. — ✅ REACHED.**
 
 ### Phase 2: Company Setup + Employee Core (8–10 days)
 
-**Status: ✅ COMPLETE** — all 12 legacy Employee-menu items have a working Next.js equivalent, plus deep gap-closure passes (Import Employee, Promotion Approval, Document Generation, full Full & Final settlement engine for Remove Employee, 10-tab Bulk Policy Allocation, Menu Allocation, Employee Access, Allocate Assets). Full detail with curl-verification notes: `PROGRESS.md` §2.1–2.17.
-
-- [x] Dashboard page with employee count, present today, pending leaves
+- [x] Dashboard page with employee count, present today, pending leaves — built (consolidated to one dashboard vs. legacy's three); 🟡 "Pending Leave Approvals" widget is gated to admin only, not per-row approval authority like legacy
 - [x] Employee list page (admin: all employees; user_group 2: self only)
-- [x] Employee detail/edit page — Personal, Professional, Salary & Statutory, Bank Details sections, plus a Documents tab (`emp_passport_visa`)
-- [x] New employee creation form
-- [x] Organizational CRUD: Branches, Departments, Designations, Grades, Financial Year, Holidays, Shifts, Attendance Config — via a shared reusable `SetupCrudPage.tsx` component
-- [x] Company profile page (`comp_contact_info`)
-- [x] User access management — Menu Allocation (`user_access`/`emp_menu` tree editor) built and curl-verified
-- [x] Employee Join (onboarding wizard, bulk XLSX import, sub-tabs for Documents/Education/Experience/Family)
-- [x] Employee Access (web login, mobile access, punch type, password reset, device reset)
-- [x] Allocate Assets (catalog CRUD + allocation/return, two-table sync)
-- [x] Allocate Policies in Bulk (Shift/Leave/Holiday/Notice/Salary/Division/Section/Grade/Hierarchy/Leave-Hierarchy — 10 tabs)
-- [x] Import Employee (bulk XLSX, direct-to-`emp_details` path)
-- [x] Promotion Approval (single-tier approval, cascades designation/dept/branch/shift/leave/salary/hierarchy)
-- [x] Generate Employee Documents (template/merge-field engine, 74 real seeded templates)
-- [x] Remove Employee / Resignation — full 4-stage workflow, eligibility gating, two-step Full & Final settlement preview+commit (leave encashment, notice pay, day-count stats, Loans/Assets reference panels), View Slip, Edit
+- [ ] Employee detail/edit page — all tabs (Personal, Professional, Documents) — 🟡 PARTIAL: core tabs built; Contacts/Beneficiary/EMI sub-tabs not started; onboarding completion-% tracker and its notification email dropped
+- [ ] New employee creation form — 🟡 PARTIAL: form exists but only `first_name` is required (client or server) vs. legacy's ~15 required fields — likely a bug, see Fix-First List
+- [x] Organizational CRUD: Branches, Departments, Designations, Grades, Financial Year, Holidays — built via a shared reusable `SetupCrudPage.tsx` component; 🟡 Grade's legacy delete-guard (blocks deleting a Grade with employees assigned) was dropped, and Branch-code uniqueness enforcement was dropped with no replacement
+- [ ] Company profile page (`comp_contact_info`) — 🟡 PARTIAL: compliance info/logo/policy-store gaps remain
+- [ ] User access management (which menus per employee) — 🟡 PARTIAL: an admin tree editor exists (`employees/menu-allocation`), but the parent/child cascade logic legacy had was dropped, and — same as legacy — no route anywhere actually enforces `user_access` server-side; it remains UI-only
 
-**Known open items (not blockers, tracked for later):** onboarding completion-% tracker was not ported (single-step form makes it less meaningful); employee self-service (ESS) resignation submission is out of scope by explicit decision (admin-only, same precedent as Regularisation); Cost Center/UAN/PT Applicable/Bank Account Type fields excluded (no backing schema columns, by decision not to alter the DB).
-
-**Milestone: Can view and manage employees and org structure. — ✅ REACHED.**
+**Milestone: Can view and manage employees and org structure. — 🟡 MOSTLY REACHED, with the gaps above.**
 
 ### Phase 3: Attendance (10–12 days)
 
-**Status: ✅ COMPLETE** except `/setup/devices`, for which no legacy screen was ever found to port (`AttendanceSetupController` turned out to be a plan/feature-gate, not device config) — confirmed not a real gap. Full detail: `PROGRESS.md` §3, §3.1, §3.2.
-
-- [x] Attendance register grid (color-coded, expandable IN/OUT/duration)
+- [x] Attendance register grid
 - [x] Attendance period calculation via `att_start_end_fn`
-- [x] Process month (calls `insert_update_att_reg`)
-- [x] Edit attendance entry, including full/half-day leave-code edits (calls `leave_transaction_prc`)
-- [x] Verify/lock and un-verify a month (with payroll/OT-lock guards)
-- [x] Overtime approval (calls `calculate_ot_allowance_prc`, gated on attendance being verified)
-- [x] Shift Planner (per-day roster, locked once attendance verified)
-- [x] Regularisation (admin raise + approve/reject queue — deliberately admin-only, no ESS/manager path, per an explicit scope decision matching Remove Employee's precedent)
-- [x] Comp-off (read-only earned-vs-used report)
-- [x] Edit Punches (device punch list/add/edit, whitelisted fields — closes a real legacy SQL-injection-adjacent bug)
-- [x] Device log Sync/Re-sync (calls `device_logs_iteration_fn`/`device_logs_resync_fn`)
-- [x] Check-in Reports (Daily/Early-In/Early-Out/Late-In/Late-Out)
-- [ ] `/setup/devices` — confirmed non-item, no legacy equivalent exists to port
+- [ ] Dynamic leave type codes from `salary_head_items` — not confirmed this session
+- [x] Edit attendance entry (calls `insert_update_att_reg`)
+- [ ] Attendance upload (CSV/XLSX → bulk update) — not started (`EmployeeAttendanceUploadController` has no equivalent)
+- [x] Device punch view and edit
+- [x] Device log processing (calls `device_logs_iteration_fn` / `bulk_device_logs_iteration_prc`)
+- [x] OT attendance
+- [x] Shift management (`working_day_time_procedures`)
+- [ ] Regularization workflow — 🟡 PARTIAL: admin-side workflow built; employee self-service and hierarchy-manager approval paths not started
 
-**Milestone: Can view, edit and process attendance for a month. — ✅ REACHED, including approvals and reporting.**
+**Milestone: Can view, edit and process attendance for a month. — ✅ REACHED for the admin-driven flow.**
 
 ### Phase 4: Leave Management (5–7 days)
 
-**Status: core apply/authorize/approve/reject workflow complete (2026-07-18) — admin-only, one combined `/leave/requests` page rather than legacy's separate My-Requests/Team-Requests split (no ESS actor to separate them for, same precedent as Regularisation/Resignation). Cancellation sub-workflow and Encashment deferred to a follow-up pass. Full build/verification detail: `PROGRESS.md` Phase 4.**
+- [ ] Leave application form (employee self-service) — not started
+- [ ] My leaves list with current status — not started
+- [ ] Team leave requests (pending authorizations/approvals) — not started
+- [ ] Authorize/approve/reject actions (all call `leave_transaction_prc`) — not started
+- [ ] Leave balance display — not started
+- [x] Leave policy configuration — setup screens only
+- [ ] Leave encashment request — not started
+- [ ] Leave types management (via salary_head_items) — not confirmed this session
 
-- [x] Leave application form — admin applies on an employee's behalf (`/leave/requests`, apply modal); no ESS self-service, by the same precedent as every other admin-only module in this app
-- [x] Leave requests list — single list with employee/status filters (combines legacy's separate My-Requests/Team-Requests views)
-- [x] Authorize/approve/reject actions (all call `leave_transaction_prc`) — ported the real legacy shortcut where a same-person authorizer+approver auto-completes on one Authorize call
-- [x] Leave balance display — wraps `leave_balance_inthe_year_fn`/`leave_balance_inthe_month_fn`, shown inline per request (no separate balances-by-employee grid page yet)
-- [x] Leave policy configuration — setup screens only (pre-existing)
-- [ ] Leave encashment request — not started (separate `LeaveEncashmentRequestController.php`, calls `leave_encash_prc` — deferred)
-- [x] Leave types management (via `salary_head_items`) — `GET /api/leave/types` resolves an employee's policy-linked types
-
-**Real finding during build**: `leave_transaction_prc` can silently overwrite `leaveentries.LEAVESTATUS` itself when its own internal validation fails (e.g. applying outside a leave type's configured cycle window), independent of whatever the app just wrote — every route now re-reads the actual post-call status rather than assuming success. See `PROGRESS.md` Phase 4 for the full curl-verification log.
-
-**Milestone: Full leave workflow functional. — 🟡 MOSTLY REACHED (core admin workflow works end-to-end with real balance visibility); Cancellation and Encashment remain.**
+**Milestone: Full leave workflow functional. — ❌ NOT REACHED. This is the largest remaining gap alongside Payroll — see `reports/migration-plan.md` Phase 2.**
 
 ### Phase 5: Payroll Engine (12–15 days)
 
-- [ ] Salary heads configuration (CRUD for `salary_heads`, `salary_head_items`) — not started, no setup page exists
-- [ ] Salary structure setup (`salary_structures`, `salary_structure_details`) — ⚠️ CORRECTED 2026-07-18: no setup page exists (`(dashboard)/setup` has no `salary-structures` entry); the earlier claim this was done was wrong. `GET /api/setup/salary-structures` exists but is a read-only lookup only, consumed by Bulk Policy Allocation's SALARY tab — it assumes `salary_structures` rows already exist in the DB (likely seeded directly), not that a UI to create/edit them exists
-- [x] Employee salary structure assignment (`emp_salary_structure`) — via the bulk-policies SALARY path (`PROGRESS.md` §2.8), calling the real `sal_structure_distribution_fn`; this part is genuinely done, just not the structure-authoring UI above
-- [ ] Salary increment management — not started as a dedicated flow (Promotion Approval, per `PROGRESS.md` §2.12, does cascade a salary-structure change as one step of an approved promotion, but there's no standalone increment-only workflow)
+- [ ] Salary heads configuration (CRUD for `salary_heads`, `salary_head_items`) — not confirmed this session
+- [x] Salary structure setup (`salary_structures`, `salary_structure_details`)
+- [x] Employee salary structure assignment (`emp_salary_structure`) — via the bulk-policies SALARY path, calling `sal_structure_distribution_fn`
+- [ ] Salary increment management — not started (legacy's `EmployeeController::promotion()`/increment workflow was not ported)
 - [ ] Process payroll page — not started
 - [ ] Payroll list with pagination (pending vs. processed) — not started
 - [ ] Approve/reverse payroll — not started
@@ -1312,7 +1293,7 @@ Used by specific companies. Plan-gated.
 
 - [ ] Employee loans (create, schedule EMI, track) — not started
 - [ ] Salary advances — not started
-- [x] Asset management (assign, track, return) — done, but was actually built under Phase 2 §2.7 "Allocate Assets" (`PROGRESS.md` §2.7), not as part of this phase; the full procurement chain (PO/GRN/Vendor/Stock/Item-master) remains a separate, unbuilt capability
+- [x] Asset management (assign, track, return) — built for discrete-asset allocation, with improved transactionality over legacy; 🟡 the full procurement chain (PO/GRN/Vendor/Stock/Item-master) is a separate, unbuilt capability — see Phase 8/§9.13
 
 ### Phase 8: Plan-Gated / Company-Specific Modules (10–15 days)
 
