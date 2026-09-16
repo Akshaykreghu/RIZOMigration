@@ -111,10 +111,38 @@ COMPANY_DB_HOST=localhost
 NEXTAUTH_SECRET=<generate-a-real-32+char-secret>
 NEXTAUTH_URL=https://<your-domain>
 
-# File uploads
+# File uploads — without these, uploads fall back to local disk under public/uploads.
+# That survives an ordinary git-pull redeploy (untracked files aren't touched), but it's still
+# a single point of failure (no backup/redundancy, tied to this one droplet's disk) and won't
+# scale past one droplet if you ever run more than one app instance. Provision a DigitalOcean
+# Spaces bucket + access key and fill these in for production:
+SPACES_ENDPOINT=<region>.digitaloceanspaces.com
+SPACES_REGION=<region, e.g. nyc3>
+SPACES_BUCKET=<bucket name>
+SPACES_KEY=<Spaces access key>
+SPACES_SECRET=<Spaces secret key>
+SPACES_CDN_URL=https://<bucket>.<region>.cdn.digitaloceanspaces.com   # optional, if CDN is enabled on the bucket
 UPLOAD_DIR=./public/uploads
 
+# Email — only needed for the birthday-wish send in Generate Employee Documents. Without these,
+# every send is a logged no-op (the feature's other paths still work). Mirrors legacy's SMTP send.
+SMTP_HOST=<smtp host>
+SMTP_PORT=587
+SMTP_USER=<smtp username>
+SMTP_PASS=<smtp password>
+SMTP_FROM=HR <hr@your-domain>
+SMTP_SECURE=false            # true for implicit TLS / port 465
+
 NODE_ENV=production
+```
+
+**Per-tenant one-off — image templates**: the "Image Templates" tab of Generate Employee Documents
+uses the legacy `templates` / `templates_details` tables, which are not part of the schema dumps.
+Run once per company database (idempotent — `CREATE TABLE IF NOT EXISTS`, existing tables untouched):
+
+```bash
+cd rizo-app/rizo
+node scripts/create-image-templates.mjs <companyCode>
 ```
 
 Build and start under PM2:
